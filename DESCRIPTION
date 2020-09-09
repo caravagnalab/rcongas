@@ -1,0 +1,33 @@
+Package: Rcongas
+Type: Package
+Title:genotyping CNVs from single-cell transcriptomics 
+Version: 0.1.0
+Author: Salvatore Milite
+Maintainer: Salvatore Milite <militesalvatore@gmail.com>
+Description: This package is built upon the congas python package.
+    It provides an interface for congas that can be used without knowing Pyro
+    In addition, it is shipped with a series of functions for data pre-processing,
+    simulation and visualization 
+License: GPL-3.0
+Encoding: UTF-8
+LazyData: true
+Config/reticulate:
+  list(
+    packages = list(
+      list(package = "congas", pip = TRUE)
+    )
+  )
+biocViews:
+Imports:
+  reticulate,
+  tidyverse,
+  gtools,
+  purrr,
+  tidyr,
+  dplyr,
+  cowplot,
+  extraDistr,
+  umap,
+  aricode
+Suggests:
+  biomaRt
