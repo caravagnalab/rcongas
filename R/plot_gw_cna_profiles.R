@@ -10,7 +10,10 @@
 #' @examples
 plot_gw_cna_profiles = function(x,
                                 whole_genome = FALSE,
-                                chromosomes = paste0("chr", c(1:22, "X", "Y")))
+                                chromosomes = paste0("chr", c(1:22, "X", "Y")),
+                                pvalue_cut_DE = 0.001,
+                                lfc_cut_DE = 0.25
+                                )
 {
   # Auxiliary plain plot function for whole_genome views
   get_plain_chrplot = function(reference = 'hg19',
@@ -113,6 +116,39 @@ plot_gw_cna_profiles = function(x,
       theme(axis.text.x = element_blank(),
             axis.ticks.x = element_blank())
   }
+
+  # Add DE information on the plot
+  if(has_DE(x))
+  {
+    DE_table = get_DE_table(x, chromosomes = chromosomes, cut_pvalue = pvalue_cut_DE, cut_lfc = lfc_cut_DE)
+
+    if (whole_genome)
+      DE_table = CNAqc:::relative_to_absolute_coordinates(list(reference_genome = x$reference_genome), DE_table)
+
+    # TODO aggiornare messaggio stampa
+    cli::cli_alert_info("Found DE analysis results, annotating n = {.value {nrow(DE_table)}} genes with adjusted p-value < {.field {p_cut_DE}}.")
+
+    if(nrow(DE_table) > 0)
+    {
+      segments_plot +
+        geom_vline(
+          data = DE_table,
+          aes(xintercept = from),
+          size = .1,
+          linetype = 'dashed'
+        )
+
+
+    }
+    else
+    {
+      cli::cli_alert_warning("No genes with significant DE with the requested parameters.")
+    }
+
+
+  }
+
+
 
   # Final result
   return(segments_plot)

@@ -1,6 +1,6 @@
 Package: Rcongas
 Type: Package
-Title:genotyping CNVs from single-cell transcriptomics 
+Title: genotyping CNVs from single-cell transcriptomics 
 Version: 0.1.0
 Author: Salvatore Milite
 Maintainer: Salvatore Milite <militesalvatore@gmail.com>
@@ -31,3 +31,5 @@ Imports:
   aricode
 Suggests:
   biomaRt
+Depends: 
+    R (>= 2.10)
