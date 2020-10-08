@@ -32,7 +32,49 @@ rntocl <- function(df, name = "rownames") {
   return(df)
 }
 
+
+get_counts <-  function(inf_obj, counts) {
+
+  best_model <- get_best_model(inf_obj)
+  M <- long_counts(counts$counts) %>%  select(cell, chr, from, to)
+  clts <- as.data.frame(best_model$parameters$assignement)
+  colnames(clts) <- "clusters"
+  clts$cell <- rownames(clts)
+  return(dplyr::inner_join(M, clts, by = "cell"))
+
+
+
+}
+
+
+get_DE_table <- function(inf_obj) {
+
+
+
+
+}
+
+get_best_model <- function(inf_obj) {
+
+  inf_obj$models[[inf_obj$best_K]]
+
+}
+
+get_clones_ploidy <-  function(inf_obj) {
+
+  best_model <- get_best_model(inf_obj)
+  res <- data.frame(t(best_model$parameters$cnv_probs))
+  res <-  res %>% mutate(tmp = rownames(res)) %>% tidyr::separate(col = tmp, into = c("chr", "from", "to"), sep = ":")
+  colnames(res)[seq_along(best_model$parameters$mixture_weights)] <-  paste(seq_along(best_model$parameters$mixture_weights))
+  res <- reshape2::melt(res, id.vars = c("chr", "from", "to"), variable.name = "clusters", value.name = "CN")
+
+  return(res)
+}
+
+
 long_counts <- function(M) {
+
+
 
   res <- as.matrix(M) %>%
     reshape2::melt() %>%
@@ -281,7 +323,7 @@ plot_confusion_matrix <-function(True_vec, Pred_vec){
 
 
 
-calculate_DGE <-  function(inference,gene_counts,clone1, clone2, method = "wilcox", normalize = T){
+calculate_DGE <-  function(inference,gene_counts,clone1, clone2, method = "wilcox", normalize = T, lfc = 0.25){
 
     so <- CreateSeuratObject(gene_counts)
     if(normalize)
@@ -289,9 +331,10 @@ calculate_DGE <-  function(inference,gene_counts,clone1, clone2, method = "wilco
     so@meta.data$membership <- factor(paste0(inference$parameters$assignement))
     so <- SetIdent(object = so, value = "membership")
     df_genes <- Seurat::FindMarkers(so, ident.1 = clone1, ident.2 = clone2, test.use = method, logfc.threshold
- = 0.25)
+ = lfc)
 
-    return(df_genes)
+    inference$DE <- df_genes
+    return(inference)
 
 }
 
