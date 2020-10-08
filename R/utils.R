@@ -44,16 +44,29 @@ rntocl <- function(df, name = "rownames") {
 }
 
 
+
 get_counts <-  function(inf_obj, counts) {
-
   best_model <- get_best_model(inf_obj)
-  M <- long_counts(counts$counts) %>%  select(cell, chr, from, to)
+  M <-
+    long_counts(counts$counts) %>%  select(chr, from, to, cell, n) %>%
+    dplyr::arrange(chr, from, to)
+
   clts <- as.data.frame(best_model$parameters$assignement)
-  colnames(clts) <- "clusters"
+  colnames(clts) <- "cluster"
   clts$cell <- rownames(clts)
-  return(dplyr::inner_join(M, clts, by = "cell"))
 
+  ret = dplyr::inner_join(M, clts, by = "cell") %>%
+    dplyr::select(chr, from, to, cell, n, cluster) %>%
+    dplyr::mutate(cluster = paste(cluster))
 
+  if (!grepl('chr', ret$chr[1]))
+  {
+    cli::cli_alert_warning("Missing `chr` prefix in chromosomes labels, added now.")
+
+    ret = ret %>% dplyr::mutate(chr = paste0("chr", chr))
+  }
+
+  return(ret)
 
 }
 
@@ -84,15 +97,52 @@ get_best_model <- function(inf_obj) {
 
 }
 
-get_clones_ploidy <-  function(inf_obj) {
+get_clones_ploidy <-  function(x, chromosomes = paste0("chr", c(1:22, "X", "Y"))) {
+
+  inf_obj = x
 
   best_model <- get_best_model(inf_obj)
-  res <- data.frame(t(best_model$parameters$cnv_probs))
-  res <-  res %>% mutate(tmp = rownames(res)) %>% tidyr::separate(col = tmp, into = c("chr", "from", "to"), sep = ":")
-  colnames(res)[seq_along(best_model$parameters$mixture_weights)] <-  paste(seq_along(best_model$parameters$mixture_weights))
-  res <- reshape2::melt(res, id.vars = c("chr", "from", "to"), variable.name = "clusters", value.name = "CN")
+  res <-
+    data.frame(t(best_model$parameters$cnv_probs), stringsAsFactors = FALSE)
+  res <-
+    res %>% mutate(tmp = rownames(res)) %>% tidyr::separate(col = tmp,
+                                                            into = c("chr", "from", "to"),
+                                                            sep = ":")
+  colnames(res)[seq_along(best_model$parameters$mixture_weights)] <-
+    paste(seq_along(best_model$parameters$mixture_weights))
+  res <-
+    reshape2::melt(
+      res,
+      id.vars = c("chr", "from", "to"),
+      variable.name = "cluster",
+      value.name = "CN"
+    ) %>%
+    dplyr::mutate(
+      cluster = as.character(cluster),
+      from = as.numeric(from),
+      to = as.numeric(to)
+    ) %>%
+    dplyr::as_tibble()
 
-  return(res)
+  # Normalise CNA values for comparisons
+  means = res %>%
+    dplyr::group_by(chr, from, to) %>%
+    dplyr::summarise(segment_mean = mean(CN))
+
+  joined_res = res %>%
+    dplyr::full_join(means, by = c('chr', 'from', 'to')) %>%
+    dplyr::mutate(
+      CN = CN - segment_mean
+    )
+
+  if(!grepl('chr', joined_res$chr[1]))
+  {
+    cli::cli_alert_warning("Missing `chr` prefix in chromosomes labels, added now.")
+
+    joined_res = joined_res %>% dplyr::mutate(chr = paste0("chr", chr))
+  }
+
+  return(joined_res %>% dplyr::filter(chr %in% chromosomes))
 }
 
 
@@ -125,7 +175,6 @@ csidx <-  function(cumsm, idx){
 
 
 gene_zscore = function(M)
-
 {
 
   M <- M %>% reshape2::melt()
@@ -152,7 +201,6 @@ plot_singlecell_gwide = function(M, cells = unique(M$cell), ordering = unique(M$
 {
   N = M %>% filter(cell %in% !!cells)
   N$chr <-  factor(N$chr,levels= gtools::mixedsort(unique(N$chr)))
-
 
   # Cells by n
   res <- ggplot(data = N) +
@@ -419,4 +467,17 @@ gene_hist <-  function(counts, clusters,gname = "SLC14A1", fsize = 20){
     xlab("") + ylab("") + scale_fill_discrete("Clone") + theme_bw(base_size = fsize)
 
 }
+
+# Obtain a set of colours for a liste of cluster names
+get_clusters_colors = function(labels, palette = 'Set1')
+{
+  cols = RColorBrewer::brewer.pal(n = 9, palette)
+  labels = sort(labels %>% unique)
+
+  cols = cols[1:length(labels)]
+  names(cols) = labels
+
+  return(cols)
+}
+
 
