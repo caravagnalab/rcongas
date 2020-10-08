@@ -1,20 +1,20 @@
-# inp3 = input congas
-# res = output congas
-# mat_pre2 = ...
-# input = inp3
-# x = res
-# head(get_counts(res, inp3))
-
-#
-# plot_gw_
-#
-plot_gw_cna_profiles = function(x, whole_genome = FALSE, chromosomes = paste0("chr", c(1:22, "X", "Y")))
+#' Title
+#'
+#' @param x
+#' @param whole_genome
+#' @param chromosomes
+#'
+#' @return
+#' @export
+#'
+#' @examples
+plot_gw_cna_profiles = function(x,
+                                whole_genome = FALSE,
+                                chromosomes = paste0("chr", c(1:22, "X", "Y")))
 {
   # Auxiliary plain plot function for whole_genome views
-  get_plain_chrplot = function(
-    reference = 'hg19',
-    chromosomes = paste0("chr", c(1:22, "X", "Y"))
-    )
+  get_plain_chrplot = function(reference = 'hg19',
+                               chromosomes = paste0("chr", c(1:22, "X", "Y")))
   {
     reference_coordinates = CNAqc:::get_reference(reference) %>%
       dplyr::filter(chr %in% chromosomes)
@@ -88,7 +88,7 @@ plot_gw_cna_profiles = function(x, whole_genome = FALSE, chromosomes = paste0("c
       scale_colour_manual(values = get_clusters_colors(segments$cluster))
   }
 
-  if(!whole_genome)
+  if (!whole_genome)
   {
     # chr ordering
     levels_chr_ordering = paste0("chr", c(1:22, "X", "Y"))
@@ -106,20 +106,14 @@ plot_gw_cna_profiles = function(x, whole_genome = FALSE, chromosomes = paste0("c
         size = 1.5
       ) +
       scale_colour_manual(values = get_clusters_colors(segments$cluster)) +
-      facet_wrap(~factor(chr, levels = levels_chr_ordering), nrow = 1) +
+      facet_wrap( ~ factor(chr, levels = levels_chr_ordering), nrow = 1) +
       CNAqc:::my_ggplot_theme() +
-      labs(
-        x = "Chromosome",
-        y = "Normalised Copy Number"
-      ) +
-      theme(
-        axis.text.x = element_blank(),
-        axis.ticks.x = element_blank()
-      )
+      labs(x = "Chromosome",
+           y = "Normalised Copy Number") +
+      theme(axis.text.x = element_blank(),
+            axis.ticks.x = element_blank())
   }
 
   # Final result
   return(segments_plot)
 }
-
-
