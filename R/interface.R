@@ -1,6 +1,6 @@
 
 torch <- reticulate::import("torch")
-
+congas <- reticulate::import("congas")
 
 
 choose_model <-  function(model_string){
@@ -163,7 +163,6 @@ run_inference <-  function(data_list , model, optim = "ClippedAdam", elbo = "Tra
   loss <- int$run(steps=steps, seed = seed, param_optimizer=list('lr'= lr), verbose = verbose, MAP = MAP)
   parameters <- int$learned_parameters(posterior=posteriors, verbose=verbose, steps=step_post)
 
-  print(parameters)
   if(posteriors){
     parameters$assignment_probs <- parameters$assignment_probs$numpy()
     parameters$assignement <- apply(parameters$assignment_probs, 1, which.max)
@@ -175,6 +174,8 @@ run_inference <-  function(data_list , model, optim = "ClippedAdam", elbo = "Tra
   an <-  set_names(list(loss = loss, parameters = parameters, dim_names = dim_names))
 
   if(model_name == "MixtureGaussianDMP") {
+
+
     an$parameters <- merge_clusters(an$parameters, "DMP", posterior=posteriors)
   } else {
 
@@ -220,7 +221,6 @@ merge_clusters <-  function(parameters, type = "DMP", filt = 0.5, posterior=F) {
 
   curr <-  1
   counter <-  1
-  print(posterior)
   res <- data.frame()
   weights <- vector()
   if(type == "DMP")
@@ -338,7 +338,7 @@ calculate_BIC <-  function(inf, data, mu,llikelihood = gauss_lik) {
   n_param <- param_total(inf$parameters)
   log_lik <- llikelihood(data,mu,inf$parameters)
 
-  return(n_param * log(nrow(data)) - 2* log_lik)
+  return(n_param * log(nrow(data)) - 2 * log_lik)
 
 
 }
@@ -355,6 +355,7 @@ calculate_AIC <-  function(inf, data, mu,llikelihood = gauss_lik) {
 calculate_entropy <- function(x) {
   -sum(x * log(x))
 }
+
 
 calculate_ICL <- function(inf, data, mu,llikelihood = gauss_lik) {
 
@@ -458,6 +459,15 @@ find_start_and_end <- function(z){
 
   return(list(start = start_vec, end = end_vec, tot = value_vec))
 
+
+}
+
+
+norm_factor <- function(data) {
+
+
+  norm <- rowMeans((data$counts / data$cnv$mu) / data$cnv$ploidy_real)
+  return(torch$tensor(norm))
 
 }
 

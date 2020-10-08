@@ -175,7 +175,7 @@ custom_fixed_binned_apply <- function(x, annot, bins,FUN = mean){
 }
 
 
-getChromosomeDF <- function(df, online = FALSE, genome = "hg38", chrs = c(1:22,"X")){
+getChromosomeDF <- function(df, online = FALSE, genome = "hg38", chrs = c(1:22,"X"), filters = 'hgnc_symbol'){
 
   if(online & !require("biomaRt")) stop("Please install biomaRt if you want to use the online functionality")
 
@@ -186,15 +186,16 @@ getChromosomeDF <- function(df, online = FALSE, genome = "hg38", chrs = c(1:22,"
 
     ensembl <- biomaRt::useMart("ensembl",dataset="hsapiens_gene_ensembl")
     genes_position <- biomaRt::getBM(attributes = c('hgnc_symbol', 'chromosome_name',
-                                           'start_position', 'end_position'), filters = 'hgnc_symbol', values = gene_names, mart = ensembl)
+                                           'start_position', 'end_position', 'ensembl_gene_id'), filters = filters, values = gene_names, mart = ensembl)
   }else {
     genes_position <- eval(parse(text = paste0(genome, "_genes")))
-    genes_position <-  genes_position %>% filter(hgnc_symbol %in% gene_names)
+    genes_position <-  genes_position %>% filter(eval(parse(text = filters)) %in% gene_names)
   }
 
   genes_position <- genes_position %>%  filter(chromosome_name %in% chrs)
   genes_position <- genes_position[with(genes_position,gtools::mixedorder(paste(chromosome_name, start_position, sep =  ":"))),]
-  df <- df[genes_position$hgnc_symbol,]
+  df <- df[genes_position[,filters],]
+
   res <- split(as.data.frame(df), as.factor(genes_position$chromosome_name))
   res <- res[mixedorder(names(res))]
   genes_position <- split(genes_position, genes_position$chromosome_name)
@@ -232,7 +233,7 @@ cap_genes <- function(x, quantile = 0.95){
 
 get_data <- function(data, bindim = 100,chrs = c(1:22,"X"), filter = NULL, fun = sum,
                      type = c("binning", "smoothing","fixed_binning"), cnv_data = NULL, median_bindims = TRUE,
-                     online = FALSE, genome = "hg38", startsWithchr = FALSE, correct_bins = TRUE)
+                     online = FALSE, genome = "hg38", startsWithchr = FALSE, correct_bins = TRUE, gene_filters = "hgnc_symbol")
 
 {
 
@@ -243,7 +244,7 @@ get_data <- function(data, bindim = 100,chrs = c(1:22,"X"), filter = NULL, fun =
     data <- data[rownames(data) %in% filter, ]
   }
 
-  df_list <- getChromosomeDF(data, genome = genome, online = online, chrs = chrs)
+  df_list <- getChromosomeDF(data, genome = genome, online = online, chrs = chrs, filters = gene_filters)
 
   data_splitted <- df_list[[1]]
   chrs_cord <- df_list[[2]]
@@ -276,12 +277,18 @@ get_data <- function(data, bindim = 100,chrs = c(1:22,"X"), filter = NULL, fun =
 
     if(correct_bins)
       cp <- correct_bins(cp, filt = 1.0e+07, hard = TRUE)
+
+
     bins_splitted <- split(cp , cp$chr)
     bins_splitted <- bins_splitted[mixedsort(names(bins_splitted))]
     #bins_splitted <- bins_splitted[names(bins_splitted) %in% names(chrs_cord)]
 
+
+
     chrs_cord <- chrs_cord[names(chrs_cord) %in% names(bins_splitted)]
     data_splitted <- data_splitted[names(data_splitted) %in% names(bins_splitted)]
+
+
 
 
     mask <- mapply(bins_splitted, chrs_cord, FUN = function(x,y){
@@ -293,9 +300,11 @@ get_data <- function(data, bindim = 100,chrs = c(1:22,"X"), filter = NULL, fun =
     })
 
 
-    bins_splitted <- mapply(bins_splitted, mask, FUN =  function(x,y) x[y,], SIMPLIFY = F)
+    #bins_splitted <- mapply(bins_splitted, mask, FUN =  function(x,y) x[y,], SIMPLIFY = F)
+
 
     data_binned <-  mapply(data_splitted, chrs_cord, bins_splitted ,FUN = function(x,y,z) custom_fixed_binned_apply(x,y,z,fun))
+
 
     result <- data_binned[seq(1,length(data_binned),3)]
     result_bindim <- data_binned[seq(2,length(data_binned),3)]

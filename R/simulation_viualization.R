@@ -33,7 +33,7 @@ plot_counts.CNVSimulation <- function(cnv_sim, plot = T, order = rownames(cnv_si
   M <- long_counts(counts)
 
   cell_n_pl = plot_singlecell_gwide(
-    M , legend = "counts", ordering = order, by_seg = by_seg, title = title) + theme(text = element_text(size=font_size))
+    M , legend = "counts", ordering = order, by_seg = by_seg, title = title, font_size = font_size)
 
   if(plot){
     plot(cell_n_pl)
@@ -43,11 +43,11 @@ plot_counts.CNVSimulation <- function(cnv_sim, plot = T, order = rownames(cnv_si
 
 
   clust_plot <- ggplot(data = clus_inf) +
-    geom_tile(aes(x = Var2, y = Var1, fill=paste(value) ))  + scale_fill_discrete() +
-    scale_y_discrete(limits = gtools::mixedsort(unique(clus_inf$cell_id))) +
+    geom_tile(aes(x = Var2, y = Var1, fill=paste(value) ))  + scale_fill_discrete("") +
+    scale_y_discrete("",limits = gtools::mixedsort(unique(clus_inf$cell_id))) +
     theme(axis.title.y=element_blank(), axis.text.y=element_blank(), axis.text.x = element_text(angle = 90, hjust = 1),
           axis.ticks.y=element_blank(),axis.ticks.x=element_blank(), axis.title.x = element_blank(), legend.position="none") +
-    ggtitle("")
+    ggtitle("") + xlab("")
 
   cell_counts_and_clust_plot <- cowplot::plot_grid(clust_plot, cell_n_pl,ncol = 2, rel_widths = c(1,18), axis = "tb", align = "hv")
 
@@ -56,13 +56,13 @@ plot_counts.CNVSimulation <- function(cnv_sim, plot = T, order = rownames(cnv_si
 }
 
 
-plot_genome.CNVSimulation <- function(cnv_sim, plot = T, title = ""){
+plot_genome.CNVSimulation <- function(cnv_sim, plot = T, title = "", fsize = 10){
 
 
   cnv <- cnv_sim$cnv
 
 
-  bulk_pl = plot_bulk(cnv, title = title)
+  bulk_pl = plot_bulk(cnv, title = title)+ theme(text = element_text(size=fsize))
   if(plot){
     plot(bulk_pl)
   }

@@ -82,7 +82,7 @@ gene_zscore = function(M)
 
 }
 
-plot_singlecell_gwide = function(M, cells = unique(M$cell), ordering = unique(M$cell), legend = "value", by_seg = F, space = "free", title = "scRNA-seq over CNV segments")
+plot_singlecell_gwide = function(M, cells = unique(M$cell), ordering = unique(M$cell), legend = "value", by_seg = F, space = "free", title = "scRNA-seq over CNV segments", font_size = 12)
 {
   N = M %>% filter(cell %in% !!cells)
   N$chr <-  factor(N$chr,levels= gtools::mixedsort(unique(N$chr)))
@@ -103,8 +103,8 @@ plot_singlecell_gwide = function(M, cells = unique(M$cell), ordering = unique(M$
     geom_vline(data = N, aes(xintercept = from), color = 'white', size = .2) +
     scale_y_discrete(limits = ordering) + scale_x_continuous(expand = c(0,0)) +
     theme(panel.spacing = unit(0.01, "lines"), axis.ticks.x = element_blank(), axis.text.x = element_blank(), axis.title.x = element_blank(),
-          panel.background = element_rect(fill = NA),  axis.ticks.y = element_blank(), axis.text.y = element_blank(), axis.title.y = element_blank(),
-          strip.text.x = element_text(size = 5))
+          panel.background = element_rect(fill = NA),  axis.ticks.y = element_blank(), axis.text.y = element_blank(), axis.title.y = element_blank()) +
+    theme(text = element_text(size=font_size))
 
   if(!by_seg){
     res <-  res + facet_grid(.~chr,scales = "free", space = space)
@@ -163,7 +163,7 @@ plot_bulk = function(cnv, chromosomes = paste0(c(1:22, 'X', 'Y')), title = "")
     geom_vline(data = cnv, aes(xintercept = from), linetype = 'dotted', color = 'grey50', size = .3, alpha = 0.8) +
     ylab("Ploidy") + theme(panel.spacing = unit(0.01, "lines"), axis.ticks.x = element_blank(), axis.text.x = element_blank(), axis.title.x = element_blank(),
                           panel.grid.major.x = element_blank(), panel.grid.minor.x = element_blank(), panel.grid.minor.y = element_blank())+
-    scale_y_continuous(breaks = seq(floor(min(cnv$ploidy_real)), ceiling(max(cnv$ploidy_real)) , by = 1)) + scale_x_continuous(expand = c(0,0))+ ggtitle(title)
+    scale_y_continuous(seq(1,5))+ ylim(c(1,5)) + scale_x_continuous(expand = c(0,0))+ ggtitle(title)
 
 
 }
@@ -178,7 +178,7 @@ filter_MAF_seg <-  function(MAF_splitted, k){
   })
 }
 
-plot_MAF <- function(MAF_l, k = 31) {
+plot_MAF <- function(MAF_l, k = 31, fsize = 20) {
 
   g <-  as.factor(MAF_l$chr)
   MAF_splitted <-  split(MAF_l, f = g)
@@ -188,8 +188,8 @@ plot_MAF <- function(MAF_l, k = 31) {
 
   MAF_l$chr <- factor(MAF_l$chr,levels = gtools::mixedsort(unique(MAF_l$chr)))
   ggplot(data = MAF_l, aes(x = as.numeric(start), y = runmed(value, k = k, endrule = "constant"), color = chr)) +
-    geom_point() + xlab("") + facet_wrap(~chr, scales = "free_x") + ylab("MAF") +
-    theme(axis.title.x=element_blank(), axis.text.x = element_blank(), axis.ticks.x = element_blank())
+    geom_point() + xlab("") + facet_wrap(~chr, scales = "free_x", nrow = 3) + ylab("MAF") +
+    theme(axis.title.x=element_blank(), axis.text.x = element_blank(), axis.ticks.x = element_blank(), text = element_text(size=fsize))
 
 }
 
@@ -341,5 +341,12 @@ calculate_GSEA <- function(inference,fc_df,clone1, clone2) {
 
 }
 
+gene_hist <-  function(counts, clusters,gname = "SLC14A1", fsize = 20){
+  data <- as.data.frame(counts[,gname])
+  data$clust <-  clusters
+  colnames(data) <-  c("expr", "cluster")
+  ggplot(aes(x = expr, y = ..count..), data = data) + geom_histogram(aes(fill = paste(cluster))) + ggtitle(gname) +
+    xlab("") + ylab("") + scale_fill_discrete("Clone") + theme_bw(base_size = fsize)
 
+}
 
