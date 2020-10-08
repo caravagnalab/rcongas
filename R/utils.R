@@ -1,7 +1,18 @@
 
+load_genome <- function(genome) {
+
+  return(eval(parse(text = paste0(genome, "_karyo"))))
+
+}
+
+
+load_gene_annotations <- function(genome) {
+  return(eval(parse(text = paste0(genome, "_genes"))))
+}
+
 relative_to_absolute_coordinates <- function(df, genome = "hg38"){
 
-  karyo <- eval(parse(text = paste0(genome, "_karyo")))
+  karyo <- load_genome(genome)
   karyo_sum <- cumsum(c(0,karyo))
   karyo_sum <- karyo_sum[-length(karyo_sum)]
   names(karyo_sum) <- names(karyo)
@@ -47,9 +58,22 @@ get_counts <-  function(inf_obj, counts) {
 }
 
 
-get_DE_table <- function(inf_obj) {
+get_DE_table <- function(inf_obj, genome = "hg38") {
+
+  gene_ann <- load_gene_annotations(genome) %>%
+    dplyr::rename(gene = hgnc_symbol,chr = chromosome_name, from = start_position,to = end_position) %>%
+    dplyr::select(gene,chr,from,to) %>%  filter( chr %in% c(1:22, "X", "Y", "MT"))
+
+  gene_names <-  rownames(inf_obj$DE)
+
+  DE <- inf_obj$DE %>% dplyr::select(p_val_adj, avg_logFC, pct_1, pct_2) %>%
+    dplyr::mutate(gene = gene_names, avg_log2FC = log2(exp(avg_logFC))) %>%
+            dplyr::rename(pct_detec_1 = pct_1,ptc_detec_2 = pct_2) %>%  dplyr::select(-avg_logFC)
 
 
+  res <- dplyr::left_join(DE, gene_ann, by = "gene") %>% dplyr::arrange(p_val_adj,chr,from,to) %>% dplyr::as_tibble()
+
+  return(res)
 
 
 }
@@ -333,7 +357,10 @@ calculate_DGE <-  function(inference,gene_counts,clone1, clone2, method = "wilco
     df_genes <- Seurat::FindMarkers(so, ident.1 = clone1, ident.2 = clone2, test.use = method, logfc.threshold
  = lfc)
 
+    colnames(df_genes) <-  gsub(pattern = "\\.", replacement = "_",  colnames(df_genes))
+
     inference$DE <- df_genes
+
     return(inference)
 
 }
