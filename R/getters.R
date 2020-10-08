@@ -78,4 +78,32 @@ get_counts <-  function(inf_obj, input,  chromosomes = paste0("chr", c(1:22, "X"
 }
 
 
+get_DE_table <- function(x,
+                         chromosomes = paste0("chr", c(1:22, "X", "Y")),
+                         cut_pvalue = 0.001,
+                         cut_lfc = 0.25
+)
+{
+  if(!has_DE(x)) return(NULL)
 
+  return(
+    x$DE$table %>%
+      dplyr::filter(p_val < cut_pvalue, abs(avg_log2FC) > cut_lfc, chr %in% chromosomes)
+  )
+}
+
+get_best_model <- function(inf_obj) {
+
+  inf_obj$models[[inf_obj$best_K]]
+
+}
+
+
+
+get_gene_annotations = function(x){
+
+  if(x$reference_genome %in% c('hg19', 'GRCh37')) data('hg19_gene_coordinates')
+  # if(x$reference_genome %in% c('hg38', 'GRCh38')) data('hg38_gene_coordinates')
+
+  stop("reference unknown")
+}

@@ -55,53 +55,9 @@ rntocl <- function(df, name = "rownames") {
 
 
 
-get_counts <-  function(inf_obj, counts) {
-  best_model <- get_best_model(inf_obj)
-  M <-
-    long_counts(counts$counts) %>%  select(chr, from, to, cell, n) %>%
-    dplyr::arrange(chr, from, to)
-
-  clts <- as.data.frame(best_model$parameters$assignement)
-  colnames(clts) <- "cluster"
-  clts$cell <- rownames(clts)
-
-  ret = dplyr::inner_join(M, clts, by = "cell") %>%
-    dplyr::select(chr, from, to, cell, n, cluster) %>%
-    dplyr::mutate(cluster = paste(cluster))
-
-  if (!grepl('chr', ret$chr[1]))
-  {
-    cli::cli_alert_warning("Missing `chr` prefix in chromosomes labels, added now.")
-
-    ret = ret %>% dplyr::mutate(chr = paste0("chr", chr))
-  }
-
-  return(ret)
-
-}
 
 
 
-get_DE_table <- function(x,
-                         chromosomes = paste0("chr", c(1:22, "X", "Y")),
-                         cut_pvalue = 0.001,
-                         cut_lfc = 0.25
-                         )
-{
-  if(!has_DE(x)) return(NULL)
->>>>>>> a6a91c1b973861e16658c05841a22887e6cc5597
-
-  return(
-    x$DE$table %>%
-           dplyr::filter(p_val < cut_pvalue, abs(avg_log2FC) > cut_lfc, chr %in% chromosomes)
-         )
-}
-
-get_best_model <- function(inf_obj) {
-
-  inf_obj$models[[inf_obj$best_K]]
-
-}
 
 
 
