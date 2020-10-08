@@ -1,13 +1,13 @@
 
 load_genome <- function(genome) {
 
-  return(eval(parse(text = paste0(genome, "_karyo"))))
+  return(data(text = paste0(genome, "_karyo")))
 
 }
 
 
 load_gene_annotations <- function(genome) {
-  return(eval(parse(text = paste0(genome, "_genes"))))
+  return(data(text = paste0(genome, "_genes")))
 }
 
 relative_to_absolute_coordinates <- function(df, genome = "hg38"){
@@ -26,7 +26,7 @@ relative_to_absolute_coordinates <- function(df, genome = "hg38"){
 
 absolute_t_relative_coordinates <- function(df, genome = "hg38"){
 
-  karyo <- load(paste0(genome, "_karyotype.rda"))
+  karyo <- load_genome(genome)
   karyo_sum <- cumsum(c(0,karyo))
   karyo_sum <- karyo_sum[-length(karyo_sum)]
   names(karyo_sum) <- names(karyo)
@@ -86,6 +86,11 @@ get_DE_table <- function(inf_obj, genome = "hg38") {
 
   res <- dplyr::left_join(DE, gene_ann, by = "gene") %>% dplyr::arrange(p_val_adj,chr,from,to) %>% dplyr::as_tibble()
 
+  if (!grepl('chr', ret$chr[1]))
+  {
+    res = res %>% dplyr::mutate(chr = paste0("chr", chr))
+  }
+
   return(res)
 
 
@@ -97,53 +102,6 @@ get_best_model <- function(inf_obj) {
 
 }
 
-get_clones_ploidy <-  function(x, chromosomes = paste0("chr", c(1:22, "X", "Y"))) {
-
-  inf_obj = x
-
-  best_model <- get_best_model(inf_obj)
-  res <-
-    data.frame(t(best_model$parameters$cnv_probs), stringsAsFactors = FALSE)
-  res <-
-    res %>% mutate(tmp = rownames(res)) %>% tidyr::separate(col = tmp,
-                                                            into = c("chr", "from", "to"),
-                                                            sep = ":")
-  colnames(res)[seq_along(best_model$parameters$mixture_weights)] <-
-    paste(seq_along(best_model$parameters$mixture_weights))
-  res <-
-    reshape2::melt(
-      res,
-      id.vars = c("chr", "from", "to"),
-      variable.name = "cluster",
-      value.name = "CN"
-    ) %>%
-    dplyr::mutate(
-      cluster = as.character(cluster),
-      from = as.numeric(from),
-      to = as.numeric(to)
-    ) %>%
-    dplyr::as_tibble()
-
-  # Normalise CNA values for comparisons
-  means = res %>%
-    dplyr::group_by(chr, from, to) %>%
-    dplyr::summarise(segment_mean = mean(CN))
-
-  joined_res = res %>%
-    dplyr::full_join(means, by = c('chr', 'from', 'to')) %>%
-    dplyr::mutate(
-      CN = CN - segment_mean
-    )
-
-  if(!grepl('chr', joined_res$chr[1]))
-  {
-    cli::cli_alert_warning("Missing `chr` prefix in chromosomes labels, added now.")
-
-    joined_res = joined_res %>% dplyr::mutate(chr = paste0("chr", chr))
-  }
-
-  return(joined_res %>% dplyr::filter(chr %in% chromosomes))
-}
 
 
 long_counts <- function(M) {
@@ -408,6 +366,10 @@ calculate_DGE <-  function(inference,gene_counts,clone1, clone2, method = "wilco
     colnames(df_genes) <-  gsub(pattern = "\\.", replacement = "_",  colnames(df_genes))
 
     inference$DE <- df_genes
+    if(is.null(clone2)) {
+     clone2 <-  "all"
+    }
+    inference$DE_info <- list(test = method, comparison = paste0(clone1, " VS ",clone2))
 
     return(inference)
 

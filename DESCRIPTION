@@ -28,6 +28,9 @@ Imports:
   cowplot,
   extraDistr,
   umap,
-  aricode
+  aricode,
+  cli
 Suggests:
   biomaRt
+  EnhancedVolcano
+  
