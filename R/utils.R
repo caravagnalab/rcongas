@@ -2,6 +2,7 @@
 load_genome <- function(genome) {
 
   return(data(text = paste0(genome, "_karyo")))
+  # rcongas::: ....
 
 }
 
@@ -9,6 +10,15 @@ load_genome <- function(genome) {
 load_gene_annotations <- function(genome) {
   return(data(text = paste0(genome, "_genes")))
 }
+
+get_gene_annotations = function(x){
+
+  if(x$reference_genome %in% c('hg19', 'GRCh37')) data('hg19_gene_coordinates')
+  # if(x$reference_genome %in% c('hg38', 'GRCh38')) data('hg38_gene_coordinates')
+
+  stop("reference unknown")
+}
+
 
 relative_to_absolute_coordinates <- function(df, genome = "hg38"){
 
@@ -71,29 +81,20 @@ get_counts <-  function(inf_obj, counts) {
 }
 
 
-get_DE_table <- function(inf_obj, genome = "hg38") {
 
-  gene_ann <- load_gene_annotations(genome) %>%
-    dplyr::rename(gene = hgnc_symbol,chr = chromosome_name, from = start_position,to = end_position) %>%
-    dplyr::select(gene,chr,from,to) %>%  filter( chr %in% c(1:22, "X", "Y", "MT"))
+get_DE_table <- function(x,
+                         chromosomes = paste0("chr", c(1:22, "X", "Y")),
+                         cut_pvalue = 0.001,
+                         cut_lfc = 0.25
+                         )
+{
+  if(!has_DE(x)) return(NULL)
+>>>>>>> a6a91c1b973861e16658c05841a22887e6cc5597
 
-  gene_names <-  rownames(inf_obj$DE)
-
-  DE <- inf_obj$DE %>% dplyr::select(p_val_adj, avg_logFC, pct_1, pct_2) %>%
-    dplyr::mutate(gene = gene_names, avg_log2FC = log2(exp(avg_logFC))) %>%
-            dplyr::rename(pct_detec_1 = pct_1,ptc_detec_2 = pct_2) %>%  dplyr::select(-avg_logFC)
-
-
-  res <- dplyr::left_join(DE, gene_ann, by = "gene") %>% dplyr::arrange(p_val_adj,chr,from,to) %>% dplyr::as_tibble()
-
-  if (!grepl('chr', ret$chr[1]))
-  {
-    res = res %>% dplyr::mutate(chr = paste0("chr", chr))
-  }
-
-  return(res)
-
-
+  return(
+    x$DE$table %>%
+           dplyr::filter(p_val < cut_pvalue, abs(avg_log2FC) > cut_lfc, chr %in% chromosomes)
+         )
 }
 
 get_best_model <- function(inf_obj) {
@@ -101,6 +102,9 @@ get_best_model <- function(inf_obj) {
   inf_obj$models[[inf_obj$best_K]]
 
 }
+
+
+
 
 
 
@@ -353,73 +357,6 @@ plot_confusion_matrix <-function(True_vec, Pred_vec){
 
 
 
-calculate_DGE <-  function(inference,gene_counts,clone1, clone2, method = "wilcox", normalize = T, lfc = 0.25){
-
-    so <- CreateSeuratObject(gene_counts)
-    if(normalize)
-      so <- NormalizeData(so)
-    so@meta.data$membership <- factor(paste0(inference$parameters$assignement))
-    so <- SetIdent(object = so, value = "membership")
-    df_genes <- Seurat::FindMarkers(so, ident.1 = clone1, ident.2 = clone2, test.use = method, logfc.threshold
- = lfc)
-
-    colnames(df_genes) <-  gsub(pattern = "\\.", replacement = "_",  colnames(df_genes))
-
-    inference$DE <- df_genes
-    if(is.null(clone2)) {
-     clone2 <-  "all"
-    }
-    inference$DE_info <- list(test = method, comparison = paste0(clone1, " VS ",clone2))
-
-    return(inference)
-
-}
-
-
-
-calculate_GSEA <- function(inference,fc_df,clone1, clone2) {
-
-  if(require("org.Hs.eg.db")){
-    organism <- org.Hs.eg.db::org.Hs.eg.db
-  } else {
-    BiocManager::install("org.Hs.eg.db", character.only = TRUE)
-    organism <- org.Hs.eg.db::org.Hs.eg.db
-  }
-
-  change <- log2(unlist(gtools::foldchange(fc_df[clone1,], fc_df[clone2,])))
-  names(change) <-  colnames(fc_df)
-  gene_list <- sort(change, decreasing = TRUE)
-  gse <- gseGO(geneList=gene_list,
-               ont ="ALL",
-               keyType = "SYMBOL",
-               minGSSize = 3,
-               maxGSSize = 800,
-               pvalueCutoff = 0.05,
-               verbose = TRUE,
-               OrgDb = organism,
-               pAdjustMethod = "none", eps = 0)
-
-
-  ids<-bitr(names(change), fromType = "SYMBOL", toType = "ENTREZID", OrgDb=organism)
-  dedup_ids <-  ids[!duplicated(ids[c("SYMBOL")]),]
-  change2 <-  change[names(change) %in% dedup_ids$SYMBOL]
-  names(change2) <-  dedup_ids$ENTREZID
-  kegg_gene_list <- change2
-  kegg_gene_list<-na.omit(kegg_gene_list)
-  kegg_gene_list <-  sort(kegg_gene_list, decreasing = TRUE)
-
-  kegg_organism <-  "hsa"
-  kk2 <- gseKEGG(geneList     = kegg_gene_list,
-                 organism     = kegg_organism,
-                 minGSSize    = 3,
-                 maxGSSize    = 800,
-                 pvalueCutoff = 0.05,
-                 pAdjustMethod = "none",
-                 keyType       = "ncbi-geneid", eps = 0)
-
-  return(list(kegg = kk2, go = gse))
-
-}
 
 gene_hist <-  function(counts, clusters,gname = "SLC14A1", fsize = 20){
   data <- as.data.frame(counts[,gname])
