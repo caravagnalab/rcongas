@@ -5,3 +5,4 @@
 ./temp
 ./temp/*
 docs
+.DS_Store
