@@ -352,7 +352,7 @@ filter_segments.rcongas <- function(X, filter_mu = 30, filter_fixed = FALSE, fil
 
   X$data$gene_locations <- X$data$gene_locations %>% dplyr::filter(segment_id %in% X$data$cnv$segment_id)
 
-  X$data$gene_counts <- X$data$gene_counts[X$data$gene_locations$gene,]
+  X$data$gene_counts <- X$data$gene_counts[which(rownames(X$data$gene_counts) %in% X$data$gene_locations$gene),]
 
   return(X)
 }
