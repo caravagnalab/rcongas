@@ -16,7 +16,7 @@ plot_loss.anneal <- function(anneal_inf) {
 }
 
 
-plot_counts.anneal <- function(anneal_inf, counts, diff = FALSE,chrs = c(1:22, "X") ,
+plot_counts.anneal <- function(anneal_inf, counts, diff = FALSE,chrs = paste0("chr",1:22) ,
                                order = names(sort(anneal_inf$parameters$assignement)), norm = F, by_seg = F, space = "free", legend = "Counts"){
 
   if(inherits(counts, "CNVSimulation")){
@@ -61,7 +61,7 @@ plot_counts.anneal <- function(anneal_inf, counts, diff = FALSE,chrs = c(1:22, "
 
 
 
-  clus_inf <- clus_inf %>% mutate(cell_id = order, inferred = paste0("c",inferred)) %>% melt(id.vars = "cell_id")
+  clus_inf <- clus_inf %>% dplyr::mutate(cell_id = order, inferred = paste0("c",inferred)) %>% reshape2::melt(id.vars = "cell_id")
 
   clus_inf$cell_id <-  factor(clus_inf$cell_id, levels = order)
 
@@ -128,10 +128,10 @@ hist_plot.default <- function(counts, CNV = NULL,norm_f = NULL, cid = rep(1, nro
 
   if(sim) {
     counts <-  counts %>%  mutate(real = real_cid[[1]])
-    counts <- counts %>% melt(id.vars = c("cid", "real")) %>%  mutate(diff = (cid != real))
+    counts <- counts %>% reshape2::melt(id.vars = c("cid", "real")) %>%  mutate(diff = (cid != real))
   }
   else{
-    counts <- counts %>% melt(id.vars = "cid")
+    counts <- counts %>% reshape2::melt(id.vars = "cid")
   }
 
   counts$variable <-  factor(counts$variable, levels = gtools::mixedsort(unique(counts$variable)))

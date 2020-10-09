@@ -1,4 +1,4 @@
-get_clones_ploidy <-  function(x, chromosomes = paste0("chr", c(1:22, "X", "Y"))) {
+get_clones_ploidy <- function(x, chromosomes = paste0("chr", c(1:22, "X", "Y"))) {
 
   inf_obj = x
 
@@ -51,7 +51,7 @@ get_clones_ploidy <-  function(x, chromosomes = paste0("chr", c(1:22, "X", "Y"))
 
 get_counts <-  function(inf_obj, input,  chromosomes = paste0("chr", c(1:22, "X", "Y")), norm = T) {
   best_model <- get_best_model(inf_obj)
-  if(norm) input$counts <- input$counts / best_model$parameters$norm_factor
+  if(norm) input$counts <- input$data$counts / best_model$parameters$norm_factor
 
   M <-
     long_counts(input$counts) %>%  select(chr, from, to, cell, n) %>%
@@ -92,18 +92,27 @@ get_DE_table <- function(x,
   )
 }
 
-get_best_model <- function(inf_obj) {
+get_best_model <- function(X) {
 
-  inf_obj$models[[inf_obj$best_K]]
+  X$inference$models[[X$inference$model_selection$best_K]]
 
 }
 
 
 
-get_gene_annotations = function(x){
+get_gene_annotations <-  function(x){
 
-  if(x$reference_genome %in% c('hg19', 'GRCh37')) data('hg19_gene_coordinates')
-  # if(x$reference_genome %in% c('hg38', 'GRCh38')) data('hg38_gene_coordinates')
+  if(x$reference_genome %in% c('hg19', 'GRCh37')) data('hg19_gene_coordinates'); return(hg19_gene_coordinates)
+  if(x$reference_genome %in% c('hg38', 'GRCh38')) data('hg38_gene_coordinates'); return(hg38_gene_coordinates)
+
+  stop("reference unknown")
+}
+
+
+get_karyotype <-  function(x){
+
+  if(x$reference_genome %in% c('hg19', 'GRCh37')) data('hg19_karyo')
+  if(x$reference_genome %in% c('hg38', 'GRCh38')) data('hg38_karyo')
 
   stop("reference unknown")
 }

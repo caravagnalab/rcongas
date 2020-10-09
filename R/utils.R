@@ -1,23 +1,6 @@
 
-load_genome <- function(genome) {
-
-  return(data(text = paste0(genome, "_karyo")))
-  # rcongas::: ....
-
-}
 
 
-load_gene_annotations <- function(genome) {
-  return(data(text = paste0(genome, "_genes")))
-}
-
-get_gene_annotations = function(x){
-
-  if(x$reference_genome %in% c('hg19', 'GRCh37')) data('hg19_gene_coordinates')
-  # if(x$reference_genome %in% c('hg38', 'GRCh38')) data('hg38_gene_coordinates')
-
-  stop("reference unknown")
-}
 
 
 relative_to_absolute_coordinates <- function(df, genome = "hg38"){
@@ -52,14 +35,6 @@ rntocl <- function(df, name = "rownames") {
   df[name] <- rownames(df)
   return(df)
 }
-
-
-
-
-
-
-
-
 
 
 
@@ -335,4 +310,28 @@ get_clusters_colors = function(labels, palette = 'Set1')
   return(cols)
 }
 
+
+
+filter_segments.rcongas <- function(X, filter_mu = 30, filter_fixed = FALSE, filter_ploidy = 1:12, filter_cells = rownames(X$data$counts)) {
+
+  if(filter_fixed)
+    mask_seg <- X$data$cnv$fixed_mu > filter_mu & !is.na(X$data$cnv$fixed_mu)
+  else
+    mask_seg <- X$data$cnv$mu > filter_mu & !is.na(X$data$cnv$mu)
+
+  mask_ploidy <- X$data$cnv$ploidy_real %in% filter_ploidy & !is.na(X$data$cnv$ploidy_real)
+
+
+  X$data$cnv <- X$data$cnv[mask_seg & mask_ploidy,]
+
+  X$data$counts <- X$data$counts[filter_cells,mask_seg & mask_ploidy]
+
+  X$data$bindims <- X$data$bindims[filter_cells,mask_seg & mask_ploidy]
+
+  X$data$gene_locations <- X$data$gene_locations %>% dplyr::filter(segment_id %in% X$data$cnv$segment_id)
+
+  X$data$gene_counts <- X$data$gene_counts[X$data$gene_locations$gene,]
+
+  return(X)
+}
 

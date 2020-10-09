@@ -31,11 +31,7 @@ Imports:
   aricode,
   cli
 Suggests:
-  biomaRt
-<<<<<<< HEAD
+  biomaRt,
   EnhancedVolcano
-  
-=======
 Depends: 
     R (>= 2.10)
->>>>>>> a6a91c1b973861e16658c05841a22887e6cc5597

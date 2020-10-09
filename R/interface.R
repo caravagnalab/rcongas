@@ -55,7 +55,7 @@ from_simulation_to_data_list <- function(x){
 
 
 
-  return(list(data = t(x$counts), mu= x$cnv$mu, pld = as.vector(x$cnv$ploidy_real), segments = nrow(x$cnv)))
+  return(list(data = t(x$data$counts), mu= x$data$cnv$mu, pld = as.vector(x$data$cnv$ploidy_real), segments = nrow(x$data$cnv)))
 }
 
 
@@ -129,15 +129,15 @@ set_names <-  function(an){
 #' @export
 #'
 #' @examples
-run_inference <-  function(data_list , model, optim = "ClippedAdam", elbo = "TraceEnum_ELBO", inf_type = "SVI", steps = 300, lr = 0.05,
+run_inference <-  function(X , model, optim = "ClippedAdam", elbo = "TraceEnum_ELBO", inf_type = "SVI", steps = 300, lr = 0.05,
                             param_list = list(), MAP = TRUE, posteriors = FALSE, seed = 3, step_post=300, verbose= FALSE, filt_merge = 0.5){
 
   an <- reticulate::import("congas")
 
 
-  if(inherits(data_list, "CNVSimulation") | inherits(data_list, "rcongas")) {
+  if(inherits(X, "CNVSimulation") | inherits(X, "rcongas")) {
 
-    data_list <- from_simulation_to_data_list(data_list)
+    data_list <- from_simulation_to_data_list(X)
   }
 
   model_name <- model
@@ -175,18 +175,23 @@ run_inference <-  function(data_list , model, optim = "ClippedAdam", elbo = "Tra
 
   if(model_name == "MixtureGaussianDMP") {
 
-
     an$parameters <- merge_clusters(an$parameters, "DMP", posterior=posteriors)
+
   } else {
 
     an$parameters <- merge_clusters(an$parameters, type = "NONE", filt = filt_merge, posterior=posteriors)
   }
 
+  an$run_information <-  list(model = model,optim = optim, elbo = elbo, inf_type = inf_type,
+                              steps = steps, lr = lr, input_hyper_params = param_list, MAP = MAP,
+                              posteriors = posteriors, seed = seed, step_post=step_post)
+  X$inference$models <- list(an)
+
   return(structure(an, class = "congas"))
 
 }
 
-best_cluster <- function(data_list , model, clusters ,optim = "ClippedAdam", elbo = "TraceEnum_ELBO", inf_type = "SVI", steps = 300, lr = 0.05,
+best_cluster <- function(X , model, clusters ,optim = "ClippedAdam", elbo = "TraceEnum_ELBO", inf_type = "SVI", steps = 300, lr = 0.05,
                          param_list = list(), MAP = TRUE, posteriors = FALSE, seed = 3, step_post=300, verbose= FALSE, mixture = NULL, method = "AIC", filt_merge = 0.5){
 
 
@@ -194,26 +199,27 @@ best_cluster <- function(data_list , model, clusters ,optim = "ClippedAdam", elb
     mixture <- rep(NULL, length(clusters))
   }
 
-  res <- lapply(clusters, function(x) run_inference(data_list =  data_list, model = model,optim = optim, elbo = elbo, inf_type = inf_type,
+  res <- lapply(clusters, function(x) run_inference(X =  X, model = model,optim = optim, elbo = elbo, inf_type = inf_type,
                                         steps = steps, lr = lr, param_list = c(param_list, list('K' = x, 'mixture' = mixture[[x]])), MAP = MAP, posteriors = posteriors,
                                         seed = seed, step_post=step_post, verbose= verbose, filt_merge = filt_merge))
+
   lik_fun <-  ifelse(grepl(tolower(model), pattern = "norm"), gauss_lik_norm, gauss_lik)
 
   if(method == "BIC")
   {
-    IC <- sapply(res, function(x) calculate_BIC(x, data_list$counts, data_list$cnv$mu, llikelihood = lik_fun))
+    IC <- sapply(res, function(x) calculate_BIC(x, X$data$counts, X$data$cnv$mu, llikelihood = lik_fun))
   } else if (method == "AIC"){
-    IC <- sapply(res, function(x) calculate_AIC(x, data_list$counts, data_list$cnv$mu, llikelihood = lik_fun))
+    IC <- sapply(res, function(x) calculate_AIC(x, X$data$counts, X$data$cnv$mu, llikelihood = lik_fun))
   } else if (method == "ICL") {
-    IC <- sapply(res, function(x) calculate_ICL(x, data_list$counts, data_list$cnv$mu, llikelihood = lik_fun))
+    IC <- sapply(res, function(x) calculate_ICL(x, X$data$counts, X$data$cnv$mu, llikelihood = lik_fun))
   }else {
     stop("Information criterium not present in the package")
   }
   ind <-  which.min(IC)
   print(paste0("Best number of cluster is " , ind))
-  return(list(models = res, best_K = ind, IC = IC))
-
-
+  ret <-  list(models = res, model_selection = list(best_K = ind, IC = IC, IC_type = method, clusters = clusters))
+  X$inference <- ret
+  return(X)
 }
 
 

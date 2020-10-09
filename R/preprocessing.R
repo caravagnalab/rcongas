@@ -5,6 +5,10 @@ filter_bins <- function(conf, nmin_genes = 1, dim = 1000000){
 }
 
 
+
+
+
+
 binned_mean <- function(x, annot, binSize = 100, FUN = mean){
 
   if(binSize > nrow(x)){
@@ -175,31 +179,39 @@ custom_fixed_binned_apply <- function(x, annot, bins,FUN = mean){
 }
 
 
-getChromosomeDF <- function(df, online = FALSE, genome = "hg38", chrs = c(1:22,"X"), filters = 'hgnc_symbol'){
+getChromosomeDF <- function(df, online = FALSE, genome = "hg38", chrs = paste0("chr", c(1:22)), filters = 'hgnc_symbol'){
 
+
+  # Check for biomaRt
   if(online & !require("biomaRt")) stop("Please install biomaRt if you want to use the online functionality")
-
   gene_names <- rownames(df)
 
 
-  if(online){
 
+  if(online){
     ensembl <- biomaRt::useMart("ensembl",dataset="hsapiens_gene_ensembl")
     genes_position <- biomaRt::getBM(attributes = c('hgnc_symbol', 'chromosome_name',
                                            'start_position', 'end_position', 'ensembl_gene_id'), filters = filters, values = gene_names, mart = ensembl)
   }else {
-    genes_position <- eval(parse(text = paste0(genome, "_genes")))
-    genes_position <-  genes_position %>% filter(eval(parse(text = filters)) %in% gene_names)
+    # Get the reference genome from the package data and refert to biomaRt format
+    x <-  list(reference_genome = genome)
+    genes_position <- get_gene_annotations(x) %>%
+      dplyr::rename(chromosome_name = chr, start_position = from, end_position = to, hgnc_symbol = gene)
+
+    genes_position <-  genes_position %>% dplyr::filter(!!as.name(filters) %in% gene_names)
+
   }
 
-  genes_position <- genes_position %>%  filter(chromosome_name %in% chrs)
-  genes_position <- genes_position[with(genes_position,gtools::mixedorder(paste(chromosome_name, start_position, sep =  ":"))),]
-  df <- df[genes_position[,filters],]
+  # filter or chromoosome
+  genes_position <- genes_position %>% dplyr::filter(chromosome_name %in% chrs) %>% dplyr::arrange(chromosome_name, start_position, end_position)
 
+  df <- df[genes_position[,filters] %>% unlist,]
+
+  #
   res <- split(as.data.frame(df), as.factor(genes_position$chromosome_name))
-  res <- res[mixedorder(names(res))]
+  res <- res[gtools::mixedorder(names(res))]
   genes_position <- split(genes_position, genes_position$chromosome_name)
-  genes_position <- genes_position[mixedorder(names(genes_position))]
+  genes_position <- genes_position[gtools::mixedorder(names(genes_position))]
 
   return(list(res = res, pos = genes_position))
 
@@ -231,9 +243,9 @@ cap_genes <- function(x, quantile = 0.95){
 
 
 
-get_data <- function(data, bindim = 100,chrs = c(1:22,"X"), filter = NULL, fun = sum,
-                     type = c("binning", "smoothing","fixed_binning"), cnv_data = NULL, median_bindims = TRUE,
-                     online = FALSE, genome = "hg38", startsWithchr = FALSE, correct_bins = TRUE, gene_filters = "hgnc_symbol")
+get_data <- function(data, bindim = 100,chrs = paste0("chr",(1:22)), filter = NULL, fun = sum,
+                     type = c("binning", "smoothing","fixed_binning"), cnv_data = NULL,
+                     online = FALSE, genome = "hg38", startsWithchr = FALSE, correct_bins = TRUE, gene_filters = "hgnc_symbol", save_gene_matrix = TRUE)
 
 {
 
@@ -280,7 +292,7 @@ get_data <- function(data, bindim = 100,chrs = c(1:22,"X"), filter = NULL, fun =
 
 
     bins_splitted <- split(cp , cp$chr)
-    bins_splitted <- bins_splitted[mixedsort(names(bins_splitted))]
+    bins_splitted <- bins_splitted[gtools::mixedsort(names(bins_splitted))]
     #bins_splitted <- bins_splitted[names(bins_splitted) %in% names(chrs_cord)]
 
 
@@ -316,13 +328,24 @@ get_data <- function(data, bindim = 100,chrs = c(1:22,"X"), filter = NULL, fun =
     colnames(result_bindim) <- colnames(result)
     cp <- do.call(rbind, bins_splitted)
 
-    if(median_bindims)
-      cp$mu <- apply(result_bindim,2,median)
-    else
-      cp$mu <- fixed_bindim
+    cp$mu <- apply(result_bindim,2,median)
+    cp$fixed_mu <- fixed_bindim
     colnames(cp)[4] <- "ploidy_real"
 
-    return(structure(list(counts = as.matrix(result), bindims = result_bindim, cnv = cp, gene_counts = as.matrix(do.call(rbind, data_splitted))),class = "rcongas" ))
+    gene_locations <- as.matrix(do.call(rbind, chrs_cord)) %>% dplyr::as_tibble() %>%
+      dplyr::rename(chr = chromosome_name, from = start_position, to = end_position, gene = hgnc_symbol) %>%
+      dplyr::mutate(from = as.integer(from), to = as.integer(to), segment_id = gsub(pattern = " ", "", paste(.$chr,.$from,.$to, sep = ":")))
+
+    data_list <- list(counts = as.matrix(result), bindims = result_bindim,
+                      cnv = cp %>%  dplyr::as_tibble() %>% dplyr::mutate(segment_id = paste(.$chr, .$from, .$to, sep = ":")),
+                      gene_locations = gene_locations)
+
+    ret <- structure(list(data = data_list, reference_genome = genome),class = "rcongas")
+
+    if(save_gene_matrix) { ret$data$gene_counts <- as.matrix(do.call(rbind, data_splitted)) }
+
+    return(ret)
+
   }
 }
 
@@ -330,10 +353,3 @@ get_data <- function(data, bindim = 100,chrs = c(1:22,"X"), filter = NULL, fun =
 
 
 
-`[.rcongas` <- function(x, i, j) {
-  x$cnv <- x$cnv[j,]
-  x$counts <- x$counts[i,j]
-  x$bindims <-  x$bindims[i,, drop = FALSE]
-
-  return(x)
-}
