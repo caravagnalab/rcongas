@@ -1,4 +1,5 @@
 # x = calculate_DE(x, mat_pre2 %>% t, 1, 2)
+# plot_gw_DE(x)
 
 #' Title
 #'
@@ -10,6 +11,7 @@
 #' @examples
 plot_gw_DE = function(x,
                       chromosomes = paste0("chr", c(1:22, "X", "Y")),
+                      annotate_top_DE = 5,
                       ...
                       )
 {
@@ -19,8 +21,47 @@ plot_gw_DE = function(x,
   # Load DE results - forward params
   DE_table = get_DE_table(x, chromosomes = chromosomes, ...)
 
+  top_ten_DE = DE_table %>%
+    dplyr::arrange(p_val_adj) %>%
+    dplyr::filter(row_number() <= annotate_top_DE)
+
+  top_ten_DE = CNAqc:::relative_to_absolute_coordinates(list(reference_genome = x$reference_genome), top_ten_DE)
+
   # Get segments plot - gw
   segments_plot = plot_gw_cna_profiles(x, whole_genome = TRUE, chromosomes = chromosomes)
+
+  # Annotate a dashed line
+  segments_plot = segments_plot +
+    geom_vline(
+      data = top_ten_DE,
+      aes(xintercept = from),
+      color = 'black',
+      linetype = "dashed",
+      size = .25
+    )
+
+  segments_plot = segments_plot +
+  geom_text(
+    data = top_ten_DE,
+    aes(x = from, y = Inf, label = gene),
+    # nudge_y      = 0.0,
+    # direction    = "x",
+    angle        = 90,
+    vjust        = 0,
+    hjust = 1,
+    size = 1.5
+  ) +
+    coord_cartesian(clip = 'off')
+
+  # segments_plot = segments_plot +
+  #   ggrepel::geom_label_repel(
+  #     data = top_ten_DE,
+  #     aes(x = from, y = Inf, label = gene),
+  #     size = 1.5,
+  #     color = 'white',
+  #     fill = 'black'
+  #   ) +
+  #   coord_cartesian(clip = 'off')
 
   # Prepare a blank WG plot
   blank_wg = get_plain_chrplot(x$reference_genome, chromosomes = chromosomes) +
@@ -37,7 +78,7 @@ plot_gw_DE = function(x,
                 ymax = n,
                 fill = n
               )) +
-    scale_y_continuous(breaks = c(0, max(y$n))) +
+    scale_y_continuous(breaks = c(0, ceiling(max(y$n)))) +
     scale_fill_distiller(palette = 'Greys', direction = 1) +
     guides(fill = FALSE)
 
@@ -51,7 +92,7 @@ plot_gw_DE = function(x,
                 ymax = p,
                 fill = p
               )) +
-    scale_y_continuous(breaks = c(0, 1)) +
+    scale_y_continuous(breaks = c(0, ceiling(max(y$p)))) +
     scale_fill_distiller(palette = 'Purples', direction = 1) +
     guides(fill = FALSE)
 

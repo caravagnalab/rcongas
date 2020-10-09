@@ -1,5 +1,5 @@
 #
-# x = calculate_DGE(get_best_model(x), mat_pre2 %>% t, 1, 2, method = 'wilcox')
+# x = calculate_DE(get_best_model(x), mat_pre2 %>% t, 1, 2, method = 'wilcox')
 
 calculate_DE <-
   function(x,
