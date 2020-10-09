@@ -276,7 +276,7 @@ merge_clusters <-  function(parameters, type = "DMP", filt = 0.5, posterior=F) {
   if(type == "DMP")
     parameters$betas <- betas
   names(assignments) <-  names(parameters$assignement)
-  parameters$assignement <-  assignments
+  parameters$assignement <-  paste0("c",assignments)
 
   }
 
