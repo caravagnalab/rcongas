@@ -11,12 +11,16 @@ load_gene_annotations <- function(genome) {
   return(data(text = paste0(genome, "_genes")))
 }
 
-get_gene_annotations = function(x){
+get_gene_annotations = function(x)
+{
+  if (x$reference_genome %in% c('hg19', 'GRCh37')) {
+    data('hg19_gene_coordinates')
+    return(hg19_gene_coordinates)
+  }
 
-  if(x$reference_genome %in% c('hg19', 'GRCh37')) data('hg19_gene_coordinates')
   # if(x$reference_genome %in% c('hg38', 'GRCh38')) data('hg38_gene_coordinates')
 
-  stop("reference unknown")
+  stop("reference unknown?")
 }
 
 

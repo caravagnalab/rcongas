@@ -9,16 +9,37 @@ calculate_DE <-
            method = "wilcox",
            normalize = T,
            logfc.threshold = 0.25)
-{
+  {
     # Test input corretto - data matrix e oggetto rcongas
+
+    # Screen intro
+    cli::cli_h1("Differential Expression analysis with Seurat")
+    cat("\n")
+
+    cat(cli::boxx(
+      paste0("Groups: ", clone1, " vs ", clone2, "; using ", method),
+      padding = 1,
+      float = "center",
+      background_col = "orange",
+      col = 'black'
+    ))
+
+    cat("\n\n")
+
+    cli::cli_text(
+      '- With normalisation: {.field {normalize}}; LFC threshold {.field {logfc.threshold}}. '
+    )
+
+    cat("\n")
 
     # Work with the best model fit
     best_m = get_best_model(x)
 
     # Create Seurat object
-    so <- CreateSeuratObject(input)
+    so <- suppressWarnings(CreateSeuratObject(input))
 
-    if (normalize) so <- NormalizeData(so)
+    if (normalize)
+      so <- NormalizeData(so)
 
     # TODO - estensione a gruppi
     so@meta.data$membership <-
@@ -66,7 +87,12 @@ calculate_DE <-
       table = DE
     )
 
-    x$DE <- df_genes
+    n_p_sign = sum(x$DE$table$p_val_adj < 0.05)
+
+    if(n_p_sign == 0)
+      cli::cli_alert_warning("No DEG at alpha level 0.05!")
+    else
+      cli::cli_alert_success("Found {.field {n_p_sign}} EG at alpha level 0.05.")
 
     return(x)
-}
+  }
