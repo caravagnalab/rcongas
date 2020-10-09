@@ -189,6 +189,7 @@ get_input_rna_data = function(x)
 {
   if(all(is.null(x))) {
     cli::cli_alert_warning("Input data has not been stored in the object, re-run the analysis with XXX = TRUE ...")
+    return(NULL)
   }
 
   return(x$data$counts)
