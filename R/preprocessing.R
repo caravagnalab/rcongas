@@ -156,11 +156,13 @@ custom_fixed_binned_apply <- function(x, annot, bins,FUN = mean){
   rnames <- vector(length = nrow(bins))
   expressed_genes <- matrix(NA ,ncol = ncol(x), nrow = nrow(bins))
   genesBins <- vector(length = nrow(bins))
+  genes_in_bin <- matrix(NA, ncol = 2)
 
   for(i in seq_len(nrow(bins))){
     mask <- annot$start_position > bins$from[i] & annot$end_position < bins$to[i]
     genBin <- sum(mask)
     rnames[i] <- paste0(bins$chr[i],":",bins$from[i], ":", bins$to[i])
+    genes_in_bin <- rbind(genes_in_bin, cbind(rownames(x[which(mask),]), rep(rnames[i], genBin)))
     genesBins[i] <- genBin
 
     if(genBin == 0) {
@@ -168,6 +170,7 @@ custom_fixed_binned_apply <- function(x, annot, bins,FUN = mean){
     }else{
       expressed_genes[i,] <- apply(x[which(mask),],2 ,function(x) return(sum(x != 0, na.rm = T)))
       res[i,] <- apply(x[which(mask),],2 ,FUN , na.rm = T)
+
     }
   }
 
@@ -175,7 +178,8 @@ custom_fixed_binned_apply <- function(x, annot, bins,FUN = mean){
   rownames(res) <- rnames
   colnames(expressed_genes) <- colnames(res)
   rownames(expressed_genes) <- rownames(res)
-  return(list(matrix = res, binDims = expressed_genes, binDims_fixed = genesBins))
+  colnames(genes_in_bin) <-  c("gene", "segment_id")
+  return(list(matrix = res, binDims = expressed_genes, binDims_fixed = genesBins, genes_in_bin = genes_in_bin[-1,]))
 }
 
 
@@ -249,7 +253,6 @@ get_data <- function(data, bindim = 100,chrs = paste0("chr",(1:22)), filter = NU
 
 {
 
-  #data <- filterSC(data)
 
 
   if(!is.null(filter)){
@@ -318,9 +321,10 @@ get_data <- function(data, bindim = 100,chrs = paste0("chr",(1:22)), filter = NU
     data_binned <-  mapply(data_splitted, chrs_cord, bins_splitted ,FUN = function(x,y,z) custom_fixed_binned_apply(x,y,z,fun))
 
 
-    result <- data_binned[seq(1,length(data_binned),3)]
-    result_bindim <- data_binned[seq(2,length(data_binned),3)]
-    fixed_bindim <- data_binned[seq(3,length(data_binned),3)]
+    result <- data_binned[seq(1,length(data_binned),4)]
+    result_bindim <- data_binned[seq(2,length(data_binned),4)]
+    fixed_bindim <- data_binned[seq(3,length(data_binned),4)]
+    genes_in_bins <- data_binned[seq(4,length(data_binned),4)]
 
     result <- t(do.call(rbind, result))
     result_bindim <- t(do.call(rbind,result_bindim))
@@ -332,17 +336,16 @@ get_data <- function(data, bindim = 100,chrs = paste0("chr",(1:22)), filter = NU
     cp$fixed_mu <- fixed_bindim
     colnames(cp)[4] <- "ploidy_real"
 
-    gene_locations <- as.matrix(do.call(rbind, chrs_cord)) %>% dplyr::as_tibble() %>%
-      dplyr::rename(chr = chromosome_name, from = start_position, to = end_position, gene = hgnc_symbol) %>%
-      dplyr::mutate(from = as.integer(from), to = as.integer(to), segment_id = gsub(pattern = " ", "", paste(.$chr,.$from,.$to, sep = ":")))
-
+    gene_locations <- as.matrix(do.call(rbind, genes_in_bins)) %>% dplyr::as_tibble() %>%
+      tidyr::separate(segment_id,into = c("chr", "from", "to"), sep = ":") %>%
+      mutate(segment_id = gsub(paste(.$chr, .$from, .$to, sep = ":"), pattern = " ", replacement = ""))
     data_list <- list(counts = as.matrix(result), bindims = result_bindim,
                       cnv = cp %>%  dplyr::as_tibble() %>% dplyr::mutate(segment_id = paste(.$chr, .$from, .$to, sep = ":")),
                       gene_locations = gene_locations)
 
     ret <- structure(list(data = data_list, reference_genome = genome),class = "rcongas")
 
-    if(save_gene_matrix) { ret$data$gene_counts <- as.matrix(do.call(rbind, data_splitted)) }
+    if(save_gene_matrix) { ret$data$gene_counts <- data[rownames(data) %in% gene_locations$gene,]   }
 
     return(ret)
 
