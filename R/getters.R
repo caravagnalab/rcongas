@@ -152,7 +152,7 @@ get_best_model <- function(X) {
 get_input_segmentation = function(x)
 {
   # Break the internal naming system
-  df_segments = lapply(strsplit(x$models[[1]]$dim_names$seg_names, split = ':'),
+  df_segments = lapply(strsplit(x$inference$models[[1]]$dim_names$seg_names, split = ':'),
                        function(x) {
                          data.frame(
                            chr = x[1],
@@ -177,6 +177,23 @@ get_input_segmentation = function(x)
   return(df_segments)
 }
 
+#' Title
+#'
+#' @param x
+#'
+#' @return
+#' @export
+#'
+#' @examples
+get_input_rna_data = function(x)
+{
+  if(all(is.null(x))) {
+    cli::cli_alert_warning("Input data has not been stored in the object, re-run the analysis with XXX = TRUE ...")
+    return(NULL)
+  }
+
+  return(x$data$counts)
+}
 
 # PRIVATE GETTERS
 
