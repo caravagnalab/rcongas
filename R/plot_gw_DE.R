@@ -21,37 +21,66 @@ plot_gw_DE = function(x,
   # Load DE results - forward params
   DE_table = get_DE_table(x, chromosomes = chromosomes, ...)
 
-  top_ten_DE = DE_table %>%
-    dplyr::arrange(p_val_adj) %>%
-    dplyr::filter(row_number() <= annotate_top_DE)
+  # Get gene locations (this and the next steps shoud be
+  # done when we compute DE!)
+  gene_locations = x$data$gene_locations %>%
+    dplyr::filter(gene %in% DE_table$gene) %>%
+    dplyr::mutate(from = as.numeric(from), to = as.numeric(to))
 
-  top_ten_DE = CNAqc:::relative_to_absolute_coordinates(list(reference_genome = x$reference_genome), top_ten_DE)
+  # Bind genes to locations, and count NUM of DEs
+  n_sign = DE_table %>%
+    dplyr::select(-chr, -from, -to) %>%
+    dplyr::left_join(gene_locations, by = 'gene', suffix = c('.gene', '.segment')) %>%
+    dplyr::group_by(chr, from, to) %>%
+    dplyr::summarise(n_signif = n())
+
+  n_sign = n_sign[complete.cases(n_sign), ]
+
+  n_sign = CNAqc:::relative_to_absolute_coordinates(list(reference_genome = x$reference_genome), n_sign)
+
+  # Bind genes to locations, and count NUM of genes
+  n_tot = x$DE$table %>%
+    dplyr::select(-chr, -from, -to) %>%
+    dplyr::left_join(gene_locations, by = 'gene', suffix = c('.gene', '.segment')) %>%
+    dplyr::group_by(chr, from, to) %>%
+    dplyr::summarise(n_tot = n())
+
+  n_tot = n_tot[complete.cases(n_tot), ]
+
+  n_tot = CNAqc:::relative_to_absolute_coordinates(list(reference_genome = x$reference_genome), n_tot)
+
+
+  # top_ten_DE = DE_table %>%
+  #   dplyr::arrange(p_val_adj) %>%
+  #   dplyr::filter(row_number() <= annotate_top_DE)
+  #
+  # top_ten_DE = CNAqc:::relative_to_absolute_coordinates(list(reference_genome = x$reference_genome), top_ten_DE)
 
   # Get segments plot - gw
   segments_plot = plot_gw_cna_profiles(x, whole_genome = TRUE, chromosomes = chromosomes)
 
   # Annotate a dashed line
-  segments_plot = segments_plot +
-    geom_vline(
-      data = top_ten_DE,
-      aes(xintercept = from),
-      color = 'black',
-      linetype = "dashed",
-      size = .25
-    )
+  # segments_plot = segments_plot +
+  #   geom_vline(
+  #     data = top_ten_DE,
+  #     aes(xintercept = from),
+  #     color = 'black',
+  #     linetype = "dashed",
+  #     size = .25
+  #   )
 
-  segments_plot = segments_plot +
-  geom_text(
-    data = top_ten_DE,
-    aes(x = from, y = Inf, label = gene),
-    # nudge_y      = 0.0,
-    # direction    = "x",
-    angle        = 90,
-    vjust        = 0,
-    hjust = 1,
-    size = 1.5
-  ) +
-    coord_cartesian(clip = 'off')
+  # segments_plot = segments_plot +
+  # geom_text(
+  #   data = top_ten_DE,
+  #   aes(x = from, y = Inf, label = gene),
+  #   # nudge_y      = 0.0,
+  #   # direction    = "x",
+  #   angle        = 90,
+  #   vjust        = 0,
+  #   hjust = 1,
+  #   size = 1.5
+  # ) +
+  #   coord_cartesian(clip = 'off')
 
   # segments_plot = segments_plot +
   #   ggrepel::geom_label_repel(
@@ -70,36 +99,36 @@ plot_gw_DE = function(x,
 
   gw_n_plot = blank_wg +
     labs(y = 'Genes', x = NULL) +
-    geom_rect(data = y,
+    geom_rect(data = n_sign,
               aes(
-                xmin = from,
-                xmax = to,
+                xmin = as.numeric(from),
+                xmax = as.numeric(to),
                 ymin = 0,
-                ymax = n,
-                fill = n
+                ymax = n_signif,
+                fill = n_signif
               )) +
-    scale_y_continuous(breaks = c(0, ceiling(max(y$n)))) +
+    scale_y_continuous(breaks = c(0, ceiling(max(n_sign$n_signif)))) +
     scale_fill_distiller(palette = 'Greys', direction = 1) +
     guides(fill = FALSE)
 
-  gw_p_plot = blank_wg +
+  gw_t_plot = blank_wg +
     labs(y = "DEG", x = NULL) +
-    geom_rect(data = y,
+    geom_rect(data = n_tot,
               aes(
                 xmin = from,
                 xmax = to,
                 ymin = 0,
-                ymax = p,
-                fill = p
+                ymax = n_tot,
+                fill = n_tot
               )) +
-    scale_y_continuous(breaks = c(0, ceiling(max(y$p)))) +
+    scale_y_continuous(breaks = c(0, ceiling(max(n_tot$n_tot)))) +
     scale_fill_distiller(palette = 'Purples', direction = 1) +
     guides(fill = FALSE)
 
 
 
   cowplot::plot_grid(
-    gw_p_plot,
+    gw_t_plot,
     gw_n_plot,
     segments_plot,
     rel_heights = c(.2, .2, 1),

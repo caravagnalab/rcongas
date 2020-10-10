@@ -7,7 +7,7 @@ calculate_DE <-
            clone1,
            clone2,
            method = "wilcox",
-           normalize = T,
+           normalize = TRUE,
            logfc.threshold = 0.25)
   {
     # Test input corretto - data matrix e oggetto rcongas
@@ -36,6 +36,8 @@ calculate_DE <-
     best_m = get_best_model(X)
 
     # Create Seurat object
+    require(Seurat)
+
     so <- suppressWarnings(CreateSeuratObject(input))
 
     if (normalize)

@@ -1,0 +1,30 @@
+---
+title: "Plotting functions"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getters}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+We show how you can plot information from a CONGAS object. We work with an example object released with the tool. 
+```{r}
+# change to data('rcongas_example', package = 'rcongas')
+load("../data/rcongas_example.rda")
+
+require(tidyverse)
+
+# sapply(list.files('../R/', full.names = T), source)
+source('../R/getters.R')
+source('../R/utils.R')
+
+```
+
+
