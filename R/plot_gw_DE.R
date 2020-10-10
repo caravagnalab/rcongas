@@ -21,8 +21,15 @@ plot_gw_DE = function(x,
   # Load DE results - forward params
   DE_table = get_DE_table(x, chromosomes = chromosomes, ...)
 
-  # Get gene locations (this and the next steps shoud be
-  # done when we compute DE!)
+  # Get gene locations
+  gene_coordinates = get_gene_annotations(x)
+
+  DE_table[which(!(DE_table$gene %in% gene_coordinates$gene)), ]
+
+  x$data$gene_locations %>%
+    filter(gene %in% DE_table$gene)
+
+
   gene_locations = x$data$gene_locations %>%
     dplyr::filter(gene %in% DE_table$gene) %>%
     dplyr::mutate(from = as.numeric(from), to = as.numeric(to))

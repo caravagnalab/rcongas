@@ -1,0 +1,137 @@
+#' Title
+#'
+#' @param x
+#' @param chromosomes
+#'
+#' @return
+#' @export
+#'
+#' @examples
+get_clones_ploidy <- function(x,
+                              chromosomes = paste0("chr", c(1:22, "X", "Y")),
+                              clusters = NULL)
+{
+  best_model <- get_best_model(x)
+  res <-
+    data.frame(t(best_model$parameters$cnv_probs), stringsAsFactors = FALSE)
+  res <-
+    res %>% dplyr::mutate(tmp = rownames(res)) %>% tidyr::separate(col = tmp,
+                                                                   into = c("chr", "from", "to"),
+                                                                   sep = ":")
+  colnames(res)[seq_along(best_model$parameters$mixture_weights)] <-
+    paste(seq_along(best_model$parameters$mixture_weights))
+  res <-
+    reshape2::melt(
+      res,
+      id.vars = c("chr", "from", "to"),
+      variable.name = "cluster",
+      value.name = "CN"
+    ) %>%
+    dplyr::mutate(
+      cluster = as.character(cluster),
+      from = as.numeric(from),
+      to = as.numeric(to)
+    ) %>%
+    dplyr::as_tibble()
+
+  # Normalise CNA values for comparisons
+  means = res %>%
+    dplyr::group_by(chr, from, to) %>%
+    dplyr::summarise(segment_mean = mean(CN), .groups = 'keep') %>%
+    dplyr::ungroup()
+
+  joined_res = res %>%
+    dplyr::full_join(means, by = c('chr', 'from', 'to')) %>%
+    dplyr::mutate(lognorm_CN = CN,
+                  CN = CN - segment_mean)
+
+  if (!grepl('chr', joined_res$chr[1]))
+  {
+    cli::cli_alert_warning("Missing `chr` prefix in chromosomes labels, added now.")
+
+    joined_res = joined_res %>% dplyr::mutate(chr = paste0("chr", chr))
+  }
+
+  # Apply filters
+  joined_res = joined_res %>% dplyr::filter(chr %in% chromosomes)
+
+  if (!is.null(clusters))
+    joined_res = joined_res %>% dplyr::filter(cluster %in% clusters)
+
+
+  return(joined_res)
+}
+
+
+
+#' Title
+#'
+#' @param x
+#' @param normalised
+#'
+#' @return
+#' @export
+#'
+#' @examples
+get_clusters_size = function(x, normalised = FALSE)
+{
+  best_model = get_best_model(x)
+
+  # Counts from the assignments
+  n = table(best_model$parameters$assignement)
+
+  # Make it a named vector
+  v = as.vector(n)
+  names(v) = names(n)
+
+  if(normalised)
+    v = v/sum(v)
+
+  return(v)
+}
+
+
+#' Title
+#'
+#' @param x
+#' @param cluster_label
+#'
+#' @return
+#' @export
+#'
+#' @examples
+get_clusters = function(x, clusters = NULL)
+{
+  # TODO - take all assingments with z_nk > c, c >= 0
+  best_model = get_best_model(x)
+
+  clusters_table = data.frame(
+    cell = names(best_model$parameters$assignement),
+    cluster = paste(best_model$parameters$assignement),
+    stringsAsFactors = FALSE
+  ) %>%
+    as_tibble()
+
+  if (!is.null(clusters))
+    clusters_table = clusters_table %>% dplyr::filter(cluster %in% clusters)
+
+  return(clusters_table)
+}
+
+
+
+#' Title
+#'
+#' @param x
+#'
+#' @return
+#' @export
+#'
+#' @examples
+get_k = function(x)
+{
+  best = get_best_model(x)
+  best$parameters$assignement %>%
+    unique() %>%
+    length()
+}

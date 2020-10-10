@@ -91,10 +91,16 @@ get_clusters(rcongas_example, clusters = '1')
 ## Stored input data
 
 * `get_input_segmentation` to obtain information about the input DNA segmentation;
-* `get_input_raw_data` and `get_counts` to obtain the raw input data (i.e., counts) and the normalised counts.
+* `get_input_raw_data` and `get_counts`, `get_counts_matrix` to obtain the raw input data (i.e., counts) and the normalised counts.
 
 
-The input DNA segmentation is stored in the result of a CONGAS run. You can access that with `get_input_segmentation` and create simple filters based on chromosome ids.
+The input DNA segmentation is stored in the result of a CONGAS run. You can access that with `get_input_segmentation` and create simple filters based on chromosome ids. 
+
+Note that this tibble contains also columns that report the ploidy of the input segment (`ploidy_real`), the actual number of used genes retained that map to each segment (`mu`), and the total number of genes that map to the segments (`fixed_mu`). 
+
+Genes mapped to segments are filtered as explained in `XXXX`. Column `segment_id` is just a key to identify univocally the input segments to CONGAS.
+
+
 ```{r}
 # All the input segments
 get_input_segmentation(rcongas_example)
@@ -107,26 +113,41 @@ get_input_segmentation(rcongas_example, chromosomes = paste0('chr', 1:3))
 If you have run the main `rcongas` fit function `XXX` by using parameters `XXXX`, the raw input RNA data matrix have also been stored into the fit object (otherwise no, just to save space in the final object). 
 
 You have a getter `get_input_raw_data` to obtain the input data when this has been stored in a `rcongas` object, or you need to load yourself the input data that you used to fit the model (in that case `get_input_raw_data` would return `NULL` and report a warning to screen). 
+The raw input data are the counts, per gene (rows), per cell (columns), obtained from the scRNAseq experiment.
 
 ```{r}
 # Input data - stored inside "rcongas_example" in this case
-raw_input = get_input_raw_data(rcongas_example)
+raw_input_gene_by_cell = get_input_raw_data(rcongas_example)
 
-# Just the 2x2 submatrix
-print(raw_input[1:2, 1:2])
+# Just the 2x2 submatrix (genes on the rows, cells on the columns)
+print(raw_input_gene_by_cell[1:2, 1:2])
 ```
 
-Once you have that data, the getter `get_counts` can return all the data available for each cell, possibly normalised, or subset to certain portions of the cancer genome.  
+The data processed by CONGAS are counts mapped to segments, which are stored in a matrix that contains cells on rows, and segments on columns. There are two types of getters for this information. The most simple one returns the actual data matrix.
+
+```{r}
+# Mapped input data - always stored inside the object
+mapped_input_cell_by_segment = get_counts_matrix(rcongas_example)
+
+# Just the 2x2 submatrix (cell on the rows, segments on the columns)
+print(mapped_input_cell_by_segment[1:2, 1:2])
+```
+
+Once you have `mapped_input_cell_by_segment`, the getter `get_counts` can return all the data available for each cell, possibly normalized, or subset to certain portions of the cancer genome. This information also reports the cluster id for each of the input cells. 
 
 ```{r}
 # Normalised data (default)
-get_counts(rcongas_example, input = raw_input)
+get_counts(rcongas_example, segments_input = mapped_input_cell_by_segment)
 
 # A view on a certain chromosome 
-get_counts(rcongas_example, input = raw_input, chromosomes = 'chr3')
+get_counts(rcongas_example,
+           segments_input = mapped_input_cell_by_segment,
+           chromosomes = 'chr3')
 
 # Un-normalised data
-get_counts(rcongas_example, input = raw_input, norm = FALSE)
+get_counts(rcongas_example, 
+           segments_input = mapped_input_cell_by_segment, 
+           norm = FALSE)
 ```
 
 ## Post-clustering analysis

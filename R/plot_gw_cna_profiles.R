@@ -10,9 +10,7 @@
 #' @examples
 plot_gw_cna_profiles = function(x,
                                 whole_genome = FALSE,
-                                chromosomes = paste0("chr", c(1:22, "X", "Y")),
-                                pvalue_cut_DE = 0.001,
-                                lfc_cut_DE = 0.25
+                                chromosomes = paste0("chr", c(1:22, "X", "Y"))
                                 )
 {
   # Returned plot objects

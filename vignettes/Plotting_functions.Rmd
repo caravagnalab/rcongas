@@ -2,7 +2,7 @@
 title: "Plotting functions"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Getters}
+  %\VignetteIndexEntry{Plotting functions}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -22,9 +22,87 @@ load("../data/rcongas_example.rda")
 require(tidyverse)
 
 # sapply(list.files('../R/', full.names = T), source)
-source('../R/getters.R')
-source('../R/utils.R')
+source('../R/getters_clustering_results.R')
+source('../R/getters_extra_analysis.R')
+source('../R/getters_input_data.R')
+source('../R/getters_privates.R')
 
+
+source('../R/utils.R')
+source('../R/plot_chromosome.R')
+source('../R/plot_gw_cna_profiles.R')
+source('../R/plot_gw_DE.R')
+source('../R/plot_input_rna_segments.R')
+source('../R/plot_volcano.R')
+source('../R/plots_segments_counts.R')
 ```
 
+<!-- ## Genome-wide clone profiles -->
 
+<!-- Function `plot_gw_cna_profiles` allows to plot genome-wide clone-specific CN profiles inferred by CONGAS.  -->
+
+<!-- Since segments are independent in the underlying statistical model and modelled by using lognormal distributions, each segment is scaled to reflect the offset to the mean estimated from all che model clusters. This type of measurement is called Normalised Copy Number. -->
+
+<!-- Note that this is the only way of making sense in the comparison among the CN values obtained for different segments. It is not trivial to determine how different two segmetns should be to reflect an overall change in ploidy in the clone; nonetheless, this kind of scaling allows to detect which segments show the largest CN difference among the identified clones. -->
+
+<!-- The default view splits works by facetting the chromosomes. The gray bar in eah chromosome represents the centromeres start/ end, determined from the used reference genome. -->
+
+<!-- ```{r, fig.width=8, fig.height=3} -->
+<!-- # Default, with facets -->
+<!-- plot_gw_cna_profiles(rcongas_example) -->
+<!-- ``` -->
+
+<!-- An alternative view is available to pool all the chromosomes together -->
+
+<!-- ```{r, fig.width=8, fig.height=3} -->
+<!-- # A whole-genome view -->
+<!-- plot_gw_cna_profiles(rcongas_example, whole_genome = TRUE) -->
+<!-- ``` -->
+
+
+<!-- It is possible to zoom in specific chromosomes with this plot. -->
+
+<!-- ```{r, fig.width=8, fig.height=3} -->
+<!-- # A whole-genome view for chromosome 4 -->
+<!-- plot_gw_cna_profiles(rcongas_example, whole_genome = TRUE, chromosomes = 'chr4') -->
+<!-- ``` -->
+
+
+<!-- ## Plotting specific chromosomes -->
+
+<!-- First, you need to have the input raw data available -->
+<!-- ```{r, fig.width=4, fig.height=3} -->
+<!-- # Requires input - available inside "rcongas_example" in this case -->
+<!-- raw_input = get_input_raw_data(rcongas_example) -->
+<!-- ``` -->
+
+<!-- Then, you can plot a chromosome by specifying its id. The height of the plot should be adjusted depending on the number of segments in the chromsome -->
+
+<!-- ```{r, fig.width=4, fig.height=3} -->
+<!-- # Plot chromosome 1 (labeled "chr1") -->
+<!-- plot_chromosome(rcongas_example, input = raw_input, chr = 'chr1') -->
+<!-- ``` -->
+
+<!-- ```{r, fig.width=4, fig.height=2} -->
+<!-- # Plot chromosome 15 (labeled "chr15") -->
+<!-- plot_chromosome(rcongas_example, input = raw_input, chr = 'chr15') -->
+<!-- ``` -->
+
+## Plotting input segments data
+
+You can visualise the actual input data used by CONGAS, using function `plot_counts_rna_segments`: these are the counts per segments, after genes have been mapped and filtered as explained in `XXXX`.
+
+The function plots a heatmap-style view of the data, with associated the clustering assignments of each cell (rows). In order to plot these data you need to retr
+
+```{r, fig.width=5, fig.height=5}
+plot_counts_rna_segments(rcongas_example)
+```
+
+The same information can be plot without counts normalisation.
+```{r, fig.width=5, fig.height=5}
+plot_counts_rna_segments(rcongas_example, normalised = FALSE)
+```
+
+## Plotting input raw data
+
+Raw data in input to CONGAS are counts of transcripts per cell. This matrix can be extremely large, and it should be plotted in...

@@ -1,6 +1,23 @@
 #
 # X= calculate_DE(get_best_model(X), mat_pre2 %>% t, 1, 2, method = 'wilcox')
 
+# input = get_input_raw_data(x)
+# xx = calculate_DE(x, input, 1, 2)
+
+#' Title
+#'
+#' @param X
+#' @param input
+#' @param clone1
+#' @param clone2
+#' @param method
+#' @param normalize
+#' @param logfc.threshold
+#'
+#' @return
+#' @export
+#'
+#' @examples
 calculate_DE <-
   function(X,
            input,

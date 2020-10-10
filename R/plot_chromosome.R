@@ -1,4 +1,15 @@
-plot_chromosome = function(x, chr = 'chr1', ...)
+#' Title
+#'
+#' @param x
+#' @param input
+#' @param chr
+#' @param ...
+#'
+#' @return
+#' @export
+#'
+#' @examples
+plot_chromosome = function(x, input, chr = 'chr1', ...)
 {
   # Get all counts
   all_counts = get_counts(x, input, chromosomes = chr, ...)
