@@ -39,7 +39,7 @@ The gene locations for the reference genomes supported by congas can be obtained
 
 Note that the reference genome id is stored in the `rcongas` object created at the time the analysis is performed. So the genome coordinates of the genes are consistent with the adopted reference.
 
-```{r}
+```{r, eval=FALSE}
 # The adopted reference genome
 get_reference_genome(rcongas_example)
 

@@ -298,15 +298,24 @@ get_reference_genome = function(x)
 #' @examples
 get_gene_annotations <-  function(x)
 {
+  # TODO cambiare a questo appena riesco ad installare il package
+  ld = function(x)
+  {
+    if('Rcongas' %in% (installed.packages() %>% rownames()))
+      data(x, package = 'Rcongas')
+    else
+      load(paste0("~/Documents/GitHub/rcongas/data/", x, '.rda'))
+  }
+
   if (x$reference_genome %in% c('hg19', 'GRCh37'))
   {
-    data('hg19_gene_coordinates')
+    ld('hg19_gene_coordinates')
     return(hg19_gene_coordinates)
   }
 
   if (x$reference_genome %in% c('hg38', 'GRCh38'))
   {
-    data('hg38_gene_coordinates')
+    ld('hg38_gene_coordinates')
     return(hg38_gene_coordinates)
   }
 
