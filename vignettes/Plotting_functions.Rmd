@@ -30,11 +30,13 @@ source('../R/getters_privates.R')
 
 source('../R/utils.R')
 source('../R/plot_chromosome.R')
-source('../R/plot_gw_cna_profiles.R')
+# source('../R/plot_gw_cna_profiles.R')
 source('../R/plot_gw_DE.R')
-source('../R/plot_input_rna_segments.R')
+# source('../R/plot_input_rna_segments.R')
 source('../R/plot_volcano.R')
 source('../R/plots_segments_counts.R')
+# source('../R/plot_raw_data.R')
+
 ```
 
 <!-- ## Genome-wide clone profiles -->
@@ -88,21 +90,53 @@ source('../R/plots_segments_counts.R')
 <!-- plot_chromosome(rcongas_example, input = raw_input, chr = 'chr15') -->
 <!-- ``` -->
 
-## Plotting input segments data
+<!-- ## Plotting input segments data -->
 
-You can visualise the actual input data used by CONGAS, using function `plot_counts_rna_segments`: these are the counts per segments, after genes have been mapped and filtered as explained in `XXXX`.
+<!-- You can visualise the actual input data used by CONGAS, using function `plot_counts_rna_segments`: these are the counts per segments, after genes have been mapped and filtered as explained in `XXXX`. -->
 
-The function plots a heatmap-style view of the data, with associated the clustering assignments of each cell (rows). In order to plot these data you need to retr
+<!-- The function plots a heatmap-style view of the data, with associated the clustering assignments of each cell (rows). In order to plot these data you need to retr -->
 
-```{r, fig.width=5, fig.height=5}
-plot_counts_rna_segments(rcongas_example)
-```
+<!-- ```{r, fig.width=5, fig.height=5} -->
+<!-- plot_counts_rna_segments(rcongas_example) -->
+<!-- ``` -->
 
-The same information can be plot without counts normalisation.
-```{r, fig.width=5, fig.height=5}
-plot_counts_rna_segments(rcongas_example, normalised = FALSE)
-```
+<!-- The same information can be plot without counts normalisation. -->
+<!-- ```{r, fig.width=5, fig.height=5} -->
+<!-- plot_counts_rna_segments(rcongas_example, normalised = FALSE) -->
+<!-- ``` -->
 
-## Plotting input raw data
+<!-- ## Plotting input raw data -->
 
-Raw data in input to CONGAS are counts of transcripts per cell. This matrix can be extremely large, and it should be plotted in...
+<!-- Raw data in input to CONGAS are counts of transcripts per cell. This matrix can be extremely large, and it should be plotted only on a subset of the data in many cases. -->
+
+<!-- This function takes as input a list of genes to subset the plot. Also, by default prompts the -->
+<!-- user to assess if he/she really wants to plot the data; this helps because sometimes if the input data are too large, the plot becomes useless (and can freeze the computation). If you seek to skip the prompr you should set `prompt = FALSE`. -->
+
+<!-- The plot can be generated with, and without clustering assignments. -->
+
+
+<!-- ```{r, fig.width=5, fig.height=7} -->
+<!-- # Raw input counts. Since we have them stored in "rcongas_example", -->
+<!-- # we can access them straight from the object -->
+<!-- raw_input = get_input_raw_data(rcongas_example) -->
+
+<!-- # Used genes - just the a random set of 50. Wem use the "get_mapped_genes" -->
+<!-- # function to get the ones actually used in "rcongas_example" -->
+<!-- random_50_genes = get_mapped_genes(rcongas_example) %>%  -->
+<!--   dplyr::sample_n(50) %>%  -->
+<!--   dplyr::pull(gene)  -->
+
+<!-- # Plot -->
+<!-- plot_raw_data( -->
+<!--   x = raw_input,  -->
+<!--   genes = random_50_genes,  -->
+<!--   prompt = FALSE) -->
+
+<!-- # Plot with clusters -->
+<!-- plot_raw_data( -->
+<!--   x = raw_input,  -->
+<!--   genes = random_50_genes,  -->
+<!--   clusters = get_clusters(rcongas_example), -->
+<!--   prompt = FALSE) -->
+<!-- ``` -->
+

@@ -150,6 +150,17 @@ get_counts(rcongas_example,
            norm = FALSE)
 ```
 
+If you want to know what genes have been used by CONGAS and to which segments these have been
+mapped you can use function
+
+```{r}
+# All mapped genes
+get_mapped_genes(rcongas_example)
+
+# Genes mapped in chromosomes '1' and '5'
+get_mapped_genes(rcongas_example, chromosomes = c('chr1', 'chr5'))
+```
+
 ## Post-clustering analysis
 
 * `get_DE_table` to obtain results from DE analysis;
