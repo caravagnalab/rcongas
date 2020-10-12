@@ -26,12 +26,15 @@ load("../data/rcongas_example.rda")
 require(tidyverse)
 
 # sapply(list.files('../R/', full.names = T), source)
-source('../R/getters.R')
+source('../R/getters_clustering_results.R')
+source('../R/getters_extra_analysis.R')
+source('../R/getters_input_data.R')
+source('../R/getters_privates.R')
 source('../R/utils.R')
-
+source('../R/test_status.R')
 ```
 
-## Refernece information
+## Reference information
 
 * `get_reference_genome`, `get_gene_annotations` to obtain information about the used reference.
 
@@ -91,7 +94,7 @@ get_clusters(rcongas_example, clusters = '1')
 ## Stored input data
 
 * `get_input_segmentation` to obtain information about the input DNA segmentation;
-* `get_input_raw_data` and `get_counts`, `get_counts_matrix` to obtain the raw input data (i.e., counts) and the normalised counts.
+* `get_input_raw_data` and `get_counts` to obtain the raw input data (i.e., single-cell counts) and the counts per segment used by CONGAS.
 
 
 The input DNA segmentation is stored in the result of a CONGAS run. You can access that with `get_input_segmentation` and create simple filters based on chromosome ids. 
@@ -123,31 +126,20 @@ raw_input_gene_by_cell = get_input_raw_data(rcongas_example)
 print(raw_input_gene_by_cell[1:2, 1:2])
 ```
 
-The data processed by CONGAS are counts mapped to segments, which are stored in a matrix that contains cells on rows, and segments on columns. There are two types of getters for this information. The most simple one returns the actual data matrix.
+The data processed by CONGAS are counts mapped to segments, which are stored in a matrix that contains cells on rows, and segments on columns. This matrix can be extracted in long tidy format; the actual counts value can be obtained before or after normalisation,  and can be subset to certain portions of the cancer genome. 
 
-```{r}
-# Mapped input data - always stored inside the object
-mapped_input_cell_by_segment = get_counts_matrix(rcongas_example)
-
-# Just the 2x2 submatrix (cell on the rows, segments on the columns)
-print(mapped_input_cell_by_segment[1:2, 1:2])
-```
-
-Once you have `mapped_input_cell_by_segment`, the getter `get_counts` can return all the data available for each cell, possibly normalized, or subset to certain portions of the cancer genome. This information also reports the cluster id for each of the input cells. 
+In this long view we report also the cluster id for each of the input cells. 
 
 ```{r}
 # Normalised data (default)
-get_counts(rcongas_example, segments_input = mapped_input_cell_by_segment)
+get_counts(rcongas_example)
 
 # A view on a certain chromosome 
 get_counts(rcongas_example,
-           segments_input = mapped_input_cell_by_segment,
            chromosomes = 'chr3')
 
 # Un-normalised data
-get_counts(rcongas_example, 
-           segments_input = mapped_input_cell_by_segment, 
-           norm = FALSE)
+get_counts(rcongas_example, normalise = FALSE)
 ```
 
 If you want to know what genes have been used by CONGAS and to which segments these have been

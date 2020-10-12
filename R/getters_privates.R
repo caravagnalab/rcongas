@@ -12,10 +12,6 @@ get_best_model <- function(X) {
   X$inference$models[[X$inference$model_selection$best_K]]
 }
 
-has_DE <-  function(X) {
-  return(!is.null(X$DE))
-
-}
 
 
 # Key creation and decrypt
@@ -26,5 +22,6 @@ idify = function(y) {
 deidify = function(y) {
   y %>% tidyr::separate(segment_id,
                         into = c('chr', 'from', 'to'),
-                        sep = ":")
+                        sep = ":") %>%
+    dplyr::mutate(from = as.integer(from), to = as.integer(to))
 }

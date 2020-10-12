@@ -12,10 +12,10 @@
 plot_counts_rna_segments = function(x, normalised = TRUE)
 {
   # Get segments_input
-  segments_input = get_counts_matrix(x)
+  segments_input = x$data$counts
 
   # RNA data
-  RNA = get_counts(x, segments_input, norm = normalised) %>%
+  RNA = get_counts(x, normalise = normalised) %>%
     idify() %>%
     rename(segment = segment_id)
 

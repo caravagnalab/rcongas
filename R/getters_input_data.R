@@ -1,3 +1,17 @@
+#' Title
+#'
+#' @param x
+#'
+#' @return
+#' @export
+#'
+#' @examples
+get_model_description = function(x)
+{
+  if(all(is.null(x$description))) return("My CONGAS model")
+
+  return(x$description)
+}
 
 
 #' Title
@@ -5,7 +19,7 @@
 #' @param inf_obj
 #' @param segments_input
 #' @param chromosomes
-#' @param norm
+#' @param normalise
 #'
 #' @return
 #' @export
@@ -13,24 +27,20 @@
 #' @examples
 get_counts <-
   function(x,
-           segments_input,
            chromosomes = paste0("chr", c(1:22, "X", "Y")),
-           norm = T)
+           normalise = TRUE)
   {
     best_model <- get_best_model(x)
 
-    # Era sbagliato entrare dentro counts visto che input E' la matrice dei counts.
-    # poi la divisione da nonconformable arrays, ho fatto un for expplicito
-    # if (norm)
-    # input$counts <-
-    #   input$counts / best_model$parameters$norm_factor
+    data_matrix = x$data$counts
 
-    if (norm)
-      for (i in 1:nrow(segments_input))
-        segments_input[i, ] = segments_input[i, ] / best_model$parameters$norm_factor[i]
+
+    if (normalise)
+      for (i in 1:nrow(data_matrix))
+        data_matrix[i, ] = data_matrix[i, ] / best_model$parameters$norm_factor[i]
 
       M <-
-        long_counts(segments_input) %>%  select(chr, from, to, cell, n) %>%
+        long_counts(data_matrix) %>%  select(chr, from, to, cell, n) %>%
         dplyr::arrange(chr, from, to)
 
       clts <- as.data.frame(best_model$parameters$assignement)
@@ -54,23 +64,15 @@ get_counts <-
   }
 
 
-#' Title
-#'
-#' @param x
-#'
-#' @return
-#' @export
-#'
-#' @examples
-get_counts_matrix = function(x)
-{
-  if (all(is.null(x$data$counts))) {
-    cli::cli_alert_warning("Input data has not been stored in the object, re-run the analysis with XXX = TRUE ...")
-    return(NULL)
-  }
-
-  return(x$data$counts)
-}
+# get_counts_matrix = function(x)
+# {
+#   if (all(is.null(x$data$counts))) {
+#     cli::cli_alert_warning("Input data has not been stored in the object, re-run the analysis with XXX = TRUE ...")
+#     return(NULL)
+#   }
+#
+#   return(x$data$counts)
+# }
 
 
 
@@ -113,7 +115,8 @@ get_input_segmentation = function(x,
   df_segments = df_segments %>%
     dplyr::left_join(x$data$cnv, by = c('chr', 'from', 'to')) %>%
     dplyr::mutate(size = to - from) %>%
-    dplyr::select(chr, from, to, size, dplyr::everything())
+    dplyr::select(chr, from, to, size, dplyr::everything()) %>%
+    deidify()
 
 
   return(df_segments %>% dplyr::filter(chr %in% chromosomes))

@@ -9,10 +9,10 @@
 #' @export
 #'
 #' @examples
-plot_chromosome = function(x, input, chr = 'chr1', ...)
+plot_chromosome = function(x, chr = 'chr1', ...)
 {
   # Get all counts
-  all_counts = get_counts(x, input, chromosomes = chr, ...)
+  all_counts = get_counts(x, chromosomes = chr, normalise = TRUE, ...)
 
   if (nrow(all_counts) == 0)
     return(CNAqc:::eplot())
@@ -22,7 +22,8 @@ plot_chromosome = function(x, input, chr = 'chr1', ...)
   range_low = min(range$CN)
   range_up = max(range$CN)
 
-  segments_plot = plot_gw_cna_profiles(x, chromosomes = chr) + ylim(range_low, range_up)
+  segments_plot = plot_gw_cna_profiles(x, chromosomes = chr) + ylim(range_low, range_up) +
+    labs(title = paste0("Chromosome: ", chr))
 
   # Counts plot
   counts_plot = all_counts %>%
@@ -31,22 +32,22 @@ plot_chromosome = function(x, input, chr = 'chr1', ...)
                    bins = 100) +
     facet_grid(from ~ chr) +
     CNAqc:::my_ggplot_theme() +
-    # theme(
-    #   axis.text.x = element_text(angle = 90, hjust = 1),
-    #   axis.text.y = element_blank(),
-    #   axis.ticks.y = element_blank()
-    # ) +
-    labs(x = NULL, y = NULL) +
+    labs(x = NULL, y = NULL, title = 'Normalised counts') +
     scale_fill_manual(values = get_clusters_colors(all_counts$cluster))
 
+  # Volcano - if DE is available
+  volc_plot = CNAqc:::eplot()
+  if(has_DE(x))
+    volc_plot = plot_DE_volcano(x, chromosomes = chr)
 
   # Assembly
-  ggpubr::ggarrange(
+  cowplot::plot_grid(
     segments_plot,
     counts_plot,
+    volc_plot,
     nrow = 1,
-    common.legend = TRUE,
-    legend = 'bottom'
+    align = 'h',
+    axis = 'tb'
   )
 
 }
