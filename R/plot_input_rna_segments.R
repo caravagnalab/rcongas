@@ -9,26 +9,28 @@
 #' @examples
 #'
 #' input = get_counts_matrix(x)
-plot_counts_rna_segments = function(x, normalised = TRUE)
+plot_counts_rna_segments = function(x, normalised = TRUE, z_score = FALSE)
 {
   # Get segments_input
   segments_input = x$data$counts
-
-  # RNA data
-  RNA = get_counts(x, normalise = normalised) %>%
-    idify() %>%
-    rename(segment = segment_id)
-
-  # summary stats
-  ngenes = sum(get_input_segmentation(x)$mu)
-  nsegments = nrow(get_input_segmentation(x))
-  MB_covered = round(sum(get_input_segmentation(x)$size) / 10 ^ 6)
 
   # Input segmentation - get size in Megabases (Mb)
   input_segments = get_input_segmentation(x) %>%
     dplyr::mutate(size = ceiling((to - from) / 10 ^ 6),
                   label_chr = paste0(chr, " (", size, 'Mb)')) %>%
     idify()
+
+  # RNA data
+  RNA = get_counts(x, normalise = normalised, z_score = z_score) %>%
+    idify()
+
+  RNA = dplyr::left_join(RNA, input_segments %>% dplyr::select(segment_id, label_chr), by = "segment_id") %>%
+    dplyr::rename(segment = segment_id)
+
+  # summary stats
+  ngenes = sum(get_input_segmentation(x)$mu)
+  nsegments = nrow(get_input_segmentation(x))
+  MB_covered = round(sum(get_input_segmentation(x)$size) / 10 ^ 6)
 
   # Cluster assignments
   clustering = get_clusters(x) %>%
@@ -40,7 +42,7 @@ plot_counts_rna_segments = function(x, normalised = TRUE)
   clustering_sideplot = ggplot(clustering) +
     geom_tile(aes(
       x = 'Cluster',
-      y = factor(cell, levels = clustering$cell),
+      y = factor(cell, levels = cell),
       fill = cluster
     )) +
     CNAqc:::my_ggplot_theme() +
@@ -54,7 +56,7 @@ plot_counts_rna_segments = function(x, normalised = TRUE)
   # RNA plot
   rna_plot = ggplot(RNA) +
     geom_tile(aes(
-      x = segment,
+      x = factor(label_chr, levels = gtools::mixedsort(label_chr) %>% unique()),
       y = factor(cell, levels = clustering$cell),
       fill = n
     )) +
@@ -73,8 +75,9 @@ plot_counts_rna_segments = function(x, normalised = TRUE)
         " Mb. Counts are ",
         ifelse(normalised, "noramalised.", "not normalised.")
       )
-    ) +
-    scale_x_discrete(labels = input_segments$label_chr)
+    )
+  # +
+  #   scale_x_discrete(labels = RNA$label_chr)
 
   cowplot::plot_grid(
     rna_plot,

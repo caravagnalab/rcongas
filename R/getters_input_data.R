@@ -28,16 +28,23 @@ get_model_description = function(x)
 get_counts <-
   function(x,
            chromosomes = paste0("chr", c(1:22, "X", "Y")),
-           normalise = TRUE)
+           normalise = TRUE, z_score = FALSE)
   {
     best_model <- get_best_model(x)
 
     data_matrix = x$data$counts
 
 
-    if (normalise)
-      for (i in 1:nrow(data_matrix))
-        data_matrix[i, ] = data_matrix[i, ] / best_model$parameters$norm_factor[i]
+    if (normalise){
+      for (i in 1:ncol(data_matrix))
+        data_matrix[,i] = data_matrix[,i] / best_model$parameters$norm_factor
+    }
+
+    if(z_score){
+      rnames <-  rownames(data_matrix)
+      data_matrix <-  apply(data_matrix, 2,scale, center = T, scale = T)
+      rownames(data_matrix) <-  rnames
+    }
 
       M <-
         long_counts(data_matrix) %>%  select(chr, from, to, cell, n) %>%

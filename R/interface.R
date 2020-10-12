@@ -1,6 +1,6 @@
 
-torch <- reticulate::import("torch")
-congas <- reticulate::import("congas")
+# torch <- reticulate::import("torch")
+# congas <- reticulate::import("congas")
 
 
 choose_model <-  function(model_string){
