@@ -15,14 +15,14 @@ plot_counts_rna_segments = function(x, normalised = TRUE, z_score = FALSE)
   segments_input = x$data$counts
 
   # Input segmentation - get size in Megabases (Mb)
-  input_segments = get_input_segmentation(x) %>%
+  input_segments = Rcongas::get_input_segmentation(x) %>%
     dplyr::mutate(size = ceiling((to - from) / 10 ^ 6),
                   label_chr = paste0(chr, " (", size, 'Mb)')) %>%
     idify()
 
   # RNA data
-  RNA = get_counts(x, normalise = normalised, z_score = z_score) %>%
-    idify()
+  RNA = Rcongas::get_counts(x, normalise = normalised, z_score = z_score) %>%
+    Rcongas:::idify()
 
   RNA = dplyr::left_join(RNA, input_segments %>% dplyr::select(segment_id, label_chr), by = "segment_id") %>%
     dplyr::rename(segment = segment_id)
@@ -61,7 +61,6 @@ plot_counts_rna_segments = function(x, normalised = TRUE, z_score = FALSE)
       fill = n
     )) +
     CNAqc:::my_ggplot_theme() +
-    scale_fill_distiller(palette = 'GnBu', direction = 1) +
     labs(y = "Cell", x = "Segment") +
     theme(axis.text.y = element_blank(),
           axis.text.x = element_text(angle = 90, hjust = 1)) +
@@ -73,9 +72,19 @@ plot_counts_rna_segments = function(x, normalised = TRUE, z_score = FALSE)
         "Input segments span ",
         MB_covered,
         " Mb. Counts are ",
-        ifelse(normalised, "noramalised.", "not normalised.")
+        ifelse(normalised, "normalised.", "not normalised."),
+        ifelse(z_score, "Showing z-scores.", "Showing counts."),
+
       )
     )
+
+  if(!z_score)
+    rna_plot = rna_plot + scale_fill_distiller(palette = 'GnBu', direction = 1)
+  else
+    rna_plot = rna_plot + scale_fill_gradient2(low = "steelblue", high = 'indianred3')
+
+
+
   # +
   #   scale_x_discrete(labels = RNA$label_chr)
 
