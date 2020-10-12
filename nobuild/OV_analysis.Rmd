@@ -1,0 +1,145 @@
+---
+title: "OV_clonealign_analysis"
+author: "Salvatore Milite"
+date: "10/11/2020"
+output: html_document
+---
+
+
+```{r}
+
+library(Matrix)
+
+counts_OV <- t(readMM("clonealign-processed-data/T_OV2295/10X/OV2295n2/outs/filtered_gene_bc_matrices/hg19/matrix.mtx"))
+
+genes <- read.table("clonealign-processed-data/T_OV2295/10X/OV2295n2/outs/filtered_gene_bc_matrices/hg19/genes.tsv")
+  
+barcodes <-  read.table("clonealign-processed-data/T_OV2295/10X/OV2295n2/outs/filtered_gene_bc_matrices/hg19/barcodes.tsv")
+
+colnames(counts_OV) <-  genes$V2
+
+rownames(counts_OV) <- barcodes$V1
+
+```
+
+Cleaning and preprocessing
+
+```{r}
+
+devtools::load_all("../annealToolbox/")
+devtools::load_all("../scpreutils/")
+
+mat_pre <- as.matrix(preprocess_sc(mat = counts_OV, filter_upper_quantile = 0.95))
+
+
+```
+
+
+```{r}
+
+cnv_data <-  read.csv("clonealign-processed-data/T_OV2295/cnv/cnv_data.csv")
+clones_data <-  read.delim("clonealign-processed-data/T_OV2295/cnv/cnv_annots_fixed.tsv")
+clusters_dna <- read.delim("clonealign-processed-data/T_OV2295/cnv/OV_TOV.gml")
+
+```
+
+
+
+```{r}
+
+segment_recovery <-  function(df) {
+  
+  to <- vector()
+
+  old_pd <- df$copy_number[1]
+  from <- df$start[1]
+  chr <- df$chr[1]
+  copy_number <- old_pd
+  
+  for(j in seq(2, nrow(df) )){
+    
+    current_pd <- df$copy_number[j]
+    
+    if(j == nrow(df)) {
+
+      to <- c(to, df$end[j])
+
+      
+    } else if(current_pd != old_pd | df$chr[j-1] != df$chr[j]){
+      
+      old_pd <- current_pd
+      to <- c(to, df$end[j-1])
+      from <- c(from, df$start[j])
+      copy_number <- c(copy_number, current_pd)
+      
+      chr <-  c(chr,df$chr[j])
+      
+      
+    }
+    
+  }
+  
+
+  
+  return(data.frame(chr, from, to , copy_number))
+  
+}
+
+
+```
+
+
+
+```{r}
+
+cells <- unique(clones_data$single_cell_id)
+
+p1 <- cnv_data
+
+p1_splitted <- split(p1, p1$single_cell_id)
+
+segs <-  lapply(p1_splitted, segment_recovery) 
+
+segs <- do.call(rbind, segs)
+
+segs_14 <- segs %>% filter(chr %in% c(14))
+
+bps <- factor(paste(segs_14$chr,segs_14$from, segs_14$to, segs_14$copy_number, sep = ":"))
+
+barplot(table(bps))
+
+bk <- which(table(bps) > 30)
+
+final_bks <- table(bps)[bk]
+final_bks <-  final_bks[-c(2,4,7,8)]
+final_bks_df <- names(final_bks) %>% as_tibble %>% separate(value, into = c("chr","from", "to", "tot")) %>% mutate_all(as.numeric)
+
+
+
+
+
+
+
+```
+
+```{r}
+
+
+input <- get_data(t(mat_pre), cnv_data = final_bks_df, type = "fixed_binning", startsWithchr = T, correct_bins = F, median_bindims = T)
+
+input <- input[,!is.na(input$cnv$mu) & input$cnv$mu > 20]
+
+pheatmap::pheatmap((input$counts / colSums(t(mat_pre))) / input$cnv$mu, show_rownames = F, show_colnames = T, cluster_cols = F, cutree_rows = 8)
+
+```
+
+```{r}
+res <- best_cluster(input,model = "MixtureGaussian", clusters = 1:4, steps = 350, lr = 0.05, param_list = list("theta_scale" = 3.5, "theta_rate" = 1, "cnv_var" = 0.50) , method = "BIC", filt_merge = 0.5, MAP = T, posteriors = F)
+```
+
+```{r}
+plot_counts.anneal(res$models[[res$best_K]], inp3$counts, norm = T)
+
+```
+
+
