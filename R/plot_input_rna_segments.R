@@ -18,7 +18,7 @@ plot_counts_rna_segments = function(x, normalised = TRUE, z_score = FALSE)
   input_segments = Rcongas::get_input_segmentation(x) %>%
     dplyr::mutate(size = ceiling((to - from) / 10 ^ 6),
                   label_chr = paste0(chr, " (", size, 'Mb)')) %>%
-    idify()
+    Rcongas:::idify()
 
   # RNA data
   RNA = Rcongas::get_counts(x, normalise = normalised, z_score = z_score) %>%
@@ -28,16 +28,16 @@ plot_counts_rna_segments = function(x, normalised = TRUE, z_score = FALSE)
     dplyr::rename(segment = segment_id)
 
   # summary stats
-  ngenes = sum(get_input_segmentation(x)$mu)
-  nsegments = nrow(get_input_segmentation(x))
-  MB_covered = round(sum(get_input_segmentation(x)$size) / 10 ^ 6)
+  ngenes = sum(Rcongas::get_input_segmentation(x)$mu)
+  nsegments = nrow(Rcongas::get_input_segmentation(x))
+  MB_covered = round(sum(Rcongas::get_input_segmentation(x)$size) / 10 ^ 6)
 
   # Cluster assignments
-  clustering = get_clusters(x) %>%
+  clustering = Rcongas::get_clusters(x) %>%
     arrange(desc(cluster))
 
   # Clustering assignments plot
-  clusters_colors = get_clusters_colors(clustering$cluster)
+  clusters_colors = Rcongas::get_clusters_colors(clustering$cluster)
 
   clustering_sideplot = ggplot(clustering) +
     geom_tile(aes(
@@ -66,15 +66,14 @@ plot_counts_rna_segments = function(x, normalised = TRUE, z_score = FALSE)
           axis.text.x = element_text(angle = 90, hjust = 1)) +
     guides(fill = guide_colorbar("Counts per segment", barwidth = unit(3, 'cm'))) +
     labs(
-      title = paste0("Raw CONGAS dataset (k =", get_k(x), ')'),
+      title = paste0("Raw CONGAS dataset (k =", Rcongas::get_k(x), ')'),
       subtitle = paste0(ngenes, " genes mapped to ", nsegments, " segments."),
       caption = paste0(
         "Input segments span ",
         MB_covered,
         " Mb. Counts are ",
         ifelse(normalised, "normalised.", "not normalised."),
-        ifelse(z_score, "Showing z-scores.", "Showing counts."),
-
+        ifelse(z_score, "Showing z-scores.", "Showing counts.")
       )
     )
 
