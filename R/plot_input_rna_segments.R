@@ -77,11 +77,10 @@ plot_counts_rna_segments = function(x, normalised = TRUE, z_score = FALSE)
       )
     )
 
-  if(!z_score)
+  if (!z_score)
     rna_plot = rna_plot + scale_fill_distiller(palette = 'GnBu', direction = 1)
   else
     rna_plot = rna_plot + scale_fill_gradient2(low = "steelblue", high = 'indianred3')
-
 
 
   # +
