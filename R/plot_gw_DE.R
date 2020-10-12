@@ -12,8 +12,6 @@
 #' @examples
 plot_DE_gw = function(x,
                       chromosomes = paste0("chr", c(1:22, "X", "Y")),
-                      color_DEG = "Greys",
-                      color_secondary = 'orange',
                       cut_pvalue = 0.001,
                       cut_lfc = 0.25
                       )
@@ -21,6 +19,10 @@ plot_DE_gw = function(x,
   # Special case - analysis not available
   if (!has_DE(x))
     return(CNAqc:::eplot())
+
+  # Plots colours
+  color_DEG = "Greys"
+  color_secondary = 'orange'
 
   # Load DE results - forward params
   DE_full_table = get_DE_table(x,
@@ -56,7 +58,7 @@ plot_DE_gw = function(x,
   joint_counts = CNAqc:::relative_to_absolute_coordinates(list(reference_genome = x$reference_genome),
                                                           joint_counts)
 
-  max_joint_counts = max(joint_counts$n_mappable_sign)
+  max_joint_counts = max(joint_counts$n_mappable_sign, na.rm = TRUE)
 
   # Get segments plot - gw, and add some caption
   segments_plot = plot_gw_cna_profiles(x, whole_genome = TRUE, chromosomes = chromosomes) +
@@ -102,16 +104,17 @@ plot_DE_gw = function(x,
       color = color_secondary
     ) +
     scale_y_continuous(
-      breaks = c(0, ceiling(max(
-        joint_counts$n_mappable_sign
-      ))),
+      breaks = c(0, ceiling(
+        max(joint_counts$n_mappable_sign, na.rm = TRUE)
+      )),
       sec.axis = sec_axis(
-      ~ . / max_joint_counts,
-      name = "% DEG",
-      labels = function(b) {
-        paste0(round(b * 100, 0), "%")
-      }
-    ))
+        ~ . / max_joint_counts,
+        name = "% DEG",
+        labels = function(b) {
+          paste0(round(b * 100, 0), "%")
+        }
+      )
+    )
 
   # gw_t_plot = blank_wg +
   #   labs(y = "Genes", x = NULL) +

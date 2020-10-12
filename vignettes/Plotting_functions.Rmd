@@ -133,6 +133,14 @@ plot_raw_data(
   genes = random_50_genes,
   clusters = get_clusters(rcongas_example),
   prompt = FALSE)
+
+# Now we use the DE genes (see below)
+plot_raw_data(
+  x = raw_input,
+  genes = get_DE_table(rcongas_example, cut_pvalue = 1e-4) %>% dplyr::pull(gene), 
+  clusters = get_clusters(rcongas_example),
+  prompt = FALSE)
+
 ```
 
 ## Plotting DE analysis

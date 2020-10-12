@@ -19,11 +19,42 @@ plot_gw_cna_profiles = function(x,
   # Segments ploidy
   segments = get_clones_ploidy(x, chromosomes)
 
+  # Test for the difference
+  test_pvalue = get_segment_test_counts(x, group1 = 1, group2 = 2) %>%
+    dplyr::filter(sign) %>%
+    dplyr::filter(chr %in% chromosomes)
+
+  ymin = segments$CN %>% min
+  ymax = segments$CN %>% max
+  ymin = ymin + ymin * .1
+  ymax = ymax + ymax * .1
+
+  shading_color = 'mediumseagreen'
+
   # Two distinct view
   if (whole_genome)
   {
     # plain chr plot like in CNAqc
     plain_plot = get_plain_chrplot(x$reference_genome, chromosomes)
+
+    # Add test_pvalue info
+    if(nrow(test_pvalue > 0))
+    {
+      test_pvalue = CNAqc:::relative_to_absolute_coordinates(list(reference_genome = x$reference_genome), test_pvalue)
+
+      plain_plot = plain_plot +
+      geom_rect(
+        data = test_pvalue,
+        aes(
+          xmin = as.numeric(from),
+          xmax = as.numeric(to),
+          ymin = ymin,
+          ymax = ymax
+        ),
+        fill = shading_color,
+        alpha = .2
+      )
+    }
 
     # Adjustment for the view
     segments = CNAqc:::relative_to_absolute_coordinates(list(reference_genome = x$reference_genome), segments)
@@ -48,7 +79,25 @@ plot_gw_cna_profiles = function(x,
     # chr ordering
     levels_chr_ordering = paste0("chr", c(1:22, "X", "Y"))
 
-    segments_plot = ggplot() +
+    segments_plot = ggplot()
+
+    if(nrow(test_pvalue > 0))
+    {
+      segments_plot = segments_plot +
+        geom_rect(
+          data = test_pvalue,
+          aes(
+            xmin = as.numeric(from),
+            xmax = as.numeric(to),
+            ymin = ymin,
+            ymax = ymax
+          ),
+          fill = shading_color,
+          alpha = .2
+        )
+    }
+
+    segments_plot = segments_plot +
       geom_segment(
         data = segments,
         aes(
