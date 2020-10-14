@@ -26,42 +26,31 @@ reference:
 - title: Available data
   desc:  Data released with the package
   contents:
-  - fit_example
-  - LU4_lung_sample
-  - LUFF76_lung_sample
-  - PD4120a_breast_sample
-  - cancer_genes_dnds
+  - rcongas_example
 
 - title: Fitting functions
-  desc:  Functions to cluster the data; density of a `mobster` fit and sampling functions.
+  desc:  Functions to cluster the data.
   contents:
-  - mobster_fit
-  - choose_clusters
-  - Clusters
-  - Clusters_denovo
-  - ddbpmm
-  - rdbpmm
-  - random_dataset
-  - to_string
+  - run_inference
 
 - title: S3 functions
-  desc: The `mobster` S3 object.
+  desc: The `rcongas` S3 object.
   contents:
-  - print.dbpmm
-  - summary.dbpmm
-  - plot.dbpmm
+  - print.rcongas
+  - summary.rcongas
+  - plot.rcongas
 
 - title: Plotting functions
-  desc:  Functionsto plot data and fits.
+  desc:  Functions to plot data and fits.
   contents:
-  - plot_chromosomeL
+  - plot_chromosome
   - plot_gw_cna_profiles
   - plot_inference_report
   - plot_input_rna_segmentation
   - plot_plot_raw_data
 
-- title: Getters functions
-  desc:  Functions to extract information from a model.
+- title: Getters for clustering results
+  desc:  Functions to extract clustering information from a model.
   contents:
   - get_segment_test_counts
   - get_clones_ploidy
@@ -69,13 +58,23 @@ reference:
   - get_clusters_size
   - get_k
 
+- title: Getters for input data
+  desc:  Functions to extract information of the data stored in a model.
+  contents:
+  - get_counts
+  - get_input_segmentation
+  - get_mapped_genes
+  - get_input_raw_data
+  - get_reference_genome
+  - get_gene_annotations
+  - get_dataset_stats
 
 - title: Extra features
   desc:  Other analyses (DE, GSE).
   contents:
-  - dnds
-  - evolutionary_parameters
-  - get_clone_trees
+  - calculate_DE
+  - plot_DE_gw
+  - plot_DE_volcano
 
 
 

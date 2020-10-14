@@ -43,6 +43,9 @@
     <loc>militeee.github.io/Rcongas/reference/get_counts.html</loc>
   </url>
   <url>
+    <loc>militeee.github.io/Rcongas/reference/get_dataset_stats.html</loc>
+  </url>
+  <url>
     <loc>militeee.github.io/Rcongas/reference/get_gene_annotations.html</loc>
   </url>
   <url>
@@ -67,6 +70,9 @@
     <loc>militeee.github.io/Rcongas/reference/get_segment_test_counts.html</loc>
   </url>
   <url>
+    <loc>militeee.github.io/Rcongas/reference/plot.rcongas.html</loc>
+  </url>
+  <url>
     <loc>militeee.github.io/Rcongas/reference/plot_DE_gw.html</loc>
   </url>
   <url>
@@ -85,7 +91,13 @@
     <loc>militeee.github.io/Rcongas/reference/plot_raw_data.html</loc>
   </url>
   <url>
+    <loc>militeee.github.io/Rcongas/reference/print.rcongas.html</loc>
+  </url>
+  <url>
     <loc>militeee.github.io/Rcongas/reference/randomize_breaks.html</loc>
+  </url>
+  <url>
+    <loc>militeee.github.io/Rcongas/reference/rcongas_example.html</loc>
   </url>
   <url>
     <loc>militeee.github.io/Rcongas/reference/report_analysis.html</loc>
@@ -95,6 +107,9 @@
   </url>
   <url>
     <loc>militeee.github.io/Rcongas/reference/run_simulation.html</loc>
+  </url>
+  <url>
+    <loc>militeee.github.io/Rcongas/reference/summary.rcongas.html</loc>
   </url>
   <url>
     <loc>militeee.github.io/Rcongas/articles/Getters.html</loc>

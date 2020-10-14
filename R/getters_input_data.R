@@ -212,3 +212,39 @@ get_gene_annotations <-  function(x)
   stop("reference unknown, you should use a reference supported by CONGAS!")
 }
 
+#' Title
+#'
+#' @param x
+#'
+#' @return
+#' @export
+#'
+#' @examples
+get_dataset_stats = function(x)
+{
+  # number of cells, segments
+  ncells = x$data$counts %>% nrow()
+  nsegments = x$data$counts %>% ncol()
+
+  # clustering stats
+  nclusters = Rcongas::get_k(x)
+  sizes_cl = Rcongas::get_clusters_size(x)
+  psizes_cl = Rcongas::get_clusters_size(x, normalised = TRUE)
+
+  # scores
+  x$inference$model_selection
+
+
+  return(
+    list(
+      ncells = ncells,
+      nsegments = nsegments,
+      clusters_k = nclusters,
+      clusters_n = sizes_cl,
+      clusters_pi = psizes_cl,
+      score_type = x$inference$model_selection$IC_type,
+      score = x$inference$model_selection$IC[x$inference$model_selection$best_K]
+      )
+  )
+}
+
