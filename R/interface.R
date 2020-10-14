@@ -126,6 +126,15 @@ set_names <-  function(an){
 #'@param verbose
 #'
 #' @return
+#'
+#' @importFrom dplyr %>% filter mutate select arrange desc pull row_number group_by
+#' @importFrom dplyr summarise bind_cols rename bind_rows left_join distinct
+#' @importFrom dplyr ungroup full_join right_join
+#' @importFrom tidyr spread gather tibble tribble as_tibble
+#' @importFrom magrittr %>%
+#' @importFrom gtools mixedorder mixedsort
+#' @importFrom purrr rbernoulli
+#' @importFrom extraDistr rmvhyper
 #' @export
 #'
 #' @examples

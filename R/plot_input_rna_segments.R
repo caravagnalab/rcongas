@@ -37,7 +37,7 @@ plot_counts_rna_segments = function(x, normalised = TRUE, z_score = FALSE)
     arrange(desc(cluster))
 
   # Clustering assignments plot
-  clusters_colors = Rcongas::get_clusters_colors(clustering$cluster)
+  clusters_colors = Rcongas:::get_clusters_colors(clustering$cluster)
 
   clustering_sideplot = ggplot(clustering) +
     geom_tile(aes(

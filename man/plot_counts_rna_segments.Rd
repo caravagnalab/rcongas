@@ -4,7 +4,7 @@
 \alias{plot_counts_rna_segments}
 \title{Title}
 \usage{
-plot_counts_rna_segments(x, normalised = TRUE)
+plot_counts_rna_segments(x, normalised = TRUE, z_score = FALSE)
 }
 \arguments{
 \item{normalised}{}

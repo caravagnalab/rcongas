@@ -1,0 +1,85 @@
+destination: docs
+
+template:
+  params:
+    part_of: evoverse
+    footer: S. Milite and G. Caravagna.
+url:
+  militeee.github.io/Rcongas
+
+repo:
+  url:
+    home: https://github.com/militeee/Rcongas/
+    source: https://github.com/militeee/Rcongas
+    issue: https://github.com/militeee/Rcongas/issues
+    user: https://github.com/militeee
+
+
+
+authors:
+  Salvatore Milite:
+    href: https://sites.google.com/view/cdslab
+  Giulio Caravagna:
+    href: https://sites.google.com/view/cdslab
+
+reference:
+- title: Available data
+  desc:  Data released with the package
+  contents:
+  - fit_example
+  - LU4_lung_sample
+  - LUFF76_lung_sample
+  - PD4120a_breast_sample
+  - cancer_genes_dnds
+
+- title: Fitting functions
+  desc:  Functions to cluster the data; density of a `mobster` fit and sampling functions.
+  contents:
+  - mobster_fit
+  - choose_clusters
+  - Clusters
+  - Clusters_denovo
+  - ddbpmm
+  - rdbpmm
+  - random_dataset
+  - to_string
+
+- title: S3 functions
+  desc: The `mobster` S3 object.
+  contents:
+  - print.dbpmm
+  - summary.dbpmm
+  - plot.dbpmm
+
+- title: Plotting functions
+  desc:  Functionsto plot data and fits.
+  contents:
+  - plot_chromosomeL
+  - plot_gw_cna_profiles
+  - plot_inference_report
+  - plot_input_rna_segmentation
+  - plot_plot_raw_data
+
+- title: Getters functions
+  desc:  Functions to extract information from a model.
+  contents:
+  - get_segment_test_counts
+  - get_clones_ploidy
+  - get_clusters
+  - get_clusters_size
+  - get_k
+
+
+- title: Extra features
+  desc:  Other analyses (DE, GSE).
+  contents:
+  - dnds
+  - evolutionary_parameters
+  - get_clone_trees
+
+
+
+
+
+
+

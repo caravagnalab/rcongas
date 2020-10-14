@@ -1,15 +1,19 @@
-# Report for a template set of results after CONGAS
-
+#' Report for a template set of results after CONGAS
+#'
+#' @param x
+#'
+#' @return
+#' @export
+#'
+#' @examples
 report_analysis = function(x)
 {
   require(tidyverse)
 
   # Top plot
   DE_gw = Rcongas::plot_DE_gw(x)
-  DE_gw = ggpubr::annotate_figure(
-    DE_gw,
-    top = ggpubr::text_grob(label = "Clones inferred, and DE analysis",  x = 0, hjust = 0)
-  )
+  DE_gw = ggpubr::annotate_figure(DE_gw,
+                                  top = ggpubr::text_grob(label = "   Clones inferred, and DE analysis",  x = 0, hjust = 0))
 
   counts_plot = Rcongas::plot_counts_rna_segments(x, normalised = TRUE, z_score = TRUE)
 
@@ -29,7 +33,7 @@ report_analysis = function(x)
   bottom_strip = ggplot(M) +
     geom_histogram(aes(n, fill = cluster), bins = 100) +
     CNAqc:::my_ggplot_theme() +
-    facet_wrap(~segment_id, scales = 'free') +
+    facet_wrap( ~ segment_id, scales = 'free') +
     scale_fill_manual(values = Rcongas:::get_clusters_colors(M$cluster)) +
     labs(title = "Counts per chromosome")
 
@@ -42,6 +46,6 @@ report_analysis = function(x)
     labels = c("A", "", "D")
   )
 
-  ggsave(figure, filename = "breast.pdf", height = 18, width = 13)
-
+  # ggsave(figure, filename = "breast.pdf", height = 18, width = 13)
+  return(figure)
 }

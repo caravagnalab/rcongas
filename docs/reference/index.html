@@ -6,8 +6,15 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title> • confetti</title>
+<title>Function reference • Rcongas</title>
 
+<!-- favicons -->
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png" />
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
@@ -39,7 +46,8 @@
 
 
 
-<meta property="og:title" content="" />
+<meta property="og:title" content="Function reference" />
+<meta property="og:image" content="militeee.github.io/Rcongas/logo.png" />
 
 
 
@@ -70,7 +78,7 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">confetti</a>
+        <a class="navbar-link" href="../index.html">Rcongas</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
       </span>
     </div>
@@ -94,16 +102,24 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/simulated_example.html">CONFETTI on simulated data</a>
+      <a href="../articles/Getters.html">Getters</a>
     </li>
     <li>
-      <a href="../articles/wes_example.html">CONFETTI on WES + scRNA</a>
+      <a href="../articles/Plotting_functions.html">Plotting functions</a>
+    </li>
+    <li>
+      <a href="../articles/simulated_example.html">CONFETTI on simulated data</a>
     </li>
   </ul>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/militeee/Rcongas/">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -128,7 +144,301 @@
       <col class="title" />
     </colgroup>
 
-    
+    <tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-available-data" class="hasAnchor"><a href="#section-available-data" class="anchor"></a>Available data</h2>
+          <p class="section-desc"><p>Data released with the package</p></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-fitting-functions" class="hasAnchor"><a href="#section-fitting-functions" class="anchor"></a>Fitting functions</h2>
+          <p class="section-desc"><p>Functions to cluster the data; density of a <code>mobster</code> fit and sampling functions.</p></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-s-functions" class="hasAnchor"><a href="#section-s-functions" class="anchor"></a>S3 functions</h2>
+          <p class="section-desc"><p>The <code>mobster</code> S3 object.</p></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-plotting-functions" class="hasAnchor"><a href="#section-plotting-functions" class="anchor"></a>Plotting functions</h2>
+          <p class="section-desc"><p>Functionsto plot data and fits.</p></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="calculate_DE.html">calculate_DE()</a></code> </p>
+        </td>
+        <td><p>Title</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="change_spot.html">change_spot()</a></code> </p>
+        </td>
+        <td><p>Add a deletion or an insertion in a given segment</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="create_df_from_range.html">create_df_from_range()</a></code> </p>
+        </td>
+        <td><p>Create a dataframe from a breakpoint list</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="divide_genome_in_segments.html">divide_genome_in_segments()</a></code> </p>
+        </td>
+        <td><p>A simple function to divide the genome in segments</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="generate_ploidy.html">generate_ploidy()</a></code> </p>
+        </td>
+        <td><p>Generete the ploidy for a segment</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="generate_ploidy_parent.html">generate_ploidy_parent()</a></code> </p>
+        </td>
+        <td><p>Generat the ploidy given a parent clone</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="generate_ploidy_parent_fine.html">generate_ploidy_parent_fine()</a></code> </p>
+        </td>
+        <td><p>Generat the ploidy given a parent clone (wih a finer control)</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="generate_random_tree.html">generate_random_tree()</a></code> </p>
+        </td>
+        <td><p>Generate a random tree</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_DE_table.html">get_DE_table()</a></code> </p>
+        </td>
+        <td><p>Title</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_clones_ploidy.html">get_clones_ploidy()</a></code> </p>
+        </td>
+        <td><p>Title</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_clusters.html">get_clusters()</a></code> </p>
+        </td>
+        <td><p>Title</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_clusters_size.html">get_clusters_size()</a></code> </p>
+        </td>
+        <td><p>Title</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_counts.html">get_counts()</a></code> </p>
+        </td>
+        <td><p>Title</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_gene_annotations.html">get_gene_annotations()</a></code> </p>
+        </td>
+        <td><p>Title</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_input_raw_data.html">get_input_raw_data()</a></code> </p>
+        </td>
+        <td><p>Title</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_input_segmentation.html">get_input_segmentation()</a></code> </p>
+        </td>
+        <td><p>Title</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_k.html">get_k()</a></code> </p>
+        </td>
+        <td><p>Title</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_mapped_genes.html">get_mapped_genes()</a></code> </p>
+        </td>
+        <td><p>Title</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_model_description.html">get_model_description()</a></code> </p>
+        </td>
+        <td><p>Title</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_reference_genome.html">get_reference_genome()</a></code> </p>
+        </td>
+        <td><p>Title</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_segment_test_counts.html">get_segment_test_counts()</a></code> </p>
+        </td>
+        <td><p>Title</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plot_DE_gw.html">plot_DE_gw()</a></code> </p>
+        </td>
+        <td><p>Title</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plot_DE_volcano.html">plot_DE_volcano()</a></code> </p>
+        </td>
+        <td><p>Title</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plot_chromosome.html">plot_chromosome()</a></code> </p>
+        </td>
+        <td><p>Title</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plot_counts_rna_segments.html">plot_counts_rna_segments()</a></code> </p>
+        </td>
+        <td><p>Title</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plot_gw_cna_profiles.html">plot_gw_cna_profiles()</a></code> </p>
+        </td>
+        <td><p>Title</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plot_raw_data.html">plot_raw_data()</a></code> </p>
+        </td>
+        <td><p>Title</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="randomize_breaks.html">randomize_breaks()</a></code> </p>
+        </td>
+        <td><p>Add stocasticity in the brakpoints</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="report_analysis.html">report_analysis()</a></code> </p>
+        </td>
+        <td><p>Report for a template set of results after CONGAS</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="run_inference.html">run_inference()</a></code> </p>
+        </td>
+        <td><p>Title</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="run_simulation.html">run_simulation()</a></code> </p>
+        </td>
+        <td><p>Run a complete simulation</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-getters-functions" class="hasAnchor"><a href="#section-getters-functions" class="anchor"></a>Getters functions</h2>
+          <p class="section-desc"><p>Functions to extract information from a model.</p></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="get_segment_test_counts.html">get_segment_test_counts()</a></code> </p>
+        </td>
+        <td><p>Title</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_clones_ploidy.html">get_clones_ploidy()</a></code> </p>
+        </td>
+        <td><p>Title</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_clusters.html">get_clusters()</a></code> </p>
+        </td>
+        <td><p>Title</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_clusters_size.html">get_clusters_size()</a></code> </p>
+        </td>
+        <td><p>Title</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_k.html">get_k()</a></code> </p>
+        </td>
+        <td><p>Title</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-extra-features" class="hasAnchor"><a href="#section-extra-features" class="anchor"></a>Extra features</h2>
+          <p class="section-desc"><p>Other analyses (DE, GSE).</p></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      
+    </tbody>
     </table>
   </div>
 
@@ -142,11 +452,11 @@
 
       <footer>
       <div class="copyright">
-  <p>Developed by Salvatore Milite.</p>
+  <p>Developed by <a href='https://sites.google.com/view/cdslab'>Salvatore Milite</a>, <a href='https://sites.google.com/view/cdslab'>Giulio Caravagna</a>.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

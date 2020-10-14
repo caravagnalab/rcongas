@@ -1,8 +1,9 @@
 Package: Rcongas
 Type: Package
-Title: genotyping CNVs from single-cell transcriptomics 
+Title: Copy Number Variation genotyping from single-cell transcriptomics 
 Version: 0.1.0
-Author: Salvatore Milite
+Authors@R: c(person("Salvatore", "Milite", role=c("aut", "cre"), email="militesalvatore@gmail.com"), 
+    person("Giulio", "Caravagna", role=c("aut"), email="gcaravagn@gmail.com"))
 Maintainer: Salvatore Milite <militesalvatore@gmail.com>
 Description: This package is built upon the congas python package.
     It provides an interface for congas that can be used without knowing Pyro
