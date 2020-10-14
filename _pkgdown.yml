@@ -1,0 +1,84 @@
+destination: docs
+
+template:
+  params:
+    part_of: evoverse
+    footer: S. Milite and G. Caravagna.
+url:
+  militeee.github.io/Rcongas
+
+repo:
+  url:
+    home: https://github.com/militeee/Rcongas/
+    source: https://github.com/militeee/Rcongas
+    issue: https://github.com/militeee/Rcongas/issues
+    user: https://github.com/militeee
+
+
+
+authors:
+  Salvatore Milite:
+    href: https://sites.google.com/view/cdslab
+  Giulio Caravagna:
+    href: https://sites.google.com/view/cdslab
+
+reference:
+- title: Available data
+  desc:  Data released with the package
+  contents:
+  - rcongas_example
+
+- title: Fitting functions
+  desc:  Functions to cluster the data.
+  contents:
+  - run_inference
+
+- title: S3 functions
+  desc: The `rcongas` S3 object.
+  contents:
+  - print.rcongas
+  - summary.rcongas
+  - plot.rcongas
+
+- title: Plotting functions
+  desc:  Functions to plot data and fits.
+  contents:
+  - plot_chromosome
+  - plot_gw_cna_profiles
+  - plot_inference_report
+  - plot_input_rna_segmentation
+  - plot_plot_raw_data
+
+- title: Getters for clustering results
+  desc:  Functions to extract clustering information from a model.
+  contents:
+  - get_segment_test_counts
+  - get_clones_ploidy
+  - get_clusters
+  - get_clusters_size
+  - get_k
+
+- title: Getters for input data
+  desc:  Functions to extract information of the data stored in a model.
+  contents:
+  - get_counts
+  - get_input_segmentation
+  - get_mapped_genes
+  - get_input_raw_data
+  - get_reference_genome
+  - get_gene_annotations
+  - get_dataset_stats
+
+- title: Extra features
+  desc:  Other analyses (DE, GSE).
+  contents:
+  - calculate_DE
+  - plot_DE_gw
+  - plot_DE_volcano
+
+
+
+
+
+
+

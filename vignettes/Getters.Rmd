@@ -24,14 +24,17 @@ We work with an example object released with the tool.
 load("../data/rcongas_example.rda")
 
 require(tidyverse)
+require(Rcongas)
+
+rcongas_example = Rcongas::rcongas_example
 
 # sapply(list.files('../R/', full.names = T), source)
-source('../R/getters_clustering_results.R')
-source('../R/getters_extra_analysis.R')
-source('../R/getters_input_data.R')
-source('../R/getters_privates.R')
-source('../R/utils.R')
-source('../R/test_status.R')
+# source('../R/getters_clustering_results.R')
+# source('../R/getters_extra_analysis.R')
+# source('../R/getters_input_data.R')
+# source('../R/getters_privates.R')
+# source('../R/utils.R')
+# source('../R/test_status.R')
 ```
 
 ## Reference information
