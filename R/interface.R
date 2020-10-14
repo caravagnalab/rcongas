@@ -62,9 +62,13 @@ from_simulation_to_data_list <- function(x){
 tensorize <- function(list){
 
   torch <- reticulate::import("torch")
-  res <- lapply(list, function(x) torch$tensor(x , dtype = torch$float32))
+  np <- reticulate::import("numpy")
+  res <- lapply(list, function(x) torch$tensor(np$copy(x) , dtype = torch$float32))
   return(res)
 }
+
+
+
 
 set_names <-  function(an){
 
@@ -93,6 +97,7 @@ set_names <-  function(an){
   mix_order <- order(an$parameters$mixture_weights, decreasing = TRUE)
 
   an$parameters$mixture_weights <-  an$parameters$mixture_weights[mix_order]
+  if(!is.null(an$parameters$assignment_probs)) an$parameters$assignment_probs <- an$parameters$assignment_probs[,mix_order]
   names(an$parameters$mixture_weights) <-  new_clusters
   an$parameters$cnv_probs <- data.frame(an$parameters$cnv_probs)
   an$parameters$cnv_probs <-  an$parameters$cnv_probs[mix_order,, drop = FALSE]
@@ -169,18 +174,20 @@ run_inference <-  function(X , model, optim = "ClippedAdam", elbo = "TraceEnum_E
     rownames(parameters$assignment_probs) <- cell_names
   }
 
+  dim(parameters$assignment_probs)
+
   dim_names <- list(cell_names = cell_names, seg_names = seg_names)
 
   an <-  set_names(list(loss = loss, parameters = parameters, dim_names = dim_names))
 
-  if(model_name == "MixtureGaussianDMP") {
-
-    an$parameters <- merge_clusters(an$parameters, "DMP", posterior=posteriors)
-
-  } else {
-
-    an$parameters <- merge_clusters(an$parameters, type = "NONE", filt = filt_merge, posterior=posteriors)
-  }
+  # if(model_name == "MixtureGaussianDMP") {
+  #
+  #   an$parameters <- merge_clusters(an$parameters, "DMP", posterior=posteriors)
+  #
+  # } else {
+  #
+  #   an$parameters <- merge_clusters(an$parameters, type = "NONE", filt = filt_merge, posterior=posteriors)
+  # }
 
   an$run_information <-  list(model = model,optim = optim, elbo = elbo, inf_type = inf_type,
                               steps = steps, lr = lr, input_hyper_params = param_list, MAP = MAP,
@@ -319,6 +326,23 @@ gauss_lik <-  function(data,mu,par) {
   log_lk <-  sum(lk)
   return(log_lk)
 }
+
+
+gauss_lik_with_means <-  function(data,mu,par) {
+
+  lk <-  sapply(1:nrow(data), function(x) {
+
+    lambdas <- (par$norm_factor[x] * round(par$cnv_probs[par$assignement[x],]) * mu) + 1e-6
+
+    lk <- dpois(as.numeric(data[x,]), as.numeric(lambdas), log = TRUE)
+    return(sum(lk))
+
+  })
+
+  log_lk <-  sum(lk)
+  return(log_lk)
+}
+
 
 
 gauss_lik_norm <-  function(data,mu,par) {

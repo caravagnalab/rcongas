@@ -34,7 +34,7 @@ plot_counts_rna_segments = function(x, normalised = TRUE, z_score = FALSE)
 
   # Cluster assignments
   clustering = get_clusters(x) %>%
-    arrange(desc(cluster))
+    dplyr::arrange(desc(cluster))
 
   # Clustering assignments plot
   clusters_colors = get_clusters_colors(clustering$cluster)

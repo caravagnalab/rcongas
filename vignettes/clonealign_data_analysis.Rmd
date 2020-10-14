@@ -1,0 +1,206 @@
+---
+title: "analysis on 10x data"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+This is an example analysis with a dataset of trple-negative breast cancer, sequenced with 10x. The data has been obtained from Campbell at al 2019 and is currently available at ![]  
+
+
+```{r}
+
+library(Matrix)
+
+counts_SA <- as.matrix(t(readMM("clonealign-processed-data/SA501/10X/20171026_SA501X2XB00096/outs/filtered_gene_bc_matrices/hg19/matrix.mtx")))
+
+genes <- read.table("clonealign-processed-data/SA501/10X/20171026_SA501X2XB00096/outs/filtered_gene_bc_matrices/hg19/genes.tsv")
+  
+barcodes <-  read.table("clonealign-processed-data/SA501/10X/20171026_SA501X2XB00096/outs/filtered_gene_bc_matrices/hg19/barcodes.tsv")
+
+colnames(counts_SA) <-  genes$V2
+
+rownames(counts_SA) <- barcodes$V1
+
+```
+
+
+
+```{r}
+
+library("rcongas")
+
+pre_obj <- as.matrix(preprocess_sc(mat = counts_SA, filter_upper_quantile = T, perc_cells_gene_expr = 0.05,upper_quantile = 0.95))
+```
+
+
+```{r}
+
+clones_dataB <- read.csv("clonealign-processed-data/SA501/cnv/SA501X3F-cluster_B.segments.csv")[,c(1,2,3,7)]
+clones_dataA <- read.csv("clonealign-processed-data/SA501/cnv/SA501X3F-cluster_A.segments.csv")[,c(1,2,3,7)]
+
+#clones_data <- full_join(clones_dataB, clones_dataA, by = c("chr", "start", "end"))
+
+#clones_data <- clones_data %>%  filter(integer_copy_number.x != integer_copy_number.y | is.na(integer_copy_number.x) | is.na(integer_copy_number.y))
+
+#clones_data$tot <- ifelse(!is.na(clones_data$integer_copy_number.x), clones_data$integer_copy_number.x, clones_data$integer_copy_number.y)
+#excld <-  "^20"
+
+#clones_data2_18 <- clones_dataA %>%  filter(chr %in% c(18))
+#clones_data_18 <- clones_dataB %>%  filter(chr %in% c(18))
+
+clones_dataA$tot <-  clones_dataA$integer_copy_number
+
+inp2 <-  get_data(t(mat_pre), cnv_data = clones_dataA, type = "fixed_binning", startsWithchr = F,  correct_bins = T, genome = "hg19")
+
+
+inp3 <- filter_segments.rcongas(X = inp2, filter_mu = 30)
+
+pheatmap::pheatmap(((inp3$data$counts / colSums(t(mat_pre))) / inp3$data$cnv$mu) / inp3$data$cnv$ploidy_real, show_rownames = F, show_colnames = T, cluster_cols = F, cutree_rows = 2)
+
+
+
+```
+
+
+
+```{r}
+res <- best_cluster(inp3,model = "MixtureGaussian", clusters = 1:4, steps = 500, lr = 0.01, param_list = list("theta_scale" = 3.2, "theta_rate" = 1, "cnv_var" = 0.50) , method = "BIC", filt_merge = 0.8, MAP = T, posteriors = T, step_post = 1)
+```
+
+
+
+```{r}
+plot_counts.anneal(get_best_model(res), inp3$data$counts, norm = T)
+
+
+hist_plot.anneal(get_best_model(res), inp3$data$counts, norm = T)
+
+```
+
+```{r}
+library(Seurat)
+de <- calculate_DE(res, t(mat_pre2), clone1 = "1", clone2 = "2", method = "DESeq2")
+```
+
+
+```{r}
+clones_dataB$tot <-  clones_dataB$integer_copy_number
+
+c18 <-  clones_dataA %>%  filter(chr %in% c(15,16,18)) 
+
+
+inp4 <-  get_data(t(mat_pre), cnv_data = c18, type = "fixed_binning", startsWithchr = F, correct_bins = F, genome = "hg19")
+
+
+inp4 <- inp4[,!is.na(inp4$cnv$mu) & inp4$cnv$mu > 5]
+
+```
+
+
+```{r}
+res2 <- best_cluster(inp4,model = "MixtureGaussian", clusters = 1:4, steps = 500, lr = 0.01, param_list = list("theta_scale" = 3.2, "theta_rate" = 1, "cnv_var" = 0.50, "norm_init_factors" = norm_factor(inp2)) , method = "BIC", filt_merge = 0.8, MAP = T, posteriors = F)
+```
+
+
+```{r}
+#res2$models[[res2$best_K]]$parameters <- merge_clusters(res2$models[[res2$best_K]]$parameters, type = "NONE", filt = 0.4)
+
+plot_counts.anneal(res2$models[[res2$best_K]], inp4$counts, norm = T)
+
+hist_plot.anneal(res2$models[[res2$best_K]], inp4$counts, norm = T)
+
+```
+
+
+```{r}
+de2 <- calculate_DGE(res2$models[[res2$best_K]], t(mat_pre2), clone1 = 3,  clone2 = NULL, lfc = 0.3)
+
+```
+
+```{r}
+library(TxDb.Hsapiens.UCSC.hg19.knownGene)
+library(Rfast)
+
+df_cnv_A <- read.csv("clonealign-processed-data/SA501/cnv/SA501X3F-cluster_A.segments.csv")
+df_cnv_B <- read.csv("clonealign-processed-data/SA501/cnv/SA501X3F-cluster_B.segments.csv")
+df_cnv_C <- read.csv("clonealign-processed-data/SA501/cnv/SA501X3F-cluster_C.segments.csv")
+
+df_cnv_AB <- rbind(df_cnv_A, df_cnv_B)
+
+df_cnv <- rbind(df_cnv_AB, df_cnv_C)
+
+df_cnv$clone <- rep(c("A", "B", "C"), c(nrow(df_cnv_A), nrow(df_cnv_B), nrow(df_cnv_C)))
+
+txdb <- TxDb.Hsapiens.UCSC.hg19.knownGene
+
+g <- genes(txdb, single.strand.genes.only=FALSE)
+
+df_cnv <- mutate(df_cnv, chr = paste0("chr", chr))
+
+cnv_gr <- makeGRangesFromDataFrame(df_cnv, keep.extra.columns = TRUE)
+
+olaps <- findOverlaps(g, cnv_gr)
+
+df_gene <- data.frame(entrezgene = names(g)[queryHits(olaps)], 
+           copy_number = mcols(cnv_gr)$integer_copy_number[subjectHits(olaps)],
+           clone = mcols(cnv_gr)$clone[subjectHits(olaps)])
+
+library(org.Hs.eg.db)
+
+entrezgene_ensembl_map <- as.list(org.Hs.egENSEMBL)
+entrezgene_ensembl_map <- lapply(entrezgene_ensembl_map, `[`, 1)
+
+df_gene <- dplyr::filter(df_gene, entrezgene %in% names(entrezgene_ensembl_map)) %>% 
+  dplyr::mutate(ensembl_gene_id = unlist(entrezgene_ensembl_map[entrezgene])) %>% 
+  dplyr::select(ensembl_gene_id, entrezgene, copy_number, clone) %>% 
+  drop_na()
+
+df_gene <- dplyr::count(df_gene, ensembl_gene_id) %>% 
+  filter(n == length(unique(df_gene$clone))) %>% 
+  inner_join(df_gene) %>% 
+  dplyr::select(-n)
+
+
+df_gene_expanded <- spread(df_gene, clone, copy_number)
+
+cnv_mat <- dplyr::select(df_gene_expanded, -ensembl_gene_id, -entrezgene) %>% 
+  as.matrix()
+
+rownames(cnv_mat) <- df_gene_expanded$ensembl_gene_id
+
+keep_gene <- rowMins(cnv_mat) <= 6 & rowVars(cnv_mat) > 0
+
+cnv_mat <- cnv_mat[keep_gene,]
+
+```
+
+
+```{r}
+
+
+library(clonealign)
+library(SingleCellExperiment)
+
+
+
+#sce <- SingleCellExperiment(list(counts = t(as.matrix(counts_SA))) )
+
+cgenes <-  intersect(colnames(counts_SA), rownames(cnv_mat))
+
+ca_data <- preprocess_for_clonealign(counts_SA[,cgenes], cnv_mat[cgenes,])
+
+cal <- run_clonealign(ca_data$gene_expression_data, ca_data$copy_number_data)
+library(tensorflow)
+#install_tensorflow(version = 1.5)
+
+
+devtools::load_all("kieranrcampbell-clonealign-4d6c340/")
+
+cal <-  clonealign(ca_data$gene_expression_data, ca_data$copy_number_data)
+
+```
+
