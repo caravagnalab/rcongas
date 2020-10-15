@@ -63,7 +63,7 @@ tensorize <- function(list){
 
   torch <- reticulate::import("torch")
   np <- reticulate::import("numpy")
-  res <- lapply(list, function(x) torch$tensor(np$copy(x) , dtype = torch$float32))
+  res <- lapply(list, function(x) torch$tensor(x, dtype = torch$float32))
   return(res)
 }
 
@@ -316,24 +316,25 @@ write_result.congas <-  function(an, new_dir = FALSE,dir_name,  out_prefix, sep 
 }
 
 param_total <-  function(param_list) {
-
+  param_list <-  param_list[!(names(param_list) %in% c("assignment_probs", "assignement"))]
   res <- sapply(param_list,function(x) if(is.null(dim(x))) length(x) else prod(dim(x)))
   return(sum(res))
 }
 
 gauss_lik <-  function(data,mu,par) {
 
-  lk <-  sapply(1:nrow(data), function(x) {
+  lambdas <-  lapply(1:length(par$mixture_weights), function(x) {
 
-    lambdas <- (par$norm_factor[x] * round(par$cnv_probs[par$assignement[x],]) * mu) + 1e-6
 
-    lk <- dpois(as.numeric(data[x,]), as.numeric(lambdas), log = TRUE)
-    return(sum(lk))
+    lambdas <- (matrix(par$norm_factor, ncol = 1) %*% (as.numeric(par$cnv_probs[x,]) * mu)) + 1e-8
+
+    return(lambdas)
 
   })
 
-  log_lk <-  sum(lk)
-  return(log_lk)
+  lk <- logLikePoisMix(data, lambdas, par$mixture_weights)
+
+  return(lk$ll)
 }
 
 
@@ -366,7 +367,9 @@ gauss_lik_norm <-  function(data,mu,par) {
     return(sum(lk))
 
   })
+
   log_lk <-  sum(lk)
+
   return(log_lk)
 }
 
@@ -376,6 +379,8 @@ calculate_BIC <-  function(inf, data, mu,llikelihood = gauss_lik) {
 
   n_param <- param_total(inf$parameters)
   log_lik <- llikelihood(data,mu,inf$parameters)
+
+
 
   return(n_param * log(nrow(data)) - 2 * log_lik)
 

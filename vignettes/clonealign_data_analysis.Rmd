@@ -27,39 +27,29 @@ rownames(counts_SA) <- barcodes$V1
 
 ```
 
-
+In rcongas we have 
 
 ```{r}
 
 library("rcongas")
 
-pre_obj <- as.matrix(preprocess_sc(mat = counts_SA, filter_upper_quantile = T, perc_cells_gene_expr = 0.05,upper_quantile = 0.95))
+mat_pre <- as.matrix(preprocess_sc(mat = counts_SA, filter_upper_quantile = T, perc_cells_gene_expr = 0.05,upper_quantile = 0.95))
 ```
 
 
 ```{r}
 
-clones_dataB <- read.csv("clonealign-processed-data/SA501/cnv/SA501X3F-cluster_B.segments.csv")[,c(1,2,3,7)]
 clones_dataA <- read.csv("clonealign-processed-data/SA501/cnv/SA501X3F-cluster_A.segments.csv")[,c(1,2,3,7)]
 
-#clones_data <- full_join(clones_dataB, clones_dataA, by = c("chr", "start", "end"))
-
-#clones_data <- clones_data %>%  filter(integer_copy_number.x != integer_copy_number.y | is.na(integer_copy_number.x) | is.na(integer_copy_number.y))
-
-#clones_data$tot <- ifelse(!is.na(clones_data$integer_copy_number.x), clones_data$integer_copy_number.x, clones_data$integer_copy_number.y)
-#excld <-  "^20"
-
-#clones_data2_18 <- clones_dataA %>%  filter(chr %in% c(18))
-#clones_data_18 <- clones_dataB %>%  filter(chr %in% c(18))
-
 clones_dataA$tot <-  clones_dataA$integer_copy_number
+clones_dataA$chr <- paste0("chr", clones_dataA$chr)
 
 inp2 <-  get_data(t(mat_pre), cnv_data = clones_dataA, type = "fixed_binning", startsWithchr = F,  correct_bins = T, genome = "hg19")
 
 
 inp3 <- filter_segments.rcongas(X = inp2, filter_mu = 30)
 
-pheatmap::pheatmap(((inp3$data$counts / colSums(t(mat_pre))) / inp3$data$cnv$mu) / inp3$data$cnv$ploidy_real, show_rownames = F, show_colnames = T, cluster_cols = F, cutree_rows = 2)
+pheatmap::pheatmap(((inp3$data$counts / colSums(t(mat_pre))) ) / inp3$data$cnv$ploidy_real, show_rownames = F, show_colnames = T, cluster_cols = F, cutree_rows = 2)
 
 
 
@@ -68,23 +58,25 @@ pheatmap::pheatmap(((inp3$data$counts / colSums(t(mat_pre))) / inp3$data$cnv$mu)
 
 
 ```{r}
-res <- best_cluster(inp3,model = "MixtureGaussian", clusters = 1:4, steps = 500, lr = 0.01, param_list = list("theta_scale" = 3.2, "theta_rate" = 1, "cnv_var" = 0.50) , method = "BIC", filt_merge = 0.8, MAP = T, posteriors = T, step_post = 1)
+set.seed(3)
+res <- best_cluster(inp3,model = "MixtureGaussian", clusters = 1:4, steps = 600, lr = 0.01, param_list = list("theta_scale" = 3.2, "theta_rate" = 1, "cnv_var" = 0.50) , method = "BIC", filt_merge = 0.8, MAP = T, posteriors = F)
+
+res <-  filter_clusters(res)
 ```
 
 
 
 ```{r}
-plot_counts.anneal(get_best_model(res), inp3$data$counts, norm = T)
 
-
-hist_plot.anneal(get_best_model(res), inp3$data$counts, norm = T)
+plot_counts_rna_segments(res, z_score = T)
 
 ```
 
 ```{r}
 library(Seurat)
-de <- calculate_DE(res, t(mat_pre2), clone1 = "1", clone2 = "2", method = "DESeq2")
+de <- calculate_DE(res, counts_SA[rownames(mat_pre),] %>%  t, clone1 = "1", clone2 = "2", method = "DESeq2")
 ```
+
 
 
 ```{r}
@@ -101,25 +93,7 @@ inp4 <- inp4[,!is.na(inp4$cnv$mu) & inp4$cnv$mu > 5]
 ```
 
 
-```{r}
-res2 <- best_cluster(inp4,model = "MixtureGaussian", clusters = 1:4, steps = 500, lr = 0.01, param_list = list("theta_scale" = 3.2, "theta_rate" = 1, "cnv_var" = 0.50, "norm_init_factors" = norm_factor(inp2)) , method = "BIC", filt_merge = 0.8, MAP = T, posteriors = F)
-```
 
-
-```{r}
-#res2$models[[res2$best_K]]$parameters <- merge_clusters(res2$models[[res2$best_K]]$parameters, type = "NONE", filt = 0.4)
-
-plot_counts.anneal(res2$models[[res2$best_K]], inp4$counts, norm = T)
-
-hist_plot.anneal(res2$models[[res2$best_K]], inp4$counts, norm = T)
-
-```
-
-
-```{r}
-de2 <- calculate_DGE(res2$models[[res2$best_K]], t(mat_pre2), clone1 = 3,  clone2 = NULL, lfc = 0.3)
-
-```
 
 ```{r}
 library(TxDb.Hsapiens.UCSC.hg19.knownGene)

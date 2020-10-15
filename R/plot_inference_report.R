@@ -1,5 +1,6 @@
 plot_inference_report <-  function(x){
 
+  best_model <- get_best_model(x)
 
 
 }

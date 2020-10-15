@@ -87,10 +87,8 @@ subclones <- best_cluster(binned_express, clusters = 1:4, model = "MixtureGaussi
 ```
 
 ```{r}
-best_model <- subclones$models[[2]]
-row_annot <- as.data.frame(factor(best_model$parameters$assignement))
-colnames(row_annot) <-  "cluster"
-pheatmap::pheatmap(binned_express$counts[names(sort(best_model$parameters$assignement)),], cluster_cols = F,  show_rownames = F, cluster_rows = F, annotation_row = row_annot, gaps_row = which(!duplicated(sort(row_annot$cluster))) - 1)
+
+
 
 ```
 
