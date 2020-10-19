@@ -357,3 +357,24 @@ filter_segments.rcongas <- function(X, filter_mu = 30, filter_fixed = FALSE, fil
   return(X)
 }
 
+lighten <- function(color, factor=0.5){
+  if ((factor > 1) | (factor < 0)) stop("factor needs to be within [0,1]")
+  col <- col2rgb(color)
+  col <- col + (255 - col)*factor
+  col <- rgb(t(as.matrix(apply(col, 1, function(x) if (x > 255) 255 else x))), maxColorValue=255)
+  col
+}
+
+
+p_value_format = function(p)
+{
+  lb = paste0("p = ", format.pval(p, eps = 0.001))
+
+  if(p < 0.001) return(paste0("p < 0.001 (***)"))
+  if(p < 0.01) return(paste0(lb, " (**)"))
+  if(p < 0.05) return(paste0(lb, " (*)"))
+
+  lb
+}
+
+# p_value_format(0.005)
