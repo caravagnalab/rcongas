@@ -4,7 +4,7 @@
 \alias{plot_segment_density}
 \title{Title}
 \usage{
-plot_segment_density(x, segment_id, ...)
+plot_segment_density(x, segments_ids, group1 = 1, group2 = 2, ...)
 }
 \arguments{
 \item{...}{}
