@@ -33,11 +33,11 @@ get_poisson_parameters <-  function(x) {
 
   bm <- get_best_model(x)
 
-  lambdas <- bm$parameters$cnv_probs * x$data$cnv$mu
+  lambdas <- apply(bm$parameters$cnv_probs, 1,function(y) y * x$data$cnv$mu)
 
   ret  <-  reshape2::melt(lambdas %>%  as.matrix)
 
-  colnames(ret) <- c("cluster", "segment_id", "lambda")
+  colnames(ret) <- c("segment_id", "cluster", "lambda")
 
   ret <-  ret %>% deidify() %>% idify()
 
