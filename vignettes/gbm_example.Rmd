@@ -206,11 +206,11 @@ p1 <- MAF_clust_plot(MGH31_SNPs_per_cell$ref, MGH31_SNPs_per_cell$tot_coverage, 
 
 ```{r}
 
-df_norm_tum <-  calculate_DE(GMB_smartseq_normal_vs_tumor, input = glioblastoma_TPM, clone1 = 3, NULL, normalize = F)
+df_norm_tum <-  calculate_DE(GMB_smartseq_normal_vs_tumor, input = glioblastoma_TPM, clone1 = 3, NULL, normalize = F, logfc.threshold = 0.2)
   
-df_5_no5 <- calculate_DE(GBM_smartseq_tumor_only, input = glioblastoma_TPM[,get_best_model(GBM_smartseq_tumor_only)$dim_names$cell_names], clone1 = 2, NULL, normalize = F)
+df_5_no5 <- calculate_DE(GBM_smartseq_tumor_only, input = glioblastoma_TPM[,get_best_model(GBM_smartseq_tumor_only)$dim_names$cell_names], clone1 = 2, NULL, normalize = F, logfc.threshold = 0.2)
   
-df_14_no14 <- calculate_DE(GMB_smartseq_normal_vs_tumor, input = glioblastoma_TPM[,get_best_model(GBM_smartseq_tumor_only)$dim_names$cell_names], clone1 = 1,3, NULL, normalize = F)
+df_14_no14 <- calculate_DE(GBM_smartseq_tumor_only, input = glioblastoma_TPM[,get_best_model(GBM_smartseq_tumor_only)$dim_names$cell_names], clone1 = 1,3, normalize = F, logfc.threshold = 0.2)
 
 
 so <- CreateSeuratObject(glioblastoma_TPM[,names(c_fin)])

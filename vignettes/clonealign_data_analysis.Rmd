@@ -137,16 +137,16 @@ df_gene <- dplyr::count(df_gene, ensembl_gene_id) %>%
   dplyr::select(-n)
 
 
-df_gene_expanded <-tidyr:: spread(df_gene, clone, copy_number)
+df_gene_expanded <- tidyr::spread(df_gene, clone, copy_number)
 
 cnv_mat <- dplyr::select(df_gene_expanded, -ensembl_gene_id, -entrezgene) %>% 
   as.matrix()
 
 rownames(cnv_mat) <- df_gene_expanded$ensembl_gene_id
 
-keep_gene <- rowMins(cnv_mat) <= 6 & rowVars(cnv_mat) > 0
+#keep_gene <- rowMins(cnv_mat) <= 6 & rowVars(cnv_mat) > 0
 
-cnv_mat <- cnv_mat[keep_gene,]
+#cnv_mat <- cnv_mat[keep_gene,]
 
 ```
 
@@ -174,9 +174,9 @@ devtools::load_all("kieranrcampbell-clonealign-4d6c340/")
 
 cal <-  clonealign(ca_data$gene_expression_data, ca_data$copy_number_data)
 
-clonealign_inf <-  dplyr::tibble(clone = cal$clone, cell = rownames(ca_data$gene_expression_data))
+clonealign_inf <-  dplyr::tibble(clone = cal$clone, cell = ca_data$retained_cells)
 
-intersection_congas_clonealign <- inner_join(get_clusters(breast_xeno_10x),clonealign_inf)
+intersection_congas_clonealign <- dplyr::inner_join(get_clusters(breast_xeno_10x),clonealign_inf)
 
 ```
 
