@@ -25,9 +25,11 @@ load("glioblastoma_TPM.rda")
 
 chr_cnv <- data.frame(chr = names(hg38_karyo), start = rep(1,length(hg38_karyo)), end = hg38_karyo, tot = rep(2, length(hg38_karyo)))
 
-express <- get_data(glioblastoma_TPM, cnv_data = chr_cnv, type = "fixed_binning")
+chr_cnv$chr <- paste0("chr", chr_cnv$chr)
 
-pheatmap::pheatmap(express$counts, cluster_cols = F,  show_rownames = F)
+express <- get_data(glioblastoma_TPM, cnv_data = chr_cnv, type = "fixed_binning", fun = mean)
+
+pheatmap::pheatmap(express$data$counts, cluster_cols = F,  show_rownames = F)
 
 
 
@@ -55,7 +57,7 @@ res <- segment_genome(MAF_l, steps = 200L, param_list = list('t'=1e-8), filter_s
 
 segs_df <- from_inference_to_segments(res, MAF_l)
 
-#segs_df$tot[segs_df$tot == 5] <- 4
+segs_df$tot[segs_df$tot == 5] <- 4
 
 segs_df_corr <- simplify_segs(segs_df)
 
@@ -66,34 +68,40 @@ ggpubr::ggarrange(plot_MAF(MAF_l, k = 5), plot_MAF(MAF_l, k = 25), align = "hv",
 
 ```{r}
 
+segs_df_corr$chr <-  paste0("chr", segs_df_corr$chr)
 
 
 binned_express <- get_data(glioblastoma_TPM, cnv_data = segs_df_corr, type = "fixed_binning", correct_bins = F, fun = mean)
 
-binned_express <- binned_express[, binned_express$cnv$mu > 50]
+binned_express$data$cnv$ploidy_real <- rep(1,nrow(binned_express$data$cnv))
+
+binned_express <- filter_segments.rcongas(binned_express, filter_mu = 50)
 
 interesting_vals <- c("5:224633:180278393", "10:3154461:133786586", "13:21086599:101294428", "14:20216560:51716188 ")
 binned_express_filt <- binned_express[,which(colnames(binned_express$counts)  %in% interesting_vals)]
 
-pheatmap::pheatmap(binned_express$counts, cluster_cols = F,  show_rownames = F, cluster_rows = T, cutree_rows = 3)
+pheatmap::pheatmap(binned_express$data$counts, cluster_cols = F,  show_rownames = F, cluster_rows = T, cutree_rows = 3)
 ```
 
 
 ```{r}
 set.seed(3)
+torch <- reticulate::import("torch")
 
-subclones <- best_cluster(binned_express, clusters = 1:4, model = "MixtureGaussianNorm", steps = 350L, lr = 0.05, param_list = list(a = 3, b = 50), method = "BIC") 
+mix_prior <-  list(NULL, torch$tensor(c(0.7,0.3)), torch$tensor(c(0.4,0.3,0.3)), torch$tensor(c(0.3,0.3,0.2,0.2)) )
+
+subclones <- best_cluster(X = binned_express, clusters = 1:4, model = "MixtureGaussianNorm", steps = 400L, lr = 0.01, param_list = list(a = 0, b = 0.5, init_sd = 0.01), method = "BIC", mixture = mix_prior) 
 
 ```
 
 ```{r}
 
-
-
+plot_counts_rna_segments(subclones, z_score = T, normalised = F)
 ```
 
 ```{r}
 load("MGH31_SNPs_per_cell.rda")
+
 all_cells <- names(subclones$models[[subclones$best_K]]$parameters$assignement)
 
 normal_cells <- all_cells[subclones$models[[subclones$best_K]]$parameters$assignement == 3]
@@ -118,8 +126,9 @@ MAF_normal <- min_normal[filter] / cov_normal[filter]
 MAF_tumor <- min_tumor[filter] / cov_tumor[filter]
 
 par(mfrow = c(2,1))
+
 plot(y = MAF_tumor[grep(names(MAF_tumor),pattern = "")], as.numeric(do.call(rbind, strsplit(names(MAF_tumor),split = ":"))[,2]))
-plot(y = MAF_normal[grep(names(MAF_normal),pattern = "")],as.numeric(do.call(rbind, strsplit(names(MAF_normal),split = "7:"))[,2]))
+plot(y = MAF_normal[grep(names(MAF_normal),pattern = "")],as.numeric(do.call(rbind, strsplit(names(MAF_normal),split = ":"))[,2]))
 ```
 
 ```{r}

@@ -323,18 +323,33 @@ param_total <-  function(param_list) {
 
 gauss_lik <-  function(data,mu,par) {
 
-  lambdas <-  lapply(1:length(par$mixture_weights), function(x) {
+  mixture_weights <- par$mixture_weights
 
 
-    lambdas <- (matrix(par$norm_factor, ncol = 1) %*% (as.numeric(par$cnv_probs[x,]) * mu)) + 1e-8
+  lambdas <-  lapply(1:length(mixture_weights), function(x) {
+
+
+    lambdas <- matrix(par$norm_factor, ncol = 1) %*% (as.numeric(par$cnv_probs[x,]) * mu)
 
     return(lambdas)
 
   })
 
-  lk <- logLikePoisMix(data, lambdas, par$mixture_weights)
+  log_lk <- matrix(nrow = nrow(data), ncol = ncol(data))
 
-  return(lk$ll)
+  for(n in 1:nrow(data)){
+    for(i in 1:ncol(data)){
+      lk <-  vector(length = length(mixture_weights))
+      for(k in 1:length(mixture_weights))
+        lk[k] <- dpois(as.numeric(data[n,i]), as.numeric(lambdas[[k]][n,i]), log = TRUE) + log(mixture_weights[k])
+      log_lk[n,i] <- log_sum_exp(lk)
+    }
+  }
+
+
+  log_lk <-  sum(log_lk)
+
+  return(log_lk)
 }
 
 
@@ -354,23 +369,49 @@ gauss_lik_with_means <-  function(data,mu,par) {
 }
 
 
+log_sum_exp <- function(x) {
+
+  c <-  max(x)
+  x <-  x - c
+
+  ret <- c + log(sum(exp(x)))
+
+  return(ret)
+}
+
 
 gauss_lik_norm <-  function(data,mu,par) {
 
-  lk <-  sapply(1:nrow(data), function(x) {
 
-    lambdas <- par$cnv_probs[par$assignement[x],]
 
-    prec <- par$norm_prec[par$assignement[x],]
+  mixture_weights <- par$mixture_weights
 
-    lk <- dnorm(as.numeric(data[x,]),mean =  as.numeric(lambdas), sd = 1/prec, log = TRUE)
-    return(sum(lk))
+  lambdas <- par$cnv_probs
 
-  })
+  data <- as.matrix(data)
 
-  log_lk <-  sum(lk)
 
-  return(log_lk)
+  sd <- par$norm_sd
+
+  log_lk <- matrix(nrow = nrow(data), ncol = ncol(data))
+
+  for(n in 1:nrow(data)){
+    for(i in 1:ncol(data)){
+      lk <-  vector(length = length(mixture_weights))
+      for(k in 1:length(mixture_weights)){
+        lk[k] <- (dnorm((data[n,i]),mean =  as.numeric(lambdas[k,i]), sd = as.numeric(sd[i]), log = T)  + log(mixture_weights[k]))
+      }
+      log_lk[n,i] <- log_sum_exp(lk)
+    }
+
+
+  }
+
+
+
+
+
+  return(sum(log_lk))
 }
 
 
@@ -379,6 +420,8 @@ calculate_BIC <-  function(inf, data, mu,llikelihood = gauss_lik) {
 
   n_param <- param_total(inf$parameters)
   log_lik <- llikelihood(data,mu,inf$parameters)
+
+  print(log_lik)
 
 
 

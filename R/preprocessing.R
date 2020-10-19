@@ -221,32 +221,6 @@ getChromosomeDF <- function(df, online = FALSE, genome = "hg38", chrs = paste0("
 
 }
 
-
-
-
-filterSC <- function(x, geneCut = 0.05, cellCut = 3000, capping = FALSE, cap_quantile = 0.95){
-
-  filt <- ncol(x) * geneCut
-  x <-  x[rowSums(x) > filt,]
-
-  x <-  x[, which(colSums(x != 0) > cellCut)]
-
-  if(capping)
-    x <-  cap_genes(x, cap_quantile)
-
-  return(x)
-
-}
-
-cap_genes <- function(x, quantile = 0.95){
-
-  x <- H13001_heat[rowMeans(x) < quantile(rowMeans(x), probs = 0.95),]
-  return(x)
-}
-
-
-
-
 get_data <- function(data, bindim = 100,chrs = paste0("chr",(1:22)), filter = NULL, fun = sum,
                      type = c("binning", "smoothing","fixed_binning"), cnv_data = NULL,
                      online = FALSE, genome = "hg38", startsWithchr = FALSE, correct_bins = TRUE, gene_filters = "hgnc_symbol", save_gene_matrix = TRUE)

@@ -27,3 +27,20 @@ deidify = function(y) {
                         sep = ":") %>%
     dplyr::mutate(from = as.integer(from), to = as.integer(to))
 }
+
+
+get_poisson_parameters <-  function(x) {
+
+  bm <- get_best_model(x)
+
+  lambdas <- bm$parameters$cnv_probs * x$data$cnv$mu
+
+  ret  <-  reshape2::melt(lambdas %>%  as.matrix)
+
+  colnames(ret) <- c("cluster", "segment_id", "lambda")
+
+  ret <-  ret %>% deidify() %>% idify()
+
+  return(ret)
+
+}
