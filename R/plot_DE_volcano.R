@@ -85,16 +85,16 @@ plot_DE_volcano <-
         ld = avg_log2FC < -cut_lfc,
         class = case_when(p & lu ~ "Upregulated",
                           p & ld ~ "Downregulated",
-                          TRUE ~ "ns")
+                          TRUE ~ "n.s.")
       )
 
     # Colors
-    colors = c("gainsboro", "indianred", 'steelblue')
-    names(colors) = c('ns', 'Upregulated', 'Downregulated')
+    colors = c("gainsboro", "darkorchid4", 'goldenrod1')
+    names(colors) = c('n.s.', 'Upregulated', 'Downregulated')
 
     # Top
     top = DE_table %>%
-      dplyr::filter(class != 'ns') %>%
+      dplyr::filter(class != 'n.s.') %>%
       dplyr::arrange(class, (p_val_adj)) %>%
       dplyr::group_by(class) %>%
       dplyr::filter(row_number() <= annotate_top)
@@ -120,7 +120,7 @@ plot_DE_volcano <-
     chr_colors =
       c(
         "#F2F3F4",
-        "#222222",
+        ggplot2::alpha("#222222", .4),
         "#F3C300",
         "#875692",
         "#F38400",
@@ -170,7 +170,7 @@ plot_DE_volcano <-
                  linetype = 'dashed') +
       geom_point(aes(color = class)) +
       geom_point(data = top, aes(color = class, fill = chr)) +
-      guides(color = guide_legend("Gene", ncol = 1)) +
+      guides(color = guide_legend("", ncol = 1)) +
       labs(y = "-log(p)",
            x = "LFC") +
       ggrepel::geom_label_repel(
@@ -183,7 +183,7 @@ plot_DE_volcano <-
         color = 'black'
       ) +
       scale_fill_manual(values = chr_colors) +
-      guides(fill = guide_legend('Chr', override.aes = list(color = NA))) +
+      guides(fill = guide_legend("", override.aes = list(color = NA))) +
       labs(
         title = paste0("DE (", group1, ' vs ', group2, " with ", test_method, ")"),
         caption = paste0(

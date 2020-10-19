@@ -4,7 +4,7 @@
 \alias{plot_chromosome}
 \title{Title}
 \usage{
-plot_chromosome(x, chr = "chr1", ...)
+plot_chromosome(x, chr = "chr1", plot = c("segments", "counts", "DE"), ...)
 }
 \arguments{
 \item{...}{}

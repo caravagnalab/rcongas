@@ -19,7 +19,7 @@
 #'
 #' @examples
 calculate_DE <-
-  function(X,
+  function(x,
            input,
            clone1,
            clone2,
@@ -28,6 +28,8 @@ calculate_DE <-
            logfc.threshold = 0.25)
   {
     # Test input corretto - data matrix e oggetto rcongas
+    stopifnot(inherits(x, "rcongas"))
+    stopifnot(!is.null(input))
 
     # Screen intro
     cli::cli_h1("Differential Expression analysis with Seurat")
@@ -50,7 +52,7 @@ calculate_DE <-
     cat("\n")
 
     # Work with the best model fit
-    best_m = get_best_model(X)
+    best_m = Rcongas:::get_best_model(x)
 
     # Create Seurat object
     require(Seurat)
@@ -83,7 +85,7 @@ calculate_DE <-
            colnames(df_genes))
 
     # Extend results with gene mapping
-    gene_ann = get_gene_annotations(X)
+    gene_ann = Rcongas::get_gene_annotations(x)
 
     df_genes$gene = rownames(df_genes)
 
@@ -95,7 +97,7 @@ calculate_DE <-
       dplyr::as_tibble() %>% dplyr::arrange(p_val_adj)
 
     # Store DE setup and results
-    X$DE = list(
+    x$DE = list(
       params = list(
         clone1 = clone1,
         clone2 = clone2,
@@ -106,12 +108,12 @@ calculate_DE <-
       table = DE
     )
 
-    n_p_sign = sum(X$DE$table$p_val_adj < 0.05, na.rm = T)
+    n_p_sign = sum(x$DE$table$p_val_adj < 0.05, na.rm = T)
 
     if(n_p_sign == 0)
       cli::cli_alert_warning("No DEG at alpha level 0.05!")
     else
       cli::cli_alert_success("Found {.field {n_p_sign}} EG at alpha level 0.05.")
 
-    return(X)
+    return(x)
   }

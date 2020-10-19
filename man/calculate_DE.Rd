@@ -5,7 +5,7 @@
 \title{Title}
 \usage{
 calculate_DE(
-  X,
+  x,
   input,
   clone1,
   clone2,

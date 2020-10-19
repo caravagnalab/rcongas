@@ -10,17 +10,21 @@
 #' @examples
 plot_gw_cna_profiles = function(x,
                                 whole_genome = FALSE,
-                                chromosomes = paste0("chr", c(1:22, "X", "Y"))
+                                chromosomes = paste0("chr", c(1:22, "X", "Y")),
+                                cutoff_p = 0.01
                                 )
 {
   # Returned plot objects
   segments_plot = NULL
 
   # Segments ploidy
-  segments = get_clones_ploidy(x, chromosomes)
+  segments = Rcongas::get_clones_ploidy(x, chromosomes)
 
   # Test for the difference
-  test_pvalue = get_segment_test_counts(x, group1 = 1, group2 = 2) %>%
+  test_pvalue = Rcongas::get_segment_test_counts(x,
+                                                 group1 = 1,
+                                                 group2 = 2,
+                                                 cutoff_p = cutoff_p) %>%
     dplyr::filter(sign) %>%
     dplyr::filter(chr %in% chromosomes)
 
@@ -35,7 +39,7 @@ plot_gw_cna_profiles = function(x,
   if (whole_genome)
   {
     # plain chr plot like in CNAqc
-    plain_plot = get_plain_chrplot(x$reference_genome, chromosomes)
+    plain_plot = Rcongas:::get_plain_chrplot(x$reference_genome, chromosomes)
 
     # Add test_pvalue info
     if(nrow(test_pvalue > 0))
@@ -53,7 +57,8 @@ plot_gw_cna_profiles = function(x,
         ),
         fill = shading_color,
         alpha = .2
-      )
+      ) +
+        labs(caption = paste0("Shaded area: Poisson test significant at level ", cutoff_p))
     }
 
     # Adjustment for the view
@@ -94,7 +99,8 @@ plot_gw_cna_profiles = function(x,
           ),
           fill = shading_color,
           alpha = .2
-        )
+        ) +
+        labs(caption = paste0("Shaded area: Poisson test significant at level ", cutoff_p))
     }
 
     segments_plot = segments_plot +
