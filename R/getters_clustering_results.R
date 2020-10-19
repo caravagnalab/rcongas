@@ -84,8 +84,8 @@ get_clusters_size = function(x, normalised = FALSE)
   v = as.vector(n)
   names(v) = names(n)
 
-  if(normalised)
-    v = v/sum(v)
+  if (normalised)
+    v = v / sum(v)
 
   return(v)
 }
@@ -100,16 +100,35 @@ get_clusters_size = function(x, normalised = FALSE)
 #' @export
 #'
 #' @examples
-get_clusters = function(x, clusters = NULL)
+get_clusters = function(x,
+                        clusters = NULL,
+                        cut_znk = 0)
 {
   # TODO - take all assingments with z_nk > c, c >= 0
-  best_model = get_best_model(x)
+  best_model = Rcongas:::get_best_model(x)
 
   clusters_table = data.frame(
     cell = names(best_model$parameters$assignement),
     cluster = paste(best_model$parameters$assignement),
     stringsAsFactors = FALSE
   ) %>%
+    as_tibble()
+
+  # Latent variables
+  z_nk = best_model$parameters$assignment_probs %>%  as.data.frame()
+  colnames(z_nk) = Rcongas::get_clusters_size(x) %>% names
+
+  z_nk$p_assignment = unlist(apply(z_nk, 1, function(x) {
+    max(x, na.rm = TRUE)
+  }))
+
+  z_nk$cell = rownames(z)
+
+  clusters_table = clusters_table %>%
+    full_join(z_nk, by = "cell") %>%
+    dplyr::mutate(
+      cluster = ifelse(p_assignment > cut_znk, cluster, NA)
+      ) %>%
     as_tibble()
 
   if (!is.null(clusters))
@@ -151,23 +170,22 @@ get_k = function(x)
 get_segment_test_counts = function(x, group1, group2, cutoff_p = 0.01)
 {
   counts = get_counts(x) %>% idify() %>% dplyr::group_split(segment_id)
-  names_counts = sapply(counts, function(x) x$segment_id[1])
+  names_counts = sapply(counts, function(x)
+    x$segment_id[1])
 
   ntests = length(counts)
 
   # Test every segment
-  tests = sapply(counts, function(count_segment){
+  tests = sapply(counts, function(count_segment) {
     gr1 = count_segment %>% dplyr::filter(cluster %in% !!group1)
     gr2 = count_segment %>% dplyr::filter(cluster %in% !!group2)
 
     wilcox.test(gr1$n, gr2$n)$p.value * ntests
   })
 
-  data.frame(
-    segment_id = names_counts,
-    p = tests,
-    stringsAsFactors = FALSE
-  ) %>%
+  data.frame(segment_id = names_counts,
+             p = tests,
+             stringsAsFactors = FALSE) %>%
     deidify() %>%
     as_tibble() %>%
     arrange(p) %>%

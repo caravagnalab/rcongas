@@ -4,7 +4,7 @@
 \alias{get_clusters}
 \title{Title}
 \usage{
-get_clusters(x, clusters = NULL)
+get_clusters(x, clusters = NULL, cut_znk = 0)
 }
 \arguments{
 \item{cluster_label}{}
