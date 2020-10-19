@@ -1,25 +1,37 @@
 plot_inference_report <-  function(x){
 
-  best_model <- get_best_model(x)
+  Z_post <- !is_MAP_Z(x)
+  CN_post <- !is_MAP_CN(x)
 
-
+  if(Z_post & CN_post) { return(plot_inference_report_1(x) )}
+  else if (!Z_post & CN_post) {return(plot_inference_report_2(x))}
+  else if(Z_post & !CN_post) {return(plot_inference_report_3(x))}
+  else if(!Z_post & !CN_post) {return(plot_inference_report_4(x))}
 }
 
 
-plot_inference_report_1 <-  function() {
+plot_inference_report_1 <-  function(x) {
+
+  p1 <- cowplot::plot_grid(plot_loss(x),plot_normalization_factors(x), nrow = 1, labels = c("A", "B"))
+  return(cowplot::plot_grid(p1, plot_CNV_distribution(x), plot_latent_variables(x), nrow =3, labels = c("","C", "D")))
 
 }
 
-plot_inference_report_2 <-  function() {
+plot_inference_report_2 <-  function(x) {
+  p1 <- cowplot::plot_grid(plot_loss(x),plot_normalization_factors(x), nrow = 1, labels = c("A", "B"))
+  return(cowplot::plot_grid(p1, plot_CNV_distribution(x), nrow = 2, labels = c("", "C")))
 
 }
 
-plot_inference_report_3 <-  function() {
+plot_inference_report_3 <-  function(x) {
+
+  p1 <- cowplot::plot_grid(plot_loss(x),plot_normalization_factors(x), nrow = 1, labels = c("A", "B"))
+  return(cowplot::plot_grid(p1, plot_latent_variables(x), nrow = 2, labels = c("", "C")))
 
 }
 
-plot_inference_report_4 <-  function() {
-
+plot_inference_report_4 <-  function(x) {
+  return(cowplot::plot_grid(plot_loss(x),plot_normalization_factors(x), nrow = 1, labels = c("A", "B")))
 }
 
 
@@ -33,23 +45,12 @@ plot_loss <- function(x){
 
 plot_normalization_factors <- function(x){
   best_model <- get_best_model(x)
-  ggplot(data = best_model$parameters$norm_factor  %>% as_tibble %>% dplyr::mutate(clust = get_cluster_assignments(x)), aes(x = value, fill = clust)) + geom_histogram(bins = 60) +
-    ggtitle("Distribution of library size factors") + xlab("Library size factor") + CNAqc:::my_ggplot_theme()
+  ggplot(data = best_model$parameters$norm_factor  %>% as_tibble %>% dplyr::mutate(clust = get_cluster_assignments(x)), aes(x = value, fill = paste(clust))) + geom_histogram(bins = 60) +
+    ggtitle("Distribution of library size factors") + xlab("Library size factor") + CNAqc:::my_ggplot_theme() + scale_fill_discrete("Cluster", get_clusters_colors(get_cluster_assignments(x)))
 
 }
 
 
-plot_posterior_probabilities <- function(x) {
-  best_model <- get_best_model(x)
-  posteriors <- get_assignment_probs(x) %>% reshape2::melt() %>% arrange(Var2, value)
-
-  ggplot(data = posteriors, aes(x = factor(Var1), y = paste(Var2), fill = value)) +
-    geom_tile() + ggtitle("Posterior assignment probability") + xlab("cells")
-    CNAqc:::my_ggplot_theme() + theme(axis.title.x=element_blank(),
-                                              axis.text.x=element_blank(),
-                                              axis.ticks.x=element_blank())
-
-}
 
 
 plot_CNV_distribution <- function(x, density_points = 500, xlims = c(0.1,5)) {

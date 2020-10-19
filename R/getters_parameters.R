@@ -27,7 +27,7 @@ get_CNV_sd <- function(x) {
 
 get_cluster_assignments <- function(x) {
   best_model <-  get_best_model(x)
-  return(paste(best_model$parameters$assignement))
+  return(best_model$parameters$assignement)
 
 }
 

@@ -27,7 +27,9 @@ plot_latent_variables = function(x, cutoff_assignment = 0)
   )
   colnames(lv) = c("Point", "Cluster", "Value")
 
-  ggplot(lv, aes(x = Cluster, y = Point, fill = Value)) + geom_raster() +
+  lv <-  lv %>% dplyr::arrange(Cluster, Value)
+
+  ggplot(lv, aes(x = Point, y = Cluster, fill = Value)) + geom_raster() +
     scale_fill_viridis_c(direction = -1) + mobster:::my_ggplot_theme() +
     guides(
       fill = guide_colorbar(bquote(z["nk"] ~ " "), barwidth = unit(3,"cm"))

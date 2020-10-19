@@ -36,6 +36,7 @@ get_counts <-
 
 
     if (normalise){
+
       for (i in 1:ncol(data_matrix))
         data_matrix[,i] = data_matrix[,i] / best_model$parameters$norm_factor
     }

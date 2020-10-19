@@ -21,7 +21,7 @@ genes <- read.table("clonealign-processed-data/SA501/10X/20171026_SA501X2XB00096
   
 barcodes <-  read.table("clonealign-processed-data/SA501/10X/20171026_SA501X2XB00096/outs/filtered_gene_bc_matrices/hg19/barcodes.tsv")
 
-colnames(counts_SA) <-  genes$V2
+colnames(counts_SA) <-  genes$V1
 
 rownames(counts_SA) <- barcodes$V1
 
@@ -99,21 +99,19 @@ inp4 <- inp4[,!is.na(inp4$cnv$mu) & inp4$cnv$mu > 5]
 library(TxDb.Hsapiens.UCSC.hg19.knownGene)
 library(Rfast)
 
-df_cnv_A <- read.csv("clonealign-processed-data/SA501/cnv/SA501X3F-cluster_A.segments.csv")
-df_cnv_B <- read.csv("clonealign-processed-data/SA501/cnv/SA501X3F-cluster_B.segments.csv")
-df_cnv_C <- read.csv("clonealign-processed-data/SA501/cnv/SA501X3F-cluster_C.segments.csv")
+#df_cnv_A <- read.csv("clonealign-processed-data/SA501/cnv/SA501X3F-cluster_A.segments.csv")
+#df_cnv_B <- read.csv("clonealign-processed-data/SA501/cnv/SA501X3F-cluster_B.segments.csv")
+#df_cnv_C <- read.csv("clonealign-processed-data/SA501/cnv/SA501X3F-cluster_C.segments.csv")
 
-df_cnv_AB <- rbind(df_cnv_A, df_cnv_B)
+df_cnv_AB <- rbind(df_cnv_A %>% dplyr::mutate(clone = "A"), df_cnv_B%>% dplyr::mutate(clone = "B"))
+df_cnv <- df_cnv_AB
 
-df_cnv <- rbind(df_cnv_AB, df_cnv_C)
-
-df_cnv$clone <- rep(c("A", "B", "C"), c(nrow(df_cnv_A), nrow(df_cnv_B), nrow(df_cnv_C)))
 
 txdb <- TxDb.Hsapiens.UCSC.hg19.knownGene
 
 g <- genes(txdb, single.strand.genes.only=FALSE)
 
-df_cnv <- mutate(df_cnv, chr = paste0("chr", chr))
+df_cnv <- dplyr::mutate(df_cnv, chr = paste0("chr", chr))
 
 cnv_gr <- makeGRangesFromDataFrame(df_cnv, keep.extra.columns = TRUE)
 
@@ -131,15 +129,15 @@ entrezgene_ensembl_map <- lapply(entrezgene_ensembl_map, `[`, 1)
 df_gene <- dplyr::filter(df_gene, entrezgene %in% names(entrezgene_ensembl_map)) %>% 
   dplyr::mutate(ensembl_gene_id = unlist(entrezgene_ensembl_map[entrezgene])) %>% 
   dplyr::select(ensembl_gene_id, entrezgene, copy_number, clone) %>% 
-  drop_na()
+  tidyr::drop_na()
 
 df_gene <- dplyr::count(df_gene, ensembl_gene_id) %>% 
-  filter(n == length(unique(df_gene$clone))) %>% 
-  inner_join(df_gene) %>% 
+  dplyr::filter(n == length(unique(df_gene$clone))) %>% 
+  dplyr::inner_join(df_gene) %>% 
   dplyr::select(-n)
 
 
-df_gene_expanded <- spread(df_gene, clone, copy_number)
+df_gene_expanded <-tidyr:: spread(df_gene, clone, copy_number)
 
 cnv_mat <- dplyr::select(df_gene_expanded, -ensembl_gene_id, -entrezgene) %>% 
   as.matrix()
@@ -155,26 +153,37 @@ cnv_mat <- cnv_mat[keep_gene,]
 
 ```{r}
 
+devtools::unload("clonealign")
 
 library(clonealign)
 library(SingleCellExperiment)
 
 
-
-#sce <- SingleCellExperiment(list(counts = t(as.matrix(counts_SA))) )
+sce <- SingleCellExperiment(list(counts = t(as.matrix(counts_SA))) )
 
 cgenes <-  intersect(colnames(counts_SA), rownames(cnv_mat))
 
-ca_data <- preprocess_for_clonealign(counts_SA[,cgenes], cnv_mat[cgenes,])
+ca_data <- clonealign::preprocess_for_clonealign(counts_SA[,cgenes], cnv_mat[cgenes,])
 
-cal <- run_clonealign(ca_data$gene_expression_data, ca_data$copy_number_data)
-library(tensorflow)
-#install_tensorflow(version = 1.5)
+cal <- clonealign::run_clonealign(ca_data$gene_expression_data, ca_data$copy_number_data)
+#library(tensorflow)
+install_tensorflow(version = 1.5)
 
 
 devtools::load_all("kieranrcampbell-clonealign-4d6c340/")
 
 cal <-  clonealign(ca_data$gene_expression_data, ca_data$copy_number_data)
 
+clonealign_inf <-  dplyr::tibble(clone = cal$clone, cell = rownames(ca_data$gene_expression_data))
+
+intersection_congas_clonealign <- inner_join(get_clusters(breast_xeno_10x),clonealign_inf)
+
+```
+
+```{r}
+AB <- rbind(df_cnv_A%>%  mutate(c = "A"), df_cnv_B %>%  mutate(c = "B", integer_copy_number = integer_copy_number -0.1)) 
+ABC <- rbind(AB, df_cnv_C %>%  mutate(c = "C", integer_copy_number = integer_copy_number - 0.2)) 
+
+ggplot(ABC %>% filter(chr == 15)) + geom_segment(aes(x = start, y = integer_copy_number, xend = end, yend = integer_copy_number, color = c))
 ```
 

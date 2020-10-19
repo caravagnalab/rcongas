@@ -32,7 +32,6 @@ express <- get_data(glioblastoma_TPM, cnv_data = chr_cnv, type = "fixed_binning"
 pheatmap::pheatmap(express$data$counts, cluster_cols = F,  show_rownames = F)
 
 
-
 ```
 
 We can see a fairly variagate landscape, with some interesting changes in chromosomes 9,14 and maybe 13. Now let's segment the genome.
@@ -77,8 +76,7 @@ binned_express$data$cnv$ploidy_real <- rep(1,nrow(binned_express$data$cnv))
 
 binned_express <- filter_segments.rcongas(binned_express, filter_mu = 50)
 
-interesting_vals <- c("5:224633:180278393", "10:3154461:133786586", "13:21086599:101294428", "14:20216560:51716188 ")
-binned_express_filt <- binned_express[,which(colnames(binned_express$counts)  %in% interesting_vals)]
+LOH <- grep(binned_express$data$cnv$segment_id, pattern = "chr1[0|3|4]:", value = T, perl = T)
 
 pheatmap::pheatmap(binned_express$data$counts, cluster_cols = F,  show_rownames = F, cluster_rows = T, cutree_rows = 3)
 ```
@@ -90,7 +88,7 @@ torch <- reticulate::import("torch")
 
 mix_prior <-  list(NULL, torch$tensor(c(0.7,0.3)), torch$tensor(c(0.4,0.3,0.3)), torch$tensor(c(0.3,0.3,0.2,0.2)) )
 
-subclones <- best_cluster(X = binned_express, clusters = 1:4, model = "MixtureGaussianNorm", steps = 400L, lr = 0.01, param_list = list(a = 0, b = 0.5, init_sd = 0.01), method = "BIC", mixture = mix_prior) 
+subclones <- best_cluster(X = binned_express, clusters = 1:4, model = "MixtureGaussianNorm", steps = 400L, lr = 0.01, param_list = list(a = 0, b = 0.8, init_sd = 0.01), method = "AIC", mixture = mix_prior, posteriors = T) 
 
 ```
 
@@ -100,12 +98,12 @@ plot_counts_rna_segments(subclones, z_score = T, normalised = F)
 ```
 
 ```{r}
-load("MGH31_SNPs_per_cell.rda")
+#load("MGH31_SNPs_per_cell.rda")
 
-all_cells <- names(subclones$models[[subclones$best_K]]$parameters$assignement)
+all_cells <- names(get_cluster_assignments(subclones))
 
-normal_cells <- all_cells[subclones$models[[subclones$best_K]]$parameters$assignement == 3]
-tumor_cells <- all_cells[subclones$models[[subclones$best_K]]$parameters$assignement != 3]
+normal_cells <- all_cells[get_cluster_assignments(subclones) == 3]
+tumor_cells <- all_cells[get_cluster_assignments(subclones) != 3]
 
 
 ref_normal <- rowSums(MGH31_SNPs_per_cell$ref[,normal_cells])
@@ -144,7 +142,7 @@ MAF <- min_tumor[good_sites] / cov_tumor[good_sites]
 
 MAF <-  MAF[MAF > 0.10]
 
-MAF <-  MAF[grep(names(MAF), pattern = "10:|14:|13:|19:",invert = T)]
+MAF <-  MAF[grep(names(MAF), pattern = "chr1[0|4|3]:",invert = T)]
 
 MAF_l <- MAF %>% dplyr::as_tibble(rownames = "pos") %>% tidyr::separate(pos, c("chr", "start"))
 
@@ -164,86 +162,55 @@ ggpubr::ggarrange(plot_MAF(MAF_l, k = 5), plot_MAF(MAF_l, k = 11), align = "hv",
 ```
 
 ```{r}
-binned_express2 <- get_data(glioblastoma_TPM, cnv_data = segs_df_corr2, type = "fixed_binning", correct_bins = F, fun = mean)
+segs_df_corr2$chr <-  paste0("chr", segs_df_corr2$chr)
 
-binned_express2 <- binned_express2[, binned_express2$cnv$mu > 50]
-
-
-LOH <- c("10:3154461:133786586", "13:21086599:101294428", "14:20216560:51716188")
-
-
-#binned_express_filt2 <- binned_express2[,which(colnames(binned_express2$counts)  %in% interesting_vals)]
+binned_express2 <- get_data(glioblastoma_TPM[,tumor_cells], cnv_data = segs_df_corr2, type = "fixed_binning", correct_bins = F, fun = mean, chrs = paste0("chr", 1:22)[-11])
 
 
 
-final_expr <- bind_confettti(binned_express2[,grep(colnames(binned_express2$counts),pattern = "11:", invert = T)], binned_express[1:75,which(colnames(binned_express$counts)  %in% LOH)]) 
+binned_express2$data$cnv$ploidy_real <- rep(1,nrow(binned_express2$data$cnv))
+
+binned_express2 <- filter_segments.rcongas(binned_express2, filter_mu = 50)
 
 
-pheatmap::pheatmap(final_expr$counts, cluster_cols = F,  show_rownames = F, cluster_rows = T, cutree_rows = 3)
+final_expr <- bind_rcongas_data(binned_express2, binned_express[tumor_cells,which(colnames(binned_express$data$counts)  %in% LOH)]) 
+
+
+pheatmap::pheatmap(final_expr$data$counts, cluster_cols = F,  show_rownames = F, cluster_rows = T, cutree_rows = 3)
 ```
 
 ```{r}
 set.seed(3)
 
-#init_gauss <- kmeans_inits(final_expr)
 
-subclones2 <- best_cluster(final_expr[tumor_cells,], clusters = 1:4, model = "MixtureGaussianNorm", steps = 300L, lr = 0.1, param_list = list(a = 9, b = 50), method = "BIC", filt_merge = 0.1) 
+subclones2 <- best_cluster(final_expr[tumor_cells,], clusters = 1:4, model = "MixtureGaussianNorm", steps = 500L, lr = 0.01, param_list = list(a = 0, b = 1, init_sd = 0.01), method = "AIC") 
 ```
 
 
 ```{r}
 
-best_model2 <- subclones2$models[[4]]
-row_annot <- as.data.frame(factor(best_model2$parameters$assignement))
-colnames(row_annot) <-  "cluster"
 
-pheatmap::pheatmap(final_expr$counts[names(sort(best_model2$parameters$assignement)),], cluster_cols = F,  show_rownames = F, cluster_rows = F,annotation_row = row_annot, gaps_row = which(!duplicated(sort(row_annot$cluster))) - 1)
 
+plot_counts_rna_segments(subclones2, z_score = T, normalised = F)
 ```
 
 
 ```{r}
 
-c1_3 <- round(best_model2$parameters$cnv_probs[1,] - best_model2$parameters$cnv_probs[3,] + 0.1)
-c2_3 <- round(best_model2$parameters$cnv_probs[2,] - best_model2$parameters$cnv_probs[3,] + 0.1)
-c1_4 <- round(best_model2$parameters$cnv_probs[1,] - best_model2$parameters$cnv_probs[4,] + 0.1)
+p1 <- MAF_clust_plot(MGH31_SNPs_per_cell$ref, MGH31_SNPs_per_cell$tot_coverage, names(best_model2$parameters$assignement[best_model2$parameters$assignement == 2]) , names(best_model2$parameters$assignement[best_model2$parameters$assignement!= 2]) ,"^5:", filt = 20, labels = c("2", "1"))
 
-c1 <- round(best_model2$parameters$cnv_probs[1,] + ifelse(best_model2$parameters$cnv_probs[1,] > 0, 0.15, -0.25 ))
-c2 <- round(best_model2$parameters$cnv_probs[2,] + ifelse(best_model2$parameters$cnv_probs[2,] > 0, 0.15, -0.25 ))
-c3 <- round(best_model2$parameters$cnv_probs[3,] + ifelse(best_model2$parameters$cnv_probs[3,] > 0, 0.15, -0.25 ))
-c4 <- round(best_model2$parameters$cnv_probs[4,] + ifelse(best_model2$parameters$cnv_probs[4,] > 0, 0.15, -0.35 ))
+
+
+
+```
+
+```{r}
+
+df_norm_tum <-  calculate_DE(GMB_smartseq_normal_vs_tumor, input = glioblastoma_TPM, clone1 = 3, NULL, normalize = F)
   
-
-bin_mat <- rbind("1" = c1, "2" = c2, "3" = c3, "4" = c4)
-bin_mat <- bin_mat[, gtools::mixedorder(colnames(bin_mat))]
-bin_mat[,c(6,11,19,13)] <- 0
-bin_mat[c(1,3,4),20] <- 1
-
-pheatmap::pheatmap(bin_mat, cluster_cols = F, treeheight_row = 100, clustering_distance_rows = "binary")
-
-```
-```{r}
-
-p1 <- MAF_clust_plot(MGH31_SNPs_per_cell$ref, MGH31_SNPs_per_cell$tot_coverage, names(best_model2$parameters$assignement[best_model2$parameters$assignement == 1]) , names(best_model2$parameters$assignement[best_model2$parameters$assignement==2]) ,"^5:", filt = 20, labels = c("2", "1"))
-
-p2 <- MAF_clust_plot(MGH31_SNPs_per_cell$ref, MGH31_SNPs_per_cell$tot_coverage, names(best_model2$parameters$assignement[best_model2$parameters$assignement == 2]) , names(best_model2$parameters$assignement[best_model2$parameters$assignement==1]) ,"^13:", filt = 20, labels = c("4", "1"))
-
-p3 <- MAF_clust_plot(MGH31_SNPs_per_cell$ref, MGH31_SNPs_per_cell$tot_coverage, names(best_model2$parameters$assignement[best_model2$parameters$assignement == 3]) , names(best_model2$parameters$assignement[best_model2$parameters$assignement==1]) ,"^14:", filt = 20, labels = c("3", "1"))
-
-p4 <- MAF_clust_plot(MGH31_SNPs_per_cell$ref, MGH31_SNPs_per_cell$tot_coverage, names(best_model2$parameters$assignement[best_model2$parameters$assignement == 2]) , names(best_model2$parameters$assignement[best_model2$parameters$assignement==1]) ,"^20:", filt = 20, labels = c("2", "1"))
-
-
-ggpubr::ggarrange(p1,p2,p3,p4, ncol=2, nrow = 2, labels = c("5", "13", "14", "20"))
-
-```
-
-```{r}
-
-df_norm_tum <-  calculate_DGE(best_model, glioblastoma_TPM, clone1 = 1, clone2 = 2, normalize = F)
+df_5_no5 <- calculate_DE(GBM_smartseq_tumor_only, input = glioblastoma_TPM[,get_best_model(GBM_smartseq_tumor_only)$dim_names$cell_names], clone1 = 2, NULL, normalize = F)
   
-df_5_no5 <- calculate_DGE(best_model2, glioblastoma_TPM[,best_model2$dim_names$cell_names], clone1 = 2, clone2 = NULL, normalize = F)
-  
-df_14_no14 <- calculate_DGE(best_model2, glioblastoma_TPM[,best_model2$dim_names$cell_names], clone1 = 1, clone2 = 3, normalize = F)
+df_14_no14 <- calculate_DE(GMB_smartseq_normal_vs_tumor, input = glioblastoma_TPM[,get_best_model(GBM_smartseq_tumor_only)$dim_names$cell_names], clone1 = 1,3, NULL, normalize = F)
 
 
 so <- CreateSeuratObject(glioblastoma_TPM[,names(c_fin)])
@@ -276,14 +243,6 @@ so2@meta.data$clust2  <- best_model2$parameters$assignement
 
 
 vp2 <- VlnPlot(so, features = c("KCNMB4", "CLDN11" ,"MOG","CD63" ,"PSMA7" ,"SOD1" , "EGFR" , "C1S", "SYNE2" ),  group.by = "clust1", pt.size = 0.5)
-```
-
-```{r}
-
-
-
-
-
 ```
 
 

@@ -230,12 +230,12 @@ simplify_segs <-  function(df) {
 }
 
 
-bind_confettti <-  function(a,b){
+bind_rcongas_data <-  function(a,b){
 
   res <- a
-  a$counts <- cbind(a$counts, b$counts)
-  a$cnv <-   rbind(a$cnv, b$cnv)
-  a$bindim <-   cbind(a$bindim, b$bindim)
+  a$data$counts <- cbind(a$data$counts, b$data$counts)
+  a$data$cnv <-   rbind(a$data$cnv, b$data$cnv)
+  a$data$bindim <-   cbind(a$data$bindim, b$data$bindim)
   return(a)
 
 }

@@ -47,7 +47,7 @@ print.rcongas = function(x, ...)
     paste("{", symbol, "}", m)
   }
 
-
+  if(!has_inference(x)) return()
   pi = (stats_data$clusters_pi * 100) %>% round(2)
 
   for (i in names(stats_data$clusters_n))
@@ -101,3 +101,35 @@ plot.rcongas = function(x, ...)
   # default plot
   plot_gw_cna_profiles(x, whole_genome = TRUE)
 }
+
+
+
+`[.rcongas` <- function(x,i,j) {
+
+  x$data$counts <-  x$data$counts[i,j]
+  x$data$bindims <-  x$data$bindims[i,j]
+  x$data$cnv <- x$data$cnv[j,]
+  gene_to_retain <- inner_join(x$data$cnv, x$data$gene_locations, by = "segment_id") %>% pull(gene)
+
+  x$data$gene_counts <- x$data$gene_counts[which(rownames(x$data$gene_counts) %in% gene_to_retain), i]
+
+  if(has_inference(x)){
+    for(j in length(x$inference$model_selection$clusters)){
+
+      cm <- x$inference$models[[j]]
+      cm$parameters$cnv_probs <- cm$parameters$cnv_probs[,j]
+      cm$parameters$norm_factor <- cm$parameters$norm_factor[i]
+      cm$parameters$assignement <- cm$parameters$assignement[i]
+      if(is_MAP_Z(x)){
+        cm$parameters$assignment_probs <-  cm$parameters$assignment_probs[i,]
+      }
+      x$inference$models[[j]] <-  cm
+    }
+  }
+
+  return(x)
+}
+
+
+
+
