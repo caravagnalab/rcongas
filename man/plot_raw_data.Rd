@@ -9,7 +9,8 @@ plot_raw_data(
   genes,
   description = "My CONGAS model",
   clusters = NULL,
-  prompt = TRUE
+  prompt = TRUE,
+  ...
 )
 }
 \arguments{

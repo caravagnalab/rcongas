@@ -13,7 +13,7 @@
 #'   clusters = get_clusters(rcongas_example)
 #'   description = get_model_description(rcongas_example)
 
-plot_raw_data = function(x, genes, description = "My CONGAS model", clusters = NULL, prompt = TRUE)
+plot_raw_data = function(x, genes, description = "My CONGAS model", clusters = NULL, prompt = TRUE, ...)
 {
   # xdim(x)
   # genes = get_gene_annotations(rcongas_example)$gene[1:1000]
@@ -81,7 +81,8 @@ plot_raw_data = function(x, genes, description = "My CONGAS model", clusters = N
     annotation_colors = list(
       Cluster = get_clusters_colors(annotation_columns$Cluster)
     ),
-    main = paste0(description, " log-transformed counts")
+    main = paste0(description, " log-transformed counts"),
+    ...
   )
 }
 #

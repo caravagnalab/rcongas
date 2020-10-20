@@ -10,7 +10,7 @@
 plot_latent_variables = function(x, cutoff_assignment = 0)
 {
   assignments = Rcongas::get_clusters(x, cut_znk = cutoff_assignment) %>%
-    dplyr::arrange(cluster)
+    dplyr::arrange(cluster, p_assignment)
 
   clusters_table = assignments %>%
     dplyr::select(-p_assignment,-cell)
