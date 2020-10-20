@@ -218,9 +218,7 @@ plot_CNV_distribution <-
   }
 
 plot_CNV_MAP <-
-  function(x,
-           density_points = 500,
-           xlims = c(0.1, 5)) {
+  function(x) {
     best_model <- Rcongas:::get_best_model(x)
 
     cnv_mean <-

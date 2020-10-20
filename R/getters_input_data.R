@@ -28,17 +28,27 @@ get_model_description = function(x)
 get_counts <-
   function(x,
            chromosomes = paste0("chr", c(1:22, "X", "Y")),
-           normalise = TRUE, z_score = FALSE)
+           normalise = TRUE,
+           z_score = FALSE)
   {
-    best_model <- get_best_model(x)
+    best_model <- Rcongas:::get_best_model(x)
 
     data_matrix = x$data$counts
 
 
     if (normalise){
 
+      normalisation_factors = best_model$parameters$norm_factor
+
+      # Handle this special case which happens for already normalised data
+      if(is.null(normalisation_factors)) {
+        warning("normalisation_factors are NULL - replacing them with all 1s. Maybe you're using normalised data.")
+
+        normalisation_factors = rep(1, ncol(data_matrix))
+      }
+
       for (i in 1:ncol(data_matrix))
-        data_matrix[,i] = data_matrix[,i] / best_model$parameters$norm_factor
+        data_matrix[,i] = data_matrix[,i] / normalisation_factors
     }
 
     if(z_score){

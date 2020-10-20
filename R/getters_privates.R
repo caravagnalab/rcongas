@@ -12,8 +12,12 @@ get_best_model <- function(X) {
   X$inference$models[[X$inference$model_selection$best_K]]
 }
 
-
-
+get_congas_model_used = function(x)
+{
+  # MixtureGaussian
+  # MixtureGaussianNorm
+  # HmmSegmenter
+}
 
 
 # Key creation and decrypt

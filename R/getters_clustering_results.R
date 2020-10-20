@@ -170,6 +170,16 @@ get_k = function(x)
 #' @examples
 get_segment_test_counts = function(x, group1, group2, cutoff_p = 0.01)
 {
+  # Type of model used
+  # - MixtureGaussian
+  # - MixtureGaussianNorm
+  # - HmmSegmenter
+  type_of_model = Rcongas:::get_congas_model_used(x)
+
+  if(type_of_model == "HmmSegmenter") stop("Cannot do any test for the HMM segementer..")
+
+
+  # ..
   counts = get_counts(x) %>% Rcongas:::idify() %>% dplyr::group_split(segment_id)
   names_counts = sapply(counts, function(x)
     x$segment_id[1])
