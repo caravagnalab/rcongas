@@ -1,6 +1,6 @@
 plot_inference_report <-  function(x) {
-  Z_post <- !Rcongas:::is_MAP_Z(x)
-  CN_post <- !Rcongas:::is_MAP_CN(x)
+  Z_post <- Rcongas:::is_MAP_Z(x)
+  CN_post <- Rcongas:::is_MAP_CN(x)
 
   if (Z_post & CN_post) {
     return(plot_inference_report_1(x))
@@ -206,7 +206,7 @@ plot_CNV_distribution <-
              fill = quantile
            )) +
       ggridges::geom_density_ridges_gradient(stat = "identity", size = 0.01) + facet_wrap( ~
-                                                                                             segment, scales = "free_x") + xlab("CNV mean") + ylab("cluster") +
+                                                                                             segment, scales = "free_y") + xlab("CNV mean") + ylab("cluster") +
       CNAqc:::my_ggplot_theme() + scale_fill_manual(
         name = "Probability",
         values = c("#FF0000A0", "#A0A0A0A0", "#FF0000A0"),

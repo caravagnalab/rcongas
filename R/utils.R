@@ -378,3 +378,15 @@ p_value_format = function(p)
 }
 
 # p_value_format(0.005)
+
+from_MAP_to_post <- function(df) {
+
+  ncols <- length(unique(df$value))
+  res <- matrix(ncol = ncols, nrow = nrow(df))
+  for(cols in seq_len(ncols))
+    res[,cols] <-  ifelse(df$value == cols, 1, 0)
+  rownames(res) <- rownames(df)
+  colnames(res) <-  paste(1:ncols)
+  return(res)
+
+}

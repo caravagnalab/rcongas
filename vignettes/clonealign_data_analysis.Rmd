@@ -21,7 +21,7 @@ genes <- read.table("clonealign-processed-data/SA501/10X/20171026_SA501X2XB00096
   
 barcodes <-  read.table("clonealign-processed-data/SA501/10X/20171026_SA501X2XB00096/outs/filtered_gene_bc_matrices/hg19/barcodes.tsv")
 
-colnames(counts_SA) <-  genes$V1
+colnames(counts_SA) <-  genes$V2
 
 rownames(counts_SA) <- barcodes$V1
 
@@ -44,10 +44,12 @@ clones_dataA <- read.csv("clonealign-processed-data/SA501/cnv/SA501X3F-cluster_A
 clones_dataA$tot <-  clones_dataA$integer_copy_number
 clones_dataA$chr <- paste0("chr", clones_dataA$chr)
 
-inp2 <-  get_data(t(mat_pre), cnv_data = clones_dataA, type = "fixed_binning", startsWithchr = F,  correct_bins = T, genome = "hg19")
+inp2 <-  get_data(t(mat_pre), cnv_data = clones_dataA, type = "fixed_binning", startsWithchr = F,  correct_bins = F, genome = "hg19", custom_gene_matrix = counts_SA)
 
 
-inp3 <- filter_segments.rcongas(X = inp2, filter_mu = 30)
+inp3 <- filter_segments.rcongas(X = inp2, filter_mu = 10)
+
+
 
 pheatmap::pheatmap(((inp3$data$counts / colSums(t(mat_pre))) ) / inp3$data$cnv$ploidy_real, show_rownames = F, show_colnames = T, cluster_cols = F, cutree_rows = 2)
 
@@ -59,16 +61,16 @@ pheatmap::pheatmap(((inp3$data$counts / colSums(t(mat_pre))) ) / inp3$data$cnv$p
 
 ```{r}
 set.seed(3)
-res <- best_cluster(inp3,model = "MixtureGaussian", clusters = 1:4, steps = 800, lr = 0.01, param_list = list("theta_scale" = 3.2, "theta_rate" = 1, "cnv_var" = 0.50) , method = "BIC", filt_merge = 0.8, MAP = T, posteriors = F)
+res <- best_cluster(inp3,model = "MixtureGaussian", clusters = 1:4, steps = 800, lr = 0.01, param_list = list("theta_scale" = 3.2, "theta_rate" = 1, "cnv_var" = 0.50) , method = "BIC",  MAP = T, posteriors = F)
 
-res <-  filter_clusters(res)
+res_filt <-  filter_clusters(res, abundance = 0.1)
 ```
 
 
 
 ```{r}
 
-plot_counts_rna_segments(res, z_score = T)
+plot_counts_rna_segments(res_filt, z_score = T, normalised = T)
 
 ```
 
@@ -176,16 +178,28 @@ cal <-  clonealign(ca_data$gene_expression_data, ca_data$copy_number_data)
 clonealign_inf <-  dplyr::tibble(clone = cal$clone, cell = ca_data$retained_cells)
 
 
-intersection_congas_clonealign <- dplyr::inner_join(get_clusters(breast_xeno_10x),clonealign_inf)
+intersection_congas_clonealign <- dplyr::inner_join(get_clusters(new_run_buono),clonealign_inf)
 
 table(intersection_congas_clonealign$clone, intersection_congas_clonealign$cluster)
 
 ```
 
 ```{r}
-AB <- rbind(df_cnv_A%>%  mutate(c = "A"), df_cnv_B %>%  mutate(c = "B", integer_copy_number = integer_copy_number -0.1)) 
-ABC <- rbind(AB, df_cnv_C %>%  mutate(c = "C", integer_copy_number = integer_copy_number - 0.2)) 
+AB <- rbind(df_cnv_A%>%  mutate(cluster = "A"), df_cnv_B %>%  mutate(cluster = "B", integer_copy_number = integer_copy_number -0.1)) 
+ABC <- rbind(AB, df_cnv_C %>%  mutate(cluster = "C", integer_copy_number = integer_copy_number - 0.2)) 
+ABC <-  ABC[, c(1,2,3,7,8)] %>% filter(chr != "chrX", chr != "chrY")
+#ABC$chr <-  paste0("chr", ABC$chr)
+cp <-  get_clones_ploidy(new_run_buono)
+cp <- cp[,-c(5,6)]
+colnames(ABC)[4] <-"CNV"
+colnames(cp)[5] <- "CNV"
+#cp$CNV <- round(cp$CNV) + 0.1 * as.numeric(cp$cluster)
+clonealign_congas_merges <- rbind(ABC,cp)
+clonealign_congas_merges$chr <- factor(clonealign_congas_merges$chr, levels = mixedsort(unique(clonealign_congas_merges$chr)))
 
-ggplot(ABC %>% filter(chr == 15)) + geom_segment(aes(x = start, y = integer_copy_number, xend = end, yend = integer_copy_number, color = c))
+cols <- RColorBrewer::brewer.pal(4, "Paired")
+names(cols) <-  c("1", "A", "2", "B")
+
+ggplot(clonealign_congas_merges %>%  filter(cluster != "C")) + geom_segment(aes(x = from, y = CNV, xend = to, yend = CNV, color = cluster)) +  facet_wrap(.~chr, scales = "free") + scale_color_manual(values = cols)
 ```
 

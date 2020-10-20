@@ -5,12 +5,12 @@ has_DE = function(x)
 
 is_MAP_Z <-  function(x){
   best_model <- get_best_model(x)
-  return(is.null(best_model$parameters$assignment_probs))
+  return(best_model$run_information$posteriors)
 }
 
 is_MAP_CN <-  function(x){
   best_model <- get_best_model(x)
-  return(is.null(best_model$parameters$cnv_var))
+  return(best_model$run_information$MAP)
 }
 
 has_inference <-  function(x){

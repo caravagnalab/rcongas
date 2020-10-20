@@ -223,7 +223,7 @@ getChromosomeDF <- function(df, online = FALSE, genome = "hg38", chrs = paste0("
 
 get_data <- function(data, bindim = 100,chrs = paste0("chr",(1:22)), filter = NULL, fun = sum,
                      type = c("binning", "smoothing","fixed_binning"), cnv_data = NULL,
-                     online = FALSE, genome = "hg38", startsWithchr = FALSE, correct_bins = TRUE, gene_filters = "hgnc_symbol", save_gene_matrix = TRUE)
+                     online = FALSE, genome = "hg38", startsWithchr = FALSE, correct_bins = TRUE, gene_filters = "hgnc_symbol", save_gene_matrix = TRUE, custom_gene_matrix = NULL)
 
 {
 
@@ -319,7 +319,10 @@ get_data <- function(data, bindim = 100,chrs = paste0("chr",(1:22)), filter = NU
 
     ret <- structure(list(data = data_list, reference_genome = genome),class = "rcongas")
 
-    if(save_gene_matrix) { ret$data$gene_counts <- data[rownames(data) %in% gene_locations$gene,]   }
+    if(save_gene_matrix) {
+      if(!is.null(custom_gene_matrix)) ret$data$gene_counts <- custom_gene_matrix
+      else ret$data$gene_counts <- data
+      }
 
     return(ret)
 

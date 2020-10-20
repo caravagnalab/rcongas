@@ -122,6 +122,7 @@ get_clusters = function(x,
     max(x, na.rm = TRUE)
   }))
 
+
   z_nk$cell = rownames(z_nk)
 
   clusters_table = clusters_table %>%
