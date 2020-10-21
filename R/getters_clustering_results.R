@@ -37,6 +37,8 @@ get_clones_ploidy <- function(x,
     ) %>%
     dplyr::as_tibble()
 
+  joined_res = res
+
   # Normalise CNA values for comparisons -- z_score_alike via offset_amplitude
   if(offset_amplitude)
   {
@@ -45,7 +47,7 @@ get_clones_ploidy <- function(x,
       dplyr::summarise(segment_mean = mean(CN), .groups = 'keep') %>%
       dplyr::ungroup()
 
-    joined_res = res %>%
+    joined_res = joined_res %>%
       dplyr::full_join(means, by = c('chr', 'from', 'to')) %>%
       dplyr::mutate(lognorm_CN = CN,
                     CN = CN - segment_mean)
