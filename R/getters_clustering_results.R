@@ -10,7 +10,7 @@
 get_clones_ploidy <- function(x,
                               chromosomes = paste0("chr", c(1:22, "X", "Y")),
                               clusters = NULL,
-                              offset_amplitude = TRUE
+                              offset_amplitude = TRUE, alpha = 0.05
                               )
 {
   best_model <- Rcongas:::get_best_model(x)
@@ -52,6 +52,8 @@ get_clones_ploidy <- function(x,
       dplyr::mutate(lognorm_CN = CN,
                     CN = CN - segment_mean)
   }
+
+  joined_res$highlight <- create_highlights(joined_res, alpha)
 
   if (!grepl('chr', joined_res$chr[1]))
   {
@@ -213,3 +215,33 @@ get_segment_test_counts = function(x, group1, group2, cutoff_p = 0.01)
     arrange(p) %>%
     dplyr::mutate(sign = p < cutoff_p)
 }
+
+
+create_highlights <- function(x, alpha = 0.05){
+
+  nclones <- 1:length(unique(x$cluster))
+  ret <-  list(vector(length = nrow(x)))
+  for(i in nclones)
+    ret[[i]] <- compare_clones(x,i, nclones)
+
+  return(do.call(c, ret))
+}
+
+compare_clones <-  function(x,i, nclones, alpha = 0.05){
+
+  x_i <-  x %>% filter(cluster == i)
+  nclones <-  nclones[nclones != i]
+  ret <-  logical(length = nrow(x_i))
+  for(j in nclones){
+
+    x_j <- x %>% filter(cluster == j)
+    diff <- abs(as.numeric(x_i$lognorm_CN - x_j$lognorm_CN))
+    fit <-  fitdistrplus::fitdist(diff, "gamma")
+    p_val <- dgamma(diff, fit$estimate[[1]], fit$estimate[[2]])
+    ret[which(p_val < alpha)] <-  TRUE
+
+  }
+
+  return(ret)
+}
+

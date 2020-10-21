@@ -21,6 +21,9 @@ plot_gw_cna_profiles = function(x,
   # Segments ploidy
   segments = Rcongas::get_clones_ploidy(x, chromosomes, ...)
 
+  segments_h = CNAqc:::relative_to_absolute_coordinates(list(reference_genome = x$reference_genome), segments %>% dplyr::filter(highlight))
+
+
   # Test for the difference
   test_pvalue = Rcongas::get_segment_test_counts(x,
                                                  group1 = 1,
@@ -31,8 +34,8 @@ plot_gw_cna_profiles = function(x,
 
   ymin = segments$CN %>% min
   ymax = segments$CN %>% max
-  ymin = ymin + ymin * .1
-  ymax = ymax + ymax * .1
+  ymin = ymin + ymin * .15
+  ymax = ymax + ymax * .15
 
   shading_color = 'mediumseagreen'
 
@@ -43,13 +46,13 @@ plot_gw_cna_profiles = function(x,
     plain_plot = Rcongas:::get_plain_chrplot(x$reference_genome, chromosomes)
 
     # Add test_pvalue info
-    if(nrow(test_pvalue > 0))
+    if(nrow(segments_h > 0))
     {
       test_pvalue = CNAqc:::relative_to_absolute_coordinates(list(reference_genome = x$reference_genome), test_pvalue)
 
       plain_plot = plain_plot +
       geom_rect(
-        data = test_pvalue,
+        data = segments_h ,
         aes(
           xmin = as.numeric(from),
           xmax = as.numeric(to),
@@ -58,8 +61,8 @@ plot_gw_cna_profiles = function(x,
         ),
         fill = shading_color,
         alpha = .2
-      ) +
-        labs(caption = paste0("Shaded area: Poisson test significant at level ", cutoff_p))
+      ) #+
+        # labs(caption = paste0("Shaded area: Poisson test significant at level ", cutoff_p))
     }
 
     # Adjustment for the view
@@ -87,11 +90,11 @@ plot_gw_cna_profiles = function(x,
 
     segments_plot = ggplot()
 
-    if(nrow(test_pvalue > 0))
+    if(nrow((segments %>% dplyr::filter(highlight)) > 0))
     {
       segments_plot = segments_plot +
         geom_rect(
-          data = test_pvalue,
+          data = segments %>% dplyr::filter(highlight) ,
           aes(
             xmin = as.numeric(from),
             xmax = as.numeric(to),
@@ -100,8 +103,8 @@ plot_gw_cna_profiles = function(x,
           ),
           fill = shading_color,
           alpha = .2
-        ) +
-        labs(caption = paste0("Shaded area: Poisson test significant at level ", cutoff_p))
+        ) #+
+       # labs(caption = paste0("Shaded area: Poisson test significant at level ", cutoff_p))
     }
 
     segments_plot = segments_plot +

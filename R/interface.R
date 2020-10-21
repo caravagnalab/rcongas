@@ -128,7 +128,6 @@ set_names <-  function(an){
 #' @param posteriors
 #' @param seed
 #' @param step_post
-#'@param verbose
 #'
 #' @return
 #'
@@ -144,7 +143,7 @@ set_names <-  function(an){
 #'
 #' @examples
 run_inference <-  function(X , model, optim = "ClippedAdam", elbo = "TraceEnum_ELBO", inf_type = "SVI", steps = 300, lr = 0.05,
-                            param_list = list(), MAP = TRUE, posteriors = FALSE, seed = 3, step_post=300, verbose= FALSE, rerun = F){
+                            param_list = list(), MAP = TRUE, posteriors = FALSE, seed = 3, step_post=300,  rerun = F){
 
   an <- reticulate::import("congas")
 
@@ -177,8 +176,10 @@ run_inference <-  function(X , model, optim = "ClippedAdam", elbo = "TraceEnum_E
 
 
 
-  loss <- int$run(steps=steps, seed = seed, param_optimizer=list('lr'= lr), verbose = verbose, MAP = MAP)
-  parameters <- int$learned_parameters(posterior=posteriors, verbose=verbose, steps=step_post)
+  loss <- int$run(steps=steps, seed = seed, param_optimizer=list('lr'= lr),  MAP = MAP)
+  parameters <- int$learned_parameters(posterior=posteriors, steps=step_post)
+
+  print(parameters)
 
   if(posteriors){
 
@@ -192,14 +193,14 @@ run_inference <-  function(X , model, optim = "ClippedAdam", elbo = "TraceEnum_E
 
   dim_names <- list(cell_names = cell_names, seg_names = seg_names)
 
-  if(rerun){
+
+  if(rerun | grepl(pattern = "EXP",model_name)){
     an <-  list(loss = loss, parameters = parameters, dim_names = dim_names)
 
     names(an$parameters) <- gsub(names(an$parameters), pattern = "param_", replacement = "")
 
 
-  }
-  else{
+  } else{
 
     an <-  set_names(list(loss = loss, parameters = parameters, dim_names = dim_names))
   }
@@ -226,7 +227,7 @@ run_inference <-  function(X , model, optim = "ClippedAdam", elbo = "TraceEnum_E
 }
 
 best_cluster <- function(X , model, clusters ,optim = "ClippedAdam", elbo = "TraceEnum_ELBO", inf_type = "SVI", steps = 300, lr = 0.05,
-                         param_list = list(), MAP = TRUE, posteriors = FALSE, seed = 3, step_post=300, verbose= FALSE, mixture = NULL, method = "AIC"){
+                         param_list = list(), MAP = TRUE, posteriors = FALSE, seed = 3, step_post=300,  mixture = NULL, method = "AIC"){
 
 
   if(is.null(mixture)) {
@@ -235,9 +236,15 @@ best_cluster <- function(X , model, clusters ,optim = "ClippedAdam", elbo = "Tra
 
   res <- lapply(clusters, function(x) run_inference(X =  X, model = model,optim = optim, elbo = elbo, inf_type = inf_type,
                                         steps = steps, lr = lr, param_list = c(param_list, list('K' = x, 'mixture' = mixture[[x]])), MAP = MAP, posteriors = posteriors,
-                                        seed = seed, step_post=step_post, verbose= verbose))
+                                        seed = seed, step_post=step_post))
 
-  lik_fun <-  ifelse(grepl(tolower(model), pattern = "norm"), gauss_lik_norm, gauss_lik)
+  if(grepl(tolower(model), pattern = "norm")){
+    lik_fun <-  gauss_lik_norm
+  } else if (grepl(tolower(model), pattern = "EXP")){
+    lik_fun <- gauss_lik_with_means
+  } else {
+    lik_fun <-  gauss_lik
+  }
 
   if(method == "BIC")
   {
@@ -263,15 +270,13 @@ run_complete <- function(x, steps = 300, lr = 0.01, seed = 3) {
   bm <-  get_best_model(x)
 
   param_list <- list(K = as.integer(length(bm$parameters$mixture_weights)), cnv_var = bm$run_information$input_hyper_params$cnv_var,
-                     norm_factor = bm$parameters$norm_factor, assignments = as.integer(bm$parameters$assignement - 1))
+                     norm_factor = bm$parameters$norm_factor, assignments = as.integer(bm$parameters$assignement - 1), cnv_locs = torch$tensor(as.matrix(bm$parameters$cnv_probs)))
 
   ret <- Rcongas::run_inference(x, model = bm$run_information$model, optim = bm$run_information$optim ,elbo = bm$run_information$elbo,inf_type = bm$run_information$inf_type, steps = steps
 ,lr = lr,posteriors = F, MAP = F, seed = seed,  param_list = param_list, rerun = TRUE)
-  names(bm$parameters)[names(bm$parameters) == "cnv_probs"] <- "cnv_probs_old"
   ret$loss_old <- bm$loss
   ret$run_information_old <- bm$run_information
   ret$parameters <- c(ret$parameters, bm$parameters)
-  colnames(ret$parameters$cnv_probs) <- colnames(ret$parameters$cnv_probs_old)
 
   x$inference$models[[x$inference$model_selection$best_K]] <- ret
 
@@ -336,17 +341,31 @@ gauss_lik <-  function(data,mu,par) {
 
 gauss_lik_with_means <-  function(data,mu,par) {
 
-  lk <-  sapply(1:nrow(data), function(x) {
+  mixture_weights <- par$mixture_weights
 
-    lambdas <- (par$norm_factor[x] * round(par$cnv_probs[par$assignement[x],]) * mu) + 1e-6
 
-    lk <- dpois(as.numeric(data[x,]), as.numeric(lambdas), log = TRUE)
-    return(sum(lk))
+  lambdas <-  lapply(1:length(mixture_weights), function(x) {
+
+
+    lambdas <- matrix(par$norm_factor, ncol = 1) %*% (as.numeric(par$cnv_probs[x,]) * mu * as.numeric(par$segment_mean[x]))
+
+    return(lambdas)
 
   })
 
-  log_lk <-  sum(lk)
-  return(log_lk)
+  log_lk <- matrix(nrow = nrow(data), ncol = ncol(data))
+
+  for(n in 1:nrow(data)){
+    for(i in 1:ncol(data)){
+      lk <-  vector(length = length(mixture_weights))
+      for(k in 1:length(mixture_weights))
+        lk[k] <- dpois(as.numeric(data[n,i]), as.numeric(lambdas[[k]][n,i]), log = TRUE) + log(mixture_weights[k])
+      log_lk[n,i] <- log_sum_exp(lk)
+    }
+  }
+
+
+  log_lk <-  sum(log_lk)
 }
 
 
@@ -474,8 +493,8 @@ segment_genome <-  function(MAF , optim = "Adam", elbo = "TraceEnum_ELBO", inf_t
 
 
 
-    loss <- int$run(steps=steps, seed = seed, param_optimizer=list('lr'= lr), MAP = TRUE, verbose = FALSE)
-    parameters <- int$learned_parameters(posterior=FALSE, verbose=FALSE)
+    loss <- int$run(steps=steps, seed = seed, param_optimizer=list('lr'= lr), MAP = TRUE)
+    parameters <- int$learned_parameters(posterior=FALSE)
 
     res <- c(res, list(parameters))
 

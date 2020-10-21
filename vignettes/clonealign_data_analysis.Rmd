@@ -39,10 +39,13 @@ mat_pre <- as.matrix(preprocess_sc(mat = counts_SA, filter_upper_quantile = T, p
 
 ```{r}
 
-clones_dataA <- read.csv("clonealign-processed-data/SA501/cnv/SA501X3F-cluster_A.segments.csv")[,c(1,2,3,7)]
+#clones_dataA <- read.csv("clonealign-processed-data/SA501/cnv/SA501X3F-cluster_A.segments.csv")[,c(1,2,3,7)]
 
 clones_dataA$tot <-  clones_dataA$integer_copy_number
 clones_dataA$chr <- paste0("chr", clones_dataA$chr)
+
+
+clones_dataA2 <- clones_dataA %>%  filter(!(chr %in% c("chr15", "chr16", "chr18")))
 
 inp2 <-  get_data(t(mat_pre), cnv_data = clones_dataA, type = "fixed_binning", startsWithchr = F,  correct_bins = F, genome = "hg19", custom_gene_matrix = counts_SA)
 
@@ -61,7 +64,7 @@ pheatmap::pheatmap(((inp3$data$counts / colSums(t(mat_pre))) ) / inp3$data$cnv$p
 
 ```{r}
 set.seed(3)
-res <- best_cluster(inp3,model = "MixtureGaussian", clusters = 1:4, steps = 800, lr = 0.01, param_list = list("theta_scale" = 3.2, "theta_rate" = 1, "cnv_var" = 0.50) , method = "BIC",  MAP = T, posteriors = F)
+res <- best_cluster(inp3,model = "MixtureGaussian", clusters = 1:4, steps = 400, lr = 0.05, param_list = list("theta_scale" = 300 / 100, "theta_rate" = 1/100, "cnv_var" = 0.60) , method = "BIC",  MAP = T, posteriors = F)
 
 res_filt <-  filter_clusters(res, abundance = 0.1)
 ```
@@ -72,13 +75,22 @@ res_filt <-  filter_clusters(res, abundance = 0.1)
 
 plot_counts_rna_segments(res_filt, z_score = T, normalised = T)
 
+
 ```
 
 ```{r}
 library(Seurat)
-de <- calculate_DE(res, counts_SA[rownames(mat_pre),] %>%  t, clone1 = "1", clone2 = "2", method = "DESeq2")
+de <- calculate_DE(res_filt, counts_SA[rownames(mat_pre),] %>%  t, clone1 = "1", clone2 = "2", method = "DESeq2")
 ```
 
+
+```{r}
+rerun <-  run_complete(
+  res_filt
+  
+)
+
+```
 
 
 ```{r}
@@ -200,6 +212,6 @@ clonealign_congas_merges$chr <- factor(clonealign_congas_merges$chr, levels = mi
 cols <- RColorBrewer::brewer.pal(4, "Paired")
 names(cols) <-  c("1", "A", "2", "B")
 
-ggplot(clonealign_congas_merges %>%  filter(cluster != "C")) + geom_segment(aes(x = from, y = CNV, xend = to, yend = CNV, color = cluster)) +  facet_wrap(.~chr, scales = "free") + scale_color_manual(values = cols)
+(ggplot(clonealign_congas_merges %>%  filter(cluster != "C")) + geom_segment(aes(x = from, y = CNV, xend = to, yend = CNV, color = cluster)) +  facet_wrap(.~chr, scales = "free") + scale_color_manual(values = cols) + theme_light() ) %>% ggsave(filename = "true_vs_inf.pdf", width = 12, height = 12)
 ```
 
