@@ -9,9 +9,11 @@
 #' @examples
 get_clones_ploidy <- function(x,
                               chromosomes = paste0("chr", c(1:22, "X", "Y")),
-                              clusters = NULL)
+                              clusters = NULL,
+                              offset_amplitude = TRUE
+                              )
 {
-  best_model <- get_best_model(x)
+  best_model <- Rcongas:::get_best_model(x)
   res <-
     data.frame(t(best_model$parameters$cnv_probs), stringsAsFactors = FALSE)
   res <-
@@ -20,6 +22,7 @@ get_clones_ploidy <- function(x,
                                                                    sep = ":")
   colnames(res)[seq_along(best_model$parameters$mixture_weights)] <-
     paste(seq_along(best_model$parameters$mixture_weights))
+
   res <-
     reshape2::melt(
       res,
@@ -34,16 +37,19 @@ get_clones_ploidy <- function(x,
     ) %>%
     dplyr::as_tibble()
 
-  # Normalise CNA values for comparisons
-  means = res %>%
-    dplyr::group_by(chr, from, to) %>%
-    dplyr::summarise(segment_mean = mean(CN), .groups = 'keep') %>%
-    dplyr::ungroup()
+  # Normalise CNA values for comparisons -- z_score_alike via offset_amplitude
+  if(offset_amplitude)
+  {
+    means = res %>%
+      dplyr::group_by(chr, from, to) %>%
+      dplyr::summarise(segment_mean = mean(CN), .groups = 'keep') %>%
+      dplyr::ungroup()
 
-  joined_res = res %>%
-    dplyr::full_join(means, by = c('chr', 'from', 'to')) %>%
-    dplyr::mutate(lognorm_CN = CN,
-                  CN = CN - segment_mean)
+    joined_res = res %>%
+      dplyr::full_join(means, by = c('chr', 'from', 'to')) %>%
+      dplyr::mutate(lognorm_CN = CN,
+                    CN = CN - segment_mean)
+  }
 
   if (!grepl('chr', joined_res$chr[1]))
   {

@@ -14,6 +14,10 @@ get_best_model <- function(X) {
 
 get_congas_model_used = function(x)
 {
+  if(any(is.double(x$data$counts))) return("MixtureGaussianNorm")
+  if(all(is.integer(x$data$counts))) return("MixtureGaussian")
+
+  return("HmmSegmenter")
   # MixtureGaussian
   # MixtureGaussianNorm
   # HmmSegmenter

@@ -18,7 +18,7 @@ run_inference(
   seed = 3,
   step_post = 300,
   verbose = FALSE,
-  filt_merge = 0.5
+  rerun = F
 )
 }
 \arguments{

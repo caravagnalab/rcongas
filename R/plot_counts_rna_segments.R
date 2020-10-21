@@ -103,7 +103,7 @@ plot_counts_rna_segments = function(x,
 
   if (nclusters > 1)
     rna_plot = rna_plot +
-    geom_hline(yintercept = cluster_size[-1],
+    geom_hline(yintercept = cumsum(cluster_size[-1]),
                size = 0.3,
                linetype = 'dashed')
 
