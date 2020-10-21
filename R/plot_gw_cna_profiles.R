@@ -11,14 +11,15 @@
 plot_gw_cna_profiles = function(x,
                                 whole_genome = FALSE,
                                 chromosomes = paste0("chr", c(1:22, "X", "Y")),
-                                cutoff_p = 0.01
+                                cutoff_p = 0.01,
+                                ...
                                 )
 {
   # Returned plot objects
   segments_plot = NULL
 
   # Segments ploidy
-  segments = Rcongas::get_clones_ploidy(x, chromosomes)
+  segments = Rcongas::get_clones_ploidy(x, chromosomes, ...)
 
   # Test for the difference
   test_pvalue = Rcongas::get_segment_test_counts(x,
