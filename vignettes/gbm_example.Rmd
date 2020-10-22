@@ -86,14 +86,14 @@ pheatmap::pheatmap(binned_express$data$counts, cluster_cols = F,  show_rownames 
 set.seed(3)
 torch <- reticulate::import("torch")
 
-mix_prior <-  list(NULL, torch$tensor(c(0.7,0.3)), torch$tensor(c(0.4,0.3,0.3)), torch$tensor(c(0.3,0.3,0.2,0.2)) )
+mix_prior <-  list(NULL, torch$tensor(c(0.8,0.2)), torch$tensor(c(0.4,0.3,0.3)), torch$tensor(c(0.3,0.3,0.2,0.2)) )
 
-subclones <- best_cluster(X = binned_express, clusters = 1:4, model = "MixtureGaussianNorm", steps = 400L, lr = 0.01, param_list = list(a = 0, b = 0.8, init_sd = 0.01), method = "AIC", mixture = mix_prior, posteriors = T) 
+subclones <- best_cluster(X = binned_express, clusters = 1:4, model = "MixtureGaussianNorm", steps = 800L, lr = 0.01, param_list = list(a = 0, b = 0.8, init_sd = 0.01), method = "AIC", mixture = mix_prior, posteriors = F) 
 
 ```
 
 ```{r}
-
+subclones$inference$models[[subclones$inference$model_selection$best_K]]$parameters$norm_factor <- rep(1,75)
 plot_counts_rna_segments(subclones, z_score = T, normalised = F)
 ```
 

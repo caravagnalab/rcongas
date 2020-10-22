@@ -222,11 +222,44 @@ plot_MAF <- function(MAF_l, k = 31, fsize = 20) {
 
 }
 
+## to finish
 
 simplify_segs <-  function(df) {
 
-  df %>% group_by(chr,tot) %>%  dplyr::summarize(start = min(start), end = max(end))
+  res <- data.frame()
 
+  old_chr = df$chr[1]
+  old_start = df$start[1]
+  old_tot = df$tot[1]
+
+  for(n in 2:nrow(df)) {
+      curr_chr = df$chr[n]
+      curr_tot = df$tot[n]
+      curr_start = df$start[n]
+
+      if(curr_chr != old_chr) {
+
+        res <- rbind(res, data.frame(t1 = old_chr, t2 = old_start, t3 = df$end[n-1], t4 = old_tot))
+        old_chr = curr_chr
+        old_start = curr_start
+        old_tot = curr_tot
+
+      } else if(curr_tot != old_tot & ! (n == nrow(df))) {
+        res <- rbind(res, data.frame(t1 = old_chr, t2 = old_start, t3 = df$end[n-1], t4 = old_tot))
+        old_chr = curr_chr
+        old_start = curr_start
+        old_tot = curr_tot
+      }
+
+      if(n == nrow(df)){
+        if(curr_tot != old_tot){
+          res <- rbind(res, data.frame(t1 = old_chr, t2 = old_start, t3 = df$end[n-1],t4 =  old_tot))
+        }
+        res <- rbind(res, data.frame(t1 = curr_chr, t2 = curr_start, t3 = df$end[n],t4 =  curr_tot))
+      }
+  }
+  colnames(res) <- colnames(df)
+  return(res)
 }
 
 

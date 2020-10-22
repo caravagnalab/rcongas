@@ -175,5 +175,6 @@ plot_counts_rna_segments = function(x,
                size = 3) +
     scale_color_manual(values = clusters_colors)
 
+  rna_plot
 
 }

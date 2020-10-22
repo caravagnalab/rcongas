@@ -261,4 +261,3 @@ get_dataset_stats = function(x)
 }
 
 
-m = quantile(abs(as.numeric(bm$parameters$cnv_probs[1,] - bm$parameters$cnv_probs[2,])), .95)

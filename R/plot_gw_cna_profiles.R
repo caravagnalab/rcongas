@@ -22,6 +22,7 @@ plot_gw_cna_profiles = function(x,
   segments = Rcongas::get_clones_ploidy(x, chromosomes, ...)
 
   segments_h = CNAqc:::relative_to_absolute_coordinates(list(reference_genome = x$reference_genome), segments %>% dplyr::filter(highlight))
+  segments_nh = CNAqc:::relative_to_absolute_coordinates(list(reference_genome = x$reference_genome), segments %>% dplyr::filter(!highlight))
 
 
   # Test for the difference
@@ -44,6 +45,19 @@ plot_gw_cna_profiles = function(x,
   {
     # plain chr plot like in CNAqc
     plain_plot = Rcongas:::get_plain_chrplot(x$reference_genome, chromosomes)
+
+    plain_plot = plain_plot +
+      geom_rect(
+        data = segments_nh ,
+        aes(
+          xmin = as.numeric(from),
+          xmax = as.numeric(to),
+          ymin = ymin,
+          ymax = ymax
+        ),
+        fill = "gainsboro",
+        alpha = .2
+      )
 
     # Add test_pvalue info
     if(nrow(segments_h > 0))

@@ -1,13 +1,3 @@
-filter_bins <- function(conf, nmin_genes = 1, dim = 1000000){
-
-  inp$cnv
-
-}
-
-
-
-
-
 
 binned_mean <- function(x, annot, binSize = 100, FUN = mean){
 
