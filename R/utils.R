@@ -268,7 +268,7 @@ bind_rcongas_data <-  function(a,b){
   res <- a
   a$data$counts <- cbind(a$data$counts, b$data$counts)
   a$data$cnv <-   rbind(a$data$cnv, b$data$cnv)
-  a$data$bindim <-   cbind(a$data$bindim, b$data$bindim)
+  a$data$bindims <-   cbind(a$data$bindims, b$data$bindims)
   return(a)
 
 }
