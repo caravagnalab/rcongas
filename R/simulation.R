@@ -321,6 +321,7 @@ run_simulation <- function(cnv_df, ncells = 1000,props = c(0.8,0.2), K = 2,theta
       rand_matrix <- matrix(0, nrow = ncells, ncol =k_rand)
       for(k in seq_len(k_rand)){
         rand_matrix[,k] <-  ifelse(rbernoulli(ncells, p = random_class_dim[k]),1,0)
+
       }
       coeff_rand <- matrix(sapply(1:(tot_genes * k_rand),function(x) sample(x = c(0, runif(1)), prob = c(0.99,0.01), size = 1, replace = T)),nrow=k_rand,ncol=tot_genes)
       random_eff <-  rand_matrix %*% coeff_rand
@@ -491,8 +492,9 @@ run_simulation_generative <- function(cnv_df, ncells = 1000, props = c(0.8,0.2),
 
   for(j in seq_len(ncol(res))) {
 
+    noise <- rnorm(1,0, 0.1)
     for(i in seq_len(K)){
-      noise <- rnorm(1,0, 0.1)
+
       cells_idx <-  csidx(clust_prop_idx,i)
       actual_ploidy <- cnv_df %>%  select(paste0("ploidy", i)) %>%  unlist()
       if(i > 1) {
