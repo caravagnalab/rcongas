@@ -29,7 +29,7 @@ get_counts <-
   function(x,
            chromosomes = paste0("chr", c(1:22, "X", "Y")),
            normalise = TRUE,
-           z_score = FALSE)
+           z_score = FALSE, sum_denominator = TRUE)
   {
     best_model <- Rcongas:::get_best_model(x)
 
@@ -39,6 +39,9 @@ get_counts <-
     if (normalise){
 
       normalisation_factors = best_model$parameters$norm_factor
+      total_cn =  rowSums(best_model$parameters$cnv_probs)
+      assignments = get_cluster_assignments(x) %>%  as.numeric
+      mu = get_input_segmentation(x)$mu
 
       # Handle this special case which happens for already normalised data
       if(is.null(normalisation_factors)) {
@@ -48,7 +51,10 @@ get_counts <-
       }
 
       for (i in 1:ncol(data_matrix))
-        data_matrix[,i] = data_matrix[,i] / normalisation_factors
+        if(sum_denominator)
+          data_matrix[,i] = (data_matrix[,i] / normalisation_factors)  * (as.numeric(total_cn[assignments] * mu[i]) / sum(mu))
+        else
+          data_matrix[,i] = (data_matrix[,i] / normalisation_factors)
     }
 
     if(z_score){

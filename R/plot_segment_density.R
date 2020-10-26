@@ -11,13 +11,13 @@
 plot_segment_density = function(x,
                                 segments_ids,
                                 group1 = 1,
-                                group2 = 2,
+                                group2 = 2, sum_denominator = TRUE,
                                 ...)
 {
   plot_single_segment = function(x, segment)
   {
     # Counts data
-    counts_data = Rcongas:::get_counts(x, normalise = TRUE) %>%
+    counts_data = Rcongas:::get_counts(x, normalise = TRUE,  sum_denominator= sum_denominator) %>%
       Rcongas:::idify() %>%
       dplyr::filter(segment_id == segment)
 
@@ -98,6 +98,43 @@ get_poisson_density_values = function(x,
 {
   # Poisson parameters - for the density
   poisson_params = Rcongas:::get_poisson_parameters(x) %>%
+    Rcongas:::idify() %>%
+    dplyr::filter(segment_id == !!segment_id, cluster == !!cluster)
+
+  # Counts data - to determine density range
+  counts_data = Rcongas:::get_counts(x, normalise = TRUE) %>%
+    Rcongas:::idify() %>%
+    dplyr::filter(segment_id == !!segment_id, cluster == !!cluster)
+
+  # Ranges
+  min_x = counts_data %>% dplyr::pull(n) %>% min %>% floor()
+  max_x = counts_data %>% dplyr::pull(n) %>% max %>% ceiling()
+
+  min_x = ifelse(min_x > 10, min_x - 10, 0)
+  max_x = max_x + 10
+
+  # Mixture component likelihood
+  lambda  = poisson_params$lambda
+  pi = Rcongas::get_clusters_size(x, normalised = TRUE)[cluster]
+
+  data.frame(
+    segment_id = segment_id,
+    cluster = paste(cluster),
+    x = seq(min_x, max_x, by = (max_x - min_x) / 100) %>% round,
+    stringsAsFactors = FALSE
+  ) %>%
+    dplyr::mutate(y = dpois(x, lambda) * pi) %>%
+    as_tibble()
+}
+
+
+
+get_gaussian_density_values = function(x,
+                                      segment_id,
+                                      cluster)
+{
+  # Gaussian parameters - for the density
+  poisson_params = Rcongas:::get_gaussian_parameters(x) %>%
     Rcongas:::idify() %>%
     dplyr::filter(segment_id == !!segment_id, cluster == !!cluster)
 

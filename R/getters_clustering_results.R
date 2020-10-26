@@ -128,9 +128,9 @@ get_clusters = function(x,
   z_nk = best_model$parameters$assignment_probs %>%  as.data.frame()
   colnames(z_nk) = Rcongas::get_clusters_size(x) %>% names
 
-  z_nk$p_assignment = unlist(apply(z_nk, 1, function(x) {
+  z_nk$p_assignment = as.double(unlist(apply(z_nk, 1, function(x) {
     max(x, na.rm = TRUE)
-  }))
+  })))
 
 
   z_nk$cell = rownames(z_nk)

@@ -47,10 +47,10 @@ clones_dataA$chr <- paste0("chr", clones_dataA$chr)
 
 clones_dataA2 <- clones_dataA %>%  filter(!(chr %in% c("chr15", "chr16", "chr18")))
 
-inp2 <-  get_data(t(mat_pre), cnv_data = clones_dataA, type = "fixed_binning", startsWithchr = F,  correct_bins = F, genome = "hg19", custom_gene_matrix = counts_SA)
+inp2 <-  get_data(t(mat_pre), cnv_data = clones_dataA, type = "fixed_binning", startsWithchr = F,  correct_bins = T, genome = "hg19", custom_gene_matrix = counts_SA)
 
 
-inp3 <- filter_segments.rcongas(X = inp2, filter_mu = 10)
+inp3 <- filter_segments.rcongas(X = inp2, filter_mu = 30)
 
 
 
@@ -64,7 +64,7 @@ pheatmap::pheatmap(((inp3$data$counts / colSums(t(mat_pre))) ) / inp3$data$cnv$p
 
 ```{r}
 set.seed(3)
-res <- best_cluster(inp3,model = "MixtureGaussianOld", clusters = 1:4, steps = 800, lr = 0.01, param_list = list("theta_scale" = 3.2, "theta_rate" = 1, "cnv_var" = 0.50) , method = "BIC",  MAP = T, posteriors = F, step_post = 100)
+res <- best_cluster(inp3,model = "MixtureGaussianOld", clusters = 1:4, steps = 800, lr = 0.01, param_list = list("theta_scale" = 3.2, "theta_rate" = 1, "cnv_var" = 0.50) , method = "BIC",  MAP = T, posteriors = T, step_post = 100)
 
 
 res_filt <-  filter_clusters(res, abundance = 0.1)

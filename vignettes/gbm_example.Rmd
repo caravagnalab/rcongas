@@ -58,6 +58,11 @@ segs_df <- from_inference_to_segments(res, MAF_l)
 
 segs_df$tot[segs_df$tot == 5] <- 4
 
+segs_df$tot[segs_df$tot == 3] <- 4
+segs_df$tot[segs_df$tot == 6] <- 4
+
+
+
 segs_df_corr <- simplify_segs(segs_df)
 
 ggpubr::ggarrange(plot_MAF(MAF_l, k = 5), plot_MAF(MAF_l, k = 25), align = "hv", common.legend = T, labels = c("A", "B"), legend = "none", font.label = list(size = 12))
@@ -70,7 +75,7 @@ ggpubr::ggarrange(plot_MAF(MAF_l, k = 5), plot_MAF(MAF_l, k = 25), align = "hv",
 segs_df_corr$chr <-  paste0("chr", segs_df_corr$chr)
 
 
-binned_express <- get_data(glioblastoma_TPM, cnv_data = segs_df_corr, type = "fixed_binning", correct_bins = F, fun = mean)
+binned_express_corr <- get_data(glioblastoma_TPM, cnv_data = segs_df_corr, type = "fixed_binning", correct_bins = T, fun = mean, bindim = median, genome = "hg19")
 
 binned_express$data$cnv$ploidy_real <- rep(1,nrow(binned_express$data$cnv))
 
@@ -90,9 +95,9 @@ mix_prior <-  list(NULL, torch$tensor(c(0.8,0.2)), torch$tensor(c(0.4,0.3,0.3)),
 
 filt <- apply(binned_express$data$counts,2,sd)
 
-binned_express_most_var <-  binned_express[, filt > quantile(filt, 0.65)]
+binned_express_most_var <-  binned_express[, filt > quantile(filt, 0.6)]
 
-subclones <- best_cluster(X = binned_express_most_var, clusters = 1:4, model = "MixtureGaussianNorm", steps = 800L, lr = 0.01, param_list = list(a = 0, b = 0.8, init_sd = 0.01), method = "AIC", mixture = mix_prior, posteriors = T, step_post = 150) 
+subclones <- best_cluster(X = binned_express, clusters = 1:4, model = "MixtureGaussianNorm", steps = 800L, lr = 0.05, param_list = list(a = 0, b = 0.8, init_sd = 0.1), method = "AIC", mixture = mix_prior, posteriors = T, step_post = 100) 
 
 ```
 

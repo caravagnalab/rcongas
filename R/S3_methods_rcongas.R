@@ -109,7 +109,7 @@ plot.rcongas = function(x, ...)
   x$data$counts <-  x$data$counts[i,j]
   x$data$bindims <-  x$data$bindims[i,j]
   x$data$cnv <- x$data$cnv[j,]
-  gene_to_retain <- inner_join(x$data$cnv, x$data$gene_locations, by = "segment_id") %>% pull(gene)
+  gene_to_retain <- dplyr::inner_join(x$data$cnv, x$data$gene_locations, by = "segment_id") %>% dplyr::pull(gene)
 
   x$data$gene_counts <- x$data$gene_counts[which(rownames(x$data$gene_counts) %in% gene_to_retain), i]
 

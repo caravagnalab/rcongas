@@ -52,3 +52,25 @@ get_poisson_parameters <-  function(x) {
   return(ret)
 
 }
+
+
+get_gaussian_parameters <-  function(x) {
+
+  bm <- get_best_model(x)
+
+  mean <- bm$parameters$cnv_probs
+
+  sd <-  bm$parameters$norm_sd
+
+  ret  <-  reshape2::melt(mean %>%  as.matrix)
+
+  ret$sd <- rep(sd, nrow(mean))
+
+  colnames(ret) <- c("segment_id", "cluster", "mean", "sd")
+
+  ret <-  ret %>% deidify() %>% idify()
+
+  return(ret)
+
+}
+

@@ -35,6 +35,10 @@ calculate_AIC <-  function(inf, data, mu,llikelihood = gauss_lik) {
   n_param <- param_total(inf$parameters)
   log_lik <- llikelihood(data,mu,inf$parameters)
 
+  print(log_lik)
+  print(n_param * 2)
+
+
   return(n_param * 2 - 2 * log_lik)
 
 }
@@ -43,6 +47,8 @@ calculate_AIC <-  function(inf, data, mu,llikelihood = gauss_lik) {
 calculate_BIC <-  function(inf, data, mu,llikelihood = gauss_lik) {
 
   n_param <- param_total(inf$parameters)
+  print(log_lik)
+  print(n_param * log(nrow(data)))
   log_lik <- llikelihood(data,mu,inf$parameters)
 
   print(log_lik)
