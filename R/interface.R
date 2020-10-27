@@ -55,7 +55,7 @@ from_simulation_to_data_list <- function(x){
 
 
 
-  return(list(data = t(x$data$counts), mu= x$data$cnv$mu, pld = as.vector(x$data$cnv$ploidy_real), segments = nrow(x$data$cnv)))
+  return(list(data = t(x$data$counts), mu= x$data$cnv$mu, pld = as.vector(x$data$cnv$ploidy_real), segments = as.integer(nrow(x$data$cnv))))
 }
 
 

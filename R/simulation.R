@@ -502,15 +502,17 @@ run_simulation_generative <- function(cnv_df, ncells = 1000, props = c(0.8,0.2),
       } else {
         parent_ploidy <-  actual_ploidy
       }
+      actual_sum <-  sum(actual_ploidy *cnv_df$mu) / sum(cnv_df$mu)
+      parent_sum <- sum(parent_ploidy * cnv_df$mu) / sum(cnv_df$mu)
       mu_k <- ifelse(cnv_df$mu[j] > 0, cnv_df$mu[j], 1)
       if(nbinom){
 
-        subclone_counts <- rnbinom(round(ncells * props[i]),mu =  (mu_k * perc_genes * theta_vec * (actual_ploidy[j] + noise) + 1e-8), size = size)
-        clone_counts <-  rnbinom(round(ncells * props[i]),mu =  (mu_k * (1-perc_genes) * theta_vec * (parent_ploidy[j] + noise) + 1e-8), size = size)
+        subclone_counts <- rnbinom(round(ncells * props[i]),mu =  (mu_k * perc_genes * theta_vec * (actual_ploidy[j] + noise) + 1e-8) / actual_sum, size = size)
+        clone_counts <-  rnbinom(round(ncells * props[i]),mu =  (mu_k * (1-perc_genes) * theta_vec * (parent_ploidy[j] + noise) + 1e-8) / parent_sum, size = size)
 
       } else {
-        subclone_counts <- rpois(round(ncells * props[i] ), (mu_k * perc_genes * theta_vec * (actual_ploidy[j] + noise) + 1e-8))
-        clone_counts <- rpois(round(ncells * props[i] ), (mu_k * (1-perc_genes) * theta_vec * (parent_ploidy[j] + noise) + 1e-8))
+        subclone_counts <- rpois(round(ncells * props[i] ), (mu_k * perc_genes * theta_vec * (actual_ploidy[j] + noise) + 1e-8) / actual_sum)
+        clone_counts <- rpois(round(ncells * props[i] ), (mu_k * (1-perc_genes) * theta_vec * (parent_ploidy[j] + noise) + 1e-8) / parent_sum)
 
 
       }
@@ -533,11 +535,14 @@ run_simulation_generative <- function(cnv_df, ncells = 1000, props = c(0.8,0.2),
   colnames(clust_ids) <- "cluster_id"
   rownames(clust_ids) <- rownames(res)
   cnv_df$ploidy_real <-cnv_df  %>% select(matches("ploidy")) %>%   as.matrix(.) %*% props
-  return(structure(list(counts = res, cnv_mat = cnv_mat, cnv= cnv_df, clust_ids = clust_ids,
-                        params = list(theta_rate = theta_rate, theta_shape = theta_shape, theta = theta_vec
-                        )
-                        ),
-                   class = "CNVSimulation"))
+  data <-  list(counts = res, cnv_mat = cnv_mat, cnv= cnv_df, clust_ids = clust_ids,
+                          params = list(theta_rate = theta_rate, theta_shape = theta_shape, theta = theta_vec
+                          )
+  )
+  x <-structure(list(data = data, reference_genome = "hg38"),
+  class = "CNVSimulation")
+
+  return(x)
 }
 
 
@@ -563,10 +568,10 @@ write_results.CNVSimulation <- function(df, new_dir = FALSE,dir_name,  out_prefi
 
 
 `[.CNVSimulation` <- function(x, i, j) {
-    x$cnv <- x$cnv[j,]
-    x$counts <- x$counts[i,j]
-    x$clust_ids <-  x$clust_ids[i,, drop = FALSE]
-    x$cnv_mat <- x$cnv_mat[i,j]
+    x$data$cnv <- x$cnv[j,]
+    x$data$counts <- x$counts[i,j]
+    x$data$clust_ids <-  x$clust_ids[i,, drop = FALSE]
+    x$data$cnv_mat <- x$cnv_mat[i,j]
 
     return(x)
 }

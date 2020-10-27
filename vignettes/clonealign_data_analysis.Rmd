@@ -64,7 +64,7 @@ pheatmap::pheatmap(((inp3$data$counts / colSums(t(mat_pre))) ) / inp3$data$cnv$p
 
 ```{r}
 set.seed(3)
-res <- best_cluster(inp3,model = "MixtureGaussianOld", clusters = 1:4, steps = 800, lr = 0.01, param_list = list("theta_scale" = 3.2, "theta_rate" = 1, "cnv_var" = 0.50) , method = "BIC",  MAP = T, posteriors = T, step_post = 100)
+res <- best_cluster(inp3,model = "MixtureGaussian", clusters = 1:4, steps = 800, lr = 0.01, param_list = list("theta_scale" = 3.2, "theta_rate" = 1, "cnv_var" = 0.50) , method = "BIC",  MAP = T, posteriors = T, step_post = 100)
 
 
 res_filt <-  filter_clusters(res, abundance = 0.1)
