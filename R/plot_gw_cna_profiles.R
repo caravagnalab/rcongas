@@ -24,14 +24,13 @@ plot_gw_cna_profiles = function(x,
   segments_h = CNAqc:::relative_to_absolute_coordinates(list(reference_genome = x$reference_genome), segments %>% dplyr::filter(highlight))
   segments_nh = CNAqc:::relative_to_absolute_coordinates(list(reference_genome = x$reference_genome), segments %>% dplyr::filter(!highlight))
 
-
   # Test for the difference
-  test_pvalue = Rcongas::get_segment_test_counts(x,
-                                                 group1 = 1,
-                                                 group2 = 2,
-                                                 cutoff_p = cutoff_p) %>%
-    dplyr::filter(sign) %>%
-    dplyr::filter(chr %in% chromosomes)
+  # test_pvalue = Rcongas::get_segment_test_counts(x,
+  #                                                group1 = 1,
+  #                                                group2 = 2,
+  #                                                cutoff_p = cutoff_p) %>%
+  #   dplyr::filter(sign) %>%
+  #   dplyr::filter(chr %in% chromosomes)
 
   ymin = segments$CN %>% min
   ymax = segments$CN %>% max
@@ -60,9 +59,9 @@ plot_gw_cna_profiles = function(x,
       )
 
     # Add test_pvalue info
-    if(nrow(segments_h > 0))
+    if(nrow(segments_h) > 0)
     {
-      test_pvalue = CNAqc:::relative_to_absolute_coordinates(list(reference_genome = x$reference_genome), test_pvalue)
+      # test_pvalue = CNAqc:::relative_to_absolute_coordinates(list(reference_genome = x$reference_genome), test_pvalue)
 
       plain_plot = plain_plot +
       geom_rect(
