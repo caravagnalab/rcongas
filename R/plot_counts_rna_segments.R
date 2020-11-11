@@ -33,7 +33,7 @@ plot_counts_rna_segments = function(x,
     dplyr::rename(segment = segment_id)
 
   # summary stats
-  ngenes = sum(Rcongas::get_input_segmentation(x)$mu)
+  ngenes = sum(Rcongas::get_input_segmentation(x)$fixed_mu)
   nsegments = nrow(Rcongas::get_input_segmentation(x))
   MB_covered = round(sum(Rcongas::get_input_segmentation(x)$size) / 10 ^ 6)
 
@@ -107,27 +107,39 @@ plot_counts_rna_segments = function(x,
                size = 0.3,
                linetype = 'dashed')
 
-  # .. then put some squares around certain segments
-  chrs_to_annotate = Rcongas::get_segment_test_counts(x,
-                                                      group1 = 1,
-                                                      group2 = 2,
-                                                      cutoff_p = cutoff_p) %>%
-    dplyr::filter(sign) %>%
+  # # .. then put some squares around certain segments
+  # chrs_to_annotate = Rcongas::get_segment_test_counts(x,
+  #                                                     group1 = 1,
+  #                                                     group2 = 2,
+  #                                                     cutoff_p = cutoff_p) %>%
+  #   dplyr::filter(sign) %>%
+  #   Rcongas:::idify() %>%
+  #   dplyr::left_join(RNA %>% Rcongas:::idify(), by = 'segment_id') %>%
+  #   dplyr::select(segment_id, label_chr) %>%
+  #   dplyr::pull(label_chr) %>%
+  #   unique()
+
+  # Special ones to highlight
+  segments_ids = Rcongas::get_clones_ploidy(fit) %>%
     Rcongas:::idify() %>%
-    dplyr::left_join(RNA %>% Rcongas:::idify(), by = 'segment_id') %>%
+    filter(highlight) %>%
+    select(segment_id) %>%
+    dplyr::left_join(RNA %>%
+                       Rcongas:::idify() %>%
+                       distinct(segment_id, label_chr), by = 'segment_id') %>%
     dplyr::select(segment_id, label_chr) %>%
     dplyr::pull(label_chr) %>%
     unique()
 
   # Annotation of squares uses the x-axis ordering to determine
   # the perimeter of rectangles that will highlight the data
-  if (length(chrs_to_annotate) >= 1)
+  if (length(segments_ids) >= 1)
   {
     annotation_color = 'mediumseagreen'
     order_x_axis = gtools::mixedsort(RNA$label_chr) %>% unique()
 
     chrs_to_annotate = Reduce(dplyr::bind_rows,
-                              lapply(chrs_to_annotate, function(y) {
+                              lapply(segments_ids, function(y) {
                                 data.frame(
                                   xmin = which(y == order_x_axis) - 0.5,
                                   xmax = which(y == order_x_axis) + 0.5,
