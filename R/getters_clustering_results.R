@@ -10,8 +10,8 @@
 get_clones_ploidy <- function(x,
                               chromosomes = paste0("chr", c(1:22, "X", "Y")),
                               clusters = NULL,
-                              offset_amplitude = TRUE, alpha = 0.05
-                              )
+                              offset_amplitude = TRUE,
+                              alpha = 0.05)
 {
   best_model <- Rcongas:::get_best_model(x)
   res <-
@@ -40,7 +40,7 @@ get_clones_ploidy <- function(x,
   joined_res = res
 
   # Normalise CNA values for comparisons -- z_score_alike via offset_amplitude
-  if(offset_amplitude)
+  if (offset_amplitude)
   {
     means = res %>%
       dplyr::group_by(chr, from, to) %>%
@@ -133,13 +133,12 @@ get_clusters = function(x,
   })))
 
 
-  z_nk$cell = rownames(z_nk)
+  #
+  z_nk$cell = names(best_model$parameters$assignement)
 
   clusters_table = clusters_table %>%
     full_join(z_nk, by = "cell") %>%
-    dplyr::mutate(
-      cluster = ifelse(p_assignment > cut_znk, cluster, NA)
-      ) %>%
+    dplyr::mutate(cluster = ifelse(p_assignment > cut_znk, cluster, NA)) %>%
     as_tibble()
 
   if (!is.null(clusters))
@@ -186,7 +185,8 @@ get_segment_test_counts = function(x, group1, group2, cutoff_p = 0.01)
   # - HmmSegmenter
   type_of_model = Rcongas:::get_congas_model_used(x)
 
-  if(type_of_model == "HmmSegmenter") stop("Cannot do any test for the HMM segementer..")
+  if (type_of_model == "HmmSegmenter")
+    stop("Cannot do any test for the HMM segementer..")
 
 
   # ..
@@ -217,31 +217,43 @@ get_segment_test_counts = function(x, group1, group2, cutoff_p = 0.01)
 }
 
 
-create_highlights <- function(x, alpha = 0.05){
-
+create_highlights <- function(x, alpha = 0.05)
+{
   nclones <- 1:length(unique(x$cluster))
+
   ret <-  list(vector(length = nrow(x)))
-  for(i in nclones)
-    ret[[i]] <- compare_clones(x,i, nclones)
+
+  for (i in nclones)
+    ret[[i]] <- compare_clones(x, i, nclones, alpha)
 
   return(do.call(c, ret))
 }
 
-compare_clones <-  function(x,i, nclones, alpha = 0.05){
-
+compare_clones <-  function(x, i, nclones, alpha = 0.05)
+{
   x_i <-  x %>% filter(cluster == i)
+
   nclones <-  nclones[nclones != i]
   ret <-  logical(length = nrow(x_i))
-  for(j in nclones){
 
+  for (j in nclones) {
     x_j <- x %>% filter(cluster == j)
     diff <- abs(as.numeric(x_i$lognorm_CN - x_j$lognorm_CN))
     fit <-  fitdistrplus::fitdist(diff, "gamma")
-    p_val <- dgamma(diff, fit$estimate[[1]], fit$estimate[[2]])
-    ret[which(p_val < alpha)] <-  TRUE
 
+    # p-value
+    cut_p = qgamma(1-alpha, fit$estimate[[1]], fit$estimate[[2]])
+
+    # p_val <- dgamma(diff, fit$estimate[[1]], fit$estimate[[2]])
+
+    ret[which(diff > cut_p)] <-  TRUE
+
+
+    # hist(diff, breaks = 30)
+    # points(diff, dgamma(diff, fit$estimate[[1]], fit$estimate[[2]]))
+    # title(sub = pgamma(1-alpha, fit$estimate[[1]], fit$estimate[[2]]))
+    # ret[which(p_val < alpha)] <-  TRUE
   }
 
   return(ret)
 }
-

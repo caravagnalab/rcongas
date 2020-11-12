@@ -8,7 +8,8 @@ get_counts(
   x,
   chromosomes = paste0("chr", c(1:22, "X", "Y")),
   normalise = TRUE,
-  z_score = FALSE
+  z_score = FALSE,
+  sum_denominator = TRUE
 )
 }
 \arguments{

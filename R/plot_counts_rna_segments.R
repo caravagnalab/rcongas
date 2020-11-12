@@ -12,7 +12,7 @@
 plot_counts_rna_segments = function(x,
                                     normalised = TRUE,
                                     z_score = FALSE,
-                                    cutoff_p = 0.01)
+                                    ...)
 {
   # Get segments_input
   segments_input = x$data$counts
@@ -38,9 +38,11 @@ plot_counts_rna_segments = function(x,
   MB_covered = round(sum(Rcongas::get_input_segmentation(x)$size) / 10 ^ 6)
 
   # prepare plot caption
-  # caption = paste0("RNA counts are ",
-  #                  ifelse(normalised, "normalised.", "not normalised."))
-  caption = ""
+  caption = paste0(
+    "RNA: ",
+    ifelse(normalised, "normalised,", "not normalised,"),
+    ifelse(z_score, " z-score.", " not z-score.")
+  )
 
   # Cluster assignments
   clustering = Rcongas::get_clusters(x) %>%
@@ -80,8 +82,10 @@ plot_counts_rna_segments = function(x,
       title = paste0(
         ngenes,
         " genes (",
+        RNA$cell %>% unique %>% length,
+        " cells, ",
         nsegments,
-        " segments, ",
+        " segments for ",
         MB_covered,
         " Mb)"
       )
@@ -103,9 +107,11 @@ plot_counts_rna_segments = function(x,
 
   if (nclusters > 1)
     rna_plot = rna_plot +
-    geom_hline(yintercept = cumsum(cluster_size[-1]),
-               size = 0.3,
-               linetype = 'dashed')
+    geom_hline(
+      yintercept = cumsum(cluster_size %>% rev),
+      size = 0.3,
+      linetype = 'dashed'
+    )
 
   # # .. then put some squares around certain segments
   # chrs_to_annotate = Rcongas::get_segment_test_counts(x,
@@ -120,13 +126,14 @@ plot_counts_rna_segments = function(x,
   #   unique()
 
   # Special ones to highlight
-  segments_ids = Rcongas::get_clones_ploidy(fit) %>%
+  segments_ids = Rcongas::get_clones_ploidy(x, ...) %>%
     Rcongas:::idify() %>%
     filter(highlight) %>%
     select(segment_id) %>%
     dplyr::left_join(RNA %>%
                        Rcongas:::idify() %>%
-                       distinct(segment_id, label_chr), by = 'segment_id') %>%
+                       distinct(segment_id, label_chr),
+                     by = 'segment_id') %>%
     dplyr::select(segment_id, label_chr) %>%
     dplyr::pull(label_chr) %>%
     unique()
@@ -160,13 +167,13 @@ plot_counts_rna_segments = function(x,
         fill = NA,
         color = annotation_color,
         alpha = .2,
-        size = 0.1
+        size = 0.5
       )
 
     # edit caption
-    caption = paste0(caption,
-                     "Shaded area: Poisson test significant at level ",
-                     cutoff_p)
+    # caption = paste0(caption,
+    #                  "Shaded area: Gamma test at level ",
+    #                  a)
   }
 
   # Add caption

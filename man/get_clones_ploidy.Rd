@@ -7,7 +7,9 @@
 get_clones_ploidy(
   x,
   chromosomes = paste0("chr", c(1:22, "X", "Y")),
-  clusters = NULL
+  clusters = NULL,
+  offset_amplitude = TRUE,
+  alpha = 0.05
 )
 }
 \arguments{

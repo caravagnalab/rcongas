@@ -11,7 +11,6 @@
 plot_gw_cna_profiles = function(x,
                                 whole_genome = FALSE,
                                 chromosomes = paste0("chr", c(1:22, "X", "Y")),
-                                cutoff_p = 0.01,
                                 ...
                                 )
 {

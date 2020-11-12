@@ -17,12 +17,11 @@ run_inference(
   posteriors = FALSE,
   seed = 3,
   step_post = 300,
-  verbose = FALSE,
   rerun = F
 )
 }
 \arguments{
-\item{verbose}{}
+\item{step_post}{}
 }
 \value{
 
