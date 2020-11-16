@@ -75,7 +75,7 @@ ggpubr::ggarrange(plot_MAF(MAF_l, k = 5), plot_MAF(MAF_l, k = 25), align = "hv",
 segs_df_corr$chr <-  paste0("chr", segs_df_corr$chr)
 
 
-binned_express_corr <- get_data(glioblastoma_TPM, cnv_data = segs_df_corr, type = "fixed_binning", correct_bins = T, fun = mean, bindim = median, genome = "hg19")
+binned_express <- get_data(glioblastoma_TPM, cnv_data = segs_df_corr, type = "fixed_binning", correct_bins = F, fun = mean, bindim = median, genome = "hg19")
 
 binned_express$data$cnv$ploidy_real <- rep(1,nrow(binned_express$data$cnv))
 
@@ -91,19 +91,19 @@ pheatmap::pheatmap(binned_express$data$counts, cluster_cols = F,  show_rownames 
 set.seed(3)
 torch <- reticulate::import("torch")
 
-mix_prior <-  list(NULL, torch$tensor(c(0.8,0.2)), torch$tensor(c(0.4,0.3,0.3)), torch$tensor(c(0.3,0.3,0.2,0.2)) )
+mix_prior <-  list(NULL, torch$tensor(c(0.8,0.2)), torch$tensor(c(0.4,0.3,0.3)), torch$tensor(c(0.3,0.3,0.2,0.2)))
 
 filt <- apply(binned_express$data$counts,2,sd)
 
-binned_express_most_var <-  binned_express[, filt > quantile(filt, 0.6)]
+binned_express_most_var <-  binned_express[, filt > quantile(filt, 0.70)]
 
-subclones <- best_cluster(X = binned_express, clusters = 1:4, model = "MixtureGaussianNorm", steps = 800L, lr = 0.05, param_list = list(a = 0, b = 0.8, init_sd = 0.1), method = "AIC", mixture = mix_prior, posteriors = T, step_post = 100) 
+subclones <- best_cluster(X = binned_express_most_var, clusters = 1:4, model = "MixtureGaussianNorm", steps =800L, lr = 0.01, param_list = list(a = 0, b = 1, init_sd = 0.5), method = "AIC", mixture = mix_prior, posteriors = T, step_post = 200) 
 
 ```
 
 ```{r}
 subclones$inference$models[[subclones$inference$model_selection$best_K]]$parameters$norm_factor <- rep(1,75)
-subclones$data <-  binned_express$data
+#subclones$data <-  binned_express$data
 plot_counts_rna_segments(subclones, z_score = T, normalised = F)
 ```
 
@@ -112,8 +112,8 @@ plot_counts_rna_segments(subclones, z_score = T, normalised = F)
 
 all_cells <- names(get_cluster_assignments(subclones))
 
-normal_cells <- all_cells[get_cluster_assignments(subclones) == 3]
-tumor_cells <- all_cells[get_cluster_assignments(subclones) != 3]
+normal_cells <- all_cells[get_cluster_assignments(subclones) == "c3"]
+tumor_cells <- all_cells[get_cluster_assignments(subclones) != "c3"]
 
 
 ref_normal <- rowSums(MGH31_SNPs_per_cell$ref[,normal_cells])
@@ -164,8 +164,8 @@ segs_df$tot[segs_df$tot == 6] <- 2
 
 segs_df$tot[segs_df$tot == 5] <- 4
 
-
 segs_df_corr2 <- simplify_segs(segs_df)
+
 
 ggpubr::ggarrange(plot_MAF(MAF_l, k = 5), plot_MAF(MAF_l, k = 11), align = "hv", common.legend = T, labels = c("A", "B"), legend = "none", font.label = list(size = 12))
 
@@ -195,9 +195,9 @@ to_run <- final_expr[tumor_cells,]
 
 filt <- apply(to_run$data$counts,2,sd)
 
-to_run <-  to_run[, filt > quantile(filt, 0.65)]
+to_run <-  to_run[,filt > quantile(filt, 0.70)]
 
-subclones2 <- best_cluster(to_run, clusters = 1:4, model = "MixtureGaussianNorm", steps = 800L, lr = 0.01, param_list = list(a = 0, b = 1, init_sd = 0.1), method = "AIC", posteriors = T, step_post = 150) 
+subclones2 <- best_cluster(to_run, clusters = 1:4, model = "MixtureGaussianNorm", steps = 800L, lr = 0.01, param_list = list(a = 0, b = 1, init_sd = 0.5), method = "lk", posteriors = T, step_post = 150) 
 ```
 
 
@@ -219,11 +219,11 @@ p1 <- MAF_clust_plot(MGH31_SNPs_per_cell$ref, MGH31_SNPs_per_cell$tot_coverage, 
 
 ```{r}
 
-df_norm_tum <-  calculate_DE(subclones, input = glioblastoma_TPM, clone1 = 3, NULL, normalize = F, logfc.threshold = 0.2)
+df_norm_tum <-  calculate_DE(subclones, input = glioblastoma_TPM, clone1 = "c3", NULL, normalize = F, logfc.threshold = 0.2)
   
-df_5_no5 <- calculate_DE(subclones2, input = glioblastoma_TPM[,get_best_model(subclones2)$dim_names$cell_names], clone1 = 2, NULL, normalize = F, logfc.threshold = 0.2)
+df_5_no5 <- calculate_DE(subclones2, input = glioblastoma_TPM[,get_best_model(subclones2)$dim_names$cell_names], clone1 = "c2", NULL, normalize = F, logfc.threshold = 0.2)
   
-df_14_no14 <- calculate_DE(subclones2, input = glioblastoma_TPM[,get_best_model(subclones2)$dim_names$cell_names], clone1 = 1,3, normalize = F, logfc.threshold = 0.2)
+df_14_no14 <- calculate_DE(subclones2, input = glioblastoma_TPM[,get_best_model(subclones2)$dim_names$cell_names], clone1 = "c1","c3", normalize = F, logfc.threshold = 0.2)
 
 
 so <- CreateSeuratObject(glioblastoma_TPM[,names(c_fin)])

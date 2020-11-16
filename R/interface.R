@@ -87,7 +87,7 @@ set_names <-  function(an){
   new_clusters <-  1:length(uniq_clus_ids)
 
   for(j in new_clusters){
-    tmp[which(an$parameters$assignement == as.integer(uniq_clus_ids[j]))] <- j
+    tmp[which(an$parameters$assignement == as.integer(uniq_clus_ids[j]))] <- paste0("c",j)
   }
 
   an$parameters$assignement <-  tmp
@@ -98,14 +98,14 @@ set_names <-  function(an){
 
   an$parameters$mixture_weights <-  an$parameters$mixture_weights[mix_order]
   if(!is.null(an$parameters$assignment_probs)) an$parameters$assignment_probs <- an$parameters$assignment_probs[,mix_order]
-  names(an$parameters$mixture_weights) <-  new_clusters
+  names(an$parameters$mixture_weights) <-  paste0("c",new_clusters)
   an$parameters$cnv_probs <- data.frame(an$parameters$cnv_probs)
   an$parameters$cnv_probs <-  an$parameters$cnv_probs[mix_order,, drop = FALSE]
   #rownames(an$parameters$cnv_probs) <- new_clusters
 
   colnames(an$parameters$cnv_probs) <- an$dim_names$seg_names
-  if(!is.null(an$parameters$norm_factor))
-    names(an$parameters$norm_factor) <-  an$dim_names$cell_names
+
+  names(an$parameters$norm_factor) <-  an$dim_names$cell_names
 
 
 
@@ -187,7 +187,9 @@ run_inference <-  function(X , model, optim = "ClippedAdam", elbo = "TraceEnum_E
   }
 
 
-
+  if(grepl(pattern = "Norm",model_name, ignore.case = T)) {
+    parameters$norm_factor <- rep(x = 1, length(cell_names))
+  }
 
   dim_names <- list(cell_names = cell_names, seg_names = seg_names)
 
@@ -205,7 +207,7 @@ run_inference <-  function(X , model, optim = "ClippedAdam", elbo = "TraceEnum_E
   }
 
   if(!posteriors & !rerun)
-    an$parameters$assignment_probs <-  parameters$assignement %>% reshape2::melt() %>% from_MAP_to_post()
+    an$parameters$assignment_probs <-  parameters[[4]] %>% reshape2::melt() %>% from_MAP_to_post()
 
   # if(model_name == "MixtureGaussianDMP") {
   #
@@ -255,7 +257,7 @@ best_cluster <- function(X , model, clusters ,optim = "ClippedAdam", elbo = "Tra
   } else if (method == "ICL") {
     IC <- sapply(res, function(x) calculate_ICL(x, X$data$counts, X$data$cnv$mu, llikelihood = lik_fun))
   } else if (method == "lk") {
-    IC <- sapply(res, function(x) lik_fun(X$data$counts, X$data$cnv$mu, x$parameters))
+    IC <- sapply(res, function(x) lik_fun(X$data$counts, X$data$cnv$mu, x$parameters) * -1)
   }else {
     stop("Information criterium not present in the package")
   }

@@ -477,7 +477,7 @@ run_simulation <- function(cnv_df, ncells = 1000,props = c(0.8,0.2), K = 2,theta
 
 
 
-run_simulation_generative <- function(cnv_df, ncells = 1000, props = c(0.8,0.2), K = 2 ,theta_rate = 8, theta_shape = 8, nbinom = FALSE, size = 6, perc_genes = 1){
+run_simulation_generative <- function(cnv_df, ncells = 1000, props = c(0.8,0.2), K = 2 ,theta_rate = 6, theta_shape = 6, nbinom = FALSE, size = 6, perc_genes = 1, number_of_genes = NULL, lnorm_var = 0.1){
 
 
 
@@ -492,8 +492,8 @@ run_simulation_generative <- function(cnv_df, ncells = 1000, props = c(0.8,0.2),
 
   for(j in seq_len(ncol(res))) {
 
-    noise <- rnorm(1,0, 0.1)
     for(i in seq_len(K)){
+
 
       cells_idx <-  csidx(clust_prop_idx,i)
       actual_ploidy <- cnv_df %>%  select(paste0("ploidy", i)) %>%  unlist()
@@ -502,21 +502,33 @@ run_simulation_generative <- function(cnv_df, ncells = 1000, props = c(0.8,0.2),
       } else {
         parent_ploidy <-  actual_ploidy
       }
-      actual_sum <-  sum(actual_ploidy *cnv_df$mu) / sum(cnv_df$mu)
+
+      parent_ploidy_new <- rlnorm(length(parent_ploidy), log(parent_ploidy), lnorm_var)
+      actual_ploidy_new <-  rlnorm(length(actual_ploidy), log(actual_ploidy), lnorm_var)
+
+
+      if(parent_ploidy[j] == actual_ploidy[j]) {
+        actual_ploidy_new[j] = parent_ploidy_new[j]
+      }
+
+      print(actual_ploidy_new[j])
+      print(parent_ploidy_new[j])
+
+      actual_sum <-  sum(actual_ploidy * cnv_df$mu) / sum(cnv_df$mu)
       parent_sum <- sum(parent_ploidy * cnv_df$mu) / sum(cnv_df$mu)
       mu_k <- ifelse(cnv_df$mu[j] > 0, cnv_df$mu[j], 1)
       if(nbinom){
 
-        subclone_counts <- rnbinom(round(ncells * props[i]),mu =  (mu_k * perc_genes * theta_vec * (actual_ploidy[j] + noise) + 1e-8) / actual_sum, size = size)
-        clone_counts <-  rnbinom(round(ncells * props[i]),mu =  (mu_k * (1-perc_genes) * theta_vec * (parent_ploidy[j] + noise) + 1e-8) / parent_sum, size = size)
+        subclone_counts <- rnbinom(round(ncells * props[i]),mu =  (mu_k * perc_genes * theta_vec * (actual_ploidy_new[j] ) + 1e-8) / actual_sum, size = size)
+        clone_counts <-  rnbinom(round(ncells * props[i]),mu =  (mu_k * (1-perc_genes) * theta_vec * (parent_ploidy_new[j]) + 1e-8) / parent_sum, size = size)
 
       } else {
-        subclone_counts <- rpois(round(ncells * props[i] ), (mu_k * perc_genes * theta_vec * (actual_ploidy[j] + noise) + 1e-8) / actual_sum)
-        clone_counts <- rpois(round(ncells * props[i] ), (mu_k * (1-perc_genes) * theta_vec * (parent_ploidy[j] + noise) + 1e-8) / parent_sum)
+        subclone_counts <- rpois(round(ncells * props[i] ), (mu_k * perc_genes * theta_vec * (actual_ploidy_new[j] ) + 1e-8) / actual_sum)
+        clone_counts <- rpois(round(ncells * props[i] ), (mu_k * (1-perc_genes) * theta_vec * (parent_ploidy_new[j] ) + 1e-8) / parent_sum)
 
 
       }
-      cnv_mat[cells_idx,j] <- rep(actual_ploidy[j], length(cells_idx))
+      cnv_mat[cells_idx,j] <- rep(actual_ploidy_new[j], length(cells_idx))
       res[cells_idx,j] <- subclone_counts + clone_counts
       subclone_id <- rep(x = actual_ploidy[j], round(ncells * props[i]))
     }
@@ -568,10 +580,10 @@ write_results.CNVSimulation <- function(df, new_dir = FALSE,dir_name,  out_prefi
 
 
 `[.CNVSimulation` <- function(x, i, j) {
-    x$data$cnv <- x$cnv[j,]
-    x$data$counts <- x$counts[i,j]
-    x$data$clust_ids <-  x$clust_ids[i,, drop = FALSE]
-    x$data$cnv_mat <- x$cnv_mat[i,j]
+    x$data$cnv <- x$data$cnv[j,]
+    x$data$counts <- x$data$counts[i,j]
+    x$data$clust_ids <-  x$data$clust_ids[i,1, drop = FALSE]
+    x$data$cnv_mat <- x$data$cnv_mat[i,j]
 
     return(x)
 }
