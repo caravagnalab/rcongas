@@ -104,7 +104,7 @@ set_names <-  function(an){
   #rownames(an$parameters$cnv_probs) <- new_clusters
 
   colnames(an$parameters$cnv_probs) <- an$dim_names$seg_names
-
+  rownames(an$parameters$cnv_probs) <- new_clusters
   names(an$parameters$norm_factor) <-  an$dim_names$cell_names
 
 
