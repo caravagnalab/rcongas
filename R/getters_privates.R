@@ -41,7 +41,8 @@ get_poisson_parameters <-  function(x) {
 
   bm <- get_best_model(x)
 
-  lambdas <- apply(bm$parameters$cnv_probs, 1,function(y) y * x$data$cnv$mu)
+
+  lambdas <- apply(bm$parameters$cnv_probs, 1,function(y) (y * x$data$cnv$mu))
 
   ret  <-  reshape2::melt(lambdas %>%  as.matrix)
 
@@ -66,11 +67,19 @@ get_gaussian_parameters <-  function(x) {
 
   ret$sd <- rep(sd, nrow(mean))
 
-  colnames(ret) <- c("segment_id", "cluster", "mean", "sd")
+  colnames(ret) <- c("cluster", "segment_id", "mean", "sd")
+
+  ret$cluster <- paste0("c", ret$cluster)
 
   ret <-  ret %>% deidify() %>% idify()
 
   return(ret)
 
+}
+
+is_gaussian <-  function(x) {
+
+  bm <-  get_best_model(x)
+  return(grepl("Norm", bm$run_information$model, ignore.case = T))
 }
 

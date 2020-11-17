@@ -38,10 +38,13 @@ get_counts <-
 
     if (normalise){
 
+      if(is.null( best_model$parameters$norm_factor))  best_model$parameters$norm_factor <-  rep(1, length( best_model$parameters$assignement))
       normalisation_factors = best_model$parameters$norm_factor
-      total_cn =  rowSums(best_model$parameters$cnv_probs)
-      assignments = get_cluster_assignments(x) %>%  as.numeric
+
+      assignments = get_cluster_assignments(x) %>% gsub(pattern = "C", replacement = "", ignore.case = T)  %>% as.numeric
       mu = get_input_segmentation(x)$mu
+      total_cn =  rowSums(best_model$parameters$cnv_probs * mu)
+
 
       # Handle this special case which happens for already normalised data
       if(is.null(normalisation_factors)) {
@@ -52,7 +55,7 @@ get_counts <-
 
       for (i in 1:ncol(data_matrix))
         if(sum_denominator)
-          data_matrix[,i] = (data_matrix[,i] / normalisation_factors)  * (as.numeric(total_cn[assignments] * mu[i]) / sum(mu))
+          data_matrix[,i] = (data_matrix[,i] / normalisation_factors)  * (total_cn[assignments] / sum(mu))
         else
           data_matrix[,i] = (data_matrix[,i] / normalisation_factors)
     }
