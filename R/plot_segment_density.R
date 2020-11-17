@@ -11,26 +11,25 @@
 plot_segment_density = function(x,
                                 segments_ids,
                                 group1 = 1,
-                                group2 = 2, sum_denominator = TRUE,
+                                group2 = 2,
+                                sum_denominator = TRUE,
                                 ...)
 {
-
-
-  plots = lapply(segments_ids, Rcongas:::plot_single_segment, x = x)
+  plots = lapply(segments_ids, Rcongas:::plot_single_segment, x = x, sum_denominator = sum_denominator)
   names(plots) = segments_ids
 
   return(plots)
 }
 
 
-plot_single_segment = function(x, segment)
+plot_single_segment = function(x, segment, sum_denominator)
 {
   # Counts data
-  counts_data = Rcongas:::get_counts(x, normalise = TRUE,  sum_denominator= sum_denominator) %>%
+  counts_data = Rcongas:::get_counts(x, normalise = TRUE,  sum_denominator = sum_denominator) %>%
     Rcongas:::idify() %>%
     dplyr::filter(segment_id == segment)
 
-  if(!is_gaussian(x)){
+  if (!is_gaussian(x)) {
     # # Poisson p-value from the usual test
     # test_pvalue = Rcongas:::get_segment_test_counts(x, group1 = group1, group2 = group2, ...) %>%
     #   Rcongas:::idify() %>%
@@ -39,27 +38,30 @@ plot_single_segment = function(x, segment)
     # Poisson parameters
     clusters = Rcongas::get_clusters_size(x) %>% names()
 
-    density_points = lapply(clusters, get_poisson_density_values, x = x, segment_id = segment)
+    density_points = lapply(clusters,
+                            get_poisson_density_values,
+                            x = x,
+                            segment_id = segment)
     density_points = Reduce(dplyr::bind_rows, density_points)
 
 
 
     density_points$y = density_points$y * binsize
   } else {
-
     # Gaussian parameters
     clusters = Rcongas::get_clusters_size(x) %>% names()
 
-    density_points = lapply(clusters, get_gaussian_density_values, x = x, segment_id = segment)
+    density_points = lapply(clusters,
+                            get_gaussian_density_values,
+                            x = x,
+                            segment_id = segment)
     density_points = Reduce(dplyr::bind_rows, density_points)
-
-
   }
 
   # We need to make some adjustments to get the right binning scaling etc
 
 
-  if(is_gaussian(x)){
+  if (is_gaussian(x)) {
     nbins = 30
     binsize = counts_data %>%
       dplyr::group_by(segment_id) %>%
@@ -88,7 +90,7 @@ plot_single_segment = function(x, segment)
       group = cluster
     )) +
     geom_histogram(bins = nbins) +
-    facet_wrap( ~ segment_id, ncol = 2, scales = 'free') +
+    facet_wrap(~ segment_id, ncol = 2, scales = 'free') +
     geom_point(data = density_points,
                aes(x = x, y = y, color = cluster),
                inherit.aes = FALSE) +
@@ -156,8 +158,8 @@ get_poisson_density_values = function(x,
 
 
 get_gaussian_density_values = function(x,
-                                      segment_id,
-                                      cluster)
+                                       segment_id,
+                                       cluster)
 {
   # Gaussian parameters - for the density
   gaussian_params = Rcongas:::get_gaussian_parameters(x) %>%
