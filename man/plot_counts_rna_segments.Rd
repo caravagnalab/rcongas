@@ -8,7 +8,9 @@ plot_counts_rna_segments(
   x,
   normalised = TRUE,
   z_score = FALSE,
-  cutoff_p = 0.01
+  sum_denominator = FALSE,
+  chromosomes = paste0("chr", c(1:22, "X", "Y")),
+  ...
 )
 }
 \arguments{
