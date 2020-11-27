@@ -61,6 +61,8 @@ get_gaussian_parameters <-  function(x) {
 
   mean <- bm$parameters$cnv_probs
 
+  rownames(mean) <- 1:nrow(mean)
+
   sd <-  bm$parameters$norm_sd
 
   ret  <-  reshape2::melt(mean %>%  as.matrix)

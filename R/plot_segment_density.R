@@ -98,7 +98,7 @@ plot_single_segment = function(x, segment, sum_denominator)
               inherit.aes = FALSE) +
     CNAqc:::my_ggplot_theme() +
     scale_fill_manual(values = sapply(clusters_colors, Rcongas:::lighten, factor = .5)) +
-    scale_color_manual(values = Rcongas:::get_clusters_colors(counts_data$cluster)) +
+    scale_color_manual(values = clusters_colors) +
     labs(title = "Poisson counts") +
     labs(x = "RNA counts", y = "Density") +
     # geom_text(
@@ -166,7 +166,7 @@ get_gaussian_density_values = function(x,
     dplyr::filter(segment_id == !!segment_id, cluster == !!cluster)
 
   # Counts data - to determine density range
-  counts_data = Rcongas:::get_counts(x, normalise = TRUE) %>%
+  counts_data = Rcongas:::get_counts(x, normalise = TRUE, sum_denominator = FALSE) %>%
     Rcongas:::idify() %>%
     dplyr::filter(segment_id == !!segment_id, cluster == !!cluster)
 
@@ -174,8 +174,8 @@ get_gaussian_density_values = function(x,
   min_x = counts_data %>% dplyr::pull(n) %>% min
   max_x = counts_data %>% dplyr::pull(n) %>% max
 
-  min_x = min_x - 1
-  max_x = max_x + 1
+  min_x = min_x - 0.2
+  max_x = max_x + 0.2
 
   # Mixture component likelihood
   mean  = gaussian_params$mean
