@@ -13,8 +13,7 @@
 plot_DE_gw = function(x,
                       chromosomes = paste0("chr", c(1:22, "X", "Y")),
                       cut_pvalue = 0.001,
-                      cut_lfc = 0.25
-                      )
+                      cut_lfc = 0.25)
 {
   # Special case - analysis not available
   if (!has_DE(x))
@@ -29,10 +28,18 @@ plot_DE_gw = function(x,
                                chromosomes = chromosomes,
                                cut_pvalue = 1,
                                cut_lfc = 0)
-  DE_table = get_DE_table(x, chromosomes = chromosomes, cut_pvalue = cut_pvalue, cut_lfc = cut_lfc)
+  DE_table = get_DE_table(x,
+                          chromosomes = chromosomes,
+                          cut_pvalue = cut_pvalue,
+                          cut_lfc = cut_lfc)
+
+  if (nrow(DE_table) == 0) {
+    cli::cli_alert_danger("No DEGs with this p-value (min is {.value {min(DE_full_table$p_val_adj)}})")
+    return(CNAqc:::eplot())
+  }
 
   # Mapping function for all genes (gives us the total genes per segment)
-  mapping_DE_total = map_de_to_segments(DE_full_table, x)
+  mapping_DE_total = Rcongas:::map_de_to_segments(DE_full_table, x)
 
   mapping_DE_total_mapped = mapping_DE_total$mapping
   mapping_DE_total_mapped_stats_total = mapping_DE_total_mapped %>%
@@ -41,9 +48,17 @@ plot_DE_gw = function(x,
     dplyr::ungroup()
 
   # Mapping function for DE genes (gives us the significant genes per segment)
-  mapping_DE_sign = map_de_to_segments(DE_table, x)
+  mapping_DE_sign = Rcongas:::map_de_to_segments(DE_table, x)
 
+  off_t_DE = mapping_DE_sign$off_target
   mapping_DE_sign = mapping_DE_sign$mapping
+
+  if (is.null(mapping_DE_sign)) {
+    cli::cli_alert_danger("All DEGs are off-target.")
+    print(off_t_DE)
+    return(CNAqc:::eplot())
+  }
+
   mapping_DE_sign_total = mapping_DE_sign %>%
     dplyr::group_by(segment_id) %>%
     dplyr::summarise(n_mappable_sign = n(), .groups = 'keep') %>%

@@ -13,7 +13,7 @@
 #'   clusters = get_clusters(rcongas_example)
 #'   description = get_model_description(rcongas_example)
 
-plot_raw_data = function(x, genes, description = "My CONGAS model", clusters = NULL, prompt = TRUE, ...)
+plot_raw_data = function(x, genes, lognormalise = TRUE, description = "My CONGAS model", clusters = NULL, prompt = TRUE, ...)
 {
   # xdim(x)
   # genes = get_gene_annotations(rcongas_example)$gene[1:1000]
@@ -69,8 +69,16 @@ plot_raw_data = function(x, genes, description = "My CONGAS model", clusters = N
   }
 
   # Call
+  data_transform = x
+  main = description
+
+  if(lognormalise) {
+    x = log(x + 1)
+    main = paste0(description, " log-transformed counts")
+  }
+
   pheatmap(
-    log(x + 1),
+    data_transform,
     show_rownames = show_rownames,
     show_colnames = show_colnames,
     cluster_cols = cluster_cols,
@@ -79,9 +87,9 @@ plot_raw_data = function(x, genes, description = "My CONGAS model", clusters = N
     ))(100),
     annotation_col = annotation_columns,
     annotation_colors = list(
-      Cluster = get_clusters_colors(annotation_columns$Cluster)
+      Cluster = Rcongas:::get_clusters_colors(annotation_columns$Cluster)
     ),
-    main = paste0(description, " log-transformed counts"),
+    main = main,
     ...
   )
 }
