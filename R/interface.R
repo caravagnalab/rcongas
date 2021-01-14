@@ -205,9 +205,9 @@ run_inference <-  function(X , model, optim = "ClippedAdam", elbo = "TraceEnum_E
 
     an <-  set_names(list(loss = loss, parameters = parameters, dim_names = dim_names))
   }
-
+  
   if(!posteriors & !rerun)
-    an$parameters$assignment_probs <-  parameters[[4]] %>% reshape2::melt() %>% from_MAP_to_post()
+    an$parameters$assignment_probs <- an$parameters[[4]] %>% reshape2::melt() %>% mutate(value = as.character(value)) %>% from_MAP_to_post()
 
   # if(model_name == "MixtureGaussianDMP") {
   #

@@ -67,12 +67,12 @@ set.seed(3)
 res <- best_cluster(inp3,model = "MixtureGaussian", clusters = 1:4, steps = 800, lr = 0.01, param_list = list("theta_scale" = 3.2, "theta_rate" = 1, "cnv_var" = 0.50) , method = "BIC",  MAP = T, posteriors = T, step_post = 100)
 
 
-res_filt <-  filter_clusters(res, abundance = 0.1)
+res_filt <-  filter_clusters(res, abundance = 0.03)
 ```
 
-
-
 ```{r}
+
+
 
 plot_counts_rna_segments(res_filt, z_score = T, normalised = T)
 
@@ -95,21 +95,8 @@ rerun <-  run_complete(
 
 ```{r}
 de <- calculate_DE(rerun, counts_SA[rownames(mat_pre),] %>%  t, clone1 = "1", clone2 = "2", method = "DESeq2")
-
 ```
 
-```{r}
-clones_dataB$tot <-  clones_dataB$integer_copy_number
-
-c18 <-  clones_dataA %>%  filter(chr %in% c(15,16,18)) 
-
-
-inp4 <-  get_data(t(mat_pre), cnv_data = c18, type = "fixed_binning", startsWithchr = F, correct_bins = F, genome = "hg19")
-
-
-inp4 <- inp4[,!is.na(inp4$cnv$mu) & inp4$cnv$mu > 5]
-
-```
 
 
 
