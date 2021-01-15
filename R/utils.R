@@ -19,7 +19,12 @@ get_gene_annotations = function(x)
   if(x$reference_genome %in% c('hg38', 'GRCh38')) {
     data('hg38_gene_coordinates')
     return(hg38_gene_coordinates)
-    }
+  }
+  
+  if(x$reference_genome %in% c('mm10', 'GRCm38')) {
+    data('mm10_gene_coordinates')
+    return(mm10_gene_coordinates)
+  }
 
   stop("reference unknown?")
 }
