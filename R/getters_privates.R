@@ -6,6 +6,8 @@ get_karyotype <-  function(x) {
     data('hg19_karyo')
   if (x$reference_genome %in% c('hg38', 'GRCh38'))
     data('hg38_karyo')
+  if (x$reference_genome %in% c('mm10', 'GRCm38'))
+    data('mm10_karyo')
 }
 
 get_best_model <- function(X) {

@@ -229,7 +229,10 @@ get_gene_annotations <-  function(x)
     # ld('hg38_gene_coordinates')
     return(Rcongas::hg38_gene_coordinates)
   }
-
+  
+  if (x$reference_genome %in% c('mm10', 'GRCm38'))
+    return(Rcongas::mm10_gene_coordinates)
+  
   stop("reference unknown, you should use a reference supported by CONGAS!")
 }
 
