@@ -88,7 +88,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -109,7 +109,16 @@
       <a href="../articles/Plotting_functions.html">Plotting functions</a>
     </li>
     <li>
-      <a href="../articles/simulated_example.html">CONFETTI on simulated data</a>
+      <a href="../articles/gbm_example.html">Glioblastoma smart-seq analysis</a>
+    </li>
+    <li>
+      <a href="../articles/monosomy_example.html">Monosomy 7 analysis</a>
+    </li>
+    <li>
+      <a href="../articles/simulated_example.html">CONGAS on simulated data</a>
+    </li>
+    <li>
+      <a href="../articles/xeno_examples.html">analysis on 10x data</a>
     </li>
   </ul>
 </li>
@@ -117,7 +126,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/militeee/Rcongas/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -148,7 +157,8 @@
   <span class='va'>genes</span>,
   description <span class='op'>=</span> <span class='st'>"My CONGAS model"</span>,
   clusters <span class='op'>=</span> <span class='cn'>NULL</span>,
-  prompt <span class='op'>=</span> <span class='cn'>TRUE</span>
+  prompt <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  <span class='va'>...</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -169,10 +179,10 @@
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
   <span class='va'>x</span> <span class='op'>=</span> <span class='fu'><a href='get_input_raw_data.html'>get_input_raw_data</a></span><span class='op'>(</span><span class='va'>rcongas_example</span><span class='op'>)</span>
-  <span class='va'>genes</span> <span class='op'>=</span> <span class='fu'><a href='get_DE_table.html'>get_DE_table</a></span><span class='op'>(</span><span class='va'>rcongas_example</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'>pull</span><span class='op'>(</span><span class='va'>gene</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in get_input_raw_data(rcongas_example): object 'rcongas_example' not found</span></div><div class='input'>  <span class='va'>genes</span> <span class='op'>=</span> <span class='fu'><a href='get_DE_table.html'>get_DE_table</a></span><span class='op'>(</span><span class='va'>rcongas_example</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'>pull</span><span class='op'>(</span><span class='va'>gene</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='error'>Error in get_DE_table(rcongas_example) %&gt;% pull(gene): could not find function "%&gt;%"</span></div><div class='input'>  <span class='va'>clusters</span> <span class='op'>=</span> <span class='fu'><a href='get_clusters.html'>get_clusters</a></span><span class='op'>(</span><span class='va'>rcongas_example</span><span class='op'>)</span>
-  <span class='va'>description</span> <span class='op'>=</span> <span class='fu'><a href='get_model_description.html'>get_model_description</a></span><span class='op'>(</span><span class='va'>rcongas_example</span><span class='op'>)</span>
-</div></pre>
+</div><div class='output co'>#&gt; <span class='error'>Error in Rcongas:::get_best_model(x): object 'rcongas_example' not found</span></div><div class='input'>  <span class='va'>description</span> <span class='op'>=</span> <span class='fu'><a href='get_model_description.html'>get_model_description</a></span><span class='op'>(</span><span class='va'>rcongas_example</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in get_model_description(rcongas_example): object 'rcongas_example' not found</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

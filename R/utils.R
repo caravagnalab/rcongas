@@ -20,7 +20,7 @@ get_gene_annotations = function(x)
     data('hg38_gene_coordinates')
     return(hg38_gene_coordinates)
   }
-  
+
   if(x$reference_genome %in% c('mm10', 'GRCm38')) {
     data('mm10_gene_coordinates')
     return(mm10_gene_coordinates)
@@ -221,10 +221,40 @@ plot_MAF <- function(MAF_l, k = 31, fsize = 20) {
   MAF_l <- do.call(rbind, MAF_splitted)
 
   MAF_l$chr <- factor(MAF_l$chr,levels = gtools::mixedsort(unique(MAF_l$chr)))
-  ggplot(data = MAF_l, aes(x = as.numeric(start), y = runmed(value, k = k, endrule = "constant"), color = chr)) +
+  p = ggplot(data = MAF_l, aes(x = as.numeric(start), y = runmed(value, k = k, endrule = "constant"), color = chr)) +
     geom_point() + xlab("") + facet_wrap(~chr, scales = "free_x", nrow = 3) + ylab("MAF") +
     theme(axis.title.x=element_blank(), axis.text.x = element_blank(), axis.ticks.x = element_blank(), text = element_text(size=fsize))
+  return(p)
+}
 
+plot_HMM <- function(segs, MAF_l= NULL, k = 31, fsize = 20, padding = 0.05) {
+
+  g <-  as.factor(segs$chr)
+  segs_splitted <-  split(segs, f = g)
+  segs_l <- do.call(rbind, segs_splitted)
+
+  segs_l$chr <- factor(segs_l$chr,levels = gtools::mixedsort(unique(segs_l$chr)))
+
+
+  if(is.null(MAF_l)) {
+    p = ggplot(data = segs_l, aes(xmin = as.numeric(start), xmax = as.numeric(end), ymin = tot - padding, ymax = tot + padding, fill = chr)) + geom_rect()+
+      xlab("") + facet_wrap(~chr, scales = "free_x", nrow = 3) + ylab("HMM state") +
+      theme(axis.title.x=element_blank(), axis.text.x = element_blank(), axis.ticks.x = element_blank(), text = element_text(size=fsize))
+
+
+  }else {
+    g <-  as.factor(MAF_l$chr)
+    MAF_splitted <-  split(MAF_l, f = g)
+
+    MAF_splitted <- filter_MAF_seg(MAF_splitted, k = k)
+    MAF_l <- do.call(rbind, MAF_splitted)
+
+    MAF_l$chr <- factor(MAF_l$chr,levels = gtools::mixedsort(unique(MAF_l$chr)))
+
+    p = p + geom_point(x = as.numeric(MAF_l$start), y = runmed(MAF_l$value, k = k, endrule = "constant"), color = "grey65", alpha = 0.6) + facet_wrap(~MAF_l$chr, scales = "free_x", nrow = 3)
+  }
+
+  return(p)
 }
 
 ## to finish
@@ -381,7 +411,7 @@ filter_segments.rcongas <- function(X, filter_mu = 30, filter_fixed = FALSE, fil
 
   mask_ploidy <- X$data$cnv$ploidy_real %in% filter_ploidy & !is.na(X$data$cnv$ploidy_real)
 
-
+  print(mask_seg)
   X$data$cnv <- X$data$cnv[mask_seg & mask_ploidy,]
 
   X$data$counts <- X$data$counts[filter_cells,mask_seg & mask_ploidy]

@@ -16,31 +16,13 @@ knitr::opts_chunk$set(
 
 We show how you can plot information from a CONGAS object. We work with an example object released with the tool. 
 ```{r}
-# change to data('rcongas_example', package = 'rcongas')
-# load("../data/rcongas_example.rda")
+data('congas_example', package = 'Rcongas')
 
 require(tidyverse)
 require(Rcongas)
 
 
-rcongas_example = Rcongas::rcongas_example
-
-# sapply(list.files('../R/', full.names = T), source)
-# source('../R/getters_clustering_results.R')
-# source('../R/getters_extra_analysis.R')
-# source('../R/getters_input_data.R')
-# source('../R/getters_privates.R')
-# 
-# 
-# source('../R/utils.R')
-# source('../R/plot_chromosome.R')
-# source('../R/plot_gw_cna_profiles.R')
-# source('../R/plot_gw_DE.R')
-# source('../R/plot_input_rna_segments.R')
-# source('../R/plot_volcano.R')
-# # source('../R/plots_segments_counts.R')
-# source('../R/plot_raw_data.R')
-# source('../R/test_status.R')
+rcongas_example = congas_example
 
 ```
 
@@ -117,32 +99,32 @@ The plot can be generated with, and without clustering assignments.
 ```{r, fig.width=5, fig.height=7}
 # Raw input counts. Since we have them stored in "rcongas_example",
 # we can access them straight from the object
-raw_input = get_input_raw_data(rcongas_example)
+raw_input = get_input_raw_data(rcongas_example) %>%  t
 
 # Used genes - just the a random set of 50. Wem use the "get_mapped_genes"
 # function to get the ones actually used in "rcongas_example"
-random_50_genes = get_mapped_genes(rcongas_example) %>%
-  dplyr::sample_n(50) %>%
+random_30_genes = get_mapped_genes(rcongas_example) %>%
+  dplyr::sample_n(30) %>%
   dplyr::pull(gene)
 
 # Plot
 plot_raw_data(
-  x = raw_input,
-  genes = random_50_genes,
+  x = raw_input,lognormalise = T,
+  genes = random_30_genes,
   prompt = FALSE)
 
 # Plot with clusters
 plot_raw_data(
   x = raw_input,
-  genes = random_50_genes,
+  genes = random_30_genes,lognormalise = T,
   clusters = get_clusters(rcongas_example),
   prompt = FALSE)
 
 # Now we use the DE genes (see below)
 plot_raw_data(
   x = raw_input,
-  genes = get_DE_table(rcongas_example, cut_pvalue = 1e-4) %>% dplyr::pull(gene), 
-  clusters = get_clusters(rcongas_example),
+  genes = get_DE_table(rcongas_example, cut_pvalue = 1e-4, cut_lfc = 1) %>% dplyr::pull(gene), 
+  clusters = get_clusters(rcongas_example), lognormalise = T,
   prompt = FALSE)
 
 ```

@@ -1,11 +1,14 @@
-pandoc: 2.7.3
+pandoc: 2.11.3.2
 pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
   Getters: Getters.html
   Plotting_functions: Plotting_functions.html
+  gbm_example: gbm_example.html
+  monosomy_example: monosomy_example.html
   simulated_example: simulated_example.html
-last_built: 2020-10-14T09:59Z
+  xeno_examples: xeno_examples.html
+last_built: 2021-01-30T21:36Z
 urls:
   reference: militeee.github.io/Rcongas/reference
   article: militeee.github.io/Rcongas/articles

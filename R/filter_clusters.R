@@ -1,12 +1,27 @@
-filter_clusters  <- function(x, ncells = 10, abundance = 0.03) {
+filter_clusters  <- function(x, ncells = 10, abundance = 0.03, remove = F) {
 
-  x$inference$models <- lapply(x$inference$models, function(x) filter_clsuter_aux(x , ncells = ncells, abundance = abundance))
-
+  if(remove){
+    x <- remove_small_clusters(x,ncells, abundance)
+  } else {
+    x$inference$models <- lapply(x$inference$models, function(x) filter_cluster_aux(x , ncells = ncells, abundance = abundance, remove = remove))
+  }
+  
+  
   return(x)
 }
 
 
-filter_clsuter_aux <- function(x, ncells, abundance) {
+remove_small_clusters <-  function(x, ncells, abundance){
+  bm <- Rcongas::get_best_model(x)
+  if(length(bm$parameters$mixture_weights) == 1) return(x)
+  ta <-  table(bm$parameters$assignement)
+  mask <-  (bm$parameters$mixture_weights > abundance) & (ta > ncells)
+  to_remove <- names(bm$parameters$mixture_weights[!mask])
+  return(x[-which(bm$parameters$assignement %in% to_remove),])
+  
+}
+
+filter_cluster_aux <- function(x, ncells, abundance) {
 
   if(length(x$parameters$mixture_weights) == 1) return(x)
 
@@ -26,6 +41,7 @@ filter_clsuter_aux <- function(x, ncells, abundance) {
 
   x$parameters$mixture_weights <- x$parameters$mixture_weights[mask]
   cnv_probs_new <- x$parameters$cnv_probs[mask,]
+  
   if(!x$run_information$posteriors){
 
     cli::cli_alert_info("No posterior probabilities, using euclidean distance to merge clusters")
@@ -38,14 +54,13 @@ filter_clsuter_aux <- function(x, ncells, abundance) {
     x$parameters$assignment_probs <- x$parameters$assignment_probs[,mask]
     cnv_no_assign <- x$parameters$cnv_probs[!mask,, drop = FALSE]
     distance <- as.matrix(dist(as.matrix(x$parameters$cnv_probs), diag = T))
-
+  
     for(c in which(!mask)){
       distance[c,c] <-  Inf
       ## !!! note, this works only because the labelling of clusters is in order of abudance (descending)
       x$parameters$assignement[x$parameters$assignement == c] <- which.min(distance[c,])
-
+  
     }
-
 
   } else {
 

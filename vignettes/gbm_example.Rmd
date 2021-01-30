@@ -1,8 +1,9 @@
 ---
-title: "CONFETTI without bulk DNA"
+title: "Glioblastoma smart-seq analysis"
 author: "Salvatore Milite"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
+bibliography: references.bib
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
   %\VignetteEngine{knitr::rmarkdown}
@@ -16,16 +17,35 @@ knitr::opts_chunk$set(
 )
 ```
 
+```{r, echo = FALSE}
 
-We try to analyze a glioblastome smart-seq dataset from (Patel et al., 2014). The dataset with the associated BAF is taken from 
+load("AF.rda")
+load("segmentation_results_1.rda")
+load("segmentation_results_2.rda")
+load("GBM_smartseq_normal_vs_tumor.rda")
+load("glioblastoma_TPM.rda")
+load("GBM_smartseq_tumor_only_df_5_no5.rda")
+devtools::load_all("../")
+
+subclones= GBM_smartseq_normal_vs_tumor
+
+final_expr = GBM_smartseq_tumor_only_df_5_no5
+
+subclones2 = GBM_smartseq_tumor_only_df_5_no5
+```
+
+
+Here we present the analysis of a glioblastome smart-seq dataset from [@patel]. Count and allele frequencies matrices have been obtained from [@hb] and assembled in a set of .RData files.
+
+We can first start by loading the data and trying to aggregate our gene counts over entire chromosomes. Even if the segmentation is not exactly precise, we can already note different potential subclonal CNV. 
 
 ```{r exploratory}
-
+library(Rcongas)
+library(dplyr)
 load("glioblastoma_TPM.rda")
+data("hg38_karyo")
 
 chr_cnv <- data.frame(chr = names(hg38_karyo), start = rep(1,length(hg38_karyo)), end = hg38_karyo, tot = rep(2, length(hg38_karyo)))
-
-chr_cnv$chr <- paste0("chr", chr_cnv$chr)
 
 express <- get_data(glioblastoma_TPM, cnv_data = chr_cnv, type = "fixed_binning", fun = mean)
 
@@ -34,81 +54,102 @@ pheatmap::pheatmap(express$data$counts, cluster_cols = F,  show_rownames = F)
 
 ```
 
-We can see a fairly variagate landscape, with some interesting changes in chromosomes 9,14 and maybe 13. Now let's segment the genome.
+Some interesting chromosomes are the 9,14 and maybe 13. Now let's segment the genome.
 
 ```{r}
 library(ggpubr)
 
 load("AF.rda")
 
+# Basically we just convert the A and B allele information in major and minor
+
 cov_tr <-  20
 
 good_sites <- which(AF_info$coverage > cov_tr)
 
-
-
 MAF <- AF_info$minor[good_sites] / AF_info$coverage[good_sites]
 
-
 MAF_l <- MAF %>% dplyr::as_tibble(rownames = "pos") %>% tidyr::separate(pos, c("chr", "start"))
+```
 
+
+```{r, eval = FALSE}
+# perform segmentation
 res <- segment_genome(MAF_l, steps = 200L, param_list = list('t'=1e-8), filter_size = 25)
+```
 
-segs_df <- from_inference_to_segments(res, MAF_l)
-
-segs_df$tot[segs_df$tot == 5] <- 4
-
-segs_df$tot[segs_df$tot == 3] <- 4
-segs_df$tot[segs_df$tot == 6] <- 4
-
-
-
-segs_df_corr <- simplify_segs(segs_df)
-
-ggpubr::ggarrange(plot_MAF(MAF_l, k = 5), plot_MAF(MAF_l, k = 25), align = "hv", common.legend = T, labels = c("A", "B"), legend = "none", font.label = list(size = 12))
+```{r, echo = FALSE}
+load("segmentation_results_1.rda")
 
 ```
 
 
 ```{r}
+segs_df <- Rcongas:::from_inference_to_segments(res, MAF_l)
+
+# to be honest I would not trust anything that is not an LOH from the output as the data is super variable
+segs_df$tot[segs_df$tot == 5] <- 4
+segs_df$tot[segs_df$tot == 3] <- 4
+segs_df$tot[segs_df$tot == 6] <- 4
+
+# collapse adjacent segments with the same CN value 
+segs_df_corr <- Rcongas:::simplify_segs(segs_df)
+
+ggpubr::ggarrange(list(plot_MAF(MAF_l, k = 1), plot_MAF(MAF_l, k = 5))
+ , align = "hv", legend = "none", font.label = list(size = 12), labels = c("A", "B"))
+
+# if you want you can also plot the hmm segments
+plot_HMM(segs_df_corr)
+```
+
+
+After that we can again aggregate counts over our new segmentation and have a look at the heatmap. 
+
+```{r}
 
 segs_df_corr$chr <-  paste0("chr", segs_df_corr$chr)
-
-
+# aggregate pver the chromosome
 binned_express <- get_data(glioblastoma_TPM, cnv_data = segs_df_corr, type = "fixed_binning", correct_bins = F, fun = mean, bindim = median, genome = "hg19")
-
+# set a fake ploidy prior, it is needed 
 binned_express$data$cnv$ploidy_real <- rep(1,nrow(binned_express$data$cnv))
 
 binned_express <- filter_segments.rcongas(binned_express, filter_mu = 50)
 
+# let's take note of our putative LOH
 LOH <- grep(binned_express$data$cnv$segment_id, pattern = "chr1[0|3|4]:", value = T, perl = T)
 
 pheatmap::pheatmap(binned_express$data$counts, cluster_cols = F,  show_rownames = F, cluster_rows = T, cutree_rows = 3)
 ```
 
-
-```{r}
+Prior to performing the inference with SVI, we select just the more variable features, as high number of segments to cells ratio could led to an excessive clusters penalization.
+```{r, eval = FALSE}
 set.seed(3)
 torch <- reticulate::import("torch")
-
+# set priors on the mixing proportions
 mix_prior <-  list(NULL, torch$tensor(c(0.8,0.2)), torch$tensor(c(0.4,0.3,0.3)), torch$tensor(c(0.3,0.3,0.2,0.2)))
-
+# we filter the lessa variable segments
 filt <- apply(binned_express$data$counts,2,sd)
-
 binned_express_most_var <-  binned_express[, filt > quantile(filt, 0.70)]
-
+# run inference
 subclones <- best_cluster(X = binned_express_most_var, clusters = 1:4, model = "MixtureGaussianNorm", steps =800L, lr = 0.01, param_list = list(a = 0, b = 1, init_sd = 0.5), method = "AIC", mixture = mix_prior, posteriors = T, step_post = 200) 
 
 ```
 
+CONGAS is able to identify 3 different clusters. We can clearly see how one of them can actually be a cluster of normal cells, as it lacks all our putative LOH regions.
+
+
 ```{r}
+#plot the results
 subclones$inference$models[[subclones$inference$model_selection$best_K]]$parameters$norm_factor <- rep(1,75)
 #subclones$data <-  binned_express$data
 plot_counts_rna_segments(subclones, z_score = T, normalised = F)
 ```
 
+We can use this knoledge to filter the data and redo the segmentation just on tumor cells (which would be an ideal setting for our HMM).
+
 ```{r}
-#load("MGH31_SNPs_per_cell.rda")
+# we now remove the normal cells and recalculate the major and minor allele proportions
+load("MGH31_SNPs_per_cell.rda")
 
 all_cells <- names(get_cluster_assignments(subclones))
 
@@ -132,21 +173,14 @@ filter <- which(cov_normal > 30)
 
 MAF_normal <- min_normal[filter] / cov_normal[filter]
 MAF_tumor <- min_tumor[filter] / cov_tumor[filter]
-
-par(mfrow = c(2,1))
-
-plot(y = MAF_tumor[grep(names(MAF_tumor),pattern = "")], as.numeric(do.call(rbind, strsplit(names(MAF_tumor),split = ":"))[,2]))
-plot(y = MAF_normal[grep(names(MAF_normal),pattern = "")],as.numeric(do.call(rbind, strsplit(names(MAF_normal),split = ":"))[,2]))
 ```
 
 ```{r}
-
+# basically the same thing as before but with just tumor cells
 
 cov_tr <-  40
 
 good_sites <- which(cov_tumor > cov_tr)
-
-
 
 MAF <- min_tumor[good_sites] / cov_tumor[good_sites]
 
@@ -155,9 +189,19 @@ MAF <-  MAF[MAF > 0.10]
 MAF <-  MAF[grep(names(MAF), pattern = "chr1[0|4|3]:",invert = T)]
 
 MAF_l <- MAF %>% dplyr::as_tibble(rownames = "pos") %>% tidyr::separate(pos, c("chr", "start"))
+```
 
+
+```{r, eval = FALSE}
 res <- segment_genome(MAF_l, steps = 200L, param_list = list('t' =1e-8), filter_size = 33)
+```
 
+```{r, echo = FALSE}
+load("segmentation_results_2.rda")
+
+```
+
+```{r}
 segs_df <- from_inference_to_segments(res, MAF_l)
 
 segs_df$tot[segs_df$tot == 6] <- 2
@@ -171,26 +215,30 @@ ggpubr::ggarrange(plot_MAF(MAF_l, k = 5), plot_MAF(MAF_l, k = 11), align = "hv",
 
 ```
 
-```{r}
+We can now aggregate expression values on the new segments. 
+
+```{r, eval = FALSE}
 segs_df_corr2$chr <-  paste0("chr", segs_df_corr2$chr)
 
 binned_express2 <- get_data(glioblastoma_TPM[,tumor_cells], cnv_data = segs_df_corr2, type = "fixed_binning", correct_bins = F, fun = mean, chrs = paste0("chr", 1:22)[-11])
 
-
-
 binned_express2$data$cnv$ploidy_real <- rep(1,nrow(binned_express2$data$cnv))
 
 binned_express2 <- filter_segments.rcongas(binned_express2, filter_mu = 50)
+# manually add the counts from the LOH region aggregated before, as they are lost in this tumor-only segmentation process
+final_expr <- bind_rcongas_data(binned_express2, binned_express[tumor_cells,which(colnames(binned_express$data$counts)  %in% LOH)])
+```
 
 
-final_expr <- bind_rcongas_data(binned_express2, binned_express[tumor_cells,which(colnames(binned_express$data$counts)  %in% LOH)]) 
-
-
+```{r}
 pheatmap::pheatmap(final_expr$data$counts, cluster_cols = F,  show_rownames = F, cluster_rows = T, cutree_rows = 3)
 ```
 
-```{r}
+We filter again for low variance segments and run CONGAS.
+
+```{r, eval = FALSE}
 set.seed(3)
+# fit CONGAS with just tumor cells 
 to_run <- final_expr[tumor_cells,]
 
 filt <- apply(to_run$data$counts,2,sd)
@@ -200,62 +248,21 @@ to_run <-  to_run[,filt > quantile(filt, 0.70)]
 subclones2 <- best_cluster(to_run, clusters = 1:4, model = "MixtureGaussianNorm", steps = 800L, lr = 0.01, param_list = list(a = 0, b = 1, init_sd = 0.5), method = "lk", posteriors = T, step_post = 150) 
 ```
 
+Our new 3 clusters correspond to different clonal populations: a parental one, one with a deletion at 14 and one with an amplification on chromosome 5. With this low number of cells however, differential expression analysis has not enough power.
 
 ```{r}
-
-
 plot_counts_rna_segments(subclones2, z_score = T, normalised = F)
 ```
 
 
-```{r}
-
-p1 <- MAF_clust_plot(MGH31_SNPs_per_cell$ref, MGH31_SNPs_per_cell$tot_coverage, names(best_model2$parameters$assignement[best_model2$parameters$assignement == 2]) , names(best_model2$parameters$assignement[best_model2$parameters$assignement!= 2]) ,"^5:", filt = 20, labels = c("2", "1"))
-
-
-
-
-```
-
-```{r}
+```{r, eval = FALSE}
+#clone specific differential expression
 
 df_norm_tum <-  calculate_DE(subclones, input = glioblastoma_TPM, clone1 = "c3", NULL, normalize = F, logfc.threshold = 0.2)
   
 df_5_no5 <- calculate_DE(subclones2, input = glioblastoma_TPM[,get_best_model(subclones2)$dim_names$cell_names], clone1 = "c2", NULL, normalize = F, logfc.threshold = 0.2)
   
 df_14_no14 <- calculate_DE(subclones2, input = glioblastoma_TPM[,get_best_model(subclones2)$dim_names$cell_names], clone1 = "c1","c3", normalize = F, logfc.threshold = 0.2)
-
-
-so <- CreateSeuratObject(glioblastoma_TPM[,names(c_fin)])
-so <- NormalizeData(so)
-so <- FindVariableFeatures(so, selection.method = "vst", nfeatures = 6000)
-
-so <- RunUMAP(so, features = VariableFeatures(object = so))
-
-ump2 <-  as.matrix(ump2)
-colnames(ump2) <- paste0("UMAP2_", 1:2)
-rownames(ump2) <- rownames(as.matrix(binned_express$counts))
-
-so[["umap2"]] <- CreateDimReducObject(embeddings = as.matrix(ump2), key = "UMAP2_", assay = DefaultAssay(so))
-
-fp <- FeaturePlot(so, features = c("KCNMB4", "CLDN11" ,"MOG" ,"CD63" ,"PSMA7" ,"SOD1" , "EGFR" , "C1S", "SYNE2" ))
-
-
-so@meta.data$clust1 <-  best_model$parameters$assignement 
-
-nor <- best_model$parameters$assignement[best_model$parameters$assignement == 2]
-nor[nor == 2] <- 0
-c_fin <- c(nor, best_model2$parameters$assignement )
-c_fin[c_fin == 4] <- 1
-c_fin <- sort(c_fin)
-so@meta.data$clust1 <-  c_fin
-
-
-so2 <- CreateSeuratObject(glioblastoma_TPM[,best_model2$dim_names$cell_names])
-so2@meta.data$clust2  <- best_model2$parameters$assignement 
-
-
-vp2 <- VlnPlot(so, features = c("KCNMB4", "CLDN11" ,"MOG","CD63" ,"PSMA7" ,"SOD1" , "EGFR" , "C1S", "SYNE2" ),  group.by = "clust1", pt.size = 0.5)
 ```
 
 

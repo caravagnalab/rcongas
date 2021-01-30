@@ -33,7 +33,6 @@ Imports:
   cli
 Suggests:
   biomaRt,
-  EnhancedVolcano
 Depends: 
     R (>= 2.10)
 RoxygenNote: 7.1.1

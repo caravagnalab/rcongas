@@ -88,7 +88,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -109,7 +109,16 @@
       <a href="../articles/Plotting_functions.html">Plotting functions</a>
     </li>
     <li>
-      <a href="../articles/simulated_example.html">CONFETTI on simulated data</a>
+      <a href="../articles/gbm_example.html">Glioblastoma smart-seq analysis</a>
+    </li>
+    <li>
+      <a href="../articles/monosomy_example.html">Monosomy 7 analysis</a>
+    </li>
+    <li>
+      <a href="../articles/simulated_example.html">CONGAS on simulated data</a>
+    </li>
+    <li>
+      <a href="../articles/xeno_examples.html">analysis on 10x data</a>
     </li>
   </ul>
 </li>
@@ -117,7 +126,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/militeee/Rcongas/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -152,10 +161,9 @@
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>rcongas_example</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>rcongas_example</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>── <span style='color: #000000;background-color: #BBBB00;'>[ Rcongas ] My CONGAS model</span><span> </span><span style='color: #00BB00;'>n = 504</span><span> cells with </span><span style='color: #00BB00;'>k = 28</span><span> segments, grouped in </span><span style='color: #00BB00;'>k </span><span></span></div><div class='output co'>#&gt; <span class='message'>● Cluster </span><span style='color: #00BB00;'>1</span><span>, n = 369 [73.21% of total cells].</span></div><div class='output co'>#&gt; <span class='message'>● Cluster </span><span style='color: #00BB00;'>2</span><span>, n = 135 [26.79% of total cells].</span></div><div class='output co'>#&gt; <span class='message'></span><span style='color: #BBBBBB;'>ℹ</span><span> Model scored with </span><span style='color: #00BB00;'>BIC</span><span> = 197886.71</span></div><div class='output co'>#&gt; <span class='message'>● Differential Expression analysis for </span><span style='color: #00BB00;'>1</span><span> vs </span><span style='color: #00BB00;'>2</span><span> with the </span><span style='color: #00BB00;'>DESeq2</span><span> method: </span><span style='color: #00BB00;'>185</span><span> DE</span>
-#&gt; <span class='message'>genes at level alpha 0.01, with |lfc| &gt; 0.25.</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>rcongas_example</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'></span><span style='color: #00BB00;'>✓</span><span> Loading </span><span style='color: #00BB00;'>CNAqc</span><span>, </span><span style='font-style: italic;'>'Copy Number Alteration quality check'</span><span>. Support : </span><span style='color: #0000BB;font-style: italic;'>&lt;https://caravagn.github.io/CNAqc/&gt;</span><span></span></div><div class='img'><img src='rcongas_example-1.png' alt='' width='700' height='433' /></div></span></pre>
+</div><div class='output co'>#&gt; <span class='warning'>Warning: data set ‘rcongas_example’ not found</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>rcongas_example</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in print(rcongas_example): object 'rcongas_example' not found</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>rcongas_example</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in plot(rcongas_example): object 'rcongas_example' not found</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

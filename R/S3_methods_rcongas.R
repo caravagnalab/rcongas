@@ -103,6 +103,14 @@ plot.rcongas = function(x, ...)
 }
 
 
+clean_clusters <- function(cm)
+{
+  to_retain <- names(table(cm$parameters$assignement))
+  cm$parameters$mixture_weights <- cm$parameters$mixture_weights[to_retain]
+  cm$parameters$cnv_probs <-cm$parameters$cnv_probs[1:length(to_retain),, drop = F]
+  cm$parameters$assignment_probs <-cm$parameters$assignment_probs[,1:length(to_retain), drop = F]
+  return(cm)
+}
 
 `[.rcongas` <- function(x,i,j) {
 
@@ -115,16 +123,17 @@ plot.rcongas = function(x, ...)
   x$data$gene_counts <- x$data$gene_counts[which(rownames(x$data$gene_counts) %in% gene_to_retain), i]
 
   if(has_inference(x)){
-    for(j in length(x$inference$model_selection$clusters)){
+    for(k in length(x$inference$model_selection$clusters)){
 
-      cm <- x$inference$models[[j]]
+      cm <- x$inference$models[[k]]
       cm$parameters$cnv_probs <- cm$parameters$cnv_probs[,j]
       cm$parameters$norm_factor <- cm$parameters$norm_factor[i]
       cm$parameters$assignement <- cm$parameters$assignement[i]
       if(is_MAP_Z(x)){
         cm$parameters$assignment_probs <-  cm$parameters$assignment_probs[i,]
       }
-      x$inference$models[[j]] <-  cm
+      cm <- clean_clusters(cm)
+      x$inference$models[[k]] <-  cm
     }
   }
 

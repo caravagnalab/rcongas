@@ -4,6 +4,9 @@
     <loc>militeee.github.io/Rcongas/index.html</loc>
   </url>
   <url>
+    <loc>militeee.github.io/Rcongas/reference/breast_xeno_10x.html</loc>
+  </url>
+  <url>
     <loc>militeee.github.io/Rcongas/reference/calculate_DE.html</loc>
   </url>
   <url>
@@ -88,7 +91,22 @@
     <loc>militeee.github.io/Rcongas/reference/plot_gw_cna_profiles.html</loc>
   </url>
   <url>
+    <loc>militeee.github.io/Rcongas/reference/plot_highlights.html</loc>
+  </url>
+  <url>
+    <loc>militeee.github.io/Rcongas/reference/plot_latent_variables.html</loc>
+  </url>
+  <url>
+    <loc>militeee.github.io/Rcongas/reference/plot_mixing_proportions.html</loc>
+  </url>
+  <url>
+    <loc>militeee.github.io/Rcongas/reference/plot_normalization_factors.html</loc>
+  </url>
+  <url>
     <loc>militeee.github.io/Rcongas/reference/plot_raw_data.html</loc>
+  </url>
+  <url>
+    <loc>militeee.github.io/Rcongas/reference/plot_segment_density.html</loc>
   </url>
   <url>
     <loc>militeee.github.io/Rcongas/reference/print.rcongas.html</loc>
@@ -118,6 +136,15 @@
     <loc>militeee.github.io/Rcongas/articles/Plotting_functions.html</loc>
   </url>
   <url>
+    <loc>militeee.github.io/Rcongas/articles/gbm_example.html</loc>
+  </url>
+  <url>
+    <loc>militeee.github.io/Rcongas/articles/monosomy_example.html</loc>
+  </url>
+  <url>
     <loc>militeee.github.io/Rcongas/articles/simulated_example.html</loc>
+  </url>
+  <url>
+    <loc>militeee.github.io/Rcongas/articles/xeno_examples.html</loc>
   </url>
 </urlset>

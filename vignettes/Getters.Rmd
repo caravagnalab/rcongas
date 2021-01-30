@@ -20,21 +20,12 @@ We show how you can access information from a CONGAS computation, using the `rco
 
 We work with an example object released with the tool. 
 ```{r}
-# change to data('rcongas_example', package = 'rcongas')
-load("../data/rcongas_example.rda")
+data('congas_example', package = 'Rcongas')
 
 require(tidyverse)
 require(Rcongas)
 
-rcongas_example = Rcongas::rcongas_example
-
-# sapply(list.files('../R/', full.names = T), source)
-# source('../R/getters_clustering_results.R')
-# source('../R/getters_extra_analysis.R')
-# source('../R/getters_input_data.R')
-# source('../R/getters_privates.R')
-# source('../R/utils.R')
-# source('../R/test_status.R')
+rcongas_example = congas_example
 ```
 
 ## Reference information

@@ -17,9 +17,9 @@
 
 divide_genome_in_segments <- function(approx_length = 1e+8){
 
-
+  data("hg38_karyo")
   genome <- hg38_karyo
-  good_chr <- names(genome) %in% c(1:22, "X")
+  good_chr <- names(genome) %in% paste0("chr",1:22)
   genome <- genome[good_chr]
   max_segments <- (genome %/% approx_length) + 1
   segments <- vapply(X = max_segments, FUN = sample.int, size=1, FUN.VALUE = integer(1))
@@ -511,8 +511,8 @@ run_simulation_generative <- function(cnv_df, ncells = 1000, props = c(0.8,0.2),
         actual_ploidy_new[j] = parent_ploidy_new[j]
       }
 
-      print(actual_ploidy_new[j])
-      print(parent_ploidy_new[j])
+
+    
 
       actual_sum <-  sum(actual_ploidy * cnv_df$mu) / sum(cnv_df$mu)
       parent_sum <- sum(parent_ploidy * cnv_df$mu) / sum(cnv_df$mu)

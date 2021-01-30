@@ -28,7 +28,7 @@ plot.CNVSimulation <- function(cnv_sim, plot = T ){
 
 plot_counts.CNVSimulation <- function(cnv_sim, plot = T, order = rownames(cnv_sim$clust_ids), by_seg = FALSE, title ="scRNA-seq over CNV segments", font_size = 20){
 
-  counts <- cnv_sim$counts
+  counts <- cnv_sim$data$counts
 
   M <- long_counts(counts)
 
@@ -39,7 +39,7 @@ plot_counts.CNVSimulation <- function(cnv_sim, plot = T, order = rownames(cnv_si
     plot(cell_n_pl)
   }
 
-  clus_inf <-  reshape2::melt(as.matrix(cnv_sim$clust_ids))
+  clus_inf <-  reshape2::melt(as.matrix(cnv_sim$data$clust_ids))
 
 
   clust_plot <- ggplot(data = clus_inf) +
