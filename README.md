@@ -25,7 +25,7 @@ Evolution analyses.
 
 #### Help and support
 
-[![](https://img.shields.io/badge/GitHub%20Pages-https://militeee.github.io/Rcongas/-steelblue.svg)](https://militeee.github.io/Rcongas)
+[![](https://img.shields.io/badge/GitHub%20Pages-https://militeee.github.io/Rcongas/-steelblue.svg)](https://militeee.github.io/rcongas)
 
 ### Installation
 
