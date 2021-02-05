@@ -12,20 +12,18 @@ maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www
 [![](https://img.shields.io/badge/Part%20of-evoverse-blue.svg)](https://caravagn.github.io/evoverse)
 <!-- badges: end -->
 
-`Rcongas` is a package that implements …. ([Caravagna et al.;
-https://doi.org/10.1101/586560](https://www.biorxiv.org/content/10.1101/586560v1),
-*under review*).
 
-The package integrates …. The package implements S3 objects to visualize
+
+The package provides an interface for the python package ![https://github.com/Militeee/congas](Congas), a CNV caller from scRNA sequencing data.The package implements S3 objects to visualize
 the data and the fits.
 
-`Rcongas` is part of the `evoverse` set of [R
-packages](https://caravagn.github.io/evoverse) to implement Cancer
-Evolution analyses.
+The associated paper can be found as:
+Genotyping Copy Number Alterations from single-cell RNA sequencing. Salvatore Milite, Riccardo Bergamin, Giulio Caravagna
+
 
 #### Help and support
 
-[![](https://img.shields.io/badge/GitHub%20Pages-https://militeee.github.io/Rcongas/-steelblue.svg)](https://militeee.github.io/Rcongas)
+[![](https://img.shields.io/badge/GitHub%20Pages-https://militeee.github.io/Rcongas/-steelblue.svg)](https://militeee.github.io/rcongas)
 
 ### Installation
 
