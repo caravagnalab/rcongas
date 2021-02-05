@@ -124,7 +124,7 @@ get_poisson_density_values = function(x,
                                       cluster)
 {
   # Poisson parameters - for the density
-  poisson_params = Rcongas:::get_poisson_parameters(x) %>%
+  poisson_params = get_poisson_parameters(x) %>%
     Rcongas:::idify() %>%
     dplyr::filter(segment_id == !!segment_id, cluster == !!cluster)
 

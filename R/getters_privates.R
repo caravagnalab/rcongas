@@ -41,16 +41,17 @@ deidify = function(y) {
 
 get_poisson_parameters <-  function(x) {
 
-  bm <- get_best_model(x)
+  bm <- Rcongas:::get_best_model(x)
 
 
   lambdas <- apply(bm$parameters$cnv_probs, 1,function(y) (y * x$data$cnv$mu))
 
+  colnames(lambdas) <- paste0("c",  colnames(lambdas))
   ret  <-  reshape2::melt(lambdas %>%  as.matrix)
 
   colnames(ret) <- c("segment_id", "cluster", "lambda")
 
-  ret <-  ret %>% deidify() %>% idify()
+  ret <-  ret %>% Rcongas:::deidify() %>% Rcongas:::idify()
 
   return(ret)
 
