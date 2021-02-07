@@ -46,21 +46,21 @@ remove_small_clusters <-  function(x, ncells, abundance){
   # Old code - we shoud use getters
   # ta <-  table(bm$parameters$assignement)
   # mask <-  (bm$parameters$mixture_weights > abundance) & (ta > ncells)
-  # 
   
+  # Conditions for filtering
   pi_cut = get_clusters_size(x, normalised = TRUE) > abundance
   n_cut = get_clusters_size(x, normalised = FALSE) > ncells
   
   mask <-  pi_cut & n_cut
-  if(all(mask)) return(x)
   
+  # This is important
+  if(all(mask)) return(x)
 
-  # This cannot work if you do not remove anything 
+  # This cannot work if you do not HAVE to remove at least one cluster 
   to_remove <- names(bm$parameters$mixture_weights[!mask])
   
-  
+  # Removal
   return(x[-which(bm$parameters$assignement %in% to_remove),])
-
 }
 
 filter_cluster_aux <- function(x, ncells, abundance) {
