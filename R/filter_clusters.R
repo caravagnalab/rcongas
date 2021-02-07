@@ -42,9 +42,23 @@ filter_clusters  <- function(x, ncells = 10, abundance = 0.03, remove = F) {
 remove_small_clusters <-  function(x, ncells, abundance){
   bm <- Rcongas:::get_best_model(x)
   if(length(bm$parameters$mixture_weights) == 1) return(x)
-  ta <-  table(bm$parameters$assignement)
-  mask <-  (bm$parameters$mixture_weights > abundance) & (ta > ncells)
+  
+  # Old code - we shoud use getters
+  # ta <-  table(bm$parameters$assignement)
+  # mask <-  (bm$parameters$mixture_weights > abundance) & (ta > ncells)
+  # 
+  
+  pi_cut = get_clusters_size(x, normalised = TRUE) > abundance
+  n_cut = get_clusters_size(x, normalised = FALSE) > ncells
+  
+  mask <-  pi_cut & n_cut
+  if(all(mask)) return(x)
+  
+
+  # This cannot work if you do not remove anything 
   to_remove <- names(bm$parameters$mixture_weights[!mask])
+  
+  
   return(x[-which(bm$parameters$assignement %in% to_remove),])
 
 }
