@@ -12,7 +12,7 @@ filter_clusters  <- function(x, ncells = 10, abundance = 0.03, remove = F) {
 
 
 remove_small_clusters <-  function(x, ncells, abundance){
-  bm <- Rcongas::get_best_model(x)
+  bm <- Rcongas:::get_best_model(x)
   if(length(bm$parameters$mixture_weights) == 1) return(x)
   ta <-  table(bm$parameters$assignement)
   mask <-  (bm$parameters$mixture_weights > abundance) & (ta > ncells)
