@@ -135,7 +135,7 @@ plot_counts_rna_segments = function(x,
   #   unique()
 
   # Special ones to highlight
-  segments_ids = Rcongas::get_clones_ploidy(x, chromosomes = chromosomes, ...) %>%
+  segments_ids = Rcongas::get_clusters_ploidy(x, chromosomes = chromosomes, ...) %>%
     Rcongas:::idify() %>%
     filter(highlight) %>%
     select(segment_id) %>%

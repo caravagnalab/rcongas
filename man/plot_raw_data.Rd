@@ -7,6 +7,7 @@
 plot_raw_data(
   x,
   genes,
+  lognormalise = TRUE,
   description = "My CONGAS model",
   clusters = NULL,
   prompt = TRUE,

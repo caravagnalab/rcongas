@@ -1,3 +1,31 @@
+
+
+#' Filter output clusters
+#'
+#' @description From a CONGAS fit object remove clusters that do not pass filters.
+#' These include number of cells and abundance of cluster (mixing proportions).
+#'
+#'
+#' @param x
+#' @param ncells
+#' @param abundance
+#' @param remove
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#'
+#' x = Rcongas::congas_example
+#'
+#' print(x)
+#'
+#' # Equivalent filters for this model
+#' x %>% Rcongas:::filter_clusters(abundance = .5)
+#'
+#' x %>% Rcongas:::filter_clusters(ncells = 150)
+#'
+#' x %>% Rcongas:::filter_clusters(ncells = 150, remove = TRUE)
 filter_clusters  <- function(x, ncells = 10, abundance = 0.03, remove = F) {
 
   if(remove){
@@ -5,8 +33,8 @@ filter_clusters  <- function(x, ncells = 10, abundance = 0.03, remove = F) {
   } else {
     x$inference$models <- lapply(x$inference$models, function(x) filter_cluster_aux(x , ncells = ncells, abundance = abundance))
   }
-  
-  
+
+
   return(x)
 }
 
@@ -18,7 +46,7 @@ remove_small_clusters <-  function(x, ncells, abundance){
   mask <-  (bm$parameters$mixture_weights > abundance) & (ta > ncells)
   to_remove <- names(bm$parameters$mixture_weights[!mask])
   return(x[-which(bm$parameters$assignement %in% to_remove),])
-  
+
 }
 
 filter_cluster_aux <- function(x, ncells, abundance) {
@@ -41,7 +69,7 @@ filter_cluster_aux <- function(x, ncells, abundance) {
 
   x$parameters$mixture_weights <- x$parameters$mixture_weights[mask]
   cnv_probs_new <- x$parameters$cnv_probs[mask,]
-  
+
   if(!x$run_information$posteriors){
 
     cli::cli_alert_info("No posterior probabilities, using euclidean distance to merge clusters")
@@ -54,12 +82,12 @@ filter_cluster_aux <- function(x, ncells, abundance) {
     x$parameters$assignment_probs <- x$parameters$assignment_probs[,mask]
     cnv_no_assign <- x$parameters$cnv_probs[!mask,, drop = FALSE]
     distance <- as.matrix(dist(as.matrix(x$parameters$cnv_probs), diag = T))
-  
+
     for(c in which(!mask)){
       distance[c,c] <-  Inf
       ## !!! note, this works only because the labelling of clusters is in order of abudance (descending)
       x$parameters$assignement[x$parameters$assignement == c] <- which.min(distance[c,])
-  
+
     }
 
   } else {

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Title — get_dataset_stats • Rcongas</title>
+<title>Example Rcongas fit. — congas_example • Rcongas</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,8 +46,8 @@
 
 
 
-<meta property="og:title" content="Title — get_dataset_stats" />
-<meta property="og:description" content="Title" />
+<meta property="og:title" content="Example Rcongas fit. — congas_example" />
+<meta property="og:description" content="Data from ...." />
 
 
 
@@ -142,32 +142,28 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Title</h1>
-    <small class="dont-index">Source: <a href='https://github.com/militeee/RcongasR/getters_input_data.R'><code>R/getters_input_data.R</code></a></small>
-    <div class="hidden name"><code>get_dataset_stats.Rd</code></div>
+    <h1>Example Rcongas fit.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/militeee/RcongasR/data.R'><code>R/data.R</code></a></small>
+    <div class="hidden name"><code>congas_example.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Title</p>
+    <p>Data from ....</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_dataset_stats</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span></pre>
-
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>x</th>
-      <td></td>
-    </tr>
-    </table>
-
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    
+    <pre class="usage"><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>congas_example</span><span class='op'>)</span></pre>
 
 
+    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
 
+    <p>Output from `run_inference`.</p>
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>congas_example</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>congas_example</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>── <span style='color: #000000;background-color: #BBBB00;'>[ Rcongas ] My CONGAS model</span><span> </span><span style='color: #00BB00;'>n = 503</span><span> cells with </span><span style='color: #00BB00;'>k = 70</span><span> segments, grouped in </span><span style='color: #00BB00;'>k </span><span></span></div><div class='output co'>#&gt; <span class='message'>● Cluster </span><span style='color: #00BB00;'>c1</span><span>, n = 379 [75.35% of total cells].</span></div><div class='output co'>#&gt; <span class='message'>● Cluster </span><span style='color: #00BB00;'>c2</span><span>, n = 124 [24.65% of total cells].</span></div><div class='output co'>#&gt; <span class='message'></span><span style='color: #BBBBBB;'>ℹ</span><span> Model scored with </span><span style='color: #00BB00;'>AIC</span><span> = 535487.47</span></div><div class='output co'>#&gt; <span class='message'>● Differential Expression analysis for </span><span style='color: #00BB00;'>1</span><span> vs </span><span style='color: #00BB00;'>2</span><span> with the </span><span style='color: #00BB00;'>DESeq2</span><span> method: </span><span style='color: #00BB00;'>212</span><span> DE</span>
+#&gt; <span class='message'>genes at level alpha 0.01, with |lfc| &gt; 0.25.</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>congas_example</span><span class='op'>)</span>
+</div><div class='img'><img src='congas_example-1.png' alt='' width='700' height='433' /></div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

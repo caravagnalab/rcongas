@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Title — get_clusters_size • Rcongas</title>
+<title>Extract size of clusters. — get_clusters_size • Rcongas</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,9 +46,9 @@
 
 
 
-<meta property="og:title" content="Title — get_clusters_size" />
-<meta property="og:description" content="Title" />
-<meta property="og:image" content="militeee.github.io/Rcongas/logo.png" />
+<meta property="og:title" content="Extract size of clusters. — get_clusters_size" />
+<meta property="og:description" content="Compute the size of CONGAS clusters, normalised or in absolute
+cell numbers." />
 
 
 
@@ -88,7 +88,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
+    <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -126,7 +126,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/militeee/Rcongas/">
-    <span class="fab fa-github fa-lg"></span>
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -143,13 +143,14 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Title</h1>
-    <small class="dont-index">Source: <a href='https://github.com/militeee/RcongasR/getters_clustering_results.R'><code>R/getters_clustering_results.R</code></a></small>
+    <h1>Extract size of clusters.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/militeee/RcongasR/get_clusters_size.R'><code>R/get_clusters_size.R</code></a></small>
     <div class="hidden name"><code>get_clusters_size.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Title</p>
+    <p>Compute the size of CONGAS clusters, normalised or in absolute
+cell numbers.</p>
     </div>
 
     <pre class="usage"><span class='fu'>get_clusters_size</span><span class='op'>(</span><span class='va'>x</span>, normalised <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
@@ -158,17 +159,28 @@
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
+      <th>x</th>
+      <td><p>Input object with clusters.</p></td>
+    </tr>
+    <tr>
       <th>normalised</th>
-      <td></td>
+      <td><p>If <code>TRUE</code>, normalises the proportions.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    
+    <p>A named vector for cluster sizes.</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'>
+<span class='va'>x</span> <span class='op'>=</span> <span class='fu'>Rcongas</span><span class='fu'>::</span><span class='va'><a href='congas_example.html'>congas_example</a></span>
 
-
+<span class='fu'>get_clusters_size</span><span class='op'>(</span><span class='va'>x</span>, normalised <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;  c1  c2 
+#&gt; 379 124 </div><div class='input'><span class='fu'>get_clusters_size</span><span class='op'>(</span><span class='va'>x</span>, normalised <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;        c1        c2 
+#&gt; 0.7534791 0.2465209 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

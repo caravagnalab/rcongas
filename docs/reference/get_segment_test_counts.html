@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Title — get_segment_test_counts • Rcongas</title>
+<title>Wilcoxon test for difference in RNA counts among groups. — get_segment_test_counts • Rcongas</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,9 +46,11 @@
 
 
 
-<meta property="og:title" content="Title — get_segment_test_counts" />
-<meta property="og:description" content="Title" />
-<meta property="og:image" content="militeee.github.io/Rcongas/logo.png" />
+<meta property="og:title" content="Wilcoxon test for difference in RNA counts among groups. — get_segment_test_counts" />
+<meta property="og:description" content="Performs a wilcox.test for the counts in each segments,
+split by pair of groups. A group can be a list of cluster ids; the test
+p-value can be passed as a parameter, and is adjusted for Family-Wise Error
+Rate (FWER) via Bonferroni correction." />
 
 
 
@@ -88,7 +90,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
+    <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -126,7 +128,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/militeee/Rcongas/">
-    <span class="fab fa-github fa-lg"></span>
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -143,13 +145,16 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Title</h1>
-    <small class="dont-index">Source: <a href='https://github.com/militeee/RcongasR/getters_clustering_results.R'><code>R/getters_clustering_results.R</code></a></small>
+    <h1>Wilcoxon test for difference in RNA counts among groups.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/militeee/RcongasR/get_segment_test_counts.R'><code>R/get_segment_test_counts.R</code></a></small>
     <div class="hidden name"><code>get_segment_test_counts.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Title</p>
+    <p>Performs a <code>wilcox.test</code> for the counts in each segments,
+split by pair of groups. A group can be a list of cluster ids; the test
+p-value can be passed as a parameter, and is adjusted for Family-Wise Error
+Rate (FWER) via Bonferroni correction.</p>
     </div>
 
     <pre class="usage"><span class='fu'>get_segment_test_counts</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>group1</span>, <span class='va'>group2</span>, cutoff_p <span class='op'>=</span> <span class='fl'>0.01</span><span class='op'>)</span></pre>
@@ -158,17 +163,38 @@
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
+      <th>x</th>
+      <td><p>Input object with clusters.</p></td>
+    </tr>
+    <tr>
+      <th>group1</th>
+      <td><p>Group of cluster ids (vs <code>group2</code>).</p></td>
+    </tr>
+    <tr>
+      <th>group2</th>
+      <td><p>Group of cluster ids (vs <code>group1</code>).</p></td>
+    </tr>
+    <tr>
       <th>cutoff_p</th>
-      <td></td>
+      <td><p>P-value cutoff</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    
+    <p>A tibble with segment coordinates, p-values and a <code>sign</code> status
+for the significance of the test.</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'>
+<span class='va'>x</span> <span class='op'>=</span> <span class='fu'>Rcongas</span><span class='fu'>::</span><span class='va'><a href='congas_example.html'>congas_example</a></span>
 
-
+<span class='co'># Compare groups</span>
+<span class='fu'>get_segment_test_counts</span><span class='op'>(</span><span class='va'>x</span>, <span class='st'>"c1"</span>, <span class='st'>"c2"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in get_segment_test_counts(x, "c1", "c2"): &gt;1 p-value</span></div><div class='input'>
+<span class='co'># More stringent test</span>
+<span class='fu'>get_segment_test_counts</span><span class='op'>(</span><span class='va'>x</span>, <span class='st'>"c1"</span>, <span class='st'>"c2"</span>, cutoff_p <span class='op'>=</span> <span class='fl'>1e-4</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in get_segment_test_counts(x, "c1", "c2", cutoff_p = 1e-04): &gt;1 p-value</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

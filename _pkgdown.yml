@@ -23,10 +23,11 @@ authors:
     href: https://sites.google.com/view/cdslab
 
 reference:
-- title: Available data
+- title: Available data and models
   desc:  Data released with the package
   contents:
-  - rcongas_example
+  - list_models
+  - congas_example
 
 - title: Fitting functions
   desc:  Functions to cluster the data.
@@ -52,11 +53,11 @@ reference:
 - title: Getters for clustering results
   desc:  Functions to extract clustering information from a model.
   contents:
-  - get_segment_test_counts
-  - get_clones_ploidy
   - get_clusters
+  - get_clusters_ploidy
   - get_clusters_size
   - get_k
+  - get_segment_test_counts
 
 - title: Getters for input data
   desc:  Functions to extract information of the data stored in a model.

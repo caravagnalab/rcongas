@@ -46,7 +46,7 @@ get_gene_annotations(rcongas_example)
 
 ## Clustering results
 
-* `get_k`, `get_clusters_size`, `get_clones_ploidy` to obtain information about the output clusters;
+* `get_k`, `get_clusters_size`, `get_clusters_ploidy` to obtain information about the output clusters;
 * `get_clusters` to obtain clustering assignments.
 
 You can obtain the value fit for $k\geq 1$, the number of clusters/ clones in the CONGAS model, using `get_k`. For every cluster, you can also obtain the total number of cells assigned to that, as well as its normalised value (i.e., the mixing proporitions).
@@ -61,19 +61,19 @@ get_clusters_size(rcongas_example)
 get_clusters_size(rcongas_example, normalise = TRUE)
 ```
 
-Then you can also obtain the CNA profile estimated for each one of the $k$ clones, using `get_clones_ploidy`. This reports, for every segment the lognormal CNA value estimated by CONGAS, as well as the segment mean, and the `CN` value (which is the offset to the mean of the segment). Values from this getter can be automatically filtered for certain chromsome ids, and clusters.
+Then you can also obtain the CNA profile estimated for each one of the $k$ clones, using `get_clusters_ploidy`. This reports, for every segment the lognormal CNA value estimated by CONGAS, as well as the segment mean, and the `CN` value (which is the offset to the mean of the segment). Values from this getter can be automatically filtered for certain chromsome ids, and clusters.
 ```{r}
 # Get all data (all clones, all chromsomes)
-get_clones_ploidy(rcongas_example)
+get_clusters_ploidy(rcongas_example)
 
 # Zoom in one specific chromosome
-get_clones_ploidy(rcongas_example, chromosomes = 'chr2')
+get_clusters_ploidy(rcongas_example, chromosomes = 'chr2')
 
 # Zoom in one specific cluster, here "1"
-get_clones_ploidy(rcongas_example, clusters = '1')
+get_clusters_ploidy(rcongas_example, clusters = '1')
 
 # Zoom in one specific chromosome and cluster
-get_clones_ploidy(rcongas_example, chromosomes = 'chr2', clusters = "1")
+get_clusters_ploidy(rcongas_example, chromosomes = 'chr2', clusters = "1")
 ```
 
 Then you can also obtain the clustering assignments for each one of the input cells,  using function `get_clusters`. This getter can also subset cells in order  to contain only those that belong to a specific set of clusters.

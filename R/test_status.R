@@ -19,5 +19,5 @@ is_MAP_CN <-  function(x){
 
 has_inference <-  function(x){
 
-  return(!is.null(x$inference))
+  return(inherits(x, 'rcongas') & !is.null(x$inference))
 }

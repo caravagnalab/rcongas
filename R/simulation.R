@@ -200,7 +200,6 @@ generate_baf <-  function(cnv_df, ploidy_to_baf = list("0" = 0, "1" = 0, "2" = 0
 #'@param approx_length approximate segment length
 #'
 #'@return df with segmentss and ploidy information
-
 generate_cluster_ploidy_df <- function(K= 2, spots = 5,  probs = c(0.0,1,0.0,0.0),div_factor_dist = 1e6,
                                        random = TRUE, changes = c(-1,1,2), fine = FALSE, karyo = 1:4, type="parent", non_random_spots = c(17,18),
                                        spots_deletion = c(17,18), spots_insertions = c(8), spots_O =  c(),

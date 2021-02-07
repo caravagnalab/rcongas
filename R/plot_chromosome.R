@@ -18,7 +18,7 @@ plot_chromosome = function(x, chr = 'chr1', plot = c("segments", "counts", "DE")
     return(CNAqc:::eplot())
 
   # Segments plot with Salvatore' trick
-  range = get_clones_ploidy(x)
+  range = get_clusters_ploidy(x)
   range_low = min(range$CN)
   range_up = max(range$CN)
 
