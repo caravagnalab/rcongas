@@ -12,18 +12,33 @@ maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www
 [![](https://img.shields.io/badge/Part%20of-evoverse-blue.svg)](https://caravagn.github.io/evoverse)
 <!-- badges: end -->
 
+The package provides an interface for the Python
+[https://github.com/Militeee/congas](Congas) package, which implements
+multiple statistical models to genotype Copy Number Alterations from
+single-cell RNA sequencing.
 
+The package implements S3 objects to visualize the data, create and
+visualise model fits.
 
-The package provides an interface for the python package ![https://github.com/Militeee/congas](Congas), a CNV caller from scRNA sequencing data.The package implements S3 objects to visualize
-the data and the fits.
+`Rcongas` is part of the `evoverse` set of [R
+packages](https://caravagnlab.github.io/evoverse) to implement Cancer
+Evolution analyses.
 
-The associated paper can be found as:
-Genotyping Copy Number Alterations from single-cell RNA sequencing. Salvatore Milite, Riccardo Bergamin, Giulio Caravagna
+#### Citation
 
+[![](https://img.shields.io/badge/doi-10.1101/2021.02.02.429335-red.svg)](https://doi.org/10.1101/2021.02.02.429335)
+
+If you use `Rcongas`, please cite:
+
+-   *Genotyping Copy Number Alterations from single-cell RNA
+    sequencing.* Salvatore Milite, Riccardo Bergamin, Giulio Caravagna.
+    [biorXiv
+    preprint](https://www.biorxiv.org/content/10.1101/2021.02.02.429335v1),
+    2021
 
 #### Help and support
 
-[![](https://img.shields.io/badge/GitHub%20Pages-https://militeee.github.io/Rcongas/-steelblue.svg)](https://militeee.github.io/rcongas)
+[![](https://img.shields.io/badge/GitHub%20Pages-https://militeee.github.io/Rcongas/-steelblue.svg)](https://militeee.github.io/Rcongas)
 
 ### Installation
 
@@ -35,7 +50,7 @@ You can install the released version of `Rcongas` from
 devtools::install_github("militeee/Rcongas")
 ```
 
------
+------------------------------------------------------------------------
 
 #### Copyright and contacts
 

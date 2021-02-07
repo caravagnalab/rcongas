@@ -1,0 +1,45 @@
+---
+title: "Models available in this package"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Models available in this package}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(Rcongas)
+```
+
+
+Models for clustering and segmentation available in this package are listed via `list_models()`.
+
+Each model has one code associated to it, which should be used as parameter for fitting functions requiring a `model` argument.
+
+```{r}
+list_models()
+```
+
+# Models for clustering
+
+## MixtureGaussian
+
+## MixtureGaussianDMP
+
+## MixtureDirichlet
+
+# Models for segmentation
+
+##  HmmSimple                                              
+
+##  HmmMixtureRNA                                              
+
+##  HmmSegmenter        
+

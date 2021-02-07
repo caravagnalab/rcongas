@@ -11,8 +11,9 @@
 list_models <-  function() {
   
   cli::cli_h3(paste0("Models available in version: ", packageVersion("Rcongas"))) 
+  cat("\n")
   
-  data.frame(
+  n = data.frame(
       model = c(
         "HmmSimple",
         "MixtureGaussian", # Shoule it have Poisson in the name?
@@ -28,14 +29,16 @@ list_models <-  function() {
         "Dirichlet-process version of XXXXXXXXXXXXX",
         NA,
         NA
-        ),
-      vignette = 
-        c(
-          "link to vignette for the model",
-          
-          NA
         )
-      ) %>% 
-    # as_tibble() %>% 
-    print(row.names = F)
+      ) 
+  
+  for(i in 1:nrow(n))
+  {
+    nm = sprintf("%20s", n$model[i])
+    cli::cli_alert("{.field {nm}} {n$synopsis[i]}")
+    
+  }
+  
+  cat("\n")
+  cli::cli_alert_info("\nSee the vignette 'Models available in this package' for details and examples.")
 }

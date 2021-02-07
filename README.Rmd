@@ -20,11 +20,27 @@ knitr::opts_chunk$set(
 [![](https://img.shields.io/badge/Part%20of-evoverse-blue.svg)](https://caravagn.github.io/evoverse)
 <!-- badges: end -->
 
-`Rcongas` is a package that implements ....  ([Caravagna et al.; https://doi.org/10.1101/586560](https://www.biorxiv.org/content/10.1101/586560v1), _under review_).
+The package provides an interface for the Python
+[https://github.com/Militeee/congas](Congas) package, which implements
+multiple statistical models to genotype Copy Number Alterations from
+single-cell RNA sequencing.
 
-The package integrates .... The package implements S3 objects to visualize the data and the fits.
+The package implements S3 objects to visualize the data, create and
+visualise model fits.
 
-`Rcongas` is part of the `evoverse` set of [R packages](https://caravagn.github.io/evoverse) to implement Cancer Evolution analyses.
+
+`Rcongas` is part of the `evoverse` set of [R
+packages](https://caravagnlab.github.io/evoverse) to implement Cancer
+Evolution analyses.
+
+#### Citation
+
+[![](https://img.shields.io/badge/doi-10.1101/2021.02.02.429335-red.svg)](https://doi.org/10.1101/2021.02.02.429335)
+
+If you use `Rcongas`, please cite:
+
+* _Genotyping Copy Number Alterations from single-cell RNA sequencing._
+Salvatore Milite, Riccardo Bergamin, Giulio Caravagna. [biorXiv preprint](https://www.biorxiv.org/content/10.1101/2021.02.02.429335v1), 2021
 
 #### Help and support
 

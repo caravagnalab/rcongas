@@ -32,7 +32,10 @@ Imports:
   aricode,
   cli
 Suggests:
-  biomaRt,
+    biomaRt,
+    knitr,
+    rmarkdown
 Depends: 
     R (>= 2.10)
 RoxygenNote: 7.1.1
+VignetteBuilder: knitr
