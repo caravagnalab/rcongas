@@ -14,16 +14,16 @@ knitr::opts_chunk$set(
 )
 ```
 
+
+```{r setup, include = T}
+require(Rcongas)
+```
+
+
 We show how you can plot information from a CONGAS object. We work with an example object released with the tool. 
+
 ```{r}
 data('congas_example', package = 'Rcongas')
-
-require(tidyverse)
-require(Rcongas)
-
-
-rcongas_example = congas_example
-
 ```
 
 ## Genome-wide clone profiles
@@ -38,14 +38,14 @@ The default view splits works by facetting the chromosomes. The gray bar in eah 
 
 ```{r, fig.width=8, fig.height=3}
 # Default, with facets
-plot_gw_cna_profiles(rcongas_example)
+plot_gw_cna_profiles(congas_example)
 ```
 
 An alternative view is available to pool all the chromosomes together
 
 ```{r, fig.width=8, fig.height=3}
 # A whole-genome view
-plot_gw_cna_profiles(rcongas_example, whole_genome = TRUE)
+plot_gw_cna_profiles(congas_example, whole_genome = TRUE)
 ```
 
 
@@ -53,7 +53,21 @@ It is possible to zoom in specific chromosomes with this plot.
 
 ```{r, fig.width=8, fig.height=3}
 # A whole-genome view for chromosome 4
-plot_gw_cna_profiles(rcongas_example, whole_genome = TRUE, chromosomes = 'chr4')
+plot_gw_cna_profiles(congas_example, whole_genome = TRUE, chromosomes = 'chr4')
+```
+
+## Plotting specific chromosomes
+
+The criterion to highlight a CNA in a fit is determined from this distribution. 
+
+Parameter `alpha` regulated the vertical dashed line. 
+
+```{r, fig.width=8, fig.height=3}
+# Default
+plot_highlights(congas_example)
+
+# More stringent
+plot_highlights(congas_example, alpha = 0.001)
 ```
 
 
@@ -63,12 +77,12 @@ You can plot a chromosome by specifying its id. The height of the plot should be
 
 ```{r, fig.width=6, fig.height=3}
 # Plot chromosome 1 (labeled "chr1")
-plot_chromosome(rcongas_example, chr = 'chr1')
+plot_chromosome(congas_example, chr = 'chr1')
 ```
 
 ```{r, fig.width=6, fig.height=3}
 # Plot chromosome 15 (labeled "chr15")
-plot_chromosome(rcongas_example, chr = 'chr15')
+plot_chromosome(congas_example, chr = 'chr15')
 ```
 
 ## Plotting input segments data
@@ -78,12 +92,12 @@ You can visualise the actual input data used by CONGAS, using function `plot_cou
 The function plots a heatmap-style view of the data, with associated the clustering assignments of each cell (rows). In order to plot these data you need to retr
 
 ```{r, fig.width=5, fig.height=5}
-plot_counts_rna_segments(rcongas_example)
+plot_counts_rna_segments(congas_example)
 ```
 
 The same information can be plot without counts normalisation.
 ```{r, fig.width=5, fig.height=5}
-plot_counts_rna_segments(rcongas_example, normalised = FALSE)
+plot_counts_rna_segments(congas_example, normalised = FALSE)
 ```
 
 ## Plotting input raw data
@@ -97,13 +111,13 @@ The plot can be generated with, and without clustering assignments.
 
 
 ```{r, fig.width=5, fig.height=7}
-# Raw input counts. Since we have them stored in "rcongas_example",
+# Raw input counts. Since we have them stored in "congas_example",
 # we can access them straight from the object
-raw_input = get_input_raw_data(rcongas_example) %>%  t
+raw_input = get_input_raw_data(congas_example) %>%  t
 
 # Used genes - just the a random set of 50. Wem use the "get_mapped_genes"
-# function to get the ones actually used in "rcongas_example"
-random_30_genes = get_mapped_genes(rcongas_example) %>%
+# function to get the ones actually used in "congas_example"
+random_30_genes = get_mapped_genes(congas_example) %>%
   dplyr::sample_n(30) %>%
   dplyr::pull(gene)
 
@@ -117,14 +131,14 @@ plot_raw_data(
 plot_raw_data(
   x = raw_input,
   genes = random_30_genes,lognormalise = T,
-  clusters = get_clusters(rcongas_example),
+  clusters = get_clusters(congas_example),
   prompt = FALSE)
 
 # Now we use the DE genes (see below)
 plot_raw_data(
   x = raw_input,
-  genes = get_DE_table(rcongas_example, cut_pvalue = 1e-4, cut_lfc = 1) %>% dplyr::pull(gene), 
-  clusters = get_clusters(rcongas_example), lognormalise = T,
+  genes = get_DE_table(congas_example, cut_pvalue = 1e-4, cut_lfc = 1) %>% dplyr::pull(gene), 
+  clusters = get_clusters(congas_example), lognormalise = T,
   prompt = FALSE)
 
 ```
@@ -139,14 +153,14 @@ A gene is deemed non-significant `ns` based on a joint condition that involved L
 
 ```{r, fig.width=5, fig.height=5}
 # Default plot
-plot_DE_volcano(rcongas_example)
+plot_DE_volcano(congas_example)
 
 # Setting the cut on LFC to 0
-plot_DE_volcano(rcongas_example, cut_pvalue = 0.05, cut_lfc = 0)
+plot_DE_volcano(congas_example, cut_pvalue = 0.05, cut_lfc = 0)
 
 # Requiring lower p-value, decreasing LFC, and annotating top 10 genes
 plot_DE_volcano(
-  rcongas_example,
+  congas_example,
   annotate_top = 10,
   cut_pvalue = 1e-6,
   cut_lfc = 0.15
@@ -159,6 +173,6 @@ The combined plot shows, on top of the segments, the total number of deferential
 
 ```{r, fig.width=8, fig.height=5}
 # Default plot
-plot_DE_gw(rcongas_example)
+plot_DE_gw(congas_example)
 ```
 

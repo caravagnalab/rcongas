@@ -13,7 +13,7 @@ maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www
 <!-- badges: end -->
 
 The package provides an interface for the Python
-[https://github.com/Militeee/congas](Congas) package, which implements
+[Congas](https://github.com/Militeee/congas) package, which implements
 multiple statistical models to genotype Copy Number Alterations from
 single-cell RNA sequencing.
 

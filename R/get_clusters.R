@@ -51,9 +51,11 @@ get_clusters = function(x,
   })))
 
 
-  #
+  # This is where the error happens.
   z_nk$cell = names(best_model$parameters$assignement)
-
+  
+  # which(!(names(best_model$parameters$assignement) %in% clusters_table$cell))
+  
   clusters_table = clusters_table %>%
     full_join(z_nk, by = "cell") %>%
     dplyr::mutate(cluster = ifelse(p_assignment > cut_znk, cluster, NA)) %>%

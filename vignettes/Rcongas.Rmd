@@ -1,0 +1,21 @@
+---
+title: "Rcongas"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Rcongas}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(Rcongas)
+```
+
+High-level overview pf the package + lists of available vignettes
