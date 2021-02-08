@@ -9,6 +9,12 @@
 #' @export
 #'
 #' @examples
+#' 
+#' # Shows all data available
+#' plot_chromosome(x)
+#' 
+#' # Chromosome 17
+#' plot_chromosome(x, chr = 'chr17')
 plot_chromosome = function(x, chr = 'chr1', plot = c("segments", "counts", "DE"), ...)
 {
   # Get all counts
@@ -60,7 +66,7 @@ plot_chromosome = function(x, chr = 'chr1', plot = c("segments", "counts", "DE")
 
   all_plots = all_plots[!sapply(all_plots, is.null)]
 
-  if(length(all_plots)) return(all_plots[[1]])
+  if(length(all_plots) == 1) return(all_plots[[1]])
 
   cowplot::plot_grid(
     plotlist = all_plots,

@@ -15,3 +15,11 @@ plot_chromosome(x, chr = "chr1", plot = c("segments", "counts", "DE"), ...)
 \description{
 Title
 }
+\examples{
+
+# Shows all data available
+plot_chromosome(x)
+
+# Chromosome 17
+plot_chromosome(x, chr = 'chr17')
+}
