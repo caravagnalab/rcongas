@@ -28,12 +28,14 @@
 #' x %>% Rcongas:::filter_clusters(ncells = 150, remove = TRUE)
 filter_clusters  <- function(x, ncells = 10, abundance = 0.03, remove = F) {
 
-  if(remove){
-    x <- remove_small_clusters(x,ncells, abundance)
+  if (remove) {
+    x <- remove_small_clusters(x, ncells, abundance)
   } else {
-    x$inference$models <- lapply(x$inference$models, function(x) filter_cluster_aux(x , ncells = ncells, abundance = abundance))
+    x$inference$models <-
+      lapply(x$inference$models, function(x)
+        filter_cluster_aux(x , ncells = ncells, abundance = abundance))
   }
-
+  
 
   return(x)
 }

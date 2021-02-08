@@ -1,9 +1,12 @@
-#' Summary for an object of class \code{'rcongas'} is a print.
+#' Summary for an object of class \code{'rcongas'}.
+#' 
+#' @description The summary is equivalent to a \code{print}.
 #'
-#' @param object An obj of class \code{'rcongas'}.
-#' @param ...
+#' @param x Object of class \code{'rcongas'}.
+#' @param ... Extra parameters.
 #'
 #' @return See \code{\link{print}}.
+#' 
 #' @exportS3Method summary rcongas
 #'
 #' @examples
@@ -13,34 +16,49 @@ summary.rcongas = function(object, ...) {
   print.rcongas(object, ...)
 }
 
-#' Summaries for an object of class \code{'rcongas'} is like a print.
+#' Print for an object of class \code{'rcongas'}.
 #'
-#' @param x An obj of class \code{'rcongas'}.
-#' @param ...
+#' @param x Object of class \code{'rcongas'}.
+#' @param ... Extra parameters.
 #'
-#' @return nothing.
+#' @return Nothing.
+#' 
 #' @exportS3Method print rcongas
+#' 
 #' @importFrom crayon white red green yellow black bgYellow blue bold
 #' @importFrom cli cli_rule cli_text
 #' @importFrom clisymbols symbol
 #'
 #' @examples
-#' data(fit_example)
-#' print(fit_example$best)
+#' 
+#' x = Rcongas::congas_example
+#'
+#' print(x)
 print.rcongas = function(x, ...)
 {
   stopifnot(inherits(x, "rcongas"))
 
   stats_data = Rcongas::get_dataset_stats(x)
 
-  cli::cli_rule(
-    paste(
-      crayon::bgYellow(
-        crayon::black("[ Rcongas ] {.value {Rcongas:::get_model_description(x)}}")
-      ),
-      '{.field n = {stats_data$ncells}} cells with {.field k = {stats_data$nsegments}} segments, grouped in {.field k = {stats_data$clusters_k}} clusters.'
+  
+  if(!is.null(stats_data$clusters_k))
+    cli::cli_rule(
+      paste(
+        crayon::bgYellow(
+          crayon::black("[ Rcongas ] {.value {Rcongas:::get_model_description(x)}}")
+        ),
+        '{.field n = {stats_data$ncells}} cells with {.field i = {stats_data$nsegments}} segments, grouped in {.field k = {stats_data$clusters_k}} clusters.'
+      )
     )
-  )
+  else
+    cli::cli_rule(
+      paste(
+        crayon::bgYellow(
+          crayon::black("[ Rcongas ] {.value {Rcongas:::get_model_description(x)}}")
+        ),
+        '{.field n = {stats_data$ncells}} cells with {.field i = {stats_data$nsegments}} segments, clusters are not computed.'
+      )
+    )
 
   myp = function (m, symbol = "clisymbols::symbol$pointer")
   {
@@ -83,9 +101,12 @@ print.rcongas = function(x, ...)
 }
 
 
-#' Plot an Rcongas fit.
+#' Print for an object of class \code{'rcongas'}.
+#' 
+#' @description Function \code{plot_gw_cna_profiles} is used to plot
+#' the object. 
 #'
-#' @param ...
+#' @param ... Extra parameters.
 #'
 #' @return A ggplot object for the plot.
 #'
@@ -95,7 +116,10 @@ print.rcongas = function(x, ...)
 #' @export
 #'
 #' @examples
-#' x=1
+#'
+#' x = Rcongas::congas_example
+#'
+#' plot(x)
 plot.rcongas = function(x, ...)
 {
   # default plot
