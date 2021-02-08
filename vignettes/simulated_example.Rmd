@@ -41,7 +41,21 @@ We can then perform CONGAS inference with just one function
 
 ```{r}
 
-inf <- best_cluster(simul, "MixtureGaussian", 1:4,param_list = list("theta_scale" = 32, "theta_rate" = 32, "cnv_var" = 0.65),steps = 600, lr = 0.05, method = "BIC", MAP = T)
+inf <-
+  best_cluster(
+    simul,
+    "MixtureGaussian",
+    1:4,
+    param_list = list(
+      "theta_scale" = 32,
+      "theta_rate" = 32,
+      "cnv_var" = 0.65
+    ),
+    steps = 600,
+    lr = 0.05,
+    method = "BIC",
+    MAP = T
+  )
 
 plot_gw_cna_profiles(inf)
 ```
