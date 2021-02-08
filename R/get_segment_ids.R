@@ -34,12 +34,14 @@ get_segment_ids = function(x, highlight = FALSE, ...)
   if (!highlight)
     return(get_input_segmentation(x) %>%
              idify() %>%
-             pull(segment_id))
+             pull(segment_id)) %>% 
+    unique
   
   if(!has_inference(x)) stop("Input is missing  clustering information or not a CONGAS object.")
   
   get_clusters_ploidy(x, ...) %>%
     idify() %>% 
     filter(highlight) %>% 
-    pull(segment_id)
+    pull(segment_id) %>% 
+    unique
 }
