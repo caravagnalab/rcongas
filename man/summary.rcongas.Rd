@@ -2,20 +2,20 @@
 % Please edit documentation in R/S3_methods_rcongas.R
 \name{summary.rcongas}
 \alias{summary.rcongas}
-\title{Summary for an object of class \code{'rcongas'} is a print.}
+\title{Summary for an object of class \code{'rcongas'}.}
 \usage{
 \method{summary}{rcongas}(object, ...)
 }
 \arguments{
-\item{object}{An obj of class \code{'rcongas'}.}
+\item{...}{Extra parameters.}
 
-\item{...}{}
+\item{x}{Object of class \code{'rcongas'}.}
 }
 \value{
 See \code{\link{print}}.
 }
 \description{
-Summary for an object of class \code{'rcongas'} is a print.
+The summary is equivalent to a \code{print}.
 }
 \examples{
 data(fit_example)

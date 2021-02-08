@@ -136,28 +136,20 @@ clean_clusters <- function(cm)
   return(cm)
 }
 
+#' @export
 `[.rcongas` <- function(x,i,j) {
 
-  x$data$counts <-  x$data$counts[i,j]
-  x$data$bindims <-  x$data$bindims[i,j]
-  x$data$cnv <- x$data$cnv[j,]
+  x$data$counts <-  x$data$counts[i,j, drop = FALSE]
+  x$data$bindims <-  x$data$bindims[i,j, drop = FALSE]
+  x$data$cnv <- x$data$cnv[j,,drop = FALSE]
   x$data$gene_locations <-  x$data$gene_locations %>%  filter(segment_id %in% colnames(x$data$counts))
   gene_to_retain <- dplyr::inner_join(x$data$cnv, x$data$gene_locations, by = "segment_id") %>% dplyr::pull(gene)
 
-  x$data$gene_counts <- x$data$gene_counts[which(rownames(x$data$gene_counts) %in% gene_to_retain), i]
+  x$data$gene_counts <- x$data$gene_counts[which(rownames(x$data$gene_counts) %in% gene_to_retain), i, drop = FALSE]
 
   if(has_inference(x)){
     for(k in length(x$inference$model_selection$clusters)){
-
-      cm <- x$inference$models[[k]]
-      cm$parameters$cnv_probs <- cm$parameters$cnv_probs[,j]
-      cm$parameters$norm_factor <- cm$parameters$norm_factor[i]
-      cm$parameters$assignement <- cm$parameters$assignement[i]
-      if(is_MAP_Z(x)){
-        cm$parameters$assignment_probs <-  cm$parameters$assignment_probs[i,]
-      }
-      cm <- clean_clusters(cm)
-      x$inference$models[[k]] <-  cm
+      x$inference$models[[k]] <- x$inference$models[[k]][i,j]
     }
   }
 

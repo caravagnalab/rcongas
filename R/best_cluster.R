@@ -62,37 +62,8 @@ best_cluster <-
           seed = seed,
           step_post = step_post
         ))
-    
-    if (grepl(tolower(model), pattern = "norm")) {
-      lik_fun <-  gauss_lik_norm
-    } else if (grepl(tolower(model), pattern = "EXP")) {
-      lik_fun <- gauss_lik_with_means
-    } else if (grepl(tolower(model), pattern = "Old")) {
-      lik_fun <- gauss_lik_old
-    } else {
-      lik_fun <-  gauss_lik
-    }
-    
-    if (method == "BIC")
-    {
-      IC <-
-        sapply(res, function(x)
-          calculate_BIC(x, X$data$counts, X$data$cnv$mu, llikelihood = lik_fun))
-    } else if (method == "AIC") {
-      IC <-
-        sapply(res, function(x)
-          calculate_AIC(x, X$data$counts, X$data$cnv$mu, llikelihood = lik_fun))
-    } else if (method == "ICL") {
-      IC <-
-        sapply(res, function(x)
-          calculate_ICL(x, X$data$counts, X$data$cnv$mu, llikelihood = lik_fun))
-    } else if (method == "lk") {
-      IC <-
-        sapply(res, function(x)
-          lik_fun(X$data$counts, X$data$cnv$mu, x$parameters) * -1)
-    } else {
-      stop("Information criterium not present in the package")
-    }
+
+    IC <- calculate_information_criteria(res,X,method)
     ind <-  which.min(IC)
     print(paste0("Best number of cluster is " , ind))
     ret <-

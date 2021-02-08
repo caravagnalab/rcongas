@@ -4,17 +4,24 @@
 \alias{filter_clusters}
 \title{Filter output clusters}
 \usage{
-filter_clusters(x, ncells = 10, abundance = 0.03, remove = F)
+filter_clusters(x, ncells = 10, abundance = 0.03)
 }
 \arguments{
-\item{remove}{}
+\item{x}{Rcongas object}
+
+\item{ncells}{minimum size of a valid cluster expressed as absolute number of cells}
+
+\item{abundance}{minimum size of a cluster expressed as a percentage of the total cell number}
 }
 \value{
 
 }
 \description{
 From a CONGAS fit object remove clusters that do not pass filters.
-These include number of cells and abundance of cluster (mixing proportions).
+These include number of cells and abundance of cluster (mixing proportions). This function the assigns the 
+cells back to the most similar remaining cluster. In case the inference was performed using MAP we choose the cluster with
+the most similar CNV profile (based on euclidean distance), otherwise we assign the cell to the cluster with second highest 
+probability and renormalize the z.
 }
 \examples{
 
@@ -27,5 +34,5 @@ x \%>\% Rcongas:::filter_clusters(abundance = .5)
 
 x \%>\% Rcongas:::filter_clusters(ncells = 150)
 
-x \%>\% Rcongas:::filter_clusters(ncells = 150, remove = TRUE)
+
 }

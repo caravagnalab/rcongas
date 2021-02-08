@@ -3,13 +3,15 @@
 #' Filter output clusters
 #'
 #' @description From a CONGAS fit object remove clusters that do not pass filters.
-#' These include number of cells and abundance of cluster (mixing proportions).
+#' These include number of cells and abundance of cluster (mixing proportions). This function the assigns the 
+#' cells back to the most similar remaining cluster. In case the inference was performed using MAP we choose the cluster with
+#' the most similar CNV profile (based on euclidean distance), otherwise we assign the cell to the cluster with second highest 
+#' probability and renormalize the z.
 #'
 #'
-#' @param x
-#' @param ncells
-#' @param abundance
-#' @param remove
+#' @param x Rcongas object
+#' @param ncells minimum size of a valid cluster expressed as absolute number of cells
+#' @param abundance minimum size of a cluster expressed as a percentage of the total cell number 
 #'
 #' @return
 #' @export
@@ -21,48 +23,21 @@
 #' print(x)
 #'
 #' # Equivalent filters for this model
-#' x %>% Rcongas:::filter_clusters(abundance = .5)
+#' x %>% filter_clusters(abundance = .5)
 #'
-#' x %>% Rcongas:::filter_clusters(ncells = 150)
+#' x %>% filter_clusters(ncells = 150)
 #'
-#' x %>% Rcongas:::filter_clusters(ncells = 150, remove = TRUE)
-filter_clusters  <- function(x, ncells = 10, abundance = 0.03, remove = F) {
+#' 
+filter_clusters  <- function(x, ncells = 10, abundance = 0.03) {
 
-  if (remove) {
-    x <- remove_small_clusters(x, ncells, abundance)
-  } else {
-    x$inference$models <-
-      lapply(x$inference$models, function(x)
-        filter_cluster_aux(x , ncells = ncells, abundance = abundance))
-  }
-  
+
+  x$inference$models <-
+    lapply(x$inference$models, function(x)
+      filter_cluster_aux(x , ncells = ncells, abundance = abundance))
+  x$inference$model_selection$IC <- recalculate_information_criteria(x, x$inference$model_selection$IC_type)
 
   return(x)
-}
-
-
-remove_small_clusters <-  function(x, ncells, abundance){
-  bm <- Rcongas:::get_best_model(x)
-  if(length(bm$parameters$mixture_weights) == 1) return(x)
   
-  # Old code - we shoud use getters
-  # ta <-  table(bm$parameters$assignement)
-  # mask <-  (bm$parameters$mixture_weights > abundance) & (ta > ncells)
-  
-  # Conditions for filtering
-  pi_cut = get_clusters_size(x, normalised = TRUE) > abundance
-  n_cut = get_clusters_size(x, normalised = FALSE) > ncells
-  
-  mask <-  pi_cut & n_cut
-  
-  # This is important
-  if(all(mask)) return(x)
-
-  # This cannot work if you do not HAVE to remove at least one cluster 
-  to_remove <- names(bm$parameters$mixture_weights[!mask])
-  
-  # Removal
-  return(x[-which(bm$parameters$assignement %in% to_remove),])
 }
 
 filter_cluster_aux <- function(x, ncells, abundance) {
@@ -79,39 +54,36 @@ filter_cluster_aux <- function(x, ncells, abundance) {
   mask <-  (x$parameters$mixture_weights > abundance) & (ta > ncells)
 
   nremoved <-  sum(mask)
-
-  cli::cli_alert_warning("Filtering {nremoved} cluster{?s} due to low cell counts or abudance")
+  
   if(nremoved == 0) return(x)
-
-  x$parameters$mixture_weights <- x$parameters$mixture_weights[mask]
+  
+  
+  cli::cli_alert_warning("Filtering {nremoved} cluster{?s} due to low cell counts or abudance")
+  
+  x$parameters$mixture_weights <- x$parameters$mixture_weights[mask] / sum(x$parameters$mixture_weights[mask])
   cnv_probs_new <- x$parameters$cnv_probs[mask,]
 
   if(!x$run_information$posteriors){
 
     cli::cli_alert_info("No posterior probabilities, using euclidean distance to merge clusters")
-    if(diff_len != 0){
-      for(d in seq_len(diff_len)){
-        x$parameters$assignment_probs <-  cbind(x$parameters$assignment_probs, rep(0, nrow(x$parameters$assignment_probs)))
-      }
-      colnames(x$parameters$assignment_probs) <- seq_along(mask)
-    }
-    x$parameters$assignment_probs <- x$parameters$assignment_probs[,mask]
     cnv_no_assign <- x$parameters$cnv_probs[!mask,, drop = FALSE]
     distance <- as.matrix(dist(as.matrix(x$parameters$cnv_probs), diag = T))
 
     for(c in which(!mask)){
       distance[c,c] <-  Inf
       ## !!! note, this works only because the labelling of clusters is in order of abudance (descending)
-      x$parameters$assignement[x$parameters$assignement == c] <- which.min(distance[c,])
+      x$parameters$assignement[x$parameters$assignement == names(ta)[c]] <- paste0("c",which.min(distance[c,]))
 
     }
+    
+    x$parameters$assignment_probs <-  x$parameters$assignement %>% reshape2::melt() %>% mutate(value = as.character(value)) %>% from_MAP_to_post()
 
   } else {
 
     cli::cli_alert_info("Reculcating cluster assignement and renormalizing posterior probabilities")
 
 
-    x$parameters$assignment_probs <- x$parameters$assignment_probs[,mask]
+    x$parameters$assignment_probs <- x$parameters$assignment_probs[,mask, drop = FALSE]
     x$parameters$assignment_probs <- x$parameters$assignment_probs / rowSums(as.matrix(x$parameters$assignment_probs))
     x$parameters$assignement <- apply(as.matrix(x$parameters$assignment_probs), 1, which.max)
 
