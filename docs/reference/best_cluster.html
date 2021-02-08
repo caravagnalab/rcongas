@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Print for an object of class 'rcongas'. — plot.rcongas • Rcongas</title>
+<title>Model selection with CONGAS. — best_cluster • Rcongas</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,9 +46,11 @@
 
 
 
-<meta property="og:title" content="Print for an object of class 'rcongas'. — plot.rcongas" />
-<meta property="og:description" content="Function plot_gw_cna_profiles is used to plot
-the object." />
+<meta property="og:title" content="Model selection with CONGAS. — best_cluster" />
+<meta property="og:description" content="Selects the best number of clusters k to fit a dataset.
+Options allow to select the type of model available in the package, parameters
+for the Pyro optimizer and a number of different configurations to learn
+Bayesian posteriors or MAP estimates." />
 <meta property="og:image" content="militeee.github.io/Rcongas/logo.png" />
 
 
@@ -150,38 +152,107 @@ the object." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Print for an object of class <code>'rcongas'</code>.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/militeee/RcongasR/S3_methods_rcongas.R'><code>R/S3_methods_rcongas.R</code></a></small>
-    <div class="hidden name"><code>plot.rcongas.Rd</code></div>
+    <h1>Model selection with CONGAS.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/militeee/RcongasR/best_cluster.R'><code>R/best_cluster.R</code></a></small>
+    <div class="hidden name"><code>best_cluster.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Function <code>plot_gw_cna_profiles</code> is used to plot
-the object.</p>
+    <p>Selects the best number of clusters <code>k</code> to fit a dataset.
+Options allow to select the type of model available in the package, parameters
+for the Pyro optimizer and a number of different configurations to learn
+Bayesian posteriors or MAP estimates.</p>
     </div>
 
-    <pre class="usage"><span class='co'># S3 method for rcongas</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>best_cluster</span><span class='op'>(</span>
+  <span class='va'>X</span>,
+  <span class='va'>model</span>,
+  <span class='va'>clusters</span>,
+  optim <span class='op'>=</span> <span class='st'>"ClippedAdam"</span>,
+  elbo <span class='op'>=</span> <span class='st'>"TraceEnum_ELBO"</span>,
+  inf_type <span class='op'>=</span> <span class='st'>"SVI"</span>,
+  steps <span class='op'>=</span> <span class='fl'>300</span>,
+  lr <span class='op'>=</span> <span class='fl'>0.05</span>,
+  param_list <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>,
+  MAP <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  posteriors <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  seed <span class='op'>=</span> <span class='fl'>3</span>,
+  step_post <span class='op'>=</span> <span class='fl'>300</span>,
+  mixture <span class='op'>=</span> <span class='cn'>NULL</span>,
+  method <span class='op'>=</span> <span class='st'>"AIC"</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>...</th>
-      <td><p>Extra parameters.</p></td>
+      <th>X</th>
+      <td></td>
+    </tr>
+    <tr>
+      <th>model</th>
+      <td><p>Any of the model keywords available via <code><a href='list_models.html'>list_models()</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>clusters</th>
+      <td><p>A vector of values for <code>k</code>.</p></td>
+    </tr>
+    <tr>
+      <th>optim</th>
+      <td></td>
+    </tr>
+    <tr>
+      <th>elbo</th>
+      <td></td>
+    </tr>
+    <tr>
+      <th>inf_type</th>
+      <td></td>
+    </tr>
+    <tr>
+      <th>steps</th>
+      <td></td>
+    </tr>
+    <tr>
+      <th>lr</th>
+      <td></td>
+    </tr>
+    <tr>
+      <th>param_list</th>
+      <td></td>
+    </tr>
+    <tr>
+      <th>MAP</th>
+      <td></td>
+    </tr>
+    <tr>
+      <th>posteriors</th>
+      <td></td>
+    </tr>
+    <tr>
+      <th>seed</th>
+      <td></td>
+    </tr>
+    <tr>
+      <th>step_post</th>
+      <td></td>
+    </tr>
+    <tr>
+      <th>mixture</th>
+      <td></td>
+    </tr>
+    <tr>
+      <th>method</th>
+      <td></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A ggplot object for the plot.</p>
+    
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='va'>x</span> <span class='op'>=</span> <span class='fu'>Rcongas</span><span class='fu'>::</span><span class='va'><a href='congas_example.html'>congas_example</a></span>
 
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'><span style='color: #00BB00;'>✓</span><span> Loading </span><span style='color: #00BB00;'>CNAqc</span><span>, </span><span style='font-style: italic;'>'Copy Number Alteration quality check'</span><span>. Support : </span><span style='color: #0000BB;font-style: italic;'>&lt;https://caravagn.github.io/CNAqc/&gt;</span><span></span></div><div class='img'><img src='plot.rcongas-1.png' alt='' width='700' height='433' /></div></span></pre>
+
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

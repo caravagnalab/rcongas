@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Title — plot_segment_density • Rcongas</title>
+<title>Plots the data and fit density for a set of segments. — plot_segment_density • Rcongas</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,8 +46,12 @@
 
 
 
-<meta property="og:title" content="Title — plot_segment_density" />
-<meta property="og:description" content="Title" />
+<meta property="og:title" content="Plots the data and fit density for a set of segments. — plot_segment_density" />
+<meta property="og:description" content="This function works for a clustering result, whatever is the
+adopted model. It returns a list of plots for each one of the input segments.
+Each plot shows the data, plus the fit density per cluster. It can be
+used to assess the quality of the data and fits." />
+<meta property="og:image" content="militeee.github.io/Rcongas/logo.png" />
 
 
 
@@ -92,6 +96,9 @@
   </a>
 </li>
 <li>
+  <a href="../articles/Rcongas.html">Get started</a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
@@ -102,10 +109,13 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/Getters.html">Getters</a>
+      <a href="../articles/1_Models.html">Models available in this package</a>
     </li>
     <li>
-      <a href="../articles/Plotting_functions.html">Plotting functions</a>
+      <a href="../articles/2_Getters.html">Getter functions</a>
+    </li>
+    <li>
+      <a href="../articles/3_Plotting_functions.html">Plotting functions</a>
     </li>
     <li>
       <a href="../articles/gbm_example.html">Glioblastoma smart-seq analysis</a>
@@ -142,27 +152,36 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Title</h1>
+    <h1>Plots the data and fit density for a set of segments.</h1>
     <small class="dont-index">Source: <a href='https://github.com/militeee/RcongasR/plot_segment_density.R'><code>R/plot_segment_density.R</code></a></small>
     <div class="hidden name"><code>plot_segment_density.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Title</p>
+    <p>This function works for a clustering result, whatever is the
+adopted model. It returns a list of plots for each one of the input segments.
+Each plot shows the data, plus the fit density per cluster. It can be
+used to assess the quality of the data and fits.</p>
     </div>
 
     <pre class="usage"><span class='fu'>plot_segment_density</span><span class='op'>(</span>
   <span class='va'>x</span>,
-  <span class='va'>segments_ids</span>,
-  group1 <span class='op'>=</span> <span class='fl'>1</span>,
-  group2 <span class='op'>=</span> <span class='fl'>2</span>,
-  sum_denominator <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  <span class='va'>...</span>
+  segments_ids <span class='op'>=</span> <span class='fu'><a href='get_segment_ids.html'>get_segment_ids</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>,
+  sum_denominator <span class='op'>=</span> <span class='cn'>TRUE</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>x</th>
+      <td><p>Input object with clusters.</p></td>
+    </tr>
+    <tr>
+      <th>segment_ids</th>
+      <td><p>Vector of segment ids in the CONGAS format (e.g, <code>"chr12:40515401:133219374"</code>).
+By default all are used via function <code>get_segment_ids</code>.</p></td>
+    </tr>
     <tr>
       <th>...</th>
       <td></td>
@@ -171,10 +190,28 @@
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    
+    <p>A list of ggplot objects.</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'>
+<span class='va'>x</span> <span class='op'>=</span> <span class='fu'>Rcongas</span><span class='fu'>::</span><span class='va'><a href='congas_example.html'>congas_example</a></span>
 
+<span class='co'># Plot the first segment</span>
+<span class='fu'>plot_segment_density</span><span class='op'>(</span><span class='va'>x</span>, segments_ids <span class='op'>=</span> <span class='fu'><a href='get_segment_ids.html'>get_segment_ids</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; $`chr1:1:12600000`</div><div class='img'><img src='plot_segment_density-1.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; </div><div class='input'>
+<span class='co'># Plot the first one that is highlighted</span>
+<span class='fu'>plot_segment_density</span><span class='op'>(</span><span class='va'>x</span>, segments_ids <span class='op'>=</span> <span class='fu'><a href='get_segment_ids.html'>get_segment_ids</a></span><span class='op'>(</span><span class='va'>x</span>, highlight <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; $`chr14:93300001:105450000`</div><div class='img'><img src='plot_segment_density-2.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; </div><div class='input'>
+<span class='co'># Plot the top 4 highlighted, in 2x2 format, specifying alpha value</span>
 
+<span class='va'>what_to_plot</span> <span class='op'>=</span> <span class='fu'><a href='get_segment_ids.html'>get_segment_ids</a></span><span class='op'>(</span><span class='va'>x</span>, highlight <span class='op'>=</span> <span class='cn'>TRUE</span>, alpha <span class='op'>=</span> <span class='fl'>0.05</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>4</span><span class='op'>]</span>
+
+<span class='fu'>ggpubr</span><span class='fu'>::</span><span class='fu'><a href='https://rpkgs.datanovia.com/ggpubr/reference/ggarrange.html'>ggarrange</a></span><span class='op'>(</span>
+ plotlist <span class='op'>=</span> <span class='fu'>plot_segment_density</span><span class='op'>(</span><span class='va'>x</span>, segments_ids <span class='op'>=</span> <span class='va'>what_to_plot</span><span class='op'>)</span>,
+ nrow <span class='op'>=</span> <span class='fl'>2</span>,
+ ncol <span class='op'>=</span> <span class='fl'>2</span>
+<span class='op'>)</span>
+</div><div class='img'><img src='plot_segment_density-3.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

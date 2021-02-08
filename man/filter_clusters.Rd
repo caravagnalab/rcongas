@@ -30,9 +30,9 @@ x = Rcongas::congas_example
 print(x)
 
 # Equivalent filters for this model
-x \%>\% Rcongas:::filter_clusters(abundance = .5)
+x \%>\% filter_clusters(abundance = .5)
 
-x \%>\% Rcongas:::filter_clusters(ncells = 150)
+x \%>\% filter_clusters(ncells = 150)
 
 
 }

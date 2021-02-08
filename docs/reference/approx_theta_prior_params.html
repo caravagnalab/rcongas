@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Print for an object of class 'rcongas'. — plot.rcongas • Rcongas</title>
+<title>Approximation of the library size prior — approx_theta_prior_params • Rcongas</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,9 +46,8 @@
 
 
 
-<meta property="og:title" content="Print for an object of class 'rcongas'. — plot.rcongas" />
-<meta property="og:description" content="Function plot_gw_cna_profiles is used to plot
-the object." />
+<meta property="og:title" content="Approximation of the library size prior — approx_theta_prior_params" />
+<meta property="og:description" content="This function fit a theta" />
 <meta property="og:image" content="militeee.github.io/Rcongas/logo.png" />
 
 
@@ -150,38 +149,32 @@ the object." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Print for an object of class <code>'rcongas'</code>.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/militeee/RcongasR/S3_methods_rcongas.R'><code>R/S3_methods_rcongas.R</code></a></small>
-    <div class="hidden name"><code>plot.rcongas.Rd</code></div>
+    <h1>Approximation of the library size prior</h1>
+    <small class="dont-index">Source: <a href='https://github.com/militeee/RcongasR/approx_theta_prior_params.R'><code>R/approx_theta_prior_params.R</code></a></small>
+    <div class="hidden name"><code>approx_theta_prior_params.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Function <code>plot_gw_cna_profiles</code> is used to plot
-the object.</p>
+    <p>This function fit a theta</p>
     </div>
 
-    <pre class="usage"><span class='co'># S3 method for rcongas</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>approx_theta_prior_params</span><span class='op'>(</span><span class='va'>x</span>, plot <span class='op'>=</span> <span class='cn'>FALSE</span>, mult_factor <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>...</th>
-      <td><p>Extra parameters.</p></td>
+      <th>x</th>
+      <td></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A ggplot object for the plot.</p>
+    
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='va'>x</span> <span class='op'>=</span> <span class='fu'>Rcongas</span><span class='fu'>::</span><span class='va'><a href='congas_example.html'>congas_example</a></span>
 
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'><span style='color: #00BB00;'>✓</span><span> Loading </span><span style='color: #00BB00;'>CNAqc</span><span>, </span><span style='font-style: italic;'>'Copy Number Alteration quality check'</span><span>. Support : </span><span style='color: #0000BB;font-style: italic;'>&lt;https://caravagn.github.io/CNAqc/&gt;</span><span></span></div><div class='img'><img src='plot.rcongas-1.png' alt='' width='700' height='433' /></div></span></pre>
+
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

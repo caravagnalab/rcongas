@@ -21,7 +21,11 @@ The function works in a similar way to \code{\link{filter_clusters}} but it also
 }
 \examples{
 
+x = Rcongas::congas_example
 
+print(x)
 
+x = x \%>\% Rcongas:::filter_clusters_and_remove_cells(ncells = 150)
+print(x)
 
 }
