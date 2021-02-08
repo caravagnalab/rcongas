@@ -15,3 +15,8 @@ plot_mixing_proportions(x)
 \description{
 Title
 }
+\examples{
+x = Rcongas::congas_example
+
+plot_mixing_proportions(x) 
+}

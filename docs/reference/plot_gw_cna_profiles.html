@@ -48,6 +48,7 @@
 
 <meta property="og:title" content="Title — plot_gw_cna_profiles" />
 <meta property="og:description" content="Title" />
+<meta property="og:image" content="militeee.github.io/Rcongas/logo.png" />
 
 
 
@@ -92,6 +93,9 @@
   </a>
 </li>
 <li>
+  <a href="../articles/Rcongas.html">Get started</a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
@@ -102,10 +106,13 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/Getters.html">Getters</a>
+      <a href="../articles/1_Models.html">Models available in this package</a>
     </li>
     <li>
-      <a href="../articles/Plotting_functions.html">Plotting functions</a>
+      <a href="../articles/2_Getters.html">Getter functions</a>
+    </li>
+    <li>
+      <a href="../articles/3_Plotting_functions.html">Plotting functions</a>
     </li>
     <li>
       <a href="../articles/gbm_example.html">Glioblastoma smart-seq analysis</a>
@@ -173,6 +180,21 @@
 
 
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='va'>x</span> <span class='op'>=</span> <span class='fu'>Rcongas</span><span class='fu'>::</span><span class='va'><a href='congas_example.html'>congas_example</a></span>
+
+<span class='co'># Default view </span>
+<span class='fu'>plot_gw_cna_profiles</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
+</div><div class='img'><img src='plot_gw_cna_profiles-1.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='co'># Avoid facet (shows real chromosome width)</span>
+<span class='fu'>plot_gw_cna_profiles</span><span class='op'>(</span><span class='va'>x</span>, whole_genome <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+</div><div class='img'><img src='plot_gw_cna_profiles-2.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='co'># Subset to one chromosome</span>
+<span class='fu'>plot_gw_cna_profiles</span><span class='op'>(</span><span class='va'>x</span>, chromosomes <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>'chr1'</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='img'><img src='plot_gw_cna_profiles-3.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='co'># Forward alpha to get_clusters_ploidy (changes what is highlighted)</span>
+<span class='fu'>plot_gw_cna_profiles</span><span class='op'>(</span><span class='va'>x</span>, whole_genome <span class='op'>=</span> <span class='cn'>TRUE</span>, alpha <span class='op'>=</span> <span class='fl'>0.001</span><span class='op'>)</span>
+</div><div class='img'><img src='plot_gw_cna_profiles-4.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

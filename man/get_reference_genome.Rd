@@ -19,5 +19,5 @@ Extracts the code for the reference genome used in a model.
 
 x = Rcongas::congas_example
 
-get_gene_annotations(x)
+get_reference_genome(x)
 }

@@ -12,7 +12,7 @@
 #' 
 #' x = Rcongas::congas_example
 #'
-#' get_gene_annotations(x)
+#' get_reference_genome(x)
 get_reference_genome = function(x)
 {
   return(x$reference_genome)

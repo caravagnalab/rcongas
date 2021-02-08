@@ -15,3 +15,18 @@ plot_latent_variables(x, cutoff_assignment = 0)
 \description{
 Title
 }
+\examples{
+x = Rcongas::congas_example
+
+# Default (cutoff 0)
+plot_latent_variables(x) 
+
+# >50\% assignment probability
+plot_latent_variables(x, cutoff_assignment = .5) 
+
+# >90\% assignment probability
+plot_latent_variables(x, cutoff_assignment = .9) 
+
+# >97.5\% assignment probability
+plot_latent_variables(x, cutoff_assignment = .975) 
+}
