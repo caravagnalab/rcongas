@@ -51,6 +51,7 @@
 split by pair of groups. A group can be a list of cluster ids; the test
 p-value can be passed as a parameter, and is adjusted for Family-Wise Error
 Rate (FWER) via Bonferroni correction." />
+<meta property="og:image" content="militeee.github.io/Rcongas/logo.png" />
 
 
 
@@ -90,9 +91,12 @@ Rate (FWER) via Bonferroni correction." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
+</li>
+<li>
+  <a href="../articles/Rcongas.html">Get started</a>
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
@@ -105,10 +109,13 @@ Rate (FWER) via Bonferroni correction." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/Getters.html">Getters</a>
+      <a href="../articles/1_Models.html">Models available in this package</a>
     </li>
     <li>
-      <a href="../articles/Plotting_functions.html">Plotting functions</a>
+      <a href="../articles/2_Getters.html">Getter functions</a>
+    </li>
+    <li>
+      <a href="../articles/3_Plotting_functions.html">Plotting functions</a>
     </li>
     <li>
       <a href="../articles/gbm_example.html">Glioblastoma smart-seq analysis</a>
@@ -128,7 +135,7 @@ Rate (FWER) via Bonferroni correction." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/militeee/Rcongas/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -191,10 +198,10 @@ for the significance of the test.</p>
 
 <span class='co'># Compare groups</span>
 <span class='fu'>get_segment_test_counts</span><span class='op'>(</span><span class='va'>x</span>, <span class='st'>"c1"</span>, <span class='st'>"c2"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in get_segment_test_counts(x, "c1", "c2"): &gt;1 p-value</span></div><div class='input'>
+</div><div class='output co'>#&gt; <span class='error'>Error in get_segment_test_counts(x, "c1", "c2"): Cluster labels in group1 are not correct.</span></div><div class='input'>
 <span class='co'># More stringent test</span>
 <span class='fu'>get_segment_test_counts</span><span class='op'>(</span><span class='va'>x</span>, <span class='st'>"c1"</span>, <span class='st'>"c2"</span>, cutoff_p <span class='op'>=</span> <span class='fl'>1e-4</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in get_segment_test_counts(x, "c1", "c2", cutoff_p = 1e-04): &gt;1 p-value</span></div></pre>
+</div><div class='output co'>#&gt; <span class='error'>Error in get_segment_test_counts(x, "c1", "c2", cutoff_p = 1e-04): Cluster labels in group1 are not correct.</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

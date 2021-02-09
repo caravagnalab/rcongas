@@ -1,4 +1,16 @@
+#' Title
+#'
+#' @param x 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' 
+#' # Report
+#' plot_inference_report(x)
 plot_inference_report <-  function(x) {
+  
   Z_post <- Rcongas:::is_MAP_Z(x)
   CN_post <- !Rcongas:::is_MAP_CN(x)
 

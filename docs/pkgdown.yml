@@ -1,14 +1,16 @@
-pandoc: 2.11.3.2
+pandoc: 2.11.0.4
 pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
-  Getters: Getters.html
-  Plotting_functions: Plotting_functions.html
+  1_Models: 1_Models.html
+  2_Getters: 2_Getters.html
+  3_Plotting_functions: 3_Plotting_functions.html
+  Rcongas: Rcongas.html
   gbm_example: gbm_example.html
   monosomy_example: monosomy_example.html
   simulated_example: simulated_example.html
   xeno_examples: xeno_examples.html
-last_built: 2021-01-30T21:36Z
+last_built: 2021-02-08T23:52Z
 urls:
   reference: militeee.github.io/Rcongas/reference
   article: militeee.github.io/Rcongas/articles

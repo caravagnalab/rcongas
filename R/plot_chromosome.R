@@ -10,11 +10,16 @@
 #'
 #' @examples
 #' 
+#' x = Rcongas::congas_example
+#' 
 #' # Shows all data available
 #' plot_chromosome(x)
 #' 
 #' # Chromosome 17
 #' plot_chromosome(x, chr = 'chr17')
+#' 
+#' # Shows some data 
+#' plot_chromosome(x, chr = 'chr17', plot = 'counts')
 plot_chromosome = function(x, chr = 'chr1', plot = c("segments", "counts", "DE"), ...)
 {
   # Get all counts

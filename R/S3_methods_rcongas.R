@@ -75,8 +75,21 @@ print.rcongas = function(x, ...)
       ),
       symbol = 'clisymbols::symbol$bullet'
     ) %>% cli::cli_text()
+  
+  # Highlights
+  cli::cli_h3("CNA highlights ")
+  
+  sgH = get_segment_ids(x, highlight = TRUE)
+  nsgH = sgH %>% length()
+  
+  if(nsgH > 0)
+    # get_clusters_ploidy(x) %>% filter(highlight) %>% print
+    cli::cli_alert_success(" {.field {nsgH}} CNA(s):  {.field {sgH}}")
+  else
+    cli::cli_alert_warning("None found!")
+  
 
-  # cat('\n')
+   cat('\n')
 
   paste(
     "{crayon::white(clisymbols::symbol$info)} Model scored with {.field {stats_data$score_type}} = {.value {round(stats_data$score, 2)}}"

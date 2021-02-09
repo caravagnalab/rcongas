@@ -23,7 +23,6 @@ get_dataset_stats = function(x)
   # clustering stats
   nclusters = sizes_cl = psizes_cl = NULL
   
-  
   if(Rcongas:::has_inference(x))
   {
     nclusters =  Rcongas::get_k(x)

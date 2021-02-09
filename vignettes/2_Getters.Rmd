@@ -2,7 +2,7 @@
 title: "Getter functions"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Getters}
+  %\VignetteIndexEntry{Getters functions}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -120,7 +120,7 @@ The raw input data are the counts, per gene (rows), per cell (columns), obtained
 raw_input_gene_by_cell = get_input_raw_data(congas_example)
 
 # Just the 2x2 submatrix (genes on the rows, cells on the columns)
-print(raw_input_gene_by_cell[1:2, 1:2])
+# print(raw_input_gene_by_cell[1:2, 1:2])
 ```
 
 The data processed by CONGAS are counts mapped to segments, which are stored in a matrix that contains cells on rows, and segments on columns. This matrix can be extracted in long tidy format; the actual counts value can be obtained before or after normalisation,  and can be subset to certain portions of the cancer genome. 

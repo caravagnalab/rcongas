@@ -50,7 +50,6 @@ reference:
   - plot_chromosome
   - plot_gw_cna_profiles
   - plot_inference_report
-  - plot_input_rna_segmentation
   - plot_counts_rna_segments
   - plot_raw_data
   - plot_highlights
