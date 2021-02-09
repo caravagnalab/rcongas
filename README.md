@@ -12,7 +12,7 @@ maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www
 [![](https://img.shields.io/badge/Part%20of-evoverse-blue.svg)](https://caravagn.github.io/evoverse)
 <!-- badges: end -->
 
-The package provides an interface for the Python
+The package provides an R interface for the Python
 [Congas](https://github.com/Militeee/congas) package, which implements
 multiple statistical models to genotype Copy Number Alterations from
 single-cell RNA sequencing.

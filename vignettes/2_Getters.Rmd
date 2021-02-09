@@ -2,7 +2,7 @@
 title: "Getter functions"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Getters functions}
+  %\VignetteIndexEntry{Getter functions}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

@@ -28,9 +28,6 @@
     <loc>militeee.github.io/Rcongas/reference/filter_clusters.html</loc>
   </url>
   <url>
-    <loc>militeee.github.io/Rcongas/reference/filter_clusters_and_remove_cells.html</loc>
-  </url>
-  <url>
     <loc>militeee.github.io/Rcongas/reference/generate_ploidy.html</loc>
   </url>
   <url>
@@ -161,17 +158,5 @@
   </url>
   <url>
     <loc>militeee.github.io/Rcongas/articles/Rcongas.html</loc>
-  </url>
-  <url>
-    <loc>militeee.github.io/Rcongas/articles/gbm_example.html</loc>
-  </url>
-  <url>
-    <loc>militeee.github.io/Rcongas/articles/monosomy_example.html</loc>
-  </url>
-  <url>
-    <loc>militeee.github.io/Rcongas/articles/simulated_example.html</loc>
-  </url>
-  <url>
-    <loc>militeee.github.io/Rcongas/articles/xeno_examples.html</loc>
   </url>
 </urlset>

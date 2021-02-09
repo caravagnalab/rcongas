@@ -15,7 +15,19 @@ plot_raw_data(
 )
 }
 \arguments{
-\item{normalised}{}
+\item{x}{}
+
+\item{genes}{}
+
+\item{lognormalise}{}
+
+\item{description}{}
+
+\item{clusters}{}
+
+\item{prompt}{}
+
+\item{...}{}
 }
 \value{
 
@@ -25,8 +37,19 @@ Title
 }
 \examples{
 
-  x = get_input_raw_data(rcongas_example)
-  genes = get_DE_table(rcongas_example) \%>\% pull(gene)
-  clusters = get_clusters(rcongas_example)
-  description = get_model_description(rcongas_example)
+x = Rcongas::congas_example
+
+print(x)
+
+# Extract raw data
+raw_x = get_input_raw_data(x)
+
+# Get some genes to plot from those with DE
+genes = get_DE_table(x) \%>\% pull(gene)
+
+# Get clusters
+clusters = get_clusters(x)
+
+# Default plot (without prompt for automatic documentation generation)
+plot_raw_data(raw_x, genes, prompt = FALSE)
 }

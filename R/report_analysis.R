@@ -6,6 +6,11 @@
 #' @export
 #'
 #' @examples
+#' 
+#' x = Rcongas::congas_example
+#'
+#' print(x)
+#' 
 report_analysis = function(x)
 {
   require(tidyverse)

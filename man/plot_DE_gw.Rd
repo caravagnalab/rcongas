@@ -20,3 +20,18 @@ plot_DE_gw(
 \description{
 Title
 }
+\examples{
+
+x = Rcongas::congas_example
+
+print(x)
+
+# Shows all data available
+plot_DE_gw(x)
+
+# More stringent parameters
+plot_DE_gw(x, cut_pvalue = 1e-5)
+
+# More stringent parameters
+plot_DE_gw(x, cut_lfc = 2)
+}

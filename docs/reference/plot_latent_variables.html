@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Title — plot_latent_variables • Rcongas</title>
+<title>Plot latent varibles. — plot_latent_variables • Rcongas</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,8 +46,10 @@
 
 
 
-<meta property="og:title" content="Title — plot_latent_variables" />
-<meta property="og:description" content="Title" />
+<meta property="og:title" content="Plot latent varibles. — plot_latent_variables" />
+<meta property="og:description" content="Plots the clustering responsibilities (posterior over $z$)
+for the available clusters. It can put NA to all entries where the hard 
+clustering assignments - max of the posterior - is below a cutoff." />
 <meta property="og:image" content="militeee.github.io/Rcongas/logo.png" />
 
 
@@ -114,18 +116,6 @@
     <li>
       <a href="../articles/3_Plotting_functions.html">Plotting functions</a>
     </li>
-    <li>
-      <a href="../articles/gbm_example.html">Glioblastoma smart-seq analysis</a>
-    </li>
-    <li>
-      <a href="../articles/monosomy_example.html">Monosomy 7 analysis</a>
-    </li>
-    <li>
-      <a href="../articles/simulated_example.html">CONGAS on simulated data</a>
-    </li>
-    <li>
-      <a href="../articles/xeno_examples.html">analysis on 10x data</a>
-    </li>
   </ul>
 </li>
       </ul>
@@ -149,13 +139,15 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Title</h1>
+    <h1>Plot latent varibles.</h1>
     <small class="dont-index">Source: <a href='https://github.com/militeee/RcongasR/plot_latent_variables.R'><code>R/plot_latent_variables.R</code></a></small>
     <div class="hidden name"><code>plot_latent_variables.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Title</p>
+    <p>Plots the clustering responsibilities (posterior over $z$)
+for the available clusters. It can put <code>NA</code> to all entries where the hard 
+clustering assignments - max of the posterior - is below a cutoff.</p>
     </div>
 
     <pre class="usage"><span class='fu'>plot_latent_variables</span><span class='op'>(</span><span class='va'>x</span>, cutoff_assignment <span class='op'>=</span> <span class='fl'>0</span><span class='op'>)</span></pre>
@@ -164,23 +156,27 @@
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
+      <th>x</th>
+      <td><p>Input object with clusters</p></td>
+    </tr>
+    <tr>
       <th>cutoff_assignment</th>
-      <td></td>
+      <td><p>A value in $[0, 1)$ so that values below this are
+set to <code>NA</code></p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    
-
-
+    <p>A ggplot object</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='va'>x</span> <span class='op'>=</span> <span class='fu'>Rcongas</span><span class='fu'>::</span><span class='va'><a href='congas_example.html'>congas_example</a></span>
 
 <span class='co'># Default (cutoff 0)</span>
 <span class='fu'>plot_latent_variables</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span> 
-</div><div class='img'><img src='plot_latent_variables-1.png' alt='' width='700' height='433' /></div><div class='input'>
+</div><div class='output co'>#&gt; <span class='message'><span style='color: #00BB00;'>✓</span><span> Loading </span><span style='color: #00BB00;'>ctree</span><span>, </span><span style='font-style: italic;'>'Clone trees in cancer'</span><span>. Support : </span><span style='color: #0000BB;font-style: italic;'>&lt;https://caravagn.github.io/ctree/&gt;</span><span></span></div><div class='output co'>#&gt; <span class='warning'>Warning: replacing previous import ‘Biostrings::translate’ by ‘seqinr::translate’ when loading ‘dndscv’</span></div><div class='output co'>#&gt; <span class='message'></span><span style='color: #00BB00;'>✔</span><span> Loading </span><span style='color: #00BB00;'>mobster</span><span>, </span><span style='font-style: italic;'>'Model-based clustering in cancer'</span><span>. Support :</span>
+#&gt; <span class='message'></span><span style='color: #0000BB;font-style: italic;'>&lt;https://caravagn.github.io/mobster/&gt;</span><span>.</span></div><div class='img'><img src='plot_latent_variables-1.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># &gt;50% assignment probability</span>
 <span class='fu'>plot_latent_variables</span><span class='op'>(</span><span class='va'>x</span>, cutoff_assignment <span class='op'>=</span> <span class='fl'>.5</span><span class='op'>)</span> 
 </div><div class='img'><img src='plot_latent_variables-2.png' alt='' width='700' height='433' /></div><div class='input'>
@@ -189,7 +185,7 @@
 </div><div class='img'><img src='plot_latent_variables-3.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># &gt;97.5% assignment probability</span>
 <span class='fu'>plot_latent_variables</span><span class='op'>(</span><span class='va'>x</span>, cutoff_assignment <span class='op'>=</span> <span class='fl'>.975</span><span class='op'>)</span> 
-</div><div class='img'><img src='plot_latent_variables-4.png' alt='' width='700' height='433' /></div></pre>
+</div><div class='img'><img src='plot_latent_variables-4.png' alt='' width='700' height='433' /></div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

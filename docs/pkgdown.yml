@@ -6,11 +6,7 @@ articles:
   2_Getters: 2_Getters.html
   3_Plotting_functions: 3_Plotting_functions.html
   Rcongas: Rcongas.html
-  gbm_example: gbm_example.html
-  monosomy_example: monosomy_example.html
-  simulated_example: simulated_example.html
-  xeno_examples: xeno_examples.html
-last_built: 2021-02-08T23:52Z
+last_built: 2021-02-09T08:24Z
 urls:
   reference: militeee.github.io/Rcongas/reference
   article: militeee.github.io/Rcongas/articles

@@ -2,18 +2,23 @@
 % Please edit documentation in R/plot_latent_variables.R
 \name{plot_latent_variables}
 \alias{plot_latent_variables}
-\title{Title}
+\title{Plot latent varibles.}
 \usage{
 plot_latent_variables(x, cutoff_assignment = 0)
 }
 \arguments{
-\item{cutoff_assignment}{}
+\item{x}{Input object with clusters}
+
+\item{cutoff_assignment}{A value in $[0, 1)$ so that values below this are
+set to \code{NA}}
 }
 \value{
-
+A ggplot object
 }
 \description{
-Title
+Plots the clustering responsibilities (posterior over $z$)
+for the available clusters. It can put \code{NA} to all entries where the hard 
+clustering assignments - max of the posterior - is below a cutoff.
 }
 \examples{
 x = Rcongas::congas_example

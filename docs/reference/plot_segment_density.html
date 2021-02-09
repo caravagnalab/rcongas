@@ -117,18 +117,6 @@ used to assess the quality of the data and fits." />
     <li>
       <a href="../articles/3_Plotting_functions.html">Plotting functions</a>
     </li>
-    <li>
-      <a href="../articles/gbm_example.html">Glioblastoma smart-seq analysis</a>
-    </li>
-    <li>
-      <a href="../articles/monosomy_example.html">Monosomy 7 analysis</a>
-    </li>
-    <li>
-      <a href="../articles/simulated_example.html">CONGAS on simulated data</a>
-    </li>
-    <li>
-      <a href="../articles/xeno_examples.html">analysis on 10x data</a>
-    </li>
   </ul>
 </li>
       </ul>
@@ -201,7 +189,7 @@ By default all are used via function <code>get_segment_ids</code>.</p></td>
 </div><div class='output co'>#&gt; $`chr1:1:12600000`</div><div class='img'><img src='plot_segment_density-1.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; </div><div class='input'>
 <span class='co'># Plot the first one that is highlighted</span>
 <span class='fu'>plot_segment_density</span><span class='op'>(</span><span class='va'>x</span>, segments_ids <span class='op'>=</span> <span class='fu'><a href='get_segment_ids.html'>get_segment_ids</a></span><span class='op'>(</span><span class='va'>x</span>, highlight <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; $`chr14:93300001:105450000`</div><div class='img'><img src='plot_segment_density-2.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; </div><div class='input'>
+</div><div class='output co'>#&gt; $`chr3:152100001:180450000`</div><div class='img'><img src='plot_segment_density-2.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; </div><div class='input'>
 <span class='co'># Plot the top 4 highlighted, in 2x2 format, specifying alpha value</span>
 
 <span class='va'>what_to_plot</span> <span class='op'>=</span> <span class='fu'><a href='get_segment_ids.html'>get_segment_ids</a></span><span class='op'>(</span><span class='va'>x</span>, highlight <span class='op'>=</span> <span class='cn'>TRUE</span>, alpha <span class='op'>=</span> <span class='fl'>0.05</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>4</span><span class='op'>]</span>

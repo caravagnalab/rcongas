@@ -12,6 +12,8 @@
 #' 
 #' x = Rcongas::congas_example
 #' 
+#' print(x)
+#' 
 #' # Shows all data available
 #' plot_chromosome(x)
 #' 

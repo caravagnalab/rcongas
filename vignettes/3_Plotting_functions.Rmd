@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 ```
 
 
-```{r setup, include = T}
+```{r, include = T}
 require(Rcongas)
 ```
 
@@ -24,6 +24,8 @@ We show how you can plot information from a CONGAS object. We work with an examp
 
 ```{r}
 data('congas_example', package = 'Rcongas')
+
+print(congas_example)
 ```
 
 ## Genome-wide clone profiles
@@ -110,7 +112,7 @@ user to assess if he/she really wants to plot the data; this helps because somet
 The plot can be generated with, and without clustering assignments.
 
 
-```{r, fig.width=5, fig.height=7}
+```{r, fig.width=5, fig.height=7, eval=FALSE}
 # Raw input counts. Since we have them stored in "congas_example",
 # we can access them straight from the object
 raw_input = get_input_raw_data(congas_example) %>%  t

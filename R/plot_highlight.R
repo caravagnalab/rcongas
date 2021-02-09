@@ -10,6 +10,8 @@
 #' 
 #' x = Rcongas::congas_example
 #' 
+#' print(x)
+#' 
 #' # Default view 
 #' plot_highlights(x) 
 #' 

@@ -1,9 +1,15 @@
-#' Title
+#' Plot latent varibles.
+#' 
+#' @description Plots the clustering responsibilities (posterior over $z$)
+#' for the available clusters. It can put \code{NA} to all entries where the hard 
+#' clustering assignments - max of the posterior - is below a cutoff.
 #'
-#' @param x
-#' @param cutoff_assignment
+#' @param x Input object with clusters
+#' @param cutoff_assignment A value in $[0, 1)$ so that values below this are
+#' set to \code{NA}
 #'
-#' @return
+#' @return A ggplot object
+#' 
 #' @export
 #'
 #' @examples
@@ -22,6 +28,8 @@
 #' plot_latent_variables(x, cutoff_assignment = .975) 
 plot_latent_variables = function(x, cutoff_assignment = 0)
 {
+  if(!has_inference(x)) stop("Cannot extract clustering information if not avaiable, or not a CONGAS object.")
+  
   assignments = Rcongas::get_clusters(x, cut_znk = cutoff_assignment) %>%
     dplyr::arrange(cluster, p_assignment)
 
