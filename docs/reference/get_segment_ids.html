@@ -118,6 +118,9 @@ are highlighted in the plots; this requires clustering to be computed" />
     <li>
       <a href="../articles/3_Plotting_functions.html">Plotting functions</a>
     </li>
+    <li>
+      <a href="../articles/4_Propreocessing.html">Preprocessing</a>
+    </li>
   </ul>
 </li>
       </ul>
@@ -223,14 +226,12 @@ ids.</p></td>
 #&gt; [69] "chr21:1:38850000"          "chr22:1:51450000"         </div><div class='input'>
 <span class='co'># All segments that are highlighted with default value</span>
 <span class='fu'>get_segment_ids</span><span class='op'>(</span><span class='va'>x</span>, highlight <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "chr3:152100001:180450000" "chr6:145500001:156600000"
-#&gt; [3] "chr15:67050001:102600000" "chr16:1:3750000"         
-#&gt; [5] "chr17:79650001:81300000"  "chr18:32400001:55950000" 
-#&gt; [7] "chr6:93450001:114450000"  "chr14:93300001:105450000"</div><div class='input'>
+</div><div class='output co'>#&gt; [1] "chr14:93300001:105450000" "chr15:67050001:102600000"
+#&gt; [3] "chr16:1:3750000"          "chr18:32400001:55950000" </div><div class='input'>
 <span class='co'># All segments that are highlighted with stricter value than default</span>
 <span class='fu'>get_segment_ids</span><span class='op'>(</span><span class='va'>x</span>, highlight <span class='op'>=</span> <span class='cn'>TRUE</span>, alpha <span class='op'>=</span> <span class='fl'>0.01</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "chr16:1:3750000"          "chr18:32400001:55950000" 
-#&gt; [3] "chr15:67050001:102600000"</div></pre>
+</div><div class='output co'>#&gt; [1] "chr15:67050001:102600000" "chr16:1:3750000"         
+#&gt; [3] "chr18:32400001:55950000" </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

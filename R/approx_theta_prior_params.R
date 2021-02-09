@@ -17,7 +17,7 @@ approx_theta_prior_params <-  function(x, plot = FALSE, mult_factor = 1){
     return(-sum(R))
   }
   
-  coeff <-  mle(minuslogl = LL, start = list(theta_shape = 1, theta_rate = 1), ,
+  coeff <-  stats4::mle(minuslogl = LL, start = list(theta_shape = 1, theta_rate = 1), ,
                 lower = c(0, 0), upper = c(Inf, Inf))@coef * mult_factor
   if(plot){
     

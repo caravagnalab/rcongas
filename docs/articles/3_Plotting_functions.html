@@ -72,6 +72,9 @@
     <li>
       <a href="../articles/3_Plotting_functions.html">Plotting functions</a>
     </li>
+    <li>
+      <a href="../articles/4_Propreocessing.html">Preprocessing</a>
+    </li>
   </ul>
 </li>
       </ul>
@@ -114,14 +117,13 @@
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">'congas_example'</span>, package <span class="op">=</span> <span class="st">'Rcongas'</span><span class="op">)</span>
 
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">congas_example</span><span class="op">)</span>
-<span class="co">#&gt; ── [ Rcongas ] My CONGAS model n = 503 cells with i = 70 segments, grouped in k</span>
-<span class="co">#&gt; ● Cluster c1, n = 239 [47.51% of total cells].</span>
-<span class="co">#&gt; ● Cluster c2, n = 150 [29.82% of total cells].</span>
-<span class="co">#&gt; ● Cluster c3, n = 114 [22.66% of total cells].</span>
+<span class="co">#&gt; ── [ Rcongas ] My CONGAS model n = 504 cells with i = 70 segments, grouped in k</span>
+<span class="co">#&gt; ● Cluster c1, n = 379 [75.2% of total cells].</span>
+<span class="co">#&gt; ● Cluster c2, n = 125 [24.8% of total cells].</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; ── CNA highlights</span>
-<span class="co">#&gt; ✓  8 CNA(s):  chr3:152100001:180450000, chr6:145500001:156600000, chr15:67050001:102600000, chr16:1:3750000, chr17:79650001:81300000, chr18:32400001:55950000, chr6:93450001:114450000, and chr14:93300001:105450000</span>
-<span class="co">#&gt; ℹ Model scored with AIC = 267368.09</span>
+<span class="co">#&gt; ✓  4 CNA(s):  chr14:93300001:105450000, chr15:67050001:102600000, chr16:1:3750000, and chr18:32400001:55950000</span>
+<span class="co">#&gt; ℹ Model scored with AIC = 269370.73</span>
 <span class="co">#&gt; ● Differential Expression analysis for 1 vs 2 with the DESeq2 method: 212 DE</span>
 <span class="co">#&gt; genes at level alpha 0.01, with |lfc| &gt; 0.25.</span></code></pre></div>
 <div id="genome-wide-clone-profiles" class="section level2">

@@ -12,6 +12,8 @@ First of all a filter on highly variable and highly expressed genes can be extre
 
 ```{r}
 library(Seurat)
+library(Rcongas)
+library(dplyr)
 
 x <- Rcongas::congas_example
 
