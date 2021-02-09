@@ -34,7 +34,7 @@ approx_theta_prior_params <-  function(x, plot = FALSE, mult_factor = 1){
 tranform_data_for_theta_inf <- function(x){
   
   data_t <- apply( x$data$counts, 1, function(y) y/x$data$cnv$mu)
-  data_t <- apply(data_t, 2, function(y) y/ x$data$cnv$tot) %>% t
+  data_t <- apply(data_t, 2, function(y) y/ x$data$cnv$ploidy_real) %>% t
   return(data_t + 1e-6)
   
 }
