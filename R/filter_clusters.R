@@ -34,7 +34,7 @@ filter_clusters  <- function(x, ncells = 10, abundance = 0.03) {
   x$inference$models <-
     lapply(x$inference$models, function(x)
       filter_cluster_aux(x , ncells = ncells, abundance = abundance))
-  x$inference$model_selection$IC <- recalculate_information_criteria(x, x$inference$model_selection$IC_type)
+  x <- recalculate_information_criteria(x, x$inference$model_selection$IC_type)
 
   return(x)
   
