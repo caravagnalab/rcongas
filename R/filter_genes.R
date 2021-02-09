@@ -23,11 +23,11 @@ filter_genes <- function(cmat, quantile_mean = 0.95, quantile_var = 0.95, plot =
     joined$to_remove <- ifelse(mean > quantile_mean_val & variance > quantile_var_val, T, F)
     
 
-    filtered_genes <-  rownames(joined)[!joined$to_remove]
+    filtered_genes <-  rownames(joined)[which(joined$to_remove)]
     
     if(plot){
       
-      ggplot(joined, aes(x = mean, y = variance, color = to_remove)) +
+      p1 <-  ggplot(joined, aes(x = mean, y = variance, color = to_remove)) +
         geom_point(size = 1) +
         labs(title = paste0("Mean variance relationship")) +
         scale_color_manual("Removing?",values = c("grey", "red")) +
@@ -41,9 +41,9 @@ filter_genes <- function(cmat, quantile_mean = 0.95, quantile_var = 0.95, plot =
         guides(shape = guide_legend(
           paste0("Outside q={", paste(c(quantile_mean_val, quantile_var_val), collapse = ', '), '} n = ', sum(joined$to_remove))
         ))
-      
+      plot(p1)  
     }
-      
+    
     return(filtered_genes)
     
 }
