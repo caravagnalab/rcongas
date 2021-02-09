@@ -1,5 +1,5 @@
 
-# Rcongas <a href='militeee.github.io/Rcongas'><img src='man/figures/logo.png' align="right" height="120" /></a>
+# Rcongas <a href='militeee.github.io/rcongas'><img src='man/figures/logo.png' align="right" height="120" /></a>
 
 <!-- badges: start -->
 
@@ -38,7 +38,7 @@ If you use `Rcongas`, please cite:
 
 #### Help and support
 
-[![](https://img.shields.io/badge/GitHub%20Pages-https://militeee.github.io/Rcongas/-steelblue.svg)](https://militeee.github.io/Rcongas)
+[![](https://img.shields.io/badge/GitHub%20Pages-https://militeee.github.io/rcongas/-steelblue.svg)](https://militeee.github.io/rcongas)
 
 ### Installation
 
