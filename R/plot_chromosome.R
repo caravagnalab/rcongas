@@ -9,6 +9,19 @@
 #' @export
 #'
 #' @examples
+#' 
+#' x = Rcongas::congas_example
+#' 
+#' print(x)
+#' 
+#' # Shows all data available
+#' plot_chromosome(x)
+#' 
+#' # Chromosome 17
+#' plot_chromosome(x, chr = 'chr17')
+#' 
+#' # Shows some data 
+#' plot_chromosome(x, chr = 'chr17', plot = 'counts')
 plot_chromosome = function(x, chr = 'chr1', plot = c("segments", "counts", "DE"), ...)
 {
   # Get all counts
@@ -18,7 +31,7 @@ plot_chromosome = function(x, chr = 'chr1', plot = c("segments", "counts", "DE")
     return(CNAqc:::eplot())
 
   # Segments plot with Salvatore' trick
-  range = get_clones_ploidy(x)
+  range = get_clusters_ploidy(x)
   range_low = min(range$CN)
   range_up = max(range$CN)
 
@@ -60,7 +73,7 @@ plot_chromosome = function(x, chr = 'chr1', plot = c("segments", "counts", "DE")
 
   all_plots = all_plots[!sapply(all_plots, is.null)]
 
-  if(length(all_plots)) return(all_plots[[1]])
+  if(length(all_plots) == 1) return(all_plots[[1]])
 
   cowplot::plot_grid(
     plotlist = all_plots,

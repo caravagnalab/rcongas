@@ -15,3 +15,10 @@ report_analysis(x)
 \description{
 Report for a template set of results after CONGAS
 }
+\examples{
+
+x = Rcongas::congas_example
+
+print(x)
+
+}

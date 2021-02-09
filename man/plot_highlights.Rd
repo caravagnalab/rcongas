@@ -15,3 +15,18 @@ plot_highlights(x, alpha = 0.05)
 \description{
 Title
 }
+\examples{
+
+x = Rcongas::congas_example
+
+print(x)
+
+# Default view 
+plot_highlights(x) 
+
+# More stringent 
+plot_highlights(x, alpha = 0.01) 
+
+# Even more stringent 
+plot_highlights(x, alpha = 0.001)  
+}

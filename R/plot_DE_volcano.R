@@ -49,6 +49,19 @@ volcano_plot <-
 #' @export
 #'
 #' @examples
+#' 
+#' x = Rcongas::congas_example
+#' 
+#' print(x)
+#' 
+#' # Shows all data available
+#' plot_DE_volcano(x)
+#' 
+#' # More stringent parameters, annotate more genes
+#' plot_DE_volcano(x, cut_pvalue = 1e-5, annotate_top = 10)
+#' 
+#' # More stringent parameters and resitrict chromosome
+#' plot_DE_volcano(x, cut_lfc = 2, chromosomes = c("chr1", "chr2"))
 plot_DE_volcano <-
   function(x,
            chromosomes = paste0("chr", c(1:22, "X", "Y")),

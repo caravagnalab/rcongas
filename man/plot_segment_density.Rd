@@ -2,23 +2,48 @@
 % Please edit documentation in R/plot_segment_density.R
 \name{plot_segment_density}
 \alias{plot_segment_density}
-\title{Title}
+\title{Plots the data and fit density for a set of segments.}
 \usage{
 plot_segment_density(
   x,
-  segments_ids,
-  group1 = 1,
-  group2 = 2,
-  sum_denominator = TRUE,
-  ...
+  segments_ids = get_segment_ids(x),
+  sum_denominator = TRUE
 )
 }
 \arguments{
+\item{x}{Input object with clusters.}
+
+\item{segment_ids}{Vector of segment ids in the CONGAS format (e.g, \code{"chr12:40515401:133219374"}).
+By default all are used via function \code{get_segment_ids}.}
+
 \item{...}{}
 }
 \value{
-
+A list of ggplot objects.
 }
 \description{
-Title
+This function works for a clustering result, whatever is the
+adopted model. It returns a list of plots for each one of the input segments.
+Each plot shows the data, plus the fit density per cluster. It can be
+used to assess the quality of the data and fits.
+}
+\examples{
+
+x = Rcongas::congas_example
+
+# Plot the first segment
+plot_segment_density(x, segments_ids = get_segment_ids(x)[1])
+
+# Plot the first one that is highlighted
+plot_segment_density(x, segments_ids = get_segment_ids(x, highlight = TRUE)[1])
+
+# Plot the top 4 highlighted, in 2x2 format, specifying alpha value
+
+what_to_plot = get_segment_ids(x, highlight = TRUE, alpha = 0.05)[1:4]
+
+ggpubr::ggarrange(
+ plotlist = plot_segment_density(x, segments_ids = what_to_plot),
+ nrow = 2,
+ ncol = 2
+)
 }

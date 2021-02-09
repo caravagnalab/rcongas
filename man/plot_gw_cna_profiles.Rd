@@ -20,3 +20,18 @@ plot_gw_cna_profiles(
 \description{
 Title
 }
+\examples{
+x = Rcongas::congas_example
+
+# Default view 
+plot_gw_cna_profiles(x)
+
+# Avoid facet (shows real chromosome width)
+plot_gw_cna_profiles(x, whole_genome = TRUE)
+
+# Subset to one chromosome
+plot_gw_cna_profiles(x, chromosomes = c('chr1'))
+
+# Forward alpha to get_clusters_ploidy (changes what is highlighted)
+plot_gw_cna_profiles(x, whole_genome = TRUE, alpha = 0.001)
+}

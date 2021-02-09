@@ -8,6 +8,20 @@
 #' @export
 #'
 #' @examples
+#' x = Rcongas::congas_example
+#' 
+#' # Default view 
+#' plot_gw_cna_profiles(x)
+#' 
+#' # Avoid facet (shows real chromosome width)
+#' plot_gw_cna_profiles(x, whole_genome = TRUE)
+#' 
+#' # Subset to one chromosome
+#' plot_gw_cna_profiles(x, chromosomes = c('chr1'))
+#' 
+#' # Forward alpha to get_clusters_ploidy (changes what is highlighted)
+#' plot_gw_cna_profiles(x, whole_genome = TRUE, alpha = 0.001)
+
 plot_gw_cna_profiles = function(x,
                                 whole_genome = FALSE,
                                 chromosomes = paste0("chr", c(1:22, "X", "Y")),
@@ -18,7 +32,7 @@ plot_gw_cna_profiles = function(x,
   segments_plot = NULL
 
   # Segments ploidy
-  segments = Rcongas::get_clones_ploidy(x, chromosomes, ...)
+  segments = Rcongas::get_clusters_ploidy(x, chromosomes, ...)
 
   segments_h = CNAqc:::relative_to_absolute_coordinates(list(reference_genome = x$reference_genome), segments %>% dplyr::filter(highlight))
   segments_nh = CNAqc:::relative_to_absolute_coordinates(list(reference_genome = x$reference_genome), segments %>% dplyr::filter(!highlight))

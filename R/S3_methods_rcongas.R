@@ -1,9 +1,12 @@
-#' Summary for an object of class \code{'rcongas'} is a print.
+#' Summary for an object of class \code{'rcongas'}.
+#' 
+#' @description The summary is equivalent to a \code{print}.
 #'
-#' @param object An obj of class \code{'rcongas'}.
-#' @param ...
+#' @param x Object of class \code{'rcongas'}.
+#' @param ... Extra parameters.
 #'
 #' @return See \code{\link{print}}.
+#' 
 #' @exportS3Method summary rcongas
 #'
 #' @examples
@@ -13,34 +16,49 @@ summary.rcongas = function(object, ...) {
   print.rcongas(object, ...)
 }
 
-#' Summaries for an object of class \code{'rcongas'} is like a print.
+#' Print for an object of class \code{'rcongas'}.
 #'
-#' @param x An obj of class \code{'rcongas'}.
-#' @param ...
+#' @param x Object of class \code{'rcongas'}.
+#' @param ... Extra parameters.
 #'
-#' @return nothing.
+#' @return Nothing.
+#' 
 #' @exportS3Method print rcongas
+#' 
 #' @importFrom crayon white red green yellow black bgYellow blue bold
 #' @importFrom cli cli_rule cli_text
 #' @importFrom clisymbols symbol
 #'
 #' @examples
-#' data(fit_example)
-#' print(fit_example$best)
+#' 
+#' x = Rcongas::congas_example
+#'
+#' print(x)
 print.rcongas = function(x, ...)
 {
   stopifnot(inherits(x, "rcongas"))
 
   stats_data = Rcongas::get_dataset_stats(x)
 
-  cli::cli_rule(
-    paste(
-      crayon::bgYellow(
-        crayon::black("[ Rcongas ] {.value {Rcongas:::get_model_description(x)}}")
-      ),
-      '{.field n = {stats_data$ncells}} cells with {.field k = {stats_data$nsegments}} segments, grouped in {.field k = {stats_data$clusters_k}} clusters.'
+  
+  if(!is.null(stats_data$clusters_k))
+    cli::cli_rule(
+      paste(
+        crayon::bgYellow(
+          crayon::black("[ Rcongas ] {.value {Rcongas:::get_model_description(x)}}")
+        ),
+        '{.field n = {stats_data$ncells}} cells with {.field i = {stats_data$nsegments}} segments, grouped in {.field k = {stats_data$clusters_k}} clusters.'
+      )
     )
-  )
+  else
+    cli::cli_rule(
+      paste(
+        crayon::bgYellow(
+          crayon::black("[ Rcongas ] {.value {Rcongas:::get_model_description(x)}}")
+        ),
+        '{.field n = {stats_data$ncells}} cells with {.field i = {stats_data$nsegments}} segments, clusters are not computed.'
+      )
+    )
 
   myp = function (m, symbol = "clisymbols::symbol$pointer")
   {
@@ -57,8 +75,21 @@ print.rcongas = function(x, ...)
       ),
       symbol = 'clisymbols::symbol$bullet'
     ) %>% cli::cli_text()
+  
+  # Highlights
+  cli::cli_h3("CNA highlights ")
+  
+  sgH = get_segment_ids(x, highlight = TRUE)
+  nsgH = sgH %>% length()
+  
+  if(nsgH > 0)
+    # get_clusters_ploidy(x) %>% filter(highlight) %>% print
+    cli::cli_alert_success(" {.field {nsgH}} CNA(s):  {.field {sgH}}")
+  else
+    cli::cli_alert_warning("None found!")
+  
 
-  # cat('\n')
+   cat('\n')
 
   paste(
     "{crayon::white(clisymbols::symbol$info)} Model scored with {.field {stats_data$score_type}} = {.value {round(stats_data$score, 2)}}"
@@ -83,9 +114,12 @@ print.rcongas = function(x, ...)
 }
 
 
-#' Plot an Rcongas fit.
+#' Print for an object of class \code{'rcongas'}.
+#' 
+#' @description Function \code{plot_gw_cna_profiles} is used to plot
+#' the object. 
 #'
-#' @param ...
+#' @param ... Extra parameters.
 #'
 #' @return A ggplot object for the plot.
 #'
@@ -95,7 +129,10 @@ print.rcongas = function(x, ...)
 #' @export
 #'
 #' @examples
-#' x=1
+#'
+#' x = Rcongas::congas_example
+#'
+#' plot(x)
 plot.rcongas = function(x, ...)
 {
   # default plot
@@ -103,28 +140,29 @@ plot.rcongas = function(x, ...)
 }
 
 
+clean_clusters <- function(cm)
+{
+  to_retain <- names(table(cm$parameters$assignement))
+  cm$parameters$mixture_weights <- cm$parameters$mixture_weights[to_retain]
+  cm$parameters$cnv_probs <-cm$parameters$cnv_probs[1:length(to_retain),, drop = F]
+  cm$parameters$assignment_probs <-cm$parameters$assignment_probs[,1:length(to_retain), drop = F]
+  return(cm)
+}
 
+#' @export
 `[.rcongas` <- function(x,i,j) {
 
-  x$data$counts <-  x$data$counts[i,j]
-  x$data$bindims <-  x$data$bindims[i,j]
-  x$data$cnv <- x$data$cnv[j,]
+  x$data$counts <-  x$data$counts[i,j, drop = FALSE]
+  x$data$bindims <-  x$data$bindims[i,j, drop = FALSE]
+  x$data$cnv <- x$data$cnv[j,,drop = FALSE]
   x$data$gene_locations <-  x$data$gene_locations %>%  filter(segment_id %in% colnames(x$data$counts))
   gene_to_retain <- dplyr::inner_join(x$data$cnv, x$data$gene_locations, by = "segment_id") %>% dplyr::pull(gene)
 
-  x$data$gene_counts <- x$data$gene_counts[which(rownames(x$data$gene_counts) %in% gene_to_retain), i]
+  x$data$gene_counts <- x$data$gene_counts[which(rownames(x$data$gene_counts) %in% gene_to_retain), i, drop = FALSE]
 
   if(has_inference(x)){
-    for(j in length(x$inference$model_selection$clusters)){
-
-      cm <- x$inference$models[[j]]
-      cm$parameters$cnv_probs <- cm$parameters$cnv_probs[,j]
-      cm$parameters$norm_factor <- cm$parameters$norm_factor[i]
-      cm$parameters$assignement <- cm$parameters$assignement[i]
-      if(is_MAP_Z(x)){
-        cm$parameters$assignment_probs <-  cm$parameters$assignment_probs[i,]
-      }
-      x$inference$models[[j]] <-  cm
+    for(k in length(x$inference$model_selection$clusters)){
+      x$inference$models[[k]] <- x$inference$models[[k]][i,j]
     }
   }
 

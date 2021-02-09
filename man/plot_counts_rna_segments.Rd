@@ -24,5 +24,16 @@ Title
 }
 \examples{
 
-input = get_counts_matrix(x)
+x = Rcongas::congas_example
+
+print(x)
+
+# Shows all data available
+plot_counts_rna_segments(x)
+
+# Not normalised
+plot_counts_rna_segments(x, normalised = FALSE)
+
+# normalised and z-score
+plot_counts_rna_segments(x, normalised = TRUE, z_score = TRUE) 
 }

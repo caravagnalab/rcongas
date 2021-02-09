@@ -3,8 +3,11 @@ has_DE = function(x)
   return(!all(is.null(x$DE)))
 }
 
-is_MAP_Z <-  function(x){
-  best_model <- get_best_model(x)
+is_MAP_Z <-  function(x, congas_obj = FALSE){
+  if(!congas_obj)
+    best_model <- get_best_model(x)
+  else
+    best_model <-  x
   if(is.null(best_model$run_information_old))
     return(best_model$run_information$posteriors)
   else
@@ -19,5 +22,5 @@ is_MAP_CN <-  function(x){
 
 has_inference <-  function(x){
 
-  return(!is.null(x$inference))
+  return(inherits(x, 'rcongas') && !is.null(x$inference))
 }

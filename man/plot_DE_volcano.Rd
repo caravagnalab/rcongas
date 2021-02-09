@@ -21,3 +21,18 @@ plot_DE_volcano(
 \description{
 Title
 }
+\examples{
+
+x = Rcongas::congas_example
+
+print(x)
+
+# Shows all data available
+plot_DE_volcano(x)
+
+# More stringent parameters, annotate more genes
+plot_DE_volcano(x, cut_pvalue = 1e-5, annotate_top = 10)
+
+# More stringent parameters and resitrict chromosome
+plot_DE_volcano(x, cut_lfc = 2, chromosomes = c("chr1", "chr2"))
+}

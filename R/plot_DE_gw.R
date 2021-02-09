@@ -10,6 +10,19 @@
 #' @export
 #'
 #' @examples
+#' 
+#' x = Rcongas::congas_example
+#' 
+#' print(x)
+#' 
+#' # Shows all data available
+#' plot_DE_gw(x)
+#' 
+#' # More stringent parameters
+#' plot_DE_gw(x, cut_pvalue = 1e-5)
+#' 
+#' # More stringent parameters
+#' plot_DE_gw(x, cut_lfc = 2)
 plot_DE_gw = function(x,
                       chromosomes = paste0("chr", c(1:22, "X", "Y")),
                       cut_pvalue = 0.001,

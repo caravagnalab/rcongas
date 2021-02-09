@@ -17,9 +17,9 @@
 
 divide_genome_in_segments <- function(approx_length = 1e+8){
 
-
+  data("hg38_karyo")
   genome <- hg38_karyo
-  good_chr <- names(genome) %in% c(1:22, "X")
+  good_chr <- names(genome) %in% paste0("chr",1:22)
   genome <- genome[good_chr]
   max_segments <- (genome %/% approx_length) + 1
   segments <- vapply(X = max_segments, FUN = sample.int, size=1, FUN.VALUE = integer(1))
@@ -200,7 +200,6 @@ generate_baf <-  function(cnv_df, ploidy_to_baf = list("0" = 0, "1" = 0, "2" = 0
 #'@param approx_length approximate segment length
 #'
 #'@return df with segmentss and ploidy information
-
 generate_cluster_ploidy_df <- function(K= 2, spots = 5,  probs = c(0.0,1,0.0,0.0),div_factor_dist = 1e6,
                                        random = TRUE, changes = c(-1,1,2), fine = FALSE, karyo = 1:4, type="parent", non_random_spots = c(17,18),
                                        spots_deletion = c(17,18), spots_insertions = c(8), spots_O =  c(),
@@ -511,8 +510,8 @@ run_simulation_generative <- function(cnv_df, ncells = 1000, props = c(0.8,0.2),
         actual_ploidy_new[j] = parent_ploidy_new[j]
       }
 
-      print(actual_ploidy_new[j])
-      print(parent_ploidy_new[j])
+
+    
 
       actual_sum <-  sum(actual_ploidy * cnv_df$mu) / sum(cnv_df$mu)
       parent_sum <- sum(parent_ploidy * cnv_df$mu) / sum(cnv_df$mu)

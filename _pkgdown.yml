@@ -26,11 +26,15 @@ reference:
 - title: Available data
   desc:  Data released with the package
   contents:
-  - rcongas_example
+  - congas_example
 
 - title: Fitting functions
   desc:  Functions to cluster the data.
   contents:
+  - approx_theta_prior_params
+  - best_cluster
+  - list_models
+  - recalculate_information_criteria
   - run_inference
 
 - title: S3 functions
@@ -46,17 +50,23 @@ reference:
   - plot_chromosome
   - plot_gw_cna_profiles
   - plot_inference_report
-  - plot_input_rna_segmentation
-  - plot_plot_raw_data
+  - plot_counts_rna_segments
+  - plot_raw_data
+  - plot_highlights
+  - plot_latent_variables
+  - plot_mixing_proportions
+  - plot_normalization_factors
+  - plot_segment_density
+  - report_analysis
 
 - title: Getters for clustering results
   desc:  Functions to extract clustering information from a model.
   contents:
-  - get_segment_test_counts
-  - get_clones_ploidy
   - get_clusters
+  - get_clusters_ploidy
   - get_clusters_size
   - get_k
+  - get_segment_test_counts
 
 - title: Getters for input data
   desc:  Functions to extract information of the data stored in a model.
@@ -68,11 +78,27 @@ reference:
   - get_reference_genome
   - get_gene_annotations
   - get_dataset_stats
+  - get_segment_ids
+  - get_model_description
+  
+- title: Filter functions
+  desc:  Functions to filter out information from a model.
+  contents:
+  - filter_clusters
 
-- title: Extra features
-  desc:  Other analyses (DE, GSE).
+  
+- title: Synthetic data generation functions
+  desc:  Functions to sample from the generative model.
+  contents:
+  - generate_random_tree
+  - run_simulation
+
+
+- title: Other analyses (DE, GSE)
+  desc:  Differential Expression, Gene Set Enrichment, etc.
   contents:
   - calculate_DE
+  - get_DE_table
   - plot_DE_gw
   - plot_DE_volcano
 

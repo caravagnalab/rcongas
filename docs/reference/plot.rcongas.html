@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Plot an Rcongas fit. — plot.rcongas • Rcongas</title>
+<title>Print for an object of class 'rcongas'. — plot.rcongas • Rcongas</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,8 +46,9 @@
 
 
 
-<meta property="og:title" content="Plot an Rcongas fit. — plot.rcongas" />
-<meta property="og:description" content="Plot an Rcongas fit." />
+<meta property="og:title" content="Print for an object of class 'rcongas'. — plot.rcongas" />
+<meta property="og:description" content="Function plot_gw_cna_profiles is used to plot
+the object." />
 <meta property="og:image" content="militeee.github.io/Rcongas/logo.png" />
 
 
@@ -88,9 +89,12 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
+</li>
+<li>
+  <a href="../articles/Rcongas.html">Get started</a>
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
@@ -103,13 +107,16 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/Getters.html">Getters</a>
+      <a href="../articles/1_Models.html">Models available in this package</a>
     </li>
     <li>
-      <a href="../articles/Plotting_functions.html">Plotting functions</a>
+      <a href="../articles/2_Getters.html">Getter functions</a>
     </li>
     <li>
-      <a href="../articles/simulated_example.html">CONFETTI on simulated data</a>
+      <a href="../articles/3_Plotting_functions.html">Plotting functions</a>
+    </li>
+    <li>
+      <a href="../articles/4_Propreocessing.html">Preprocessing</a>
     </li>
   </ul>
 </li>
@@ -117,7 +124,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/militeee/Rcongas/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -134,13 +141,14 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Plot an Rcongas fit.</h1>
+    <h1>Print for an object of class <code>'rcongas'</code>.</h1>
     <small class="dont-index">Source: <a href='https://github.com/militeee/RcongasR/S3_methods_rcongas.R'><code>R/S3_methods_rcongas.R</code></a></small>
     <div class="hidden name"><code>plot.rcongas.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Plot an Rcongas fit.</p>
+    <p>Function <code>plot_gw_cna_profiles</code> is used to plot
+the object.</p>
     </div>
 
     <pre class="usage"><span class='co'># S3 method for rcongas</span>
@@ -151,7 +159,7 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>...</th>
-      <td></td>
+      <td><p>Extra parameters.</p></td>
     </tr>
     </table>
 
@@ -160,8 +168,11 @@
     <p>A ggplot object for the plot.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>x</span><span class='op'>=</span><span class='fl'>1</span>
-</div></pre>
+    <pre class="examples"><div class='input'>
+<span class='va'>x</span> <span class='op'>=</span> <span class='fu'>Rcongas</span><span class='fu'>::</span><span class='va'><a href='congas_example.html'>congas_example</a></span>
+
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
+</div><div class='img'><img src='plot.rcongas-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

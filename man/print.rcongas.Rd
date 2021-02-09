@@ -2,22 +2,24 @@
 % Please edit documentation in R/S3_methods_rcongas.R
 \name{print.rcongas}
 \alias{print.rcongas}
-\title{Summaries for an object of class \code{'rcongas'} is like a print.}
+\title{Print for an object of class \code{'rcongas'}.}
 \usage{
 \method{print}{rcongas}(x, ...)
 }
 \arguments{
-\item{x}{An obj of class \code{'rcongas'}.}
+\item{x}{Object of class \code{'rcongas'}.}
 
-\item{...}{}
+\item{...}{Extra parameters.}
 }
 \value{
-nothing.
+Nothing.
 }
 \description{
-Summaries for an object of class \code{'rcongas'} is like a print.
+Print for an object of class \code{'rcongas'}.
 }
 \examples{
-data(fit_example)
-print(fit_example$best)
+
+x = Rcongas::congas_example
+
+print(x)
 }

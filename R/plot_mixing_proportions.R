@@ -6,6 +6,9 @@
 #' @export
 #'
 #' @examples
+#' x = Rcongas::congas_example
+#' 
+#' plot_mixing_proportions(x) 
 plot_mixing_proportions = function(x)
 {
   clusters_size = Rcongas::get_clusters_size(x)
