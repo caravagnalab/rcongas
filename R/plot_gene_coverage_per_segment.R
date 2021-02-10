@@ -12,14 +12,22 @@ plot_coverage_per_segment = function(x, chromosomes = paste0("chr", c(1:22, "X",
   stopifnot(inherits(x, 'rcongas'))
   
   # Get input raw data in the object
-  input_rna = get_input_raw_data(x) %>% as_tibble()
-  rn = get_input_raw_data(x) %>% rownames(input_rna) %>% as_tibble() %>% rename(gene = value)
+  input_rna = get_input_raw_data(x)
   
   if (nrow(input_rna) == 0)
   {
     cli::cli_alert_danger("RNA counts not found in the input data -- see ?get_input_raw_data.")
     return(ggplot())
   }
+  
+  # Unify gene names if required
+  unique_gene_names = rownames(get_input_raw_data(x)) %>% make.unique() 
+  nrow(input_rna) == length(unique_gene_names)
+  rownames(input_rna) = unique_gene_names
+  
+  # Tibble it
+  input_rna = input_rna %>% as_tibble()
+  rn = unique_gene_names %>% as_tibble() %>% rename(gene = value)
   
   input_rna = input_rna %>%
     bind_cols(rn) %>%
@@ -33,6 +41,44 @@ plot_coverage_per_segment = function(x, chromosomes = paste0("chr", c(1:22, "X",
   cli::cli_alert_info(
     "Working with n = {.field {nrow(input_rna)}} genes, and {.field {ncol(input_rna) - 3}} cells."
   )
+  
+  # Creation of the required tibble - specific behaviour if there are clusters
+  with_clustering_results = Rcongas:::has_inference(x)
+  clusters = get_clusters(x) %>% select(cell, cluster)
+  
+  if(!with_clustering_results)
+  {
+    df_genes = aux_plot_coverage_per_segment(x, input_rna) %>% 
+      mutate(cluster = "No clusters available")
+  }
+  else
+  {
+    df_genes = easypar::run(
+      function(cl) {
+        
+        cli::cli_h3("Mapping data for cluster {.field {cl}}\n")
+        
+        cell_ids = clusters %>% filter(cluster == cl) %>% pull(cell)
+        
+        # Retain cluster-specific cells
+        aux_plot_coverage_per_segment(
+          x,
+          input_rna %>%
+            select(gene, chr, from, to,!!cell_ids)
+          ) %>%
+            mutate(cluster = cl)
+        },
+      PARAMS = lapply(clusters$cluster %>% unique, list),
+      parallel = FALSE,
+      progress_bar = FALSE
+    )
+    
+    df_genes = Reduce(bind_rows, df_genes)
+  }
+  
+  
+  
+  
   
   # Data shaping
   df_genes = easypar::run(function(i)
@@ -54,8 +100,32 @@ plot_coverage_per_segment = function(x, chromosomes = paste0("chr", c(1:22, "X",
       select(-gene,-chr,-from,-to) %>%
       as_vector()
     
+    
+    mapped_genes %>%
+      select(-gene,-chr,-from,-to) %>%
+      gather(key = var_name, value = value, 2:ncol(df)) %>% 
+      spread_(key = names(df)[1],value = 'value')
+    
+    
+    
+    mapped_genes %>% 
+    
+    
     df_counts = df_counts[df_counts > 0]
-    df_counts %>% as_tibble() %>% 
+    cell_ids = df_counts %>% names
+    
+    df_counts = df_counts %>% as_tibble()
+    df_counts$cell = cell_ids
+    
+    # Add a cluster label
+    if(with_clustering_results)
+    {
+      df_counts %>% 
+        left_join(clusters)
+      
+    }
+    
+    %>% 
       group_by(value) %>% 
       summarise(n = n(), ln = log(n() + 1)) %>%
       mutate(chr = segment$chr,
@@ -122,7 +192,8 @@ plot_coverage_per_segment = function(x, chromosomes = paste0("chr", c(1:22, "X",
         reverse = TRUE
       )
     ) +
-    labs(y = "Log of counts")
+    labs(y = "Log of counts") +
+    facet_wrap(~cluster, ncol = 1, scales = 'free_y')
   
   top_ranges = df_genes %>% 
     filter(value > annotate_from) %>% 
@@ -130,8 +201,8 @@ plot_coverage_per_segment = function(x, chromosomes = paste0("chr", c(1:22, "X",
     pull(segment_id)
     
   df_cumsum <- plyr::ddply(df_genes %>%
-                             arrange(segment_id, value),
-                           "segment_id",
+                             arrange(cluster, segment_id, value),
+                           c("segment_id", "cluster"),
                            transform,
                            label_ypos = cumsum(ln)) %>% 
     filter(value > annotate_from)
@@ -142,7 +213,7 @@ plot_coverage_per_segment = function(x, chromosomes = paste0("chr", c(1:22, "X",
   delta = (y_labels[2] - y_labels[1])/10
   
   df_cumsum = df_cumsum %>% 
-    group_by(segment_id) %>% 
+    group_by(segment_id, cluster) %>% 
     mutate(offset = label_ypos - lag(label_ypos, default = 0)) %>% 
     filter(offset >= delta)
   
@@ -172,4 +243,52 @@ plot_coverage_per_segment = function(x, chromosomes = paste0("chr", c(1:22, "X",
     align = 'v',
     axis = 'lr'
   )
+}
+
+
+aux_plot_coverage_per_segment = function(x, input_rna)
+{
+  # Data shaping
+  df_genes = easypar::run(function(i)
+  {
+    # Get genes mapped to the input segments
+    segment = get_input_segmentation(x)[i,]
+    
+    mapped_genes = input_rna %>%
+      filter(chr == segment$chr,
+             from >= segment$from,
+             to <= segment$to)
+    nrow(mapped_genes)
+    
+    df_counts = mapped_genes %>%
+      select(-gene,-chr,-from,-to) %>%
+      as_vector()
+    
+    df_counts = df_counts[df_counts > 0]
+    df_counts %>% 
+      as_tibble() %>% 
+      group_by(value) %>% 
+      summarise(n = n(), ln = log(n() + 1)) %>%
+      mutate(chr = segment$chr,
+             from = segment$from,
+             to = segment$to) %>% 
+      ungroup()
+  },
+  lapply(1:nrow(
+    get_input_segmentation(x)
+  ), list),
+  parallel = FALSE)
+  
+  # Assembly of the df
+  df_genes = Reduce(bind_rows, df_genes)
+  df_genes = df_genes %>% Rcongas:::idify()
+  
+  # Segment metadata
+  df_genes %>%
+    left_join(
+      get_input_segmentation(x) %>%
+        Rcongas:::idify() %>%
+        select(segment_id, size, ploidy_real, mu),
+      by = 'segment_id'
+    )
 }
