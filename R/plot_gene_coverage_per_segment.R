@@ -1,13 +1,15 @@
 #' Title
 #'
-#' @param x 
-#' @param chromosomes 
+#' @param x
+#' @param chromosomes
 #'
 #' @return
 #' @export
 #'
 #' @examples
-plot_coverage_per_segment = function(x, chromosomes = paste0("chr", c(1:22, "X", "Y")), annotate_from = 3)
+plot_coverage_per_segment = function(x,
+                                     chromosomes = paste0("chr", c(1:22, "X", "Y")),
+                                     annotate_from = 3)
 {
   stopifnot(inherits(x, 'rcongas'))
   
@@ -21,7 +23,7 @@ plot_coverage_per_segment = function(x, chromosomes = paste0("chr", c(1:22, "X",
   }
   
   # Unify gene names if required
-  unique_gene_names = rownames(get_input_raw_data(x)) %>% make.unique() 
+  unique_gene_names = rownames(get_input_raw_data(x)) %>% make.unique()
   nrow(input_rna) == length(unique_gene_names)
   rownames(input_rna) = unique_gene_names
   
@@ -46,28 +48,27 @@ plot_coverage_per_segment = function(x, chromosomes = paste0("chr", c(1:22, "X",
   with_clustering_results = Rcongas:::has_inference(x)
   clusters = get_clusters(x) %>% select(cell, cluster)
   
-  if(!with_clustering_results)
+  if (!with_clustering_results)
   {
-    df_genes = aux_plot_coverage_per_segment(x, input_rna) %>% 
+    cli::cli_h3("Mapping data for all cells at once (no clusters)\n")
+    
+    df_genes = aux_plot_coverage_per_segment(x, input_rna) %>%
       mutate(cluster = "No clusters available")
   }
   else
   {
     df_genes = easypar::run(
       function(cl) {
-        
         cli::cli_h3("Mapping data for cluster {.field {cl}}\n")
         
         cell_ids = clusters %>% filter(cluster == cl) %>% pull(cell)
         
         # Retain cluster-specific cells
-        aux_plot_coverage_per_segment(
-          x,
-          input_rna %>%
-            select(gene, chr, from, to,!!cell_ids)
-          ) %>%
-            mutate(cluster = cl)
-        },
+        aux_plot_coverage_per_segment(x,
+                                      input_rna %>%
+                                        select(gene, chr, from, to, !!cell_ids)) %>%
+          mutate(cluster = cl)
+      },
       PARAMS = lapply(clusters$cluster %>% unique, list),
       parallel = FALSE,
       progress_bar = FALSE
@@ -78,83 +79,81 @@ plot_coverage_per_segment = function(x, chromosomes = paste0("chr", c(1:22, "X",
   
   
   
-  
-  
-  # Data shaping
-  df_genes = easypar::run(function(i)
-  {
-    # Get genes mapped to the input segments
-    segment = get_input_segmentation(x)[i,] %>% Rcongas:::idify()
-    
-    mapped_genes = input_rna %>%
-      filter(chr == segment$chr,
-             from >= segment$from,
-             to <= segment$to)
-    nrow(mapped_genes)
-    
-    # cli::cli_alert(
-    #   "n = {.field {nrow(mapped_genes)}} genes mapping to segment {.field {segment$segment_id}}"
-    # )
-    
-    df_counts = mapped_genes %>%
-      select(-gene,-chr,-from,-to) %>%
-      as_vector()
-    
-    
-    mapped_genes %>%
-      select(-gene,-chr,-from,-to) %>%
-      gather(key = var_name, value = value, 2:ncol(df)) %>% 
-      spread_(key = names(df)[1],value = 'value')
-    
-    
-    
-    mapped_genes %>% 
-    
-    
-    df_counts = df_counts[df_counts > 0]
-    cell_ids = df_counts %>% names
-    
-    df_counts = df_counts %>% as_tibble()
-    df_counts$cell = cell_ids
-    
-    # Add a cluster label
-    if(with_clustering_results)
-    {
-      df_counts %>% 
-        left_join(clusters)
-      
-    }
-    
-    %>% 
-      group_by(value) %>% 
-      summarise(n = n(), ln = log(n() + 1)) %>%
-      mutate(chr = segment$chr,
-             from = segment$from,
-             to = segment$to) %>% 
-      ungroup()
-  },
-  lapply(1:nrow(
-    get_input_segmentation(x)
-  ), list),
-  parallel = FALSE)
-  
-  # Assembly of the df
-  df_genes = Reduce(bind_rows, df_genes)
-  
-  ndf_genes = format(nrow(df_genes), scientific = TRUE)
-  # cli::cli_alert_info("Creating barplot from {.field {ndf_genes}} points.")
-  
-  
-  df_genes = df_genes %>% Rcongas:::idify()
-  
+  # 
+  # 
+  # # Data shaping
+  # df_genes = easypar::run(function(i)
+  # {
+  #   # Get genes mapped to the input segments
+  #   segment = get_input_segmentation(x)[i, ] %>% Rcongas:::idify()
+  #   
+  #   mapped_genes = input_rna %>%
+  #     filter(chr == segment$chr,
+  #            from >= segment$from,
+  #            to <= segment$to)
+  #   nrow(mapped_genes)
+  #   
+  #   # cli::cli_alert(
+  #   #   "n = {.field {nrow(mapped_genes)}} genes mapping to segment {.field {segment$segment_id}}"
+  #   # )
+  #   
+  #   df_counts = mapped_genes %>%
+  #     select(-gene, -chr, -from, -to) %>%
+  #     as_vector()
+  #   
+  #   
+  #   mapped_genes %>%
+  #     select(-gene, -chr, -from, -to) %>%
+  #     gather(key = var_name, value = value, 2:ncol(df)) %>%
+  #     spread_(key = names(df)[1], value = 'value')
+  #   
+  #   
+  #   
+  #   mapped_genes %>%
+  #     
+  #     
+  #     df_counts = df_counts[df_counts > 0]
+  #   cell_ids = df_counts %>% names
+  #   
+  #   df_counts = df_counts %>% as_tibble()
+  #   df_counts$cell = cell_ids
+  #   
+  #   # Add a cluster label
+  #   if (with_clustering_results)
+  #   {
+  #     df_counts %>%
+  #       left_join(clusters)
+  #     
+  #   }
+  #   
+  #   %>%
+  #     group_by(value) %>%
+  #     summarise(n = n(), ln = log(n() + 1)) %>%
+  #     mutate(chr = segment$chr,
+  #            from = segment$from,
+  #            to = segment$to) %>%
+  #     ungroup()
+  # },
+  # lapply(1:nrow(get_input_segmentation(x)), list),
+  # parallel = FALSE)
+  # 
+  # # Assembly of the df
+  # df_genes = Reduce(bind_rows, df_genes)
+  # 
+  # ndf_genes = format(nrow(df_genes), scientific = TRUE)
+  # # cli::cli_alert_info("Creating barplot from {.field {ndf_genes}} points.")
+  # 
+  # 
+  # df_genes = df_genes %>% Rcongas:::idify()
+  # 
+  # # df_genes = df_genes %>%
+  # #   group_by(segment_id, value) %>%
+  # #   summarise(ln = log(1 + n()), n = n(), .groups = 'keep')
+  # 
   # df_genes = df_genes %>%
-  #   group_by(segment_id, value) %>%
-  #   summarise(ln = log(1 + n()), n = n(), .groups = 'keep')
-  
-  df_genes = df_genes %>%
-    left_join(segment_len %>%
-                select(segment_id, size, ploidy_real, mu),
-              by = 'segment_id')
+  #   left_join(segment_len %>%
+  #               select(segment_id, size, ploidy_real, mu),
+  #             by = 'segment_id')
   
   # First panel - segments length
   pl_size = ggplot(df_genes) +
@@ -193,38 +192,42 @@ plot_coverage_per_segment = function(x, chromosomes = paste0("chr", c(1:22, "X",
       )
     ) +
     labs(y = "Log of counts") +
-    facet_wrap(~cluster, ncol = 1, scales = 'free_y')
+    facet_wrap( ~ cluster, ncol = 1, scales = 'free_y')
   
-  top_ranges = df_genes %>% 
-    filter(value > annotate_from) %>% 
-    arrange(desc(value), desc(n)) %>% 
+  top_ranges = df_genes %>%
+    filter(value > annotate_from) %>%
+    arrange(desc(value), desc(n)) %>%
     pull(segment_id)
-    
-  df_cumsum <- plyr::ddply(df_genes %>%
-                             arrange(cluster, segment_id, value),
-                           c("segment_id", "cluster"),
-                           transform,
-                           label_ypos = cumsum(ln)) %>% 
+  
+  df_cumsum <- plyr::ddply(
+    df_genes %>%
+      arrange(cluster, segment_id, value),
+    c("segment_id", "cluster"),
+    transform,
+    label_ypos = cumsum(ln)
+  ) %>%
     filter(value > annotate_from)
   
   # Filter what is not visible
   y_labels = ggplot_build(pl_counts)$layout$panel_params[[1]]$y$get_labels()
   y_labels = y_labels[!is.na(y_labels)] %>% as.numeric()
-  delta = (y_labels[2] - y_labels[1])/10
+  delta = (y_labels[2] - y_labels[1]) / 10
   
-  df_cumsum = df_cumsum %>% 
-    group_by(segment_id, cluster) %>% 
-    mutate(offset = label_ypos - lag(label_ypos, default = 0)) %>% 
+  df_cumsum = df_cumsum %>%
+    group_by(segment_id, cluster) %>%
+    mutate(offset = label_ypos - lag(label_ypos, default = 0)) %>%
     filter(offset >= delta)
   
   
   pl_counts = pl_counts +
-    geom_text(data = df_cumsum, 
-              aes(y=label_ypos, label = n, x = segment_id), 
-              vjust = 1.6, 
-              color="black",
-              size = 2)
-    
+    geom_text(
+      data = df_cumsum,
+      aes(y = label_ypos, label = n, x = segment_id),
+      vjust = 1.6,
+      color = "black",
+      size = 2
+    )
+  
   # y_labels = ggplot_build(pl_counts)$layout$panel_params[[1]]$y$get_labels()
   # y_labels = y_labels[!is.na(y_labels)] %>% as.numeric()
   
@@ -252,7 +255,7 @@ aux_plot_coverage_per_segment = function(x, input_rna)
   df_genes = easypar::run(function(i)
   {
     # Get genes mapped to the input segments
-    segment = get_input_segmentation(x)[i,]
+    segment = get_input_segmentation(x)[i, ]
     
     mapped_genes = input_rna %>%
       filter(chr == segment$chr,
@@ -261,22 +264,20 @@ aux_plot_coverage_per_segment = function(x, input_rna)
     nrow(mapped_genes)
     
     df_counts = mapped_genes %>%
-      select(-gene,-chr,-from,-to) %>%
+      select(-gene, -chr, -from, -to) %>%
       as_vector()
     
     df_counts = df_counts[df_counts > 0]
-    df_counts %>% 
-      as_tibble() %>% 
-      group_by(value) %>% 
+    df_counts %>%
+      as_tibble() %>%
+      group_by(value) %>%
       summarise(n = n(), ln = log(n() + 1)) %>%
       mutate(chr = segment$chr,
              from = segment$from,
-             to = segment$to) %>% 
+             to = segment$to) %>%
       ungroup()
   },
-  lapply(1:nrow(
-    get_input_segmentation(x)
-  ), list),
+  lapply(1:nrow(get_input_segmentation(x)), list),
   parallel = FALSE)
   
   # Assembly of the df
