@@ -182,14 +182,16 @@ get_mapped_genes = function(x,
 #' @export
 #'
 #' @examples
-get_input_raw_data = function(x)
+get_input_raw_data = function(x, transpose = FALSE)
 {
   if (all(is.null(x$data$gene_counts))) {
     cli::cli_alert_warning("Input data has not been stored in the object, re-run the analysis with XXX = TRUE ...")
     return(NULL)
   }
   
-  return(x$data$gene_counts)
+  y = x$data$gene_counts
+  if(transpose) y = t(x$data$gene_counts)
+  return(y)
 }
 
 
