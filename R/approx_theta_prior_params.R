@@ -8,7 +8,7 @@
 #' @export
 #'
 #' @examples
-approx_theta_prior_params <-  function(x, plot = FALSE, mult_factor = 1){
+approx_theta_prior_params <-  function(x, plot = FALSE, mult_factor = 1, bins = 30){
   data_mle = tranform_data_for_theta_inf(x)
   
   LL <-  function(theta_shape, theta_rate){
@@ -21,7 +21,7 @@ approx_theta_prior_params <-  function(x, plot = FALSE, mult_factor = 1){
                 lower = c(0, 0), upper = c(Inf, Inf))@coef * mult_factor
   if(plot){
     
-    hist(data_mle, prob = TRUE, col = "grey" ,main= "Inferred theta prior", xlab = "")
+    hist(data_mle, prob = TRUE, col = "grey" ,main= "Inferred theta prior", xlab = "", breaks = bins)
     curve(dgamma(x,shape = coeff[1], rate = coeff[2] ), from = min(data_mle), to = max(data_mle), 
           n = 1000, col = "blue", add = TRUE, main= "", xlab = "", lwd = 2)
   }

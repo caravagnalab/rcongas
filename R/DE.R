@@ -91,9 +91,8 @@ calculate_DE <-
 
     DE = gene_ann %>%
       dplyr::right_join(df_genes, by = 'gene') %>%
-      dplyr::mutate(avg_log2FC = log2(exp(avg_logFC))) %>%
       dplyr::rename(pct_detec_1 = pct_1, ptc_detec_2 = pct_2) %>%
-      dplyr::select(-avg_logFC, -p_val) %>%
+      dplyr::select(-avg_log2FC, -p_val) %>%
       dplyr::as_tibble() %>% dplyr::arrange(p_val_adj)
 
     # Store DE setup and results
