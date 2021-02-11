@@ -51,9 +51,9 @@ filter_cluster_aux <- function(x, ncells, abundance) {
   if( diff_len != 0 ){ ta <- c(ta, rep(x = 0, diff_len))}
 
 
-  mask <-  (x$parameters$mixture_weights > abundance) & (ta > ncells)
+  mask <-  (x$parameters$mixture_weights > abundance) | (ta > ncells)
 
-  nremoved <-  sum(mask)
+  nremoved <-  sum(!mask)
   
   if(nremoved == 0) return(x)
   
@@ -70,7 +70,7 @@ filter_cluster_aux <- function(x, ncells, abundance) {
     distance <- as.matrix(dist(as.matrix(x$parameters$cnv_probs), diag = T))
 
     for(c in which(!mask)){
-      distance[c,c] <-  Inf
+      distance[c,which(!mask)] <-  Inf
       ## !!! note, this works only because the labelling of clusters is in order of abudance (descending)
       x$parameters$assignement[x$parameters$assignement == names(ta)[c]] <- paste0("c",which.min(distance[c,]))
 
