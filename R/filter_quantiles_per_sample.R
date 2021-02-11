@@ -36,7 +36,7 @@ filter_quantiles_per_segments <-  function(x, low_quant = 0.01, high_quant = 0.9
 remove_high_low_quant <-  function(x, low_quant, high_quant){
   
   quantiles <-  quantile(x, probs = c(low_quant, high_quant))
-  x <-  ifelse(x > quantiles[1],x, quantiles[1])
-  x <-  ifelse(x < quantiles[2],x, quantiles[2])
+  x <-  ifelse(x > quantiles[1],x, round(quantiles[1]))
+  x <-  ifelse(x < quantiles[2],x, round(quantiles[2]))
   return(x)
 }
