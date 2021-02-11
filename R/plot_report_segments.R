@@ -7,10 +7,7 @@
 #' @export
 #'
 #' @examples
-plot_report_segments = function(x,
-                                     chromosomes = paste0("chr", c(1:22, "X", "Y")),
-                                     annotate_from = 3,
-                                     ...)
+plot_report_segments = function(x, chromosomes = paste0("chr", c(1:22, "X", "Y")), ...)
 {
   stopifnot(inherits(x, 'rcongas'))
   
@@ -42,7 +39,7 @@ plot_report_segments = function(x,
     filter(chr %in% chromosomes)
   
   cli::cli_alert_info(
-    "Working with n = {.field {nrow(input_rna)}} genes, and {.field {ncol(input_rna) - 3}} cells; computing cutoffs per segment"
+    "Working with n = {.field {nrow(input_rna)}} genes, and {.field {ncol(input_rna) - 3}} cells"
   )
   
   # Computation of cutoffs
@@ -57,7 +54,7 @@ plot_report_segments = function(x,
   {
     cli::cli_h3("Mapping data for all cells at once (no clusters)\n")
     
-    df_genes = aux_plot_coverage_per_segment(x, input_rna) %>% 
+    df_genes = aux_plot_coverage_per_segment(x, input_rna) %>%
       mutate(cluster = "No clusters available")
   }
   else
@@ -71,7 +68,7 @@ plot_report_segments = function(x,
         # Retain cluster-specific cells
         aux_plot_coverage_per_segment(x,
                                       input_rna %>%
-                                        select(gene, chr, from, to, !!cell_ids),
+                                        select(gene, chr, from, to,!!cell_ids),
                                       cutoffs_table = cutoffs_table)  %>%
           mutate(cluster = cl)
       },
@@ -121,7 +118,7 @@ aux_compute_cutoffs_per_segment = function(x, input_rna)
   df_genes = easypar::run(function(i)
   {
     # Get genes mapped to the input segments
-    segment = get_input_segmentation(x)[i, ] %>% Rcongas:::idify()
+    segment = get_input_segmentation(x)[i,] %>% Rcongas:::idify()
     
     mapped_genes = input_rna %>%
       filter(chr == segment$chr,
@@ -129,7 +126,7 @@ aux_compute_cutoffs_per_segment = function(x, input_rna)
              to <= segment$to)
     
     df_counts = mapped_genes %>%
-      select(-gene, -chr, -from, -to) %>%
+      select(-gene,-chr,-from,-to) %>%
       as_vector()
     
     df_counts = df_counts[df_counts > 0]
@@ -159,7 +156,7 @@ aux_plot_coverage_per_segment = function(x, input_rna, cutoffs_table)
   df_genes = easypar::run(function(i)
   {
     # Get genes mapped to the input segments
-    segment = get_input_segmentation(x)[i, ] %>% Rcongas:::idify()
+    segment = get_input_segmentation(x)[i,] %>% Rcongas:::idify()
     cutoffs_table_segment = cutoffs_table %>% filter(segment_id == sid[i]) %>%
       rename(value = level)
     
@@ -169,7 +166,7 @@ aux_plot_coverage_per_segment = function(x, input_rna, cutoffs_table)
              to <= segment$to)
     
     df_counts = mapped_genes %>%
-      select(-gene, -chr, -from, -to) %>%
+      select(-gene,-chr,-from,-to) %>%
       as_vector()
     
     df_counts = df_counts[df_counts > 0]
@@ -234,7 +231,7 @@ aux_plot_panel_segments = function(df_genes)
 
 aux_plot_panel_counts = function(df_genes)
 {
-  df_genes_x = df_genes[complete.cases(df_genes), ]
+  df_genes_x = df_genes[complete.cases(df_genes),]
   m_value = df_genes$value %>% unique() %>% rev
   
   # Barplot of counts per segment

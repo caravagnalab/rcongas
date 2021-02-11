@@ -8,9 +8,8 @@
 #'
 #' @examples
 plot_counts_per_segment = function(x,
-                                     chromosomes = paste0("chr", c(1:22, "X", "Y")),
-                                     annotate_from = 3,
-                                     ...)
+                                   chromosomes = paste0("chr", c(1:22, "X", "Y")),
+                                   ...)
 {
   stopifnot(inherits(x, 'rcongas'))
   
@@ -67,9 +66,8 @@ plot_counts_per_segment = function(x,
         
         # Retain cluster-specific cells
         aux_plot_histocount_per_segment(x,
-                                      input_rna %>%
-                                        select(gene, chr, from, to,!!cell_ids)
-                                      )  %>%
+                                        input_rna %>%
+                                          select(gene, chr, from, to, !!cell_ids))  %>%
           mutate(cluster = cl)
       },
       PARAMS = lapply(clusters$cluster %>% unique %>% sort, list),
@@ -81,15 +79,64 @@ plot_counts_per_segment = function(x,
   }
   
   
+  sz_lb = round(get_input_segmentation(x, chromosomes = chromosomes)$size /
+                  1e6)
+  pl_lb = get_input_segmentation(x, chromosomes = chromosomes)$ploidy_real
+  
+  names(sz_lb) = names(pl_lb) = get_input_segmentation(x, chromosomes = chromosomes) %>%
+    Rcongas:::idify() %>%
+    pull(segment_id)
+  
+  
+  # Custom breaks
+  base_breaks <- function(n = 1) {
+    function(x) {
+      # print(range(1 + x, na.rm = TRUE))
+      # print(      axisTicks(log10(range(1 + x, na.rm = TRUE)), log = TRUE, n = n))
+      v = axisTicks(log10(range(1 + x, na.rm = TRUE)), log = TRUE, n = n)
+      if (length(v) > 3)
+        v = v[seq(1, length(v), 2)]
+      if (length(v) > 3)
+        v = v[2:length(v)]
+      
+      v
+    }
+  } 
+  
   ggplot(
-    df_genes,
+    df_genes %>%
+      # filter(segment_id == "chr7:135691173:159144683") %>% 
+      # mutate(counts=counts+1) %>% 
+      left_join(
+        get_input_segmentation(x, chromosomes = chromosomes) %>%
+          Rcongas:::idify() %>%
+          select(segment_id, ploidy_real),
+        by = "segment_id"
+      ) %>%
+      mutate(ploidy_real = paste0('Ploidy ', pl_lb[segment_id],
+                                  " (", sz_lb[segment_id], " Mb)")),
     aes(counts, fill = cluster)
   ) +
     geom_histogram(bins = 100) +
-    facet_wrap(~segment_id, ncol = 6) +
-    scale_y_log10() +
+    facet_wrap(ploidy_real ~ segment_id, ncol = 6, scales = 'free_x') +
+    # scale_y_log10(
+    #   labels = function(x)
+    #     x / 10,
+    #   name = "Log counts"
+    # ) +
+    scale_y_continuous(trans = scales::log1p_trans(),
+                       breaks = base_breaks(4)) +
     CNAqc:::my_ggplot_theme() +
-    scale_fill_brewer(palette = 'Set1')
+    scale_fill_brewer(palette = 'Set1')  +
+    labs(x = "Counts",
+         title = "Log counts per segment")
+  # geom_text(
+  #   data = ,
+  #   aes(label = ploidy_real, x = Inf, y = Inf),
+  #   size = 3,
+  #   inherit.aes = F
+  # )
+  
 }
 
 
@@ -100,22 +147,22 @@ aux_plot_histocount_per_segment = function(x, input_rna)
   df_genes = easypar::run(function(i)
   {
     # Get genes mapped to the input segments
-    segment = get_input_segmentation(x)[i,] %>% Rcongas:::idify()
+    segment = get_input_segmentation(x)[i, ] %>% Rcongas:::idify()
     
     mapped_genes = input_rna %>%
       filter(chr == segment$chr,
              from >= segment$from,
              to <= segment$to) %>%
-      select(-gene,-chr,-from,-to) %>%
+      select(-gene, -chr, -from, -to) %>%
       as_vector()
     
     mapped_genes = mapped_genes[mapped_genes > 0]
     
     mapped_genes %>%
       enframe %>%
-      select(-name) %>% 
-      rename(counts = value) %>% 
-      mutate(segment_id = segment$segment_id) 
+      select(-name) %>%
+      rename(counts = value) %>%
+      mutate(segment_id = segment$segment_id)
   },
   lapply(1:nrow(get_input_segmentation(x)), list),
   parallel = FALSE)
