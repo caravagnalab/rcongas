@@ -117,7 +117,7 @@ gauss_lik_with_means <-  function(data,mu,par) {
 }
 
 param_total <-  function(param_list) {
-  param_list <-  param_list[!(names(param_list) %in% c("assignment_probs", "assignement", "norm_factor"))]
+  param_list <-  param_list[!(names(param_list) %in% c("assignment_probs"))]
   res <- sapply(param_list,function(x) if(is.null(dim(x))) length(x) else prod(dim(x)))
   return(sum(res))
 }
