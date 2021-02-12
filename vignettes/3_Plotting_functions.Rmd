@@ -51,18 +51,17 @@ plot_gw_cna_profiles(congas_example, whole_genome = TRUE)
 ```
 
 
-It is possible to zoom in specific chromosomes with this plot.
+It is possible to zoom in chromosomes with this plot (the dark gray bar is the centromere).
 
-```{r, fig.width=8, fig.height=3}
+```{r, fig.width=4, fig.height=3}
 # A whole-genome view for chromosome 4
 plot_gw_cna_profiles(congas_example, whole_genome = TRUE, chromosomes = 'chr4')
 ```
 
-## Plotting specific chromosomes
+## Chromosomes highlight
 
-The criterion to highlight a CNA in a fit is determined from this distribution. 
+The criterion to highlight a CNA in a fit is determined from this distribution with a parameter `alpha` that sets the vertical dashed line (is a quantile).  
 
-Parameter `alpha` regulated the vertical dashed line. 
 
 ```{r, fig.width=8, fig.height=3}
 # Default
@@ -71,6 +70,7 @@ plot_highlights(congas_example)
 # More stringent
 plot_highlights(congas_example, alpha = 0.001)
 ```
+
 
 
 ## Plotting specific chromosomes
@@ -177,4 +177,29 @@ The combined plot shows, on top of the segments, the total number of deferential
 # Default plot
 plot_DE_gw(congas_example)
 ```
+
+## Plot data statistics
+
+You can plot a 3-panels figure showing:
+
+- the segments barplot with segment size and number of mapped genes;
+- the `max` and `min` counts per segment, for every cluster;
+- the counts distribution per segment, split in bins of `(max-min)/10` size, for every cluster.
+
+```{r, fig.width=10, fig.height=10}
+plot_report_segments(congas_example, transpose = TRUE)
+```
+
+The counts distribution per segment, with annotated quantiles.
+
+```{r, fig.width=12, fig.height=15}
+plot_counts_per_segment(congas_example, transpose = TRUE)
+```
+
+The cells statistics.
+
+```{r, fig.width=5, fig.height=3}
+plot_cell_statistics(congas_example, transpose = TRUE)
+```
+
 
