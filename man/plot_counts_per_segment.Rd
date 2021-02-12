@@ -7,12 +7,14 @@
 plot_counts_per_segment(
   x,
   chromosomes = paste0("chr", c(1:22, "X", "Y")),
-  annotate_from = 3,
+  genes = NULL,
+  quantiles = c(0.01, 0.99),
+  normalize_library_size = FALSE,
   ...
 )
 }
 \arguments{
-\item{chromosomes}{}
+\item{...}{}
 }
 \value{
 

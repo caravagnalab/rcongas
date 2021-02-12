@@ -195,7 +195,6 @@ plot_counts_per_segment = function(x,
 }
 
 
-
 aux_plot_histocount_per_segment = function(x, input_rna)
 {
   # Data shaping
