@@ -182,7 +182,7 @@ get_mapped_genes = function(x,
 #' @export
 #'
 #' @examples
-get_input_raw_data = function(x, transpose = FALSE)
+get_input_raw_data = function(x, transpose = FALSE, all_cells = FALSE)
 {
   if (all(is.null(x$data$gene_counts))) {
     cli::cli_alert_warning("Input data has not been stored in the object, re-run the analysis with XXX = TRUE ...")
@@ -191,6 +191,13 @@ get_input_raw_data = function(x, transpose = FALSE)
   
   y = x$data$gene_counts
   if(transpose) y = t(x$data$gene_counts)
+  
+  if(!has_inference(x)) return(y)
+  if(all_cells) return(y)
+  
+  
+  y= y[, colnames(y) %in% (get_clusters(x) %>% pull(cell)), drop = FALSE]
+  
   return(y)
 }
 

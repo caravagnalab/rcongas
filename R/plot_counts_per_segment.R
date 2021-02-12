@@ -61,6 +61,7 @@ plot_counts_per_segment = function(x,
     return(ggplot())
   }
   
+  
   # Unify gene names if required
   unique_gene_names = rownames(input_rna) %>% make.unique()
   nrow(input_rna) == length(unique_gene_names)
