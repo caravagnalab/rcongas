@@ -55,7 +55,6 @@ plot_counts_per_segment = function(x,
   # Used genes
   used_genes = input_rna %>% nrow
   
-  
   if (nrow(input_rna) == 0)
   {
     cli::cli_alert_danger("No RNA counts in the data, returning empty plot.")

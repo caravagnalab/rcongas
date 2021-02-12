@@ -13,6 +13,11 @@ get_genes_mapped_to_segments = function(x, ...)
   # Get input raw data in the object
   input_rna = get_input_raw_data(x, ...)
   
+  # Unify gene names if required
+  unique_gene_names = rownames(input_rna) %>% make.unique()
+  nrow(input_rna) == length(unique_gene_names)
+  rownames(input_rna) = unique_gene_names
+  
   # Tibble it
   input_rna = input_rna %>% as_tibble()
   rn = unique_gene_names %>% as_tibble() %>% rename(gene = value)
