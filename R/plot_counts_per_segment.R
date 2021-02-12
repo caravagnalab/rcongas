@@ -2,6 +2,9 @@
 #'
 #' @param x
 #' @param chromosomes
+#' @param genes
+#' @param quantiles
+#' @param ...
 #'
 #' @return
 #' @export
@@ -9,6 +12,8 @@
 #' @examples
 plot_counts_per_segment = function(x,
                                    chromosomes = paste0("chr", c(1:22, "X", "Y")),
+                                   genes = NULL,
+                                   quantiles = c(0.01, 0.99),
                                    ...)
 {
   stopifnot(inherits(x, 'rcongas'))
@@ -16,9 +21,30 @@ plot_counts_per_segment = function(x,
   # Get input raw data in the object
   input_rna = get_input_raw_data(x, ...)
   
+  if (length(quantiles) != 2) {
+    cli::cli_alert_info("Quantiles {.field {quantiles}}; should have 2 values, using default.")
+    quantiles = c(0.01, .99)
+  }
+  
+  if (!is.null(genes))
+  {
+    ng = input_rna %>% nrow
+    
+    input_rna = input_rna[rownames(input_rna) %in% genes, , drop = FALSE]
+    
+    n2g = input_rna %>% nrow
+    
+    cli::cli_alert_info(
+      "Subsetting {.field {ng}} available genes leaves {.field {n2g}} genes (out of {.field {length(genes)}} in the list)."
+    )
+  }
+  
+  # Used genes
+  used_genes = input_rna %>% nrow
+  
   if (nrow(input_rna) == 0)
   {
-    cli::cli_alert_danger("RNA counts not found in the input data -- see ?get_input_raw_data.")
+    cli::cli_alert_danger("No RNA counts in the data, returning empty plot.")
     return(ggplot())
   }
   
@@ -67,7 +93,7 @@ plot_counts_per_segment = function(x,
         # Retain cluster-specific cells
         aux_plot_histocount_per_segment(x,
                                         input_rna %>%
-                                          select(gene, chr, from, to, !!cell_ids))  %>%
+                                          select(gene, chr, from, to,!!cell_ids))  %>%
           mutate(cluster = cl)
       },
       PARAMS = lapply(clusters$cluster %>% unique %>% sort, list),
@@ -78,7 +104,7 @@ plot_counts_per_segment = function(x,
     df_genes = Reduce(bind_rows, df_genes)
   }
   
-  
+  # Segment size
   sz_lb = round(get_input_segmentation(x, chromosomes = chromosomes)$size /
                   1e6)
   pl_lb = get_input_segmentation(x, chromosomes = chromosomes)$ploidy_real
@@ -86,7 +112,6 @@ plot_counts_per_segment = function(x,
   names(sz_lb) = names(pl_lb) = get_input_segmentation(x, chromosomes = chromosomes) %>%
     Rcongas:::idify() %>%
     pull(segment_id)
-  
   
   # Custom breaks
   base_breaks <- function(n = 1) {
@@ -101,42 +126,58 @@ plot_counts_per_segment = function(x,
       
       v
     }
-  } 
+  }
   
-  ggplot(
-    df_genes %>%
-      # filter(segment_id == "chr7:135691173:159144683") %>% 
-      # mutate(counts=counts+1) %>% 
-      left_join(
-        get_input_segmentation(x, chromosomes = chromosomes) %>%
-          Rcongas:::idify() %>%
-          select(segment_id, ploidy_real),
-        by = "segment_id"
-      ) %>%
-      mutate(ploidy_real = paste0('Ploidy ', pl_lb[segment_id],
-                                  " (", sz_lb[segment_id], " Mb)")),
-    aes(counts, fill = cluster)
-  ) +
+  # Add ploidy information
+  df_genes = df_genes %>%
+    left_join(
+      get_input_segmentation(x, chromosomes = chromosomes) %>%
+        Rcongas:::idify() %>%
+        select(segment_id, ploidy_real),
+      by = "segment_id"
+    ) %>%
+    mutate(ploidy_real = paste0('Ploidy ', pl_lb[segment_id],
+                                " (", sz_lb[segment_id], " Mb)"))
+  
+  # Computing quantiles per segment
+  quantiles_df = df_genes %>%
+    group_by(segment_id) %>%
+    mutate(q_1 = quantile(counts, quantiles[1]),
+           q_2 = quantile(counts, quantiles[2])) %>%
+    distinct(segment_id, ploidy_real, q_1, q_2)
+  
+  # Plot
+  ggplot(df_genes,
+         aes(counts, fill = cluster)) +
     geom_histogram(bins = 100) +
     facet_wrap(ploidy_real ~ segment_id, ncol = 6, scales = 'free_x') +
-    # scale_y_log10(
-    #   labels = function(x)
-    #     x / 10,
-    #   name = "Log counts"
-    # ) +
     scale_y_continuous(trans = scales::log1p_trans(),
                        breaks = base_breaks(4)) +
     CNAqc:::my_ggplot_theme() +
     scale_fill_brewer(palette = 'Set1')  +
     labs(x = "Counts",
-         title = "Log counts per segment")
-  # geom_text(
-  #   data = ,
-  #   aes(label = ploidy_real, x = Inf, y = Inf),
-  #   size = 3,
-  #   inherit.aes = F
-  # )
-  
+         title = paste0("Log counts per segment"),
+         subtitle = paste0("Quantiles ", paste(quantiles, collapse = ','), " annotated."),
+         caption = ifelse(
+           !is.null(genes), 
+           paste0("Genes: all available input (n = ", used_genes, ')'),
+           paste0("Genes: custom list (n =", used_genes, ')')
+         )
+         ) +
+    geom_vline(
+      data = quantiles_df,
+      aes(xintercept = q_1),
+      color = 'black',
+      linetype = 'dashed',
+      size = .3
+      ) +
+    geom_vline(
+      data = quantiles_df,
+      aes(xintercept = q_2),
+      color = 'black',
+      linetype = 'dashed',
+      size = .3
+    )
 }
 
 
@@ -147,13 +188,13 @@ aux_plot_histocount_per_segment = function(x, input_rna)
   df_genes = easypar::run(function(i)
   {
     # Get genes mapped to the input segments
-    segment = get_input_segmentation(x)[i, ] %>% Rcongas:::idify()
+    segment = get_input_segmentation(x)[i,] %>% Rcongas:::idify()
     
     mapped_genes = input_rna %>%
       filter(chr == segment$chr,
              from >= segment$from,
              to <= segment$to) %>%
-      select(-gene, -chr, -from, -to) %>%
+      select(-gene,-chr,-from,-to) %>%
       as_vector()
     
     mapped_genes = mapped_genes[mapped_genes > 0]
