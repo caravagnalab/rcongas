@@ -4,7 +4,7 @@
 \alias{get_input_raw_data}
 \title{Title}
 \usage{
-get_input_raw_data(x, transpose = FALSE)
+get_input_raw_data(x, transpose = FALSE, all_cells = FALSE)
 }
 \arguments{
 \item{x}{}
