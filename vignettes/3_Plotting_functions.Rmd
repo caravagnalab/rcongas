@@ -202,4 +202,10 @@ The cells statistics.
 plot_cell_statistics(congas_example, transpose = TRUE)
 ```
 
+## Analysis report
 
+A full report assembles some of these visualisations
+
+```{r, fig.width=12, fig.height=12}
+report_analysis(congas_example)
+```
