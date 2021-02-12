@@ -14,6 +14,7 @@ plot_counts_per_segment = function(x,
                                    chromosomes = paste0("chr", c(1:22, "X", "Y")),
                                    genes = NULL,
                                    quantiles = c(0.01, 0.99),
+                                   normalize_library_size = FALSE,
                                    ...)
 {
   stopifnot(inherits(x, 'rcongas'))
@@ -24,6 +25,18 @@ plot_counts_per_segment = function(x,
   if (length(quantiles) != 2) {
     cli::cli_alert_info("Quantiles {.field {quantiles}}; should have 2 values, using default.")
     quantiles = c(0.01, .99)
+  }
+  
+  # Normalisation by library size
+  if(normalize_library_size)
+  {
+    cli::cli_alert_info("Normalising for library size as required.")
+    cell_ids = input_rna %>% colnames
+    
+    for(cell in cell_ids)
+    {
+      input_rna[, cell] = input_rna[, cell]/sum(input_rna[, cell])
+    }
   }
   
   if (!is.null(genes))
@@ -41,6 +54,7 @@ plot_counts_per_segment = function(x,
   
   # Used genes
   used_genes = input_rna %>% nrow
+  
   
   if (nrow(input_rna) == 0)
   {
