@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Title — get_input_raw_data • Rcongas</title>
+<title>Per segment cut of high and lower quantiles — filter_quantiles_per_segments • Rcongas</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,8 +46,9 @@
 
 
 
-<meta property="og:title" content="Title — get_input_raw_data" />
-<meta property="og:description" content="Title" />
+<meta property="og:title" content="Per segment cut of high and lower quantiles — filter_quantiles_per_segments" />
+<meta property="og:description" content="The function simply calculates two quantiles for each segments and the caps all the values higher than `high_quant` and lower than 
+`low_quant`" />
 <meta property="og:image" content="militeee.github.io/Rcongas/logo.png" />
 
 
@@ -140,23 +141,32 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Title</h1>
-    <small class="dont-index">Source: <a href='https://github.com/militeee/RcongasR/getters_input_data.R'><code>R/getters_input_data.R</code></a></small>
-    <div class="hidden name"><code>get_input_raw_data.Rd</code></div>
+    <h1>Per segment cut of high and lower quantiles</h1>
+    <small class="dont-index">Source: <a href='https://github.com/militeee/RcongasR/filter_quantiles_per_sample.R'><code>R/filter_quantiles_per_sample.R</code></a></small>
+    <div class="hidden name"><code>filter_quantiles_per_segments.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Title</p>
+    <p>The function simply calculates two quantiles for each segments and the caps all the values higher than `high_quant` and lower than 
+`low_quant`</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_input_raw_data</span><span class='op'>(</span><span class='va'>x</span>, transpose <span class='op'>=</span> <span class='cn'>FALSE</span>, all_cells <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>filter_quantiles_per_segments</span><span class='op'>(</span><span class='va'>x</span>, low_quant <span class='op'>=</span> <span class='fl'>0.01</span>, high_quant <span class='op'>=</span> <span class='fl'>0.99</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td></td>
+      <td><p>Rcongas object</p></td>
+    </tr>
+    <tr>
+      <th>low_quant</th>
+      <td><p>lower quantile</p></td>
+    </tr>
+    <tr>
+      <th>high_quant</th>
+      <td><p>high quantile</p></td>
     </tr>
     </table>
 
@@ -166,6 +176,17 @@
 
 
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'>
+<span class='va'>x</span> <span class='op'>&lt;-</span>  <span class='fu'>Rcongas</span><span class='fu'>::</span><span class='va'><a href='congas_example.html'>congas_example</a></span>
+
+<span class='fu'><a href='get_counts.html'>get_counts</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'>pull</span><span class='op'>(</span><span class='va'>n</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='va'>max</span>
+</div><div class='output co'>#&gt; [1] 498.516</div><div class='input'>
+<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'>filter_quantiles_per_segments</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
+
+<span class='fu'><a href='get_counts.html'>get_counts</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'>pull</span><span class='op'>(</span><span class='va'>n</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='va'>max</span>
+</div><div class='output co'>#&gt; [1] 498.516</div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
