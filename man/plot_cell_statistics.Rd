@@ -4,7 +4,13 @@
 \alias{plot_cell_statistics}
 \title{Title}
 \usage{
-plot_cell_statistics(x, cutoff_zeroes = 0.9, cutoff_counts = 0, ...)
+plot_cell_statistics(
+  x,
+  cutoff_zeroes = 0.9,
+  cutoff_counts = 0,
+  assembly = TRUE,
+  ...
+)
 }
 \arguments{
 \item{...}{}

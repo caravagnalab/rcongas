@@ -2,23 +2,18 @@
 % Please edit documentation in R/report_analysis.R
 \name{report_analysis}
 \alias{report_analysis}
-\title{Report for a template set of results after CONGAS}
+\title{Title}
 \usage{
-report_analysis(x)
+report_analysis(x, cex = 1, ...)
 }
 \arguments{
 \item{x}{}
+
+\item{...}{}
 }
 \value{
 
 }
 \description{
-Report for a template set of results after CONGAS
-}
-\examples{
-
-x = Rcongas::congas_example
-
-print(x)
-
+Title
 }

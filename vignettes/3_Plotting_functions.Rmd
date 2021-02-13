@@ -60,7 +60,7 @@ plot_gw_cna_profiles(congas_example, whole_genome = TRUE, chromosomes = 'chr4')
 
 ## Chromosomes highlight
 
-The criterion to highlight a CNA in a fit is determined from this distribution with a parameter `alpha` that sets the vertical dashed line (is a quantile).  
+The criterion to highlight a CNA in a fit is determined from this distribution with a parameter `alpha` that sets the vertical dashed line (is a quantile).
 
 
 ```{r, fig.width=8, fig.height=3}
@@ -139,7 +139,7 @@ plot_raw_data(
 # Now we use the DE genes (see below)
 plot_raw_data(
   x = raw_input,
-  genes = get_DE_table(congas_example, cut_pvalue = 1e-4, cut_lfc = 1) %>% dplyr::pull(gene), 
+  genes = get_DE_table(congas_example, cut_pvalue = 1e-4, cut_lfc = 1) %>% dplyr::pull(gene),
   clusters = get_clusters(congas_example), lognormalise = T,
   prompt = FALSE)
 
@@ -149,7 +149,7 @@ plot_raw_data(
 
 The most common plot that we implemented for a Differential Expression analysis is a volcano plot, reporting on the x-axis the LFC (log-fold change), and on the y-axis the test p-value (adjusted).
 
-The function has two cutoffs options to highlight significantly DEGs (Differentially Expressed Genes), and annotate the top ones (both Upregulated, with `LFC > 0`, and Downregulated, with `LFC < 0`). 
+The function has two cutoffs options to highlight significantly DEGs (Differentially Expressed Genes), and annotate the top ones (both Upregulated, with `LFC > 0`, and Downregulated, with `LFC < 0`).
 
 A gene is deemed non-significant `ns` based on a joint condition that involved LFC and the p-value.
 
@@ -169,9 +169,9 @@ plot_DE_volcano(
 )
 ```
 
-It is possible to integrate the whole-genome view of the copy number segments, together with the results from a DE analysis. 
+It is possible to integrate the whole-genome view of the copy number segments, together with the results from a DE analysis.
 
-The combined plot shows, on top of the segments, the total number of deferentially expressed genes (DEGs) that map to the segments as well as their relative frequency with respect to genes that map to the segments, and that have beend tested for DE status. On top, the plot reports also a line plot showing where other DEGs have been found, which however map off the CNA segments used by CONGAS. 
+The combined plot shows, on top of the segments, the total number of deferentially expressed genes (DEGs) that map to the segments as well as their relative frequency with respect to genes that map to the segments, and that have beend tested for DE status. On top, the plot reports also a line plot showing where other DEGs have been found, which however map off the CNA segments used by CONGAS.
 
 ```{r, fig.width=8, fig.height=5}
 # Default plot
@@ -202,10 +202,28 @@ The cells statistics.
 plot_cell_statistics(congas_example, transpose = TRUE)
 ```
 
-## Analysis report
+## Plot genes mapped on segments
 
-A full report assembles some of these visualisations
+Plots counts (raw data) for genes mapped across the genome. By default, it normalises by library size and input copy number for the segment to which each gene maps to.
 
-```{r, fig.width=12, fig.height=12}
-report_analysis(congas_example)
+```{r, fig.width=12, fig.height=16}
+plot_gene_counts_on_genome(congas_example, transpose = TRUE)
+```
+
+
+
+## Analysis report(s)
+
+A full report assembles some of these visualisations.
+
+This is a standard analysis report.
+
+```{r, fig.width=16, fig.height=16}
+report_analysis(congas_example, transpose = TRUE)
+```
+
+This is to focus on Differential Expressions.
+
+```{r, fig.width=16, fig.height=16}
+report_analysis_de(congas_example)
 ```

@@ -38,7 +38,7 @@ plot_highlights = function(x, alpha = 0.05)
       variable.name = "cluster",
       value.name = "CN"
     ) %>%
-    dplyr::mutate(cluster = as.character(cluster)) %>% mutate(cluster = if_else(str_starts(cluster, pattern = "c|C"), cluster, paste0("c", cluster))) %>%
+    dplyr::mutate(cluster = as.character(cluster)) %>% mutate(cluster = ifelse(str_starts(cluster, pattern = "c|C"), cluster, paste0("c", cluster))) %>%
     dplyr::as_tibble()
 
   # Normalise CNA values for comparisons -- z_score_alike via offset_amplitude

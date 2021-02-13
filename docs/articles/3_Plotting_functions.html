@@ -111,6 +111,7 @@
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">require</a></span><span class="op">(</span><span class="va">Rcongas</span><span class="op">)</span>
 <span class="co">#&gt; Loading required package: Rcongas</span>
+<span class="co">#&gt; ✓ Loading CNAqc, 'Copy Number Alteration quality check'. Support : &lt;https://caravagn.github.io/CNAqc/&gt;</span>
 <span class="co">#&gt; ✓ Loading Rcongas, 'Copy-Number genotyping from single cells'. Support : &lt;https://militeee.github.io/Rcongas/&gt;</span></code></pre></div>
 <p>We show how you can plot information from a CONGAS object. We work with an example object released with the tool.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -135,8 +136,7 @@
 <p>The default view splits works by facetting the chromosomes. The gray bar in eah chromosome represents the centromeres start/ end, determined from the used reference genome.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Default, with facets</span>
-<span class="fu"><a href="../reference/plot_gw_cna_profiles.html">plot_gw_cna_profiles</a></span><span class="op">(</span><span class="va">congas_example</span><span class="op">)</span>
-<span class="co">#&gt; ✓ Loading CNAqc, 'Copy Number Alteration quality check'. Support : &lt;https://caravagn.github.io/CNAqc/&gt;</span></code></pre></div>
+<span class="fu"><a href="../reference/plot_gw_cna_profiles.html">plot_gw_cna_profiles</a></span><span class="op">(</span><span class="va">congas_example</span><span class="op">)</span></code></pre></div>
 <p><img src="3_Plotting_functions_files/figure-html/unnamed-chunk-3-1.png" width="768"></p>
 <p>An alternative view is available to pool all the chromosomes together</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
@@ -222,7 +222,7 @@
 <span class="co"># Now we use the DE genes (see below)</span>
 <span class="fu"><a href="../reference/plot_raw_data.html">plot_raw_data</a></span><span class="op">(</span>
   x <span class="op">=</span> <span class="va">raw_input</span>,
-  genes <span class="op">=</span> <span class="fu"><a href="../reference/get_DE_table.html">get_DE_table</a></span><span class="op">(</span><span class="va">congas_example</span>, cut_pvalue <span class="op">=</span> <span class="fl">1e-4</span>, cut_lfc <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">gene</span><span class="op">)</span>, 
+  genes <span class="op">=</span> <span class="fu"><a href="../reference/get_DE_table.html">get_DE_table</a></span><span class="op">(</span><span class="va">congas_example</span>, cut_pvalue <span class="op">=</span> <span class="fl">1e-4</span>, cut_lfc <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">gene</span><span class="op">)</span>,
   clusters <span class="op">=</span> <span class="fu"><a href="../reference/get_clusters.html">get_clusters</a></span><span class="op">(</span><span class="va">congas_example</span><span class="op">)</span>, lognormalise <span class="op">=</span> <span class="cn">T</span>,
   prompt <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
 </div>
@@ -295,17 +295,43 @@
 <span class="co">#&gt; Warning: Removed 33 rows containing missing values (geom_bar).</span></code></pre></div>
 <p><img src="3_Plotting_functions_files/figure-html/unnamed-chunk-16-1.png" width="480"></p>
 </div>
-<div id="analysis-report" class="section level2">
+<div id="plot-genes-mapped-on-segments" class="section level2">
 <h2 class="hasAnchor">
-<a href="#analysis-report" class="anchor"></a>Analysis report</h2>
-<p>A full report assembles some of these visualisations</p>
+<a href="#plot-genes-mapped-on-segments" class="anchor"></a>Plot genes mapped on segments</h2>
+<p>Plots counts (raw data) for genes mapped across the genome. By default, it normalises by library size and input copy number for the segment to which each gene maps to.</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/report_analysis.html">report_analysis</a></span><span class="op">(</span><span class="va">congas_example</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="../reference/plot_gene_counts_on_genome.html">plot_gene_counts_on_genome</a></span><span class="op">(</span><span class="va">congas_example</span>, transpose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="co">#&gt; Warning in get_genes_mapped_to_segments(x, ...): get_gene_annotations() is</span>
+<span class="co">#&gt; missing annotations for some input genes ...</span>
+<span class="co">#&gt; Warning: The `x` argument of `as_tibble.matrix()` must have unique column names if `.name_repair` is omitted as of tibble 2.0.0.</span>
+<span class="co">#&gt; Using compatibility `.name_repair`.</span>
+<span class="co">#&gt; This warning is displayed once every 8 hours.</span>
+<span class="co">#&gt; Call `lifecycle::last_warnings()` to see where this warning was generated.</span>
+<span class="co">#&gt; Warning in plot_gene_counts_on_genome(congas_example, transpose = TRUE): Some</span>
+<span class="co">#&gt; genes are not mapped to the, check raw data.</span></code></pre></div>
+<p><img src="3_Plotting_functions_files/figure-html/unnamed-chunk-17-1.png" width="1152"></p>
+</div>
+<div id="analysis-reports" class="section level2">
+<h2 class="hasAnchor">
+<a href="#analysis-reports" class="anchor"></a>Analysis report(s)</h2>
+<p>A full report assembles some of these visualisations.</p>
+<p>This is a standard analysis report.</p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/report_analysis.html">report_analysis</a></span><span class="op">(</span><span class="va">congas_example</span>, transpose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="co">#&gt; ✓ Loading ctree, 'Clone trees in cancer'. Support : &lt;https://caravagn.github.io/ctree/&gt;</span>
+<span class="co">#&gt; Warning: replacing previous import 'Biostrings::translate' by</span>
+<span class="co">#&gt; 'seqinr::translate' when loading 'dndscv'</span>
+<span class="co">#&gt; ✔ Loading mobster, 'Model-based clustering in cancer'. Support :</span>
+<span class="co">#&gt; &lt;https://caravagn.github.io/mobster/&gt;.</span></code></pre></div>
+<p><img src="3_Plotting_functions_files/figure-html/unnamed-chunk-18-1.png" width="1536"></p>
+<p>This is to focus on Differential Expressions.</p>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/report_analysis_de.html">report_analysis_de</a></span><span class="op">(</span><span class="va">congas_example</span><span class="op">)</span>
 <span class="co">#&gt; Warning: Removed 16 rows containing missing values (geom_rect).</span>
 
 <span class="co">#&gt; Warning: Removed 16 rows containing missing values (geom_rect).</span>
 <span class="co">#&gt; Warning: Removed 16 rows containing missing values (geom_point).</span></code></pre></div>
-<p><img src="3_Plotting_functions_files/figure-html/unnamed-chunk-17-1.png" width="1152"></p>
+<p><img src="3_Plotting_functions_files/figure-html/unnamed-chunk-19-1.png" width="1536"></p>
 </div>
   </div>
 

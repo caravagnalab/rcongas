@@ -69,13 +69,13 @@ plot_segment_density = function(x,
 plot_single_segment_poisson = function(x, segment, sum_denominator)
 {
   # Counts data
-  counts_data = Rcongas:::get_counts(x, normalise = TRUE,  sum_denominator = sum_denominator) %>%
-    Rcongas:::idify() %>%
+  counts_data = get_counts(x, normalise = TRUE,  sum_denominator = sum_denominator) %>%
+    idify() %>%
     dplyr::filter(segment_id == segment)
   
   # Coloring
   clusters_colors = get_clusters_colors(counts_data$cluster)
-  clusters = Rcongas::get_clusters_size(x) %>% names()
+  clusters = get_clusters_size(x) %>% names()
   
   # This makes a progress bar
   density_points = easypar::run(
@@ -95,12 +95,12 @@ plot_single_segment_poisson = function(x, segment, sum_denominator)
   
   density_plot = density_points %>%
     ggplot(aes(x = x, y = y, color = cluster)) +
-    facet_wrap( ~ segment_id) +
+    facet_wrap( ~ paste0(segment_id, ' (Poisson)')) +
     geom_point(size = .8) +
     geom_line(size = .3) +
-    CNAqc:::my_ggplot_theme() +
+    # CNAqc:::my_ggplot_theme() +
+    theme_linedraw() +
     scale_color_manual(values = clusters_colors) +
-    labs(title = "Poisson density and counts") +
     labs(x = NULL, y = "Density") +
     coord_cartesian(clip = 'off') +
     guides(color = FALSE) +
@@ -119,7 +119,8 @@ plot_single_segment_poisson = function(x, segment, sum_denominator)
     scale_fill_manual(values = sapply(clusters_colors, Rcongas:::lighten, factor = .1)) +
     labs(x = "RNA counts", y = "Observations") +
     coord_cartesian(clip = 'off') +
-    guides(fill = guide_legend("Cluster", nrow = 1))
+    guides(fill = guide_legend("Cluster", ncol = 1)) +
+    theme(legend.position = c(.9, 0.85), legend.background = element_blank())
   
   cowplot::plot_grid(
     density_plot,

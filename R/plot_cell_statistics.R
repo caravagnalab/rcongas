@@ -12,6 +12,7 @@
 plot_cell_statistics = function(x,
                                 cutoff_zeroes = 0.9,
                                 cutoff_counts = 0,
+                                assembly = TRUE,
                                 ...)
 {
   stopifnot(inherits(x, 'rcongas'))
@@ -69,5 +70,8 @@ plot_cell_statistics = function(x,
     scale_y_log10() +
     CNAqc:::my_ggplot_theme()
   
-  cowplot::plot_grid(p1, p2, align = 'h', axis = 'tb')
+  if(assembly)
+    return(cowplot::plot_grid(p1, p2, align = 'h', axis = 'tb'))
+  else
+    return(list(zeroes = p1, counts = p2))
 }
