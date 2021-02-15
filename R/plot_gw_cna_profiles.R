@@ -33,9 +33,18 @@ plot_gw_cna_profiles = function(x,
 
   # Segments ploidy
   segments = Rcongas::get_clusters_ploidy(x, chromosomes, ...)
-
+  
   segments_h = CNAqc:::relative_to_absolute_coordinates(list(reference_genome = x$reference_genome), segments %>% dplyr::filter(highlight))
   segments_nh = CNAqc:::relative_to_absolute_coordinates(list(reference_genome = x$reference_genome), segments %>% dplyr::filter(!highlight))
+
+  # Highlights
+  
+  l <- list(...)
+  alpha = 0.05
+  
+  if('alpha' %in% names(l)) alpha = l['alpha'] %>% as.numeric()
+  
+  table_highlights = highlights(x, alpha) %>% filter(highlight)
 
   # Test for the difference
   # test_pvalue = Rcongas::get_segment_test_counts(x,
@@ -51,12 +60,15 @@ plot_gw_cna_profiles = function(x,
   ymax = ymax + ymax * .15
 
   shading_color = 'mediumseagreen'
+  shading_color = 'darkgoldenrod2'
+  shading_color = 'cyan4'
+  
 
   # Two distinct view
   if (whole_genome)
   {
     # plain chr plot like in CNAqc
-    plain_plot = Rcongas:::get_plain_chrplot(x$reference_genome, chromosomes)
+    plain_plot = get_plain_chrplot(x$reference_genome, chromosomes)
 
     plain_plot = plain_plot +
       geom_rect(
@@ -92,11 +104,39 @@ plot_gw_cna_profiles = function(x,
     }
 
     # Adjustment for the view
-    segments = CNAqc:::relative_to_absolute_coordinates(list(reference_genome = x$reference_genome), segments)
+    segments_sc = CNAqc:::relative_to_absolute_coordinates(list(reference_genome = x$reference_genome), segments)
 
     segments_plot = plain_plot +
       geom_segment(
-        data = segments,
+        data = segments_sc,
+        aes(
+          x = from,
+          xend = to,
+          y = CN,
+          yend = CN,
+          colour = cluster
+        ),
+        size = .5
+      ) 
+    
+    # Thicker
+    segments_sc_highlight = NULL
+    
+    for (i in 1:nrow(table_highlights))
+      segments_sc_highlight = segments_sc_highlight %>%
+      bind_rows(
+        segments_sc %>%
+          filter(table_highlights$segment_id[i] == segment_id) %>%
+          filter(
+            cluster %in% c(table_highlights$cluster[i], table_highlights$versus[i])
+          )
+      ) %>% 
+      distinct(segment_id, cluster, .keep_all =T)
+  
+    
+    segments_plot = segments_plot+
+      geom_segment(
+        data = segments_sc_highlight,
         aes(
           x = from,
           xend = to,
@@ -106,7 +146,8 @@ plot_gw_cna_profiles = function(x,
         ),
         size = 1.5
       ) +
-      scale_colour_manual(values = get_clusters_colors(segments$cluster))
+      scale_colour_manual(values = get_clusters_colors(segments_sc$cluster)) +
+      guides(color = guide_legend(bquote("Cluster ("*alpha*' = '*.(alpha)*")")))
   }
 
   if (!whole_genome)
@@ -149,7 +190,7 @@ plot_gw_cna_profiles = function(x,
       facet_wrap( ~ factor(chr, levels = levels_chr_ordering), nrow = 1) +
       CNAqc:::my_ggplot_theme() +
       labs(x = "Chromosome",
-           y = "Normalised Copy Number") +
+           y = "Normalised CN") +
       theme(axis.text.x = element_blank(),
             axis.ticks.x = element_blank())
   }

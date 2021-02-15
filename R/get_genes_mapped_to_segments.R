@@ -27,6 +27,12 @@ get_genes_mapped_to_segments = function(x, ...)
     left_join(get_gene_annotations(x), by = 'gene') %>%
     select(gene, chr, from, to)
   
+  if(
+    input_rna[complete.cases(input_rna), ] %>% nrow <
+    input_rna %>% nrow
+  )
+    warning("get_gene_annotations() is missing annotations for some input genes ...")
+  
   # Per segment
   df_genes = easypar::run(function(i)
   {

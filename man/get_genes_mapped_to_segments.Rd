@@ -4,7 +4,7 @@
 \alias{get_genes_mapped_to_segments}
 \title{Title}
 \usage{
-get_genes_mapped_to_segments(x)
+get_genes_mapped_to_segments(x, ...)
 }
 \arguments{
 \item{x}{}

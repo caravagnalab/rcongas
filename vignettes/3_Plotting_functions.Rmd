@@ -51,18 +51,17 @@ plot_gw_cna_profiles(congas_example, whole_genome = TRUE)
 ```
 
 
-It is possible to zoom in specific chromosomes with this plot.
+It is possible to zoom in chromosomes with this plot (the dark gray bar is the centromere).
 
-```{r, fig.width=8, fig.height=3}
+```{r, fig.width=4, fig.height=3}
 # A whole-genome view for chromosome 4
 plot_gw_cna_profiles(congas_example, whole_genome = TRUE, chromosomes = 'chr4')
 ```
 
-## Plotting specific chromosomes
+## Chromosomes highlight
 
-The criterion to highlight a CNA in a fit is determined from this distribution. 
+The criterion to highlight a CNA in a fit is determined from this distribution with a parameter `alpha` that sets the vertical dashed line (is a quantile).
 
-Parameter `alpha` regulated the vertical dashed line. 
 
 ```{r, fig.width=8, fig.height=3}
 # Default
@@ -71,6 +70,7 @@ plot_highlights(congas_example)
 # More stringent
 plot_highlights(congas_example, alpha = 0.001)
 ```
+
 
 
 ## Plotting specific chromosomes
@@ -139,7 +139,7 @@ plot_raw_data(
 # Now we use the DE genes (see below)
 plot_raw_data(
   x = raw_input,
-  genes = get_DE_table(congas_example, cut_pvalue = 1e-4, cut_lfc = 1) %>% dplyr::pull(gene), 
+  genes = get_DE_table(congas_example, cut_pvalue = 1e-4, cut_lfc = 1) %>% dplyr::pull(gene),
   clusters = get_clusters(congas_example), lognormalise = T,
   prompt = FALSE)
 
@@ -149,7 +149,7 @@ plot_raw_data(
 
 The most common plot that we implemented for a Differential Expression analysis is a volcano plot, reporting on the x-axis the LFC (log-fold change), and on the y-axis the test p-value (adjusted).
 
-The function has two cutoffs options to highlight significantly DEGs (Differentially Expressed Genes), and annotate the top ones (both Upregulated, with `LFC > 0`, and Downregulated, with `LFC < 0`). 
+The function has two cutoffs options to highlight significantly DEGs (Differentially Expressed Genes), and annotate the top ones (both Upregulated, with `LFC > 0`, and Downregulated, with `LFC < 0`).
 
 A gene is deemed non-significant `ns` based on a joint condition that involved LFC and the p-value.
 
@@ -169,12 +169,61 @@ plot_DE_volcano(
 )
 ```
 
-It is possible to integrate the whole-genome view of the copy number segments, together with the results from a DE analysis. 
+It is possible to integrate the whole-genome view of the copy number segments, together with the results from a DE analysis.
 
-The combined plot shows, on top of the segments, the total number of deferentially expressed genes (DEGs) that map to the segments as well as their relative frequency with respect to genes that map to the segments, and that have beend tested for DE status. On top, the plot reports also a line plot showing where other DEGs have been found, which however map off the CNA segments used by CONGAS. 
+The combined plot shows, on top of the segments, the total number of deferentially expressed genes (DEGs) that map to the segments as well as their relative frequency with respect to genes that map to the segments, and that have beend tested for DE status. On top, the plot reports also a line plot showing where other DEGs have been found, which however map off the CNA segments used by CONGAS.
 
 ```{r, fig.width=8, fig.height=5}
 # Default plot
 plot_DE_gw(congas_example)
 ```
 
+## Plot data statistics
+
+You can plot a 3-panels figure showing:
+
+- the segments barplot with segment size and number of mapped genes;
+- the `max` and `min` counts per segment, for every cluster;
+- the counts distribution per segment, split in bins of `(max-min)/10` size, for every cluster.
+
+```{r, fig.width=10, fig.height=10}
+plot_report_segments(congas_example, transpose = TRUE)
+```
+
+The counts distribution per segment, with annotated quantiles.
+
+```{r, fig.width=12, fig.height=15}
+plot_counts_per_segment(congas_example, transpose = TRUE)
+```
+
+The cells statistics.
+
+```{r, fig.width=5, fig.height=3}
+plot_cell_statistics(congas_example, transpose = TRUE)
+```
+
+## Plot genes mapped on segments
+
+Plots counts (raw data) for genes mapped across the genome. By default, it normalises by library size and input copy number for the segment to which each gene maps to.
+
+```{r, fig.width=12, fig.height=16}
+plot_gene_counts_on_genome(congas_example, transpose = TRUE)
+```
+
+
+
+## Analysis report(s)
+
+A full report assembles some of these visualisations.
+
+This is a standard analysis report.
+
+```{r, fig.width=16, fig.height=16}
+report_analysis(congas_example, transpose = TRUE)
+```
+
+This is to focus on Differential Expressions.
+
+```{r, fig.width=16, fig.height=16}
+report_analysis_de(congas_example)
+```

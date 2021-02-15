@@ -4,7 +4,7 @@
 \alias{plot_inference_report}
 \title{Title}
 \usage{
-plot_inference_report(x)
+plot_inference_report(x, assembly = TRUE)
 }
 \arguments{
 \item{x}{}

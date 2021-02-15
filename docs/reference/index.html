@@ -290,7 +290,86 @@
         <td>
           <p><code><a href="plot_highlights.html">plot_highlights()</a></code> </p>
         </td>
-        <td><p>Title</p></td>
+        <td><p>plot_highlights = function(x, alpha = 0.05)
+
+  # Best model
+  best_model &lt;- Rcongas:::get_best_model(x)
+  
+  res &lt;-
+    data.frame(
+      t(best_model$parameters$cnv_probs),
+      stringsAsFactors = FALSE,
+      check.names = FALSE
+    ) <!-- %&gt;% -->
+    dplyr::mutate(segment_id = rownames(.)) <!-- %&gt;% -->
+    deidify() <!-- %&gt;% -->
+    reshape2::melt(
+      id.vars = c("chr", "from", "to"),
+      variable.name = "cluster",
+      value.name = "CN"
+    ) <!-- %&gt;% -->
+    dplyr::mutate(cluster = as.character(cluster)) <!-- %&gt;% mutate(cluster = ifelse( -->
+      str_starts(cluster, pattern = "c|C"),
+      cluster,
+      paste0("c", cluster)
+    )) <!-- %&gt;% -->
+    dplyr::as_tibble() <!-- %&gt;% -->
+    dplyr::mutate(lognorm_CN = CN)
+  
+  res$highlights = create_highlights(res, alpha)
+  
+  # Normalise CNA values for comparisons
+  # means = res <!-- %&gt;% -->
+  #   dplyr::group_by(chr, from, to) <!-- %&gt;% -->
+  #   dplyr::summarise(segment_mean = mean(CN), .groups = 'keep') <!-- %&gt;% -->
+  #   dplyr::ungroup()
+  #
+  # # Bind everything
+  # res = res <!-- %&gt;% -->
+  #   dplyr::full_join(means, by = c('chr', 'from', 'to')) <!-- %&gt;% -->
+  #   dplyr::mutate(lognorm_CN = CN,
+  #                 CN = CN - segment_mean)
+  
+  res$highlight = create_highlights(res, alpha)
+  
+  # Clones
+  clones = Rcongas::get_clusters(x)$cluster <!-- %&gt;% unique %&gt;% sort -->
+  
+  
+  res_split = res <!-- %&gt;% group_split(cluster) -->
+  names(res_split) = sapply(res_split, function(x)
+    x$cluster[1])
+  
+  df_density = NULL
+  
+  for (i in clones)
+    for (j in clones)
+    
+      if (i != j)
+      
+        f  = get_density_gamma_highlights(res, i, j)
+        x_ij = x <!-- %&gt;% -->
+          filter(cluster <!-- %in% c(i, j)) %&gt;% -->
+          group_by(chr, from, to) <!-- %&gt;% -->
+          summarise(diff_ij = abs(diff(lognorm_CN)))
+        
+        # Fit density function
+        den_ij = data.frame(
+          x = seq(0, max(x_ij$diff_ij) * 1.25, length.out = 30),
+          y = dgamma(
+            seq(0, max(x_ij$diff_ij) * 1.25, length.out = 30),
+            fit_ij$estimate[[1]],
+            fit_ij$estimate[[2]]
+          ),
+          stringsAsFactors = FALSE
+        )
+        
+        df_density = df_density <!-- %&gt;% -->
+          bind_rows(den_ij <!-- %&gt;% mutate(pair = paste0(i, ' vs ', j))) -->
+      
+    
+  
+  ggplot(df_density, aes(x=x,y=y, color=pair))+geom_point()</p></td>
       </tr><tr>
         
         <td>
@@ -320,7 +399,7 @@
         <td>
           <p><code><a href="report_analysis.html">report_analysis()</a></code> </p>
         </td>
-        <td><p>Report for a template set of results after CONGAS</p></td>
+        <td><p>Title</p></td>
       </tr>
     </tbody><tbody>
       <tr>
