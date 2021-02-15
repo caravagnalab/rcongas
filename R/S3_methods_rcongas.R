@@ -65,9 +65,12 @@ print.rcongas = function(x, ...)
     paste("{", symbol, "}", m)
   }
 
+  
   if(!has_inference(x)) return()
   pi = (stats_data$clusters_pi * 100) %>% round(2)
 
+  cat('\n')
+  
   for (i in names(stats_data$clusters_n))
     myp(
       paste0(
@@ -77,16 +80,42 @@ print.rcongas = function(x, ...)
     ) %>% cli::cli_text()
   
   # Highlights
-  cli::cli_h3("CNA highlights ")
+  cli::cli_h3("CNA highlights (alpha = 0.05)")
   
-  sgH = get_segment_ids(x, highlight = TRUE)
-  nsgH = sgH %>% length()
+  cat('\n')
   
-  if(nsgH > 0)
-    # get_clusters_ploidy(x) %>% filter(highlight) %>% print
-    cli::cli_alert_success(" {.field {nsgH}} CNA(s):  {.field {sgH}}")
+  hl = highlights(x) %>% filter(highlight) %>% arrange(diff)
+  
+  if(hl %>% nrow > 0)
+    # cli::cli_alert_success(" {.field {nsgH}} CNA(s):  {.field {sgH}}")
+    # print(hl)
+    for(i in hl %>% pull(cluster) %>% unique) 
+    {
+      str = paste0(
+        "[",
+        hl %>% filter(cluster == i) %>% pull(segment_id),
+        ']',
+        ' vs ',
+        hl %>% filter(cluster == i) %>% pull(versus),
+        sep = ''
+      ) 
+      
+      cli::cli_alert_success(" {.field {i}} CNA(s):  {.field {str}}")
+      
+    }
+      
+    
   else
     cli::cli_alert_warning("None found!")
+  
+  # sgH = get_segment_ids(x, highlight = TRUE)
+  # nsgH = sgH %>% length()
+  # 
+  # if(nsgH > 0)
+  #   # get_clusters_ploidy(x) %>% filter(highlight) %>% print
+  #   cli::cli_alert_success(" {.field {nsgH}} CNA(s):  {.field {sgH}}")
+  # else
+  #   cli::cli_alert_warning("None found!")
   
 
    cat('\n')

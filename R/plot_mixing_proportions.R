@@ -33,8 +33,8 @@ plot_mixing_proportions = function(x)
     scale_fill_manual(values = Rcongas:::get_clusters_colors(names(clusters_size))) +
     geom_text(aes(
       y = lab.ypos,
-      label = paste0(cluster, '-', prop, '%\nn = ', n, '')
-    ), color = "white") +
+      label = paste0(cluster, ' (', prop, '%\nn = ', n, ')'),
+    ),       size = 2,color = "white") +
     CNAqc:::my_ggplot_theme() +
     labs(x = NULL, y = NULL) +
     theme(
@@ -48,7 +48,7 @@ plot_mixing_proportions = function(x)
         sum(clusters_size),
         " cells and ",
         length(clusters_size),
-        ' clusters'
+        ' clusters.'
       )
     ) +
     guides(fill = guide_legend(''))

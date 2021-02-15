@@ -61,7 +61,7 @@ plot_gw_cna_profiles = function(x,
 
   shading_color = 'mediumseagreen'
   shading_color = 'darkgoldenrod2'
-  shading_color = 'cyan4'
+  shading_color = 'indianred3'
   
 
   # Two distinct view

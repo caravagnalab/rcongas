@@ -72,13 +72,13 @@ report_analysis <- function(x, cex = 1, ...)
   p3a = (plot_loss(x) +
            labs(
              title = paste("ELBO"),
-             subtitle = paste(
+             subtitle = paste0(
                stats_data$score_type,
                ' = ',
                stats_data$score %>% round(3),
-               "(",
+               " (",
                bm$loss %>% length,
-               'steps)'
+               ' steps)'
              )
            )) %>%
     curate
@@ -95,7 +95,7 @@ report_analysis <- function(x, cex = 1, ...)
            )) %>%
     curate
   
-  p3c = Rcongas::plot_latent_variables(x) %>%
+  p3c = plot_latent_variables(x) %>%
     curate
   
   # p3 = p3a | p3b | p3c
