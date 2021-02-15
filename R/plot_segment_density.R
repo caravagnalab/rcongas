@@ -99,7 +99,7 @@ plot_single_segment_poisson = function(x, segment, sum_denominator)
     geom_point(size = .8) +
     geom_line(size = .3) +
     # CNAqc:::my_ggplot_theme() +
-    theme_linedraw() +
+    theme_linedraw(base_size = 10) +
     scale_color_manual(values = clusters_colors) +
     labs(x = NULL, y = "Density") +
     coord_cartesian(clip = 'off') +

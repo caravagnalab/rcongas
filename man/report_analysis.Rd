@@ -7,8 +7,6 @@
 report_analysis(x, cex = 1, ...)
 }
 \arguments{
-\item{x}{}
-
 \item{...}{}
 }
 \value{

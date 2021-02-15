@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Title — plot_inference_report • Rcongas</title>
+<title>plot_gene_counts_on_genome — plot_gene_counts_on_genome • Rcongas</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,8 +46,8 @@
 
 
 
-<meta property="og:title" content="Title — plot_inference_report" />
-<meta property="og:description" content="Title" />
+<meta property="og:title" content="plot_gene_counts_on_genome — plot_gene_counts_on_genome" />
+<meta property="og:description" content="Plots gene per cell counts on the genome." />
 <meta property="og:image" content="militeee.github.io/Rcongas/logo.png" />
 
 
@@ -140,37 +140,52 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Title</h1>
-    <small class="dont-index">Source: <a href='https://github.com/militeee/RcongasR/plot_inference_report.R'><code>R/plot_inference_report.R</code></a></small>
-    <div class="hidden name"><code>plot_inference_report.Rd</code></div>
+    <h1>plot_gene_counts_on_genome</h1>
+    <small class="dont-index">Source: <a href='https://github.com/militeee/RcongasR/plot_gene_counts_on_chromosome.R'><code>R/plot_gene_counts_on_chromosome.R</code></a></small>
+    <div class="hidden name"><code>plot_gene_counts_on_genome.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Title</p>
+    <p>Plots gene per cell counts on the genome.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>plot_inference_report</span><span class='op'>(</span><span class='va'>x</span>, assembly <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>plot_gene_counts_on_genome</span><span class='op'>(</span>
+  <span class='va'>x</span>,
+  cutoff_quantile_sd <span class='op'>=</span> <span class='fl'>0.95</span>,
+  normalise <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"ls"</span>, <span class='st'>"cn"</span><span class='op'>)</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td></td>
+      <td><p>Input object.</p></td>
+    </tr>
+    <tr>
+      <th>cutoff_quantile_sd</th>
+      <td><p>Shows only counts with standard deviation above this quantile (default &gt;95<!-- %);  -->
+it should avoid plotting a number of low-frequency data points.</p></td>
+    </tr>
+    <tr>
+      <th>normalise</th>
+      <td><p>Normalise by library size (<code>"ls"</code>) and/or by input copy number (<code>"ls"</code>).</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Parameters forwarded to <code>get_genes_mapped_to_segments</code> and <code>get_input_raw_data</code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    
-
-
+    <p>A ggplot figure with multiple plots.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='co'># Report</span>
-<span class='fu'>plot_inference_report</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in plot_inference_report_4(x, assembly): unused argument (assembly)</span></div></pre>
+<span class='fu'>plot_gene_counts_on_genome</span><span class='op'>(</span><span class='fu'>Rcongas</span><span class='fu'>::</span><span class='va'><a href='congas_example.html'>congas_example</a></span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='warning'>Warning: get_gene_annotations() is missing annotations for some input genes ...</span></div><div class='output co'>#&gt; |===============================                       | 59% ~1 s remaining     |=================================                     | 61% ~1 s remaining     |==================================                    | 64% ~1 s remaining     |====================================                  | 67% ~1 s remaining     |=====================================                 | 70% ~1 s remaining     |=======================================               | 73% ~1 s remaining     |========================================              | 76% ~1 s remaining     |==========================================            | 79% ~1 s remaining     |===========================================           | 81% ~1 s remaining     |=============================================         | 84% ~1 s remaining     |===============================================       | 87% ~0 s remaining     |================================================      | 90% ~0 s remaining     |==================================================    | 93% ~0 s remaining     |===================================================   | 96% ~0 s remaining     |===================================================== | 99% ~0 s remaining     </div><div class='output co'>#&gt; <span class='error'>Error: id variables not found in data: cell</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

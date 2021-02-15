@@ -141,7 +141,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Title</h1>
-    <small class="dont-index">Source: <a href='https://github.com/militeee/RcongasR/getters_input_data.R'><code>R/getters_input_data.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/militeee/RcongasR/get_input_raw_data.R'><code>R/get_input_raw_data.R</code></a></small>
     <div class="hidden name"><code>get_input_raw_data.Rd</code></div>
     </div>
 
@@ -149,13 +149,26 @@
     <p>Title</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_input_raw_data</span><span class='op'>(</span><span class='va'>x</span>, transpose <span class='op'>=</span> <span class='cn'>FALSE</span>, all_cells <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>get_input_raw_data</span><span class='op'>(</span>
+  <span class='va'>x</span>,
+  transpose <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  only_clustered_cells <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  as_tibble <span class='op'>=</span> <span class='cn'>FALSE</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x</th>
+      <th>transpose</th>
+      <td></td>
+    </tr>
+    <tr>
+      <th>as_tibble</th>
+      <td></td>
+    </tr>
+    <tr>
+      <th>all_cells</th>
       <td></td>
     </tr>
     </table>
