@@ -55,6 +55,7 @@ binned_recalibration <- function(x, annot, binSize = 100, FUN = mean){
 correct_bins <- function(bins, filt = 2.0e+07, hard = FALSE){
 
   if(hard){
+    bins$dist <- bins$to - bins$from
     bins <- bins %>% filter(bins$dist > filt)
   }
   res <- data.frame()
