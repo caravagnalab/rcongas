@@ -40,7 +40,7 @@ get_genes_mapped_to_segments = function(x, ...)
     
     mapped_genes %>% 
       bind_cols(
-        segment %>% select(-start, -end, dist, -chr, -from, -to)
+        segment %>% select(-from, -to, dist, -chr, -from, -to)
       )
   },
   lapply(1:nrow(get_input_segmentation(x)), list),

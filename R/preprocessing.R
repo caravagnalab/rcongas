@@ -187,7 +187,7 @@ getChromosomeDF <- function(df, online = FALSE, genome = "hg38", chrs = paste0("
     genes_position <- biomaRt::getBM(attributes = c('hgnc_symbol', 'chromosome_name',
                                            'start_position', 'end_position', 'ensembl_gene_id'), filters = filters, values = gene_names, mart = ensembl)
   }else {
-    # Get the reference genome from the package data and refert to biomaRt format
+    # Get the reference genome from the package data and reformat it to biomaRt format
     x <-  list(reference_genome = genome)
     genes_position <- get_gene_annotations(x) %>%
       dplyr::rename(chromosome_name = chr, start_position = from, end_position = to, hgnc_symbol = gene)

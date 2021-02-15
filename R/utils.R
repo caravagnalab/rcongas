@@ -32,21 +32,21 @@ get_gene_annotations = function(x)
 
 
 relative_to_absolute_coordinates <- function(df, genome = "hg38") {
-  karyo <- load_genome(genome)
+  karyo <- get_karyotype(list(reference_genome = genome))
   karyo_sum <- cumsum(c(0, karyo))
   karyo_sum <- karyo_sum[-length(karyo_sum)]
   names(karyo_sum) <- names(karyo)
   
   
   df <-
-    df %>% mutate(to = to + karyo_sum[chr], from = from + karyo_sum[chr])
+    df %>% dplyr::mutate(to = to + karyo_sum[chr], from = from + karyo_sum[chr])
   
   return(df)
 }
 
 
-absolute_t_relative_coordinates <- function(df, genome = "hg38") {
-  karyo <- load_genome(genome)
+absolute_to_relative_coordinates <- function(df, genome = "hg38") {
+  karyo <- get_karyotype(list(reference_genome = genome))
   karyo_sum <- cumsum(c(0, karyo))
   karyo_sum <- karyo_sum[-length(karyo_sum)]
   names(karyo_sum) <- names(karyo)
