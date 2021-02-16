@@ -122,8 +122,8 @@
 <span class="co">#&gt; ● Cluster c1, n = 379 [75.2% of total cells].</span>
 <span class="co">#&gt; ● Cluster c2, n = 125 [24.8% of total cells].</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── CNA highlights</span>
-<span class="co">#&gt; ✓  4 CNA(s):  chr14:93300001:105450000, chr15:67050001:102600000, chr16:1:3750000, and chr18:32400001:55950000</span>
+<span class="co">#&gt; ── CNA highlights (alpha = 0.05)</span>
+<span class="co">#&gt; ✓  c1 CNA(s):  [chr14:93300001:105450000] vs c2, [chr15:67050001:102600000] vs c2, [chr16:1:3750000] vs c2, and [chr18:32400001:55950000] vs c2</span>
 <span class="co">#&gt; ℹ Model scored with AIC = 269370.73</span>
 <span class="co">#&gt; ● Differential Expression analysis for 1 vs 2 with the DESeq2 method: 212 DE</span>
 <span class="co">#&gt; genes at level alpha 0.01, with |lfc| &gt; 0.25.</span></code></pre></div>
@@ -153,6 +153,7 @@
 <h2 class="hasAnchor">
 <a href="#chromosomes-highlight" class="anchor"></a>Chromosomes highlight</h2>
 <p>The criterion to highlight a CNA in a fit is determined from this distribution with a parameter <code>alpha</code> that sets the vertical dashed line (is a quantile).</p>
+<p>This is a heuristic.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Default</span>
 <span class="fu"><a href="../reference/plot_highlights.html">plot_highlights</a></span><span class="op">(</span><span class="va">congas_example</span><span class="op">)</span></code></pre></div>
@@ -170,11 +171,11 @@
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Plot chromosome 1 (labeled "chr1")</span>
 <span class="fu"><a href="../reference/plot_chromosome.html">plot_chromosome</a></span><span class="op">(</span><span class="va">congas_example</span>, chr <span class="op">=</span> <span class="st">'chr1'</span><span class="op">)</span></code></pre></div>
-<p><img src="3_Plotting_functions_files/figure-html/unnamed-chunk-7-1.png" width="576"></p>
+<p><img src="3_Plotting_functions_files/figure-html/unnamed-chunk-7-1.png" width="672"></p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Plot chromosome 15 (labeled "chr15")</span>
 <span class="fu"><a href="../reference/plot_chromosome.html">plot_chromosome</a></span><span class="op">(</span><span class="va">congas_example</span>, chr <span class="op">=</span> <span class="st">'chr15'</span><span class="op">)</span></code></pre></div>
-<p><img src="3_Plotting_functions_files/figure-html/unnamed-chunk-8-1.png" width="576"></p>
+<p><img src="3_Plotting_functions_files/figure-html/unnamed-chunk-8-1.png" width="672"></p>
 </div>
 <div id="plotting-input-segments-data" class="section level2">
 <h2 class="hasAnchor">
@@ -182,12 +183,14 @@
 <p>You can visualise the actual input data used by CONGAS, using function <code>plot_counts_rna_segments</code>: these are the counts per segments, after genes have been mapped and filtered as explained in <code>XXXX</code>.</p>
 <p>The function plots a heatmap-style view of the data, with associated the clustering assignments of each cell (rows). In order to plot these data you need to retr</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plot_counts_rna_segments.html">plot_counts_rna_segments</a></span><span class="op">(</span><span class="va">congas_example</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="co"># Use z-score, using counts normalisation</span>
+<span class="fu"><a href="../reference/plot_counts_rna_segments.html">plot_counts_rna_segments</a></span><span class="op">(</span><span class="va">congas_example</span>, z_score <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p><img src="3_Plotting_functions_files/figure-html/unnamed-chunk-9-1.png" width="480"></p>
-<p>The same information can be plot without counts normalisation.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plot_counts_rna_segments.html">plot_counts_rna_segments</a></span><span class="op">(</span><span class="va">congas_example</span>, normalised <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
-<p><img src="3_Plotting_functions_files/figure-html/unnamed-chunk-10-1.png" width="480"></p>
+<code class="sourceCode R">
+<span class="co"># Without counts normalisation and without z-score.</span>
+<span class="fu"><a href="../reference/plot_counts_rna_segments.html">plot_counts_rna_segments</a></span><span class="op">(</span><span class="va">congas_example</span>, normalised <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+<p><img src="3_Plotting_functions_files/figure-html/unnamed-chunk-9-2.png" width="480"></p>
 </div>
 <div id="plotting-input-raw-data" class="section level2">
 <h2 class="hasAnchor">
@@ -198,9 +201,9 @@
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Raw input counts. Since we have them stored in "congas_example",</span>
 <span class="co"># we can access them straight from the object</span>
-<span class="va">raw_input</span> <span class="op">=</span> <span class="fu"><a href="../reference/get_input_raw_data.html">get_input_raw_data</a></span><span class="op">(</span><span class="va">congas_example</span><span class="op">)</span> <span class="op">%&gt;%</span>  <span class="va">t</span>
+<span class="va">raw_input</span> <span class="op">=</span> <span class="fu"><a href="../reference/get_input_raw_data.html">get_input_raw_data</a></span><span class="op">(</span><span class="va">congas_example</span>, transpose <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>
 
-<span class="co"># Used genes - just the a random set of 50. Wem use the "get_mapped_genes"</span>
+<span class="co"># Used genes - just the a random set of 30. Wem use the "get_mapped_genes"</span>
 <span class="co"># function to get the ones actually used in "congas_example"</span>
 <span class="va">random_30_genes</span> <span class="op">=</span> <span class="fu"><a href="../reference/get_mapped_genes.html">get_mapped_genes</a></span><span class="op">(</span><span class="va">congas_example</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/sample_n.html">sample_n</a></span><span class="op">(</span><span class="fl">30</span><span class="op">)</span> <span class="op">%&gt;%</span>
@@ -208,7 +211,8 @@
 
 <span class="co"># Plot</span>
 <span class="fu"><a href="../reference/plot_raw_data.html">plot_raw_data</a></span><span class="op">(</span>
-  x <span class="op">=</span> <span class="va">raw_input</span>,lognormalise <span class="op">=</span> <span class="cn">T</span>,
+  x <span class="op">=</span> <span class="va">raw_input</span>,
+  lognormalise <span class="op">=</span> <span class="cn">T</span>,
   genes <span class="op">=</span> <span class="va">random_30_genes</span>,
   prompt <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 
@@ -222,9 +226,15 @@
 <span class="co"># Now we use the DE genes (see below)</span>
 <span class="fu"><a href="../reference/plot_raw_data.html">plot_raw_data</a></span><span class="op">(</span>
   x <span class="op">=</span> <span class="va">raw_input</span>,
-  genes <span class="op">=</span> <span class="fu"><a href="../reference/get_DE_table.html">get_DE_table</a></span><span class="op">(</span><span class="va">congas_example</span>, cut_pvalue <span class="op">=</span> <span class="fl">1e-4</span>, cut_lfc <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">gene</span><span class="op">)</span>,
-  clusters <span class="op">=</span> <span class="fu"><a href="../reference/get_clusters.html">get_clusters</a></span><span class="op">(</span><span class="va">congas_example</span><span class="op">)</span>, lognormalise <span class="op">=</span> <span class="cn">T</span>,
-  prompt <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+  genes <span class="op">=</span> <span class="fu"><a href="../reference/get_DE_table.html">get_DE_table</a></span><span class="op">(</span> <span class="co"># DE genes selected</span>
+    <span class="va">congas_example</span>, 
+    cut_pvalue <span class="op">=</span> <span class="fl">0.001</span>, 
+    cut_lfc <span class="op">=</span> <span class="fl">.75</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">gene</span><span class="op">)</span>,
+  clusters <span class="op">=</span> <span class="fu"><a href="../reference/get_clusters.html">get_clusters</a></span><span class="op">(</span><span class="va">congas_example</span><span class="op">)</span>,
+  lognormalise <span class="op">=</span> <span class="cn">T</span>,
+  prompt <span class="op">=</span> <span class="cn">FALSE</span>
+<span class="op">)</span></code></pre></div>
 </div>
 <div id="plotting-de-analysis" class="section level2">
 <h2 class="hasAnchor">
@@ -235,12 +245,12 @@
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Default plot</span>
 <span class="fu"><a href="../reference/plot_DE_volcano.html">plot_DE_volcano</a></span><span class="op">(</span><span class="va">congas_example</span><span class="op">)</span></code></pre></div>
-<p><img src="3_Plotting_functions_files/figure-html/unnamed-chunk-12-1.png" width="480"></p>
+<p><img src="3_Plotting_functions_files/figure-html/unnamed-chunk-11-1.png" width="480"></p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="co"># Setting the cut on LFC to 0</span>
 <span class="fu"><a href="../reference/plot_DE_volcano.html">plot_DE_volcano</a></span><span class="op">(</span><span class="va">congas_example</span>, cut_pvalue <span class="op">=</span> <span class="fl">0.05</span>, cut_lfc <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></code></pre></div>
-<p><img src="3_Plotting_functions_files/figure-html/unnamed-chunk-12-2.png" width="480"></p>
+<p><img src="3_Plotting_functions_files/figure-html/unnamed-chunk-11-2.png" width="480"></p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="co"># Requiring lower p-value, decreasing LFC, and annotating top 10 genes</span>
@@ -250,7 +260,7 @@
   cut_pvalue <span class="op">=</span> <span class="fl">1e-6</span>,
   cut_lfc <span class="op">=</span> <span class="fl">0.15</span>
 <span class="op">)</span></code></pre></div>
-<p><img src="3_Plotting_functions_files/figure-html/unnamed-chunk-12-3.png" width="480"></p>
+<p><img src="3_Plotting_functions_files/figure-html/unnamed-chunk-11-3.png" width="480"></p>
 <p>It is possible to integrate the whole-genome view of the copy number segments, together with the results from a DE analysis.</p>
 <p>The combined plot shows, on top of the segments, the total number of deferentially expressed genes (DEGs) that map to the segments as well as their relative frequency with respect to genes that map to the segments, and that have beend tested for DE status. On top, the plot reports also a line plot showing where other DEGs have been found, which however map off the CNA segments used by CONGAS.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
@@ -260,7 +270,7 @@
 
 <span class="co">#&gt; Warning: Removed 16 rows containing missing values (geom_rect).</span>
 <span class="co">#&gt; Warning: Removed 16 rows containing missing values (geom_point).</span></code></pre></div>
-<p><img src="3_Plotting_functions_files/figure-html/unnamed-chunk-13-1.png" width="768"></p>
+<p><img src="3_Plotting_functions_files/figure-html/unnamed-chunk-12-1.png" width="768"></p>
 </div>
 <div id="plot-data-statistics" class="section level2">
 <h2 class="hasAnchor">
@@ -273,33 +283,44 @@
 </ul>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plot_report_segments.html">plot_report_segments</a></span><span class="op">(</span><span class="va">congas_example</span>, transpose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="co">#&gt; ℹ Working with n = 34119 genes, and 505 cells</span>
+<span class="co">#&gt; ℹ Working with n = 8247 genes, and 505 cells</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; ── Mapping data for cluster c1</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; ── Mapping data for cluster c2</span></code></pre></div>
-<p><img src="3_Plotting_functions_files/figure-html/unnamed-chunk-14-1.png" width="960"></p>
+<p><img src="3_Plotting_functions_files/figure-html/unnamed-chunk-13-1.png" width="960"></p>
 <p>The counts distribution per segment, with annotated quantiles.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plot_counts_per_segment.html">plot_counts_per_segment</a></span><span class="op">(</span><span class="va">congas_example</span>, transpose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="co">#&gt; ℹ Working with n = 34119 genes, and 505 cells; computing cutoffs per segment</span>
+<span class="co">#&gt; ℹ Working with n = 8247 genes, and 505 cells; computing cutoffs per segment</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; ── Mapping data for cluster c1</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; ── Mapping data for cluster c2</span></code></pre></div>
-<p><img src="3_Plotting_functions_files/figure-html/unnamed-chunk-15-1.png" width="1152"></p>
-<p>The cells statistics.</p>
+<p><img src="3_Plotting_functions_files/figure-html/unnamed-chunk-14-1.png" width="1152"></p>
+<p>The cohort statistics (three plots):</p>
+<ul>
+<li>percentage of 0s in cell counts (to find cells with little count information)</li>
+<li>counts distribution across all cohort (to find outliers in count data)</li>
+<li>percentage of 0s in gene counts (to find genes expressed in a little portion of the population)</li>
+</ul>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plot_cell_statistics.html">plot_cell_statistics</a></span><span class="op">(</span><span class="va">congas_example</span>, transpose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="co">#&gt; Warning: Transformation introduced infinite values in continuous y-axis</span>
-<span class="co">#&gt; Warning: Removed 33 rows containing missing values (geom_bar).</span></code></pre></div>
-<p><img src="3_Plotting_functions_files/figure-html/unnamed-chunk-16-1.png" width="480"></p>
+<code class="sourceCode R"><span class="co"># Returns a number of plots with different statistics</span>
+<span class="fu"><a href="../reference/plot_cohort_statistics.html">plot_cohort_statistics</a></span><span class="op">(</span><span class="va">congas_example</span>, transpose <span class="op">=</span> <span class="cn">TRUE</span>, assembly <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="co">#&gt; $zeroes</span></code></pre></div>
+<p><img src="3_Plotting_functions_files/figure-html/unnamed-chunk-15-1.png" width="384"></p>
+<pre><code>#&gt; 
+#&gt; $counts</code></pre>
+<p><img src="3_Plotting_functions_files/figure-html/unnamed-chunk-15-2.png" width="384"></p>
+<pre><code>#&gt; 
+#&gt; $genes</code></pre>
+<p><img src="3_Plotting_functions_files/figure-html/unnamed-chunk-15-3.png" width="384"></p>
 </div>
 <div id="plot-genes-mapped-on-segments" class="section level2">
 <h2 class="hasAnchor">
 <a href="#plot-genes-mapped-on-segments" class="anchor"></a>Plot genes mapped on segments</h2>
 <p>Plots counts (raw data) for genes mapped across the genome. By default, it normalises by library size and input copy number for the segment to which each gene maps to.</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plot_gene_counts_on_genome.html">plot_gene_counts_on_genome</a></span><span class="op">(</span><span class="va">congas_example</span>, transpose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="co">#&gt; Warning in get_genes_mapped_to_segments(x, ...): get_gene_annotations() is</span>
 <span class="co">#&gt; missing annotations for some input genes ...</span>
@@ -309,29 +330,40 @@
 <span class="co">#&gt; Call `lifecycle::last_warnings()` to see where this warning was generated.</span>
 <span class="co">#&gt; Warning in plot_gene_counts_on_genome(congas_example, transpose = TRUE): Some</span>
 <span class="co">#&gt; genes are not mapped to the, check raw data.</span></code></pre></div>
+<p><img src="3_Plotting_functions_files/figure-html/unnamed-chunk-16-1.png" width="1152"></p>
+<p>You can also see the standard deviation of the genes mapping to the genome, which helps detecting clusters of high variations in count numbers in specific clusters.</p>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># All chromosomes at once</span>
+<span class="fu"><a href="../reference/plot_gene_stdev.html">plot_gene_stdev</a></span><span class="op">(</span><span class="va">congas_example</span>, transpose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p><img src="3_Plotting_functions_files/figure-html/unnamed-chunk-17-1.png" width="1152"></p>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Chromosome 7, split by segment</span>
+<span class="fu"><a href="../reference/plot_gene_stdev.html">plot_gene_stdev</a></span><span class="op">(</span><span class="va">congas_example</span>, transpose <span class="op">=</span> <span class="cn">TRUE</span>, 
+                chromosomes <span class="op">=</span> <span class="st">'chr7'</span>, 
+                by_segment <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<p><img src="3_Plotting_functions_files/figure-html/unnamed-chunk-18-1.png" width="576"></p>
 </div>
 <div id="analysis-reports" class="section level2">
 <h2 class="hasAnchor">
 <a href="#analysis-reports" class="anchor"></a>Analysis report(s)</h2>
 <p>A full report assembles some of these visualisations.</p>
 <p>This is a standard analysis report.</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/report_analysis.html">report_analysis</a></span><span class="op">(</span><span class="va">congas_example</span>, transpose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="co">#&gt; ✓ Loading ctree, 'Clone trees in cancer'. Support : &lt;https://caravagn.github.io/ctree/&gt;</span>
 <span class="co">#&gt; Warning: replacing previous import 'Biostrings::translate' by</span>
 <span class="co">#&gt; 'seqinr::translate' when loading 'dndscv'</span>
 <span class="co">#&gt; ✔ Loading mobster, 'Model-based clustering in cancer'. Support :</span>
 <span class="co">#&gt; &lt;https://caravagn.github.io/mobster/&gt;.</span></code></pre></div>
-<p><img src="3_Plotting_functions_files/figure-html/unnamed-chunk-18-1.png" width="1536"></p>
+<p><img src="3_Plotting_functions_files/figure-html/unnamed-chunk-19-1.png" width="1536"></p>
 <p>This is to focus on Differential Expressions.</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/report_analysis_de.html">report_analysis_de</a></span><span class="op">(</span><span class="va">congas_example</span><span class="op">)</span>
 <span class="co">#&gt; Warning: Removed 16 rows containing missing values (geom_rect).</span>
 
 <span class="co">#&gt; Warning: Removed 16 rows containing missing values (geom_rect).</span>
 <span class="co">#&gt; Warning: Removed 16 rows containing missing values (geom_point).</span></code></pre></div>
-<p><img src="3_Plotting_functions_files/figure-html/unnamed-chunk-19-1.png" width="1536"></p>
+<p><img src="3_Plotting_functions_files/figure-html/unnamed-chunk-20-1.png" width="1536"></p>
 </div>
   </div>
 

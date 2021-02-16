@@ -8,6 +8,7 @@ get_input_raw_data(
   x,
   transpose = FALSE,
   only_clustered_cells = TRUE,
+  only_mapped_genes = TRUE,
   as_tibble = FALSE
 )
 }

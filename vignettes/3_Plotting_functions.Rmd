@@ -62,6 +62,8 @@ plot_gw_cna_profiles(congas_example, whole_genome = TRUE, chromosomes = 'chr4')
 
 The criterion to highlight a CNA in a fit is determined from this distribution with a parameter `alpha` that sets the vertical dashed line (is a quantile).
 
+This is a heuristic.
+
 
 ```{r, fig.width=8, fig.height=3}
 # Default
@@ -77,12 +79,12 @@ plot_highlights(congas_example, alpha = 0.001)
 
 You can plot a chromosome by specifying its id. The height of the plot should be adjusted depending on the number of segments in the chromosome. If DE analysis is available (see below), a chromosome specific volcano plot is added
 
-```{r, fig.width=6, fig.height=3}
+```{r, fig.width=7, fig.height=4}
 # Plot chromosome 1 (labeled "chr1")
 plot_chromosome(congas_example, chr = 'chr1')
 ```
 
-```{r, fig.width=6, fig.height=3}
+```{r, fig.width=7, fig.height=4}
 # Plot chromosome 15 (labeled "chr15")
 plot_chromosome(congas_example, chr = 'chr15')
 ```
@@ -94,11 +96,10 @@ You can visualise the actual input data used by CONGAS, using function `plot_cou
 The function plots a heatmap-style view of the data, with associated the clustering assignments of each cell (rows). In order to plot these data you need to retr
 
 ```{r, fig.width=5, fig.height=5}
-plot_counts_rna_segments(congas_example)
-```
+# Use z-score, using counts normalisation
+plot_counts_rna_segments(congas_example, z_score = TRUE)
 
-The same information can be plot without counts normalisation.
-```{r, fig.width=5, fig.height=5}
+# Without counts normalisation and without z-score.
 plot_counts_rna_segments(congas_example, normalised = FALSE)
 ```
 
@@ -115,9 +116,9 @@ The plot can be generated with, and without clustering assignments.
 ```{r, fig.width=5, fig.height=7, eval=FALSE}
 # Raw input counts. Since we have them stored in "congas_example",
 # we can access them straight from the object
-raw_input = get_input_raw_data(congas_example) %>%  t
+raw_input = get_input_raw_data(congas_example, transpose = T)
 
-# Used genes - just the a random set of 50. Wem use the "get_mapped_genes"
+# Used genes - just the a random set of 30. Wem use the "get_mapped_genes"
 # function to get the ones actually used in "congas_example"
 random_30_genes = get_mapped_genes(congas_example) %>%
   dplyr::sample_n(30) %>%
@@ -125,7 +126,8 @@ random_30_genes = get_mapped_genes(congas_example) %>%
 
 # Plot
 plot_raw_data(
-  x = raw_input,lognormalise = T,
+  x = raw_input,
+  lognormalise = T,
   genes = random_30_genes,
   prompt = FALSE)
 
@@ -139,9 +141,15 @@ plot_raw_data(
 # Now we use the DE genes (see below)
 plot_raw_data(
   x = raw_input,
-  genes = get_DE_table(congas_example, cut_pvalue = 1e-4, cut_lfc = 1) %>% dplyr::pull(gene),
-  clusters = get_clusters(congas_example), lognormalise = T,
-  prompt = FALSE)
+  genes = get_DE_table( # DE genes selected
+    congas_example, 
+    cut_pvalue = 0.001, 
+    cut_lfc = .75) %>% 
+    dplyr::pull(gene),
+  clusters = get_clusters(congas_example),
+  lognormalise = T,
+  prompt = FALSE
+)
 
 ```
 
@@ -196,10 +204,15 @@ The counts distribution per segment, with annotated quantiles.
 plot_counts_per_segment(congas_example, transpose = TRUE)
 ```
 
-The cells statistics.
+The cohort statistics (three plots):
 
-```{r, fig.width=5, fig.height=3}
-plot_cell_statistics(congas_example, transpose = TRUE)
+- percentage of 0s in cell counts (to find cells with little count information)
+- counts distribution across all cohort (to find outliers in count data)
+- percentage of 0s in gene counts (to find genes expressed in a little portion of the population)
+
+```{r, fig.width=4, fig.height=3, warning=FALSE}
+# Returns a number of plots with different statistics
+plot_cohort_statistics(congas_example, transpose = TRUE, assembly = FALSE)
 ```
 
 ## Plot genes mapped on segments
@@ -210,7 +223,19 @@ Plots counts (raw data) for genes mapped across the genome. By default, it norma
 plot_gene_counts_on_genome(congas_example, transpose = TRUE)
 ```
 
+You can also see the standard deviation of the genes mapping to the genome, which helps detecting clusters of high variations in count numbers in specific clusters.
 
+```{r, fig.width=12, fig.height=12, warning=FALSE, message=FALSE}
+# All chromosomes at once
+plot_gene_stdev(congas_example, transpose = TRUE)
+```
+
+```{r, fig.width = 6, fig.height=3, warning=FALSE, message=FALSE}
+# Chromosome 7, split by segment
+plot_gene_stdev(congas_example, transpose = TRUE, 
+                chromosomes = 'chr7', 
+                by_segment = TRUE)
+```
 
 ## Analysis report(s)
 

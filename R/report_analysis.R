@@ -59,7 +59,7 @@ report_analysis <- function(x, cex = 1, ...)
   highlights_segments = Rcongas:::get_segment_ids(x, highlight = TRUE) %>% unique
   
   # 2p
-  p1 = lapply(plot_cell_statistics(x, assembly = FALSE, ...), curate)
+  p1 = lapply(plot_cohort_statistics(x, assembly = FALSE, ...), curate)
   
   # 1p
   p2 <- plot_mixing_proportions(x) %>% curate
