@@ -1,50 +1,63 @@
 #' Title
 #'
 #' @param x
-#' @param transpose 
+#' @param all_genes 
+#' @param as_matrix 
 #' @param all_cells 
-#' @param as_tibble 
 #'
 #' @return
 #' @export
 #'
 #' @examples
 get_input_raw_data = function(x, 
-                              transpose = FALSE, 
-                              only_clustered_cells = TRUE, 
-                              only_mapped_genes = TRUE,
-                              as_tibble = FALSE)
+                              all_cells = FALSE, 
+                              all_genes = FALSE,
+                              add_locations = FALSE,
+                              as_matrix = FALSE)
 {
-  if (all(is.null(x$data$gene_counts))) {
-    cli::cli_alert_warning("Input data has not been stored in the object, re-run the analysis with XXX = TRUE ...")
+  if (all(is.null(x$data$raw))) {
+    
+    cli::cli_alert_warning("Input counts are missing, check the init function to see how you created the data")
+    
     return(NULL)
   }
   
-  y = x$data$gene_counts
+  if(as_matrix & add_locations){
+    cli::cli_alert_warning("Incompatible TRUE values for 'add_locations' and 'as_matrix', using only 'as_matrix'.")
+    add_locations = FALSE
+  }
+
+  # What we return
+  y = x$data$raw
   
-  if(transpose) y = t(x$data$gene_counts)
+  # Cells (retain only those used to compute the mappings)
+  if(!all_cells) 
+  {
+    y = y %>% filter(cell %in% (x$data$counts %>% rownames))
+  }
   
-  if(only_clustered_cells && has_inference(x))
-     y = y[, colnames(y) %in% (get_clusters(x) %>% pull(cell)), drop = FALSE]
+  # Cells (retain only those used to compute the mappings)
+  if(!all_genes) 
+  {
+    y = y %>% filter(gene %in% (x$data$gene_locations$gene))
+  }
   
-  # Retain only genes
-  if(only_mapped_genes && has_inference(x))
-    y = y[rownames(y) %in% (get_mapped_genes(x) %>% pull(gene)), , drop = FALSE]
+  # Matrix transform only if required
+  if(as_matrix) 
+  {
+    # Spread, change NAs to 0
+    y_matrix = y %>% spread(gene, n) %>% replace(is.na(.), 0)
+    y_mmatrix = y_matrix %>% dplyr::select(-cell) %>% as.matrix()
+    rownames(y_mmatrix) = y_matrix$cell
   
-  if(!as_tibble) return(y)
+    return(y_mmatrix)
+  }
   
-  y_tb = y %>% 
-    t %>% 
-    as_tibble 
-  # %>% 
-  #   mutate_all(~ replace(., . == 0, NA))
+  # add_locations
+  if(add_locations)
+    y = y %>% left_join(x %>% get_mapped_genes(), by = 'gene')
   
-  y_tb$cell = colnames(y)
-  y_tb_melt = reshape2::melt(y_tb, id = 'cell') %>% dplyr::as_tibble()
-    
-  y_tb_melt = y_tb_melt %>% 
-    filter(value > 0) %>% 
-    rename(gene = variable, count = value) 
   
-  return(y_tb_melt)
+  return(y)
+
 }

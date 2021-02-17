@@ -1,19 +1,3 @@
-#' Title
-#'
-#' @param x
-#'
-#' @return
-#' @export
-#'
-#' @examples
-get_model_description = function(x)
-{
-  if (all(is.null(x$description)))
-    return("My CONGAS model")
-  
-  return(x$description)
-}
-
 
 #' Title
 #'
@@ -99,83 +83,13 @@ get_counts <-
   }
 
 
-# get_counts_matrix = function(x)
-# {
-#   if (all(is.null(x$data$counts))) {
-#     cli::cli_alert_warning("Input data has not been stored in the object, re-run the analysis with XXX = TRUE ...")
-#     return(NULL)
-#   }
-#
-#   return(x$data$counts)
-# }
-
-
-
-#' Title
-#'
-#' @param x
-#' @param chromosomes
-#'
-#' @return
-#' @export
-#'
-#' @examples
-get_input_segmentation = function(x,
-                                  chromosomes = paste0("chr", c(1:22, "X", "Y")))
-{
-  # Break the internal naming system
-  df_segments = lapply(strsplit(x$inference$models[[1]]$dim_names$seg_names, split = ':'),
-                       function(x) {
-                         data.frame(
-                           chr = x[1],
-                           from = x[2],
-                           to = x[3],
-                           stringsAsFactors = FALSE
-                         )
-                       })
-  
-  df_segments = Reduce(dplyr::bind_rows, df_segments) %>% dplyr::as_tibble()
-  df_segments$from = as.numeric(df_segments$from)
-  df_segments$to = as.numeric(df_segments$to)
-  
-  # Fix missing chr label
-  if (!grepl('chr', df_segments$chr[1]))
-  {
-    cli::cli_alert_warning("Missing `chr` prefix in chromosomes labels, added now.")
-    
-    df_segments = df_segments %>% dplyr::mutate(chr = paste0("chr", chr))
-  }
-  
-  # Add other information(s)
-  df_segments = df_segments %>%
-    dplyr::left_join(x$data$cnv, by = c('chr', 'from', 'to')) %>%
-    dplyr::mutate(size = to - from) %>%
-    dplyr::select(chr, from, to, size, dplyr::everything()) %>%
-    deidify()
-  
-  
-  return(df_segments %>% dplyr::filter(chr %in% chromosomes))
-}
-
-#' Title
-#'
-#' @param x
-#' @param chromosomes
-#'
-#' @return
-#' @export
-#'
-#' @examples
 get_mapped_genes = function(x,
                             chromosomes = paste0("chr", c(1:22, "X", "Y")))
 {
   x$data$gene_locations %>%
-    dplyr::select(-segment_id) %>%
+    # dplyr::select(-segment_id) %>%
     dplyr::filter(chr %in% chromosomes)
 }
-
-
-
 
 
 
