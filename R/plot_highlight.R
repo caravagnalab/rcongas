@@ -189,6 +189,8 @@
 #' plot_highlights(x, alpha = 0.001)
 plot_highlights = function(x, alpha = 0.05)
 {
+  stopifnot(has_inference(x))
+  
   tests_table = highlights(x, alpha) %>%
     mutate(label = paste(cluster , 'vs', versus))
   

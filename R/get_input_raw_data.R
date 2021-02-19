@@ -64,7 +64,7 @@ get_input_raw_data = function(x,
     y = y %>% left_join(x %>% get_mapped_genes(), by = 'gene')
   
   # Cells (retain only those used to compute the mappings)
-  if(!add_clusters) 
+  if(add_clusters) 
   {
     y = y %>% 
       left_join(

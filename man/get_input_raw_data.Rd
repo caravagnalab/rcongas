@@ -9,6 +9,7 @@ get_input_raw_data(
   all_cells = FALSE,
   all_genes = FALSE,
   add_locations = FALSE,
+  add_clusters = FALSE,
   as_matrix = FALSE
 )
 }

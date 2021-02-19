@@ -8,6 +8,8 @@ plot_gene_counts_on_genome(
   x,
   cutoff_quantile_sd = 0.95,
   normalise = c("ls", "cn"),
+  chromosomes = paste0("chr", c(1:22, "X", "Y")),
+  assembly = TRUE,
   ...
 )
 }

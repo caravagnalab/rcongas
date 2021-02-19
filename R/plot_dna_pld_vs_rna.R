@@ -126,7 +126,7 @@ plot_dna_pld_vs_rna <- function(x, library_size_norm = FALSE) {
       fill = 'steelblue'
     ) +
     CNAqc:::my_ggplot_theme()  +
-    labs(y='Counts') +
+    labs(y= bquote('Counts/'~mu)) +
     geom_rect(
       aes(
         xmin = from,
@@ -146,10 +146,15 @@ plot_dna_pld_vs_rna <- function(x, library_size_norm = FALSE) {
     ),fill = "red",
     data = plot_df
     ) +
-    labs(title = "Counts along the genome", subtitle = "Input segmentation: bottom line.")
+    labs(title = "DNA ploidy vs RNA counts", 
+         # subtitle = "Input segmentation: bottom line."
+         )
   
   if(library_size_norm) +
-    p1 = labs(caption = "Counts normalised by library size.")
+    p1 = p1 + labs(caption = "Counts normalised by library size.")
+  else     
+    p1 = p1 + labs(caption = "Raw counts.")
+
   
   # if(max(plot_df$ploidy_real) < 3.5) p1 = p1 + ylim(0,5)
   

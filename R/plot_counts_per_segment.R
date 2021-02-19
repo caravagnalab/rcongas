@@ -20,7 +20,16 @@ plot_counts_per_segment = function(x,
   stopifnot(inherits(x, 'rcongas'))
   
   # Get input raw data in the object
-  input_rna = get_input_raw_data(x, add_locations = TRUE, ...)
+  if (has_inference(x))
+  {
+    input_RNA = get_input_raw_data(x, add_locations = TRUE, add_clusters = TRUE,  ...) 
+  }
+  else
+  {
+    input_RNA = get_input_raw_data(x, add_locations = TRUE, add_clusters = FALSE,  ...)
+    
+    input_RNA$cluster = "Not available"
+  }
   
   if (length(quantiles) != 2) {
     cli::cli_alert_info("Quantiles {.field {quantiles}}; should have 2 values, using default.")
@@ -32,8 +41,8 @@ plot_counts_per_segment = function(x,
   {
     cli::cli_alert_info("Normalising for library size..")
     
-    input_rna = input_rna %>%
-      left_join(input_rna %>%
+    input_RNA = input_RNA %>%
+      left_join(input_RNA %>%
                   group_by(cell) %>%
                   summarise(lib_size_factor = sum(n)),
                 by = 'cell') %>% 
@@ -61,21 +70,21 @@ plot_counts_per_segment = function(x,
   }
   
   # Used genes
-  used_genes = input_rna %>% pull(gene) %>% unique %>% length
+  used_genes = input_RNA %>% pull(gene) %>% unique %>% length
   
-  if (nrow(input_rna) == 0)
+  if (nrow(input_RNA) == 0)
   {
     cli::cli_alert_danger("No RNA counts in the data, returning empty plot.")
     return(ggplot())
   }
   
   # Retain only required "chromosomes"
-  input_rna = input_rna %>%
+  input_RNA = input_RNA %>%
     filter(chr %in% chromosomes)
   
   
   # # Unify gene names if required
-  # unique_gene_names = rownames(input_rna) %>% make.unique()
+  # unique_gene_names = rownames(input_RNA) %>% make.unique()
   # nrow(input_rna) == length(unique_gene_names)
   # rownames(input_rna) = unique_gene_names
   # 
@@ -97,15 +106,9 @@ plot_counts_per_segment = function(x,
   # )
   
   # Creation of the required tibble - specific behaviour if there are clusters
-  with_clustering_results = Rcongas:::has_inference(x)
+  # with_clustering_results = Rcongas:::has_inference(x)
   
-  if(!with_clustering_results)
-    input_rna$cluster = "Not available"
-  else
-  {
-    clusters = get_clusters(x) %>% select(cell, cluster)
-    ...
-  }
+  
   #   
   # df_genes = df_levels = NULL
   # if (!with_clustering_results)
@@ -162,7 +165,7 @@ plot_counts_per_segment = function(x,
   }
   
   # Add ploidy information
-  input_rna = input_rna  %>%
+  input_RNA = input_RNA  %>%
     left_join(
       get_input_segmentation(x, chromosomes = chromosomes) %>%
         Rcongas:::idify() %>%
@@ -173,14 +176,14 @@ plot_counts_per_segment = function(x,
     ) 
   
   # Computing quantiles per segment
-  quantiles_df = input_rna %>%
+  quantiles_df = input_RNA %>%
     group_by(segment_id) %>%
     mutate(q_1 = quantile(n, quantiles[1]),
            q_2 = quantile(n, quantiles[2])) %>%
     distinct(segment_id, ploidy_real, q_1, q_2)
   
   # Plot
-  ggplot(input_rna,
+  ggplot(input_RNA,
          aes(n, fill = cluster)) +
     geom_histogram(bins = 100) +
     facet_wrap(ploidy_real ~ segment_id, ncol = 6, scales = 'free_x') +
