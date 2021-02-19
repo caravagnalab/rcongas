@@ -2,12 +2,13 @@
 #'
 #' @param x
 #' @param ...
+#' @param cex
 #'
 #' @return
 #' @export
 #'
 #' @examples
-report_data = function(x, ...)
+report_data = function(x, cex = 1, ...)
 {
   curate = function(p) {
     p +
@@ -34,7 +35,7 @@ report_data = function(x, ...)
   
   # Top panel
   prna = plot_counts_rna_segments(x, z_score = TRUE, chromosomes = to_show, ...) +
-    theme(axis.text.x = element_blank()) +
+    theme(axis.text.x = element_blank()) %>%
     curate()
   
   pcs = plot_cohort_statistics(x, assembly = FALSE, ...)
@@ -42,20 +43,8 @@ report_data = function(x, ...)
   tp_strip = cowplot::plot_grid(plotlist = lapply(pcs,  curate),
                                 ncol = 3,
                                 nrow = 1)
-  
-  
-  # tp_panel = cowplot::plot_grid(
-  #   plotlist = append(list(prna), pcs),w
-  #   ncol = 4,
-  #   nrow = 1,
-  #   rel_widths = c(1, .5, .5, .5),
-  #   axis = 'tb',
-  #   align = 'h'
-  # )
-  
-  # return(tp_panel)
-  
-  pcps = plot_counts_per_segment(x, chromosomes = to_show, ...) +
+  # Counts per segment
+  pcps = plot_counts_per_segment(x, chromosomes = to_show, ...) %>%
     curate()
   
   tp_panel = cowplot::plot_grid(
@@ -88,8 +77,8 @@ report_data = function(x, ...)
   pgcg = plot_gene_counts_on_genome(x, chromosomes = to_show, assembly = FALSE, ...)
   
   pgcg[[1]] = pgcg[[1]] +
-    labs(title ="Counts across the genome")
-    curate()
+    labs(title = "Counts across the genome") %>% 
+  curate()
   
   pgcg = ggpubr::ggarrange(
     plotlist = pgcg,
@@ -104,7 +93,7 @@ report_data = function(x, ...)
                         ...)
   
   pgst[[1]] = pgst[[1]] +
-    labs(title ="Gene rank")
+    labs(title = "Gene rank") %>% 
   curate()
   
   

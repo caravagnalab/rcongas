@@ -4,6 +4,7 @@
 #'
 #' @param x
 #' @param ...
+#' @param cex 
 #'
 #' @return
 #' @export
