@@ -23,6 +23,14 @@ report_data = function(x, ...)
       )
   }
   
+  # Mid and bottom panels: what we show
+  to_show = get_input_segmentation(x) %>% pull(chr) %>% unique
+  
+  if (has_inference(x))
+    to_show = highlights(x, ...) %>%
+    filter(highlight) %>%
+    pull(chr) %>%
+    unique
   
   # Top panel
   prna = plot_counts_rna_segments(x, z_score = TRUE, chromosomes = to_show, ...) +
@@ -46,15 +54,6 @@ report_data = function(x, ...)
   # )
   
   # return(tp_panel)
-  
-  # Mid and bottom panels: what we show
-  to_show = get_input_segmentation(x) %>% pull(chr) %>% unique
-  
-  if (has_inference(x))
-    to_show = highlights(x, ...) %>%
-    filter(highlight) %>%
-    pull(chr) %>%
-    unique
   
   pcps = plot_counts_per_segment(x, chromosomes = to_show, ...) +
     curate()
