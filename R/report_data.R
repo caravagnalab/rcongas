@@ -26,11 +26,12 @@ report_data = function(x, ...)
   
   # Top panel
   prna = plot_counts_rna_segments(x, z_score = TRUE, chromosomes = to_show, ...) +
-    theme(axis.text.x = element_blank())
+    theme(axis.text.x = element_blank()) +
+    curate()
   
   pcs = plot_cohort_statistics(x, assembly = FALSE, ...)
   
-  tp_strip = cowplot::plot_grid(plotlist = pcs,
+  tp_strip = cowplot::plot_grid(plotlist = lapply(pcs,  curate),
                                 ncol = 3,
                                 nrow = 1)
   
@@ -55,7 +56,8 @@ report_data = function(x, ...)
     pull(chr) %>%
     unique
   
-  pcps = plot_counts_per_segment(x, chromosomes = to_show, ...)
+  pcps = plot_counts_per_segment(x, chromosomes = to_show, ...) +
+    curate()
   
   tp_panel = cowplot::plot_grid(
     prna,
@@ -86,6 +88,10 @@ report_data = function(x, ...)
   
   pgcg = plot_gene_counts_on_genome(x, chromosomes = to_show, assembly = FALSE, ...)
   
+  pgcg[[1]] = pgcg[[1]] +
+    labs(title ="Counts across the genome")
+    curate()
+  
   pgcg = ggpubr::ggarrange(
     plotlist = pgcg,
     ncol = 4,
@@ -97,6 +103,11 @@ report_data = function(x, ...)
                         assembly = FALSE,
                         top = 100,
                         ...)
+  
+  pgst[[1]] = pgst[[1]] +
+    labs(title ="Gene rank")
+  curate()
+  
   
   pgst = ggpubr::ggarrange(
     plotlist = pgst,

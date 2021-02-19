@@ -193,12 +193,12 @@ sanitise_input = function(data, cnv_data)
     stop("Gene ids cannot be duplicated: ", gene_names[gene_names>1] %>% names %>% paste(collapse = ', '))
   
   # CNV data format check
-  if (!all(c("from", "to", "tot") %in% colnames(cnv_data))) {
-    stop("Chromsomome should have start/end columns.")
+  if (!all(c("chr", "from", "to", "tot") %in% colnames(cnv_data))) {
+    stop("Chromsomes wrong format...")
   }
   
   if (!all(grepl('chr', cnv_data$chr))) {
-    stop("Chromsomome format has to be chr1, chr2, ....")
+    stop("Chromsomes format has to be chr1, chr2, ....")
   }
   
   cli::cli_alert_success(
