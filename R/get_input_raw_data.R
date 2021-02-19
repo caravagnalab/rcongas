@@ -13,6 +13,7 @@ get_input_raw_data = function(x,
                               all_cells = FALSE, 
                               all_genes = FALSE,
                               add_locations = FALSE,
+                              add_clusters = FALSE,
                               as_matrix = FALSE)
 {
   if (all(is.null(x$data$raw))) {
@@ -27,6 +28,11 @@ get_input_raw_data = function(x,
     add_locations = FALSE
   }
 
+  if(as_matrix & add_clusters){
+    cli::cli_alert_warning("Incompatible TRUE values for 'add_clusters' and 'as_matrix', using only 'as_matrix'.")
+    add_clusters = FALSE
+  }
+  
   # What we return
   y = x$data$raw
   
@@ -46,7 +52,7 @@ get_input_raw_data = function(x,
   if(as_matrix) 
   {
     # Spread, change NAs to 0
-    y_matrix = y %>% spread(gene, n) %>% replace(is.na(.), 0)
+    y_matrix = y %>% spread(gene, n, fill = 0)
     y_mmatrix = y_matrix %>% dplyr::select(-cell) %>% as.matrix()
     rownames(y_mmatrix) = y_matrix$cell
   
@@ -57,6 +63,16 @@ get_input_raw_data = function(x,
   if(add_locations)
     y = y %>% left_join(x %>% get_mapped_genes(), by = 'gene')
   
+  # Cells (retain only those used to compute the mappings)
+  if(!add_clusters) 
+  {
+    y = y %>% 
+      left_join(
+        get_clusters(x) %>% 
+          select(cell, cluster),
+        by = 'cell'
+      )
+  }
   
   return(y)
 

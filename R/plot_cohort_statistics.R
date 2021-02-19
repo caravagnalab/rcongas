@@ -16,9 +16,15 @@ plot_cohort_statistics = function(x,
 {
   stopifnot(inherits(x, 'rcongas'))
   
-  input_rna = get_input_raw_data(x, ...)
   
- 
+  if(!has_inference(x))
+  {
+    input_rna = get_input_raw_data(x, ...)
+    input_rna$cluster = 'Not Available'
+  }
+  else
+    input_rna = get_input_raw_data(x, add_clusters = TRUE, ...)
+  
   p1 = aux_plot_cells_zerocounts(x, input_rna, cutoff)
   p2 = aux_plot_counts_distribution(x, input_rna, cutoff)
   p3 = aux_plot_genes_zerocounts(x, input_rna, cutoff)
@@ -33,27 +39,39 @@ plot_cohort_statistics = function(x,
 aux_plot_cells_zerocounts = function(x, input_rna, cutoff)
 {
   # Counts per cell
-  zcounts = apply(input_rna,
-                  2,
-                  function(x) {
-                    sum(x == 0)
-                  })
+  # zcounts = apply(input_rna,
+  #                 2,
+  #                 function(x) {
+  #                   sum(x == 0)
+  #                 })
   
-  zpcounts = zcounts / nrow(input_rna)
+  norm_factor = get_dataset_stats(x)$ngenes  
+
+  # Already filtered (these are >0, so 1 - % is what i want)
+  foo = input_rna %>%
+    group_by(cell, cluster) %>%
+    summarise(n = n()) %>% 
+    mutate(p = 1 - n/norm_factor) %>% 
+    arrange(p) %>% 
+    ungroup() %>% 
+    mutate(x = row_number())
   
-  zpcounts_tb = zpcounts %>% as_tibble()
-  zpcounts_tb$cell = names(zcounts)
+  # zpcounts = zcounts / nrow(input_rna)
   
-  zpcounts_tb = zpcounts_tb %>%
-    arrange(value)
+  # zpcounts_tb = zpcounts %>% as_tibble()
+  # zpcounts_tb$cell = names(zcounts)
+  # 
+  # zpcounts_tb = zpcounts_tb %>%
+  #   arrange(value)
+  # 
+  # if (has_inference(x))
+  #   zpcounts_tb = zpcounts_tb %>%
+  #   left_join(get_clusters(x),
+  #             by = 'cell')
   
-  if (has_inference(x))
-    zpcounts_tb = zpcounts_tb %>%
-    left_join(get_clusters(x),
-              by = 'cell')
-  
-  p1 = ggplot(zpcounts_tb) +
-    geom_bar(aes(x = cell, y = value), stat = 'identity') +
+  p1 = ggplot(foo) +
+    geom_bar(aes(x = x, y = p), stat = 'identity') +
+    CNAqc:::my_ggplot_theme() +
     theme(
       axis.text.x = element_blank(),
       legend.position = 'right',
@@ -63,10 +81,9 @@ aux_plot_cells_zerocounts = function(x, input_rna, cutoff)
     geom_hline(yintercept = cutoff,
                color = 'indianred3',
                linetype = 'dashed') +
-    scale_x_discrete(limits = zpcounts_tb$cell) +
     labs(x = "Cell",
          y = "% genes with 0 reads",
-         title = "Cell counts")
+         title = "Zero-counts across cells")
   
   if (has_inference(x))
     p1 = p1 + facet_wrap(~ cluster)
@@ -76,15 +93,11 @@ aux_plot_cells_zerocounts = function(x, input_rna, cutoff)
 
 aux_plot_counts_distribution = function(x, input_rna, cutoff)
 {
-  counts_total = input_rna %>% as.vector()
-  counts_total = counts_total[counts_total > cutoff]
-  counts_total = as_tibble(counts_total)
-  
-  ggplot(counts_total) +
-    geom_histogram(aes(value), bins = 100) +
+  ggplot(input_rna %>% filter(n > cutoff)) +
+    geom_histogram(aes(n), bins = 100) +
     labs(x = "Counts" ,
          y = "Observations (log)",
-         title = "Counts distribution") +
+         title = "Total counts per cell") +
     scale_y_log10() +
     CNAqc:::my_ggplot_theme() +
     geom_vline(xintercept = cutoff,               
@@ -94,23 +107,21 @@ aux_plot_counts_distribution = function(x, input_rna, cutoff)
 
 aux_plot_genes_zerocounts = function(x, input_rna, cutoff)
 {
-  # Counts per cell
-  gcounts = apply(input_rna,
-                  1,
-                  function(x) {
-                    sum(x == 0)
-                  })
+  norm_factor = get_dataset_stats(x)$ncells  
   
-  gpcounts = gcounts / ncol(input_rna)
+  # Already filtered (these are >0, so 1 - % is what i want)
+  foo = input_rna %>%
+    group_by(gene, cluster) %>%
+    summarise(n = n()) %>% 
+    mutate(p = 1 - n/norm_factor) %>% 
+    arrange(p) %>% 
+    ungroup() %>% 
+    mutate(x = row_number())
   
-  gpcounts_tb = gpcounts %>% as_tibble()
-  gpcounts_tb$gene = names(gcounts)
   
-  gpcounts_tb = gpcounts_tb %>%
-    arrange(value)
-  
-  ggplot(gpcounts_tb) +
-    geom_bar(aes(x = gene, y = value), stat = 'identity') +
+  p1 = ggplot(foo) +
+    geom_bar(aes(x = x, y = p), stat = 'identity') +
+    CNAqc:::my_ggplot_theme() +
     theme(
       axis.text.x = element_blank(),
       legend.position = 'right',
@@ -120,10 +131,15 @@ aux_plot_genes_zerocounts = function(x, input_rna, cutoff)
     geom_hline(yintercept = cutoff,
                color = 'indianred3',
                linetype = 'dashed') +
-    scale_x_discrete(limits = gpcounts_tb$gene) +
     labs(x = "Gene",
          y = "% cells with 0 reads",
-         title = "Gene counts")
+         title = "Zero-counts across cells")
+
+  if (has_inference(x))
+    p1 = p1 + facet_wrap(~ cluster)
+  
+  p1
+  
 }
 
 

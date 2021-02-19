@@ -34,17 +34,20 @@ plot_counts_rna_segments = function(x,
                                     chromosomes = paste0("chr", c(1:22, "X", "Y")),
                                     ...)
 {
+  stopifnot(has_inference(x))
+  
   # Get segments_input
   segments_input = x$data$counts
 
   # Input segmentation - get size in Megabases (Mb)
   input_segments = Rcongas::get_input_segmentation(x, chromosomes = chromosomes) %>%
-    dplyr::mutate(size = ceiling((to - from) / 10 ^ 6),
-                  label_chr = paste0(chr, " (", size, 'Mb)')) %>%
+    dplyr::mutate(
+      label_chr = paste0(chr, " (", size/1e6, 'Mb)')
+      ) %>%
     Rcongas:::idify()
 
   # RNA data
-  RNA = Rcongas::get_counts(
+  RNA = get_counts(
     x,
     normalise = normalised,
     z_score = z_score,
