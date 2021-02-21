@@ -15,8 +15,6 @@
 #' @export
 #'
 #' @importFrom ggpubr ggarrange
-#' @importFrom CNAqc plot_segments
-#' @importFrom patchwork plot_layout
 #'
 #' @examples
 report_analysis_chromosome <- function(x, 
