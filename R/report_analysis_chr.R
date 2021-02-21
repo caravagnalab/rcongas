@@ -19,7 +19,7 @@
 #' @importFrom patchwork plot_layout
 #'
 #' @examples
-report_analysis_chr <- function(x, 
+report_analysis_chromosome <- function(x, 
                                 normalise = 'ls',
                                 top = 5,
                                 n_sorrounding = 5,
