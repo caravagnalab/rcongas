@@ -4,10 +4,10 @@
 \alias{report_data}
 \title{Title}
 \usage{
-report_data(x, ...)
+report_data(x, cex = 1, ...)
 }
 \arguments{
-\item{...}{}
+\item{cex}{}
 }
 \value{
 
