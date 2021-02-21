@@ -91,7 +91,8 @@ aux_gene_spatial_plot = function(x,
                                  chr,
                                  input_RNA,
                                  cutoff_quantile_sd,
-                                 normalise)
+                                 normalise,
+                                 second_plot = TRUE)
 {
   onchr = input_RNA %>%
     filter(chr == !!chr)
@@ -136,6 +137,8 @@ aux_gene_spatial_plot = function(x,
     facet_wrap( ~ cluster, ncol = 1) +
     guides(color = FALSE) +
     theme(axis.text.y = element_text(angle = 0))
+  
+  if(!second_plot) return(pl)
   
   to_high = highlights(x) %>% filter(highlight)
   
