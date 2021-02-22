@@ -37,9 +37,7 @@ best_cluster <-
            lr = 0.05,
            param_list = list(),
            MAP = TRUE,
-           posteriors = FALSE,
            seed = 3,
-           step_post = 300,
            mixture = NULL,
            method = "AIC") {
     if (is.null(mixture)) {
@@ -58,9 +56,7 @@ best_cluster <-
           lr = lr,
           param_list = c(param_list, list('K' = x, 'mixture' = mixture[[x]])),
           MAP = MAP,
-          posteriors = posteriors,
           seed = seed,
-          step_post = step_post
         ))
 
     IC <- calculate_information_criteria(res,X,method)

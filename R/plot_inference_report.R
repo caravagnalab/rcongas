@@ -9,22 +9,22 @@
 #' 
 #' # Report
 #' plot_inference_report(x)
-plot_inference_report <-  function(x) {
+plot_inference_report <-  function(x, assembly = TRUE) {
   
   Z_post <- Rcongas:::is_MAP_Z(x)
   CN_post <- !Rcongas:::is_MAP_CN(x)
 
   if (Z_post & CN_post) {
-    return(plot_inference_report_1(x))
+    return(plot_inference_report_1(x, assembly))
   }
   else if (!Z_post & CN_post) {
-    return(plot_inference_report_2(x))
+    return(plot_inference_report_2(x, assembly))
   }
   else if (Z_post & !CN_post) {
-    return(plot_inference_report_3(x))
+    return(plot_inference_report_3(x, assembly))
   }
   else if (!Z_post & !CN_post) {
-    return(plot_inference_report_4(x))
+    return(plot_inference_report_4(x, assembly))
   }
 }
 

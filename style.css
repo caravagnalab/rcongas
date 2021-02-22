@@ -1,0 +1,64 @@
+html{
+  height:100%;
+  }
+body {
+  margin:10px ;
+  padding: 0;
+  font: 13px "Trebuchet MS", sans-serif , "Lucida Console" ;
+  text-align:left;
+  height:100%;
+  }
+table{
+  color: #000000 ; /* Necessary for IE */
+  border-collapse:collapse;
+  border-bottom:1px solid #000000;
+  border-top:1px solid #000000;
+  }
+td{
+  padding: 1px 3px 1px 3px;
+  text-align:right;
+}
+#tby1{
+  font-weight:bold;
+  text-align:left;
+  padding-left:10px;
+ }
+#fh{
+  font-weight:bold;
+  text-align:center;
+  border-bottom:1px solid #000000;
+  border-right:8px solid #FFFFFF;
+  border-left:8px solid #FFFFFF;
+ }
+#fht, #lh, #lhfcol{
+  font-weight:bold;
+  text-align:center;
+  border-bottom:1px solid #000000;
+}
+#tby2{
+  text-align:left;
+  padding-left:20px;
+  text-decoration:underline;
+ }
+#fcol, #lhfcol{
+  text-align:left;
+  padding-right:10px;
+  font-style:italic;
+ }
+#xabove{
+  text-align:left;
+  font-weight:bold;
+  font-style:italic;
+}
+th{
+  text-align:right;
+  padding: 1px 6px 1px 6px;
+  border-top:1px solid #000000;
+  border-bottom:1px solid #000000;
+}
+#grps{height:7px}
+.img-resp{
+  max-width: 100%;
+  height: auto;
+  max-height: 80vh;
+}

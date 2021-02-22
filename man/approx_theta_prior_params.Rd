@@ -4,7 +4,7 @@
 \alias{approx_theta_prior_params}
 \title{Approximation of the library size prior}
 \usage{
-approx_theta_prior_params(x, plot = FALSE, mult_factor = 1)
+approx_theta_prior_params(x, plot = FALSE, mult_factor = 1, bins = 30)
 }
 \arguments{
 \item{x}{}

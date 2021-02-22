@@ -31,7 +31,9 @@ Imports:
   umap,
   aricode,
   cli,
-  DESeq2
+  DESeq2,
+  patchwork,
+  ggpubr
 Suggests:
     biomaRt,
     knitr,

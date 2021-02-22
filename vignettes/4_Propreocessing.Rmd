@@ -26,7 +26,7 @@ rownames(counts_stab) <- colnames(counts) %>%  make.names(unique = T)
 # we just need a dataframe with genes as rownames and the mean and the variance respectively on
 # the first and second column 
 
-to_remove <- filter_genes(counts_stab[,c(1,4)])
+to_remove <- filter_genes(counts_stab[,c(1,4)], plot = T)
 
 # Now our count matrix is ready for the CONGAS analysis 
 counts <- counts[, -which(colnames(counts) %in% to_remove)]

@@ -2,6 +2,12 @@
 #'
 #' @param x
 #' @param normalised
+#' @param z_score 
+#' @param z_score_cutoff Values above or below this cut are capped and reported
+#' in the plot caption.
+#' @param sum_denominator 
+#' @param chromosomes 
+#' @param ... 
 #'
 #' @return
 #' @export
@@ -23,21 +29,25 @@
 plot_counts_rna_segments = function(x,
                                     normalised = TRUE,
                                     z_score = FALSE,
+                                    z_score_cutoff = 5,
                                     sum_denominator = FALSE,
                                     chromosomes = paste0("chr", c(1:22, "X", "Y")),
                                     ...)
 {
+  stopifnot(has_inference(x))
+  
   # Get segments_input
   segments_input = x$data$counts
 
   # Input segmentation - get size in Megabases (Mb)
   input_segments = Rcongas::get_input_segmentation(x, chromosomes = chromosomes) %>%
-    dplyr::mutate(size = ceiling((to - from) / 10 ^ 6),
-                  label_chr = paste0(chr, " (", size, 'Mb)')) %>%
+    dplyr::mutate(
+      label_chr = paste0(chr, " (", size/1e6, 'Mb)')
+      ) %>%
     Rcongas:::idify()
 
   # RNA data
-  RNA = Rcongas::get_counts(
+  RNA = get_counts(
     x,
     normalise = normalised,
     z_score = z_score,
@@ -45,7 +55,22 @@ plot_counts_rna_segments = function(x,
     chromosomes = chromosomes
   ) %>%
     Rcongas:::idify()
-
+  
+  w_cap = "(cut z-score not used)"
+  if(z_score)
+  {
+    w_cap = which(abs(RNA$n) > z_score_cutoff)
+    RNA$n[w_cap] = ifelse(
+      RNA$n[w_cap] > 0, z_score_cutoff,
+      - z_score_cutoff
+    )
+    
+    if(length(w_cap) > 0)
+      w_cap = paste0("(Cut |", z_score_cutoff,'|: ', length(w_cap), " values)")
+    else
+      w_cap = paste("(Cut |", z_score_cutoff, "|: none)")
+  }
+  
   RNA = dplyr::left_join(RNA,
                          input_segments %>% dplyr::select(segment_id, label_chr),
                          by = "segment_id") %>%
@@ -60,8 +85,8 @@ plot_counts_rna_segments = function(x,
   # prepare plot caption
   caption = paste0(
     "RNA: ",
-    ifelse(normalised, "normalised,", "not normalised,"),
-    ifelse(z_score, " z-score.", " not z-score.")
+    ifelse(normalised, "normalised counts,", "not normalised,"),
+    ifelse(z_score, paste0(" z-score ", w_cap), "z-score not used.")
   )
 
   # Cluster assignments
@@ -163,6 +188,8 @@ plot_counts_rna_segments = function(x,
   if (length(segments_ids) >= 1)
   {
     annotation_color = 'mediumseagreen'
+    annotation_color = 'indianred3'
+    
     order_x_axis = gtools::mixedsort(RNA$label_chr) %>% unique()
 
     chrs_to_annotate = Reduce(dplyr::bind_rows,

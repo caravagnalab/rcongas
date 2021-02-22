@@ -51,7 +51,7 @@ plot_raw_data = function(x,
     return(CNAqc:::eplot())
   }
   
-  if (nrow(x) == 0 | ncol == 0) {
+  if (nrow(x) == 0 | ncol(x) == 0) {
     cli::cli_alert_warning("0 rows or column in the input data, returning empty plot...")
     return(CNAqc:::eplot())
   }

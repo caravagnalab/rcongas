@@ -8,13 +8,23 @@ plot_counts_rna_segments(
   x,
   normalised = TRUE,
   z_score = FALSE,
+  z_score_cutoff = 5,
   sum_denominator = FALSE,
   chromosomes = paste0("chr", c(1:22, "X", "Y")),
   ...
 )
 }
 \arguments{
-\item{normalised}{}
+\item{z_score}{}
+
+\item{z_score_cutoff}{Values above or below this cut are capped and reported
+in the plot caption.}
+
+\item{sum_denominator}{}
+
+\item{chromosomes}{}
+
+\item{...}{}
 }
 \value{
 

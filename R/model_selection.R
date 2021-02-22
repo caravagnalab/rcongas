@@ -18,14 +18,15 @@ log_sum_exp <- function(x) {
 
 
 calculate_entropy <- function(x) {
-  -sum(x * log(x))
+  tmp <- apply(x, 1, function(x)  x * log(x) )
+  -sum(tmp)
 }
 
 
 calculate_ICL <- function(inf, data, mu,llikelihood = gauss_lik) {
 
   BIC <- calculate_BIC(inf, data, mu,llikelihood)
-  H <- calculate_entropy(inf$parameters$assignment_probs)
+  H <- calculate_entropy(inf$parameters$assignment_probs + 1e-8)
   return(BIC + H)
 }
 
@@ -47,8 +48,6 @@ calculate_BIC <-  function(inf, data, mu,llikelihood = gauss_lik) {
 
   n_param <- param_total(inf$parameters)
   log_lik <- llikelihood(data,mu,inf$parameters)
-
-
 
 
   return(n_param * log(nrow(data)) - 2 * log_lik)
@@ -117,7 +116,7 @@ gauss_lik_with_means <-  function(data,mu,par) {
 }
 
 param_total <-  function(param_list) {
-  param_list <-  param_list[!(names(param_list) %in% c("assignment_probs", "assignement", "norm_factor"))]
+  param_list <-  param_list[!(names(param_list) %in% c("assignment_probs", "assignement"))]
   res <- sapply(param_list,function(x) if(is.null(dim(x))) length(x) else prod(dim(x)))
   return(sum(res))
 }

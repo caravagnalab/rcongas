@@ -69,19 +69,15 @@ set_names <-  function(an){
 
   names(an$parameters) <- gsub(names(an$parameters), pattern = "param_", replacement = "")
 
-  if(length(as.vector(an$parameters$assignement)) == 1) {
-
-    an$parameters$assignement <- rep(x = an$parameters$assignement, length(an$dim_names$cell_names) )
-
-  }
-
   uniq_clus_ids <- names(sort(table(an$parameters$assignement),TRUE))
-
+  not_assigned <- setdiff(1:length(an$parameters$mixture_weights), uniq_clus_ids)
+  uniq_clus_ids <- c(uniq_clus_ids, not_assigned)
 
   tmp <- vector(length = length(an$parameters$assignement))
   new_clusters <-  1:length(uniq_clus_ids)
 
   for(j in new_clusters){
+    if(as.integer(uniq_clus_ids[j]) %in% not_assigned) next
     tmp[which(an$parameters$assignement == as.integer(uniq_clus_ids[j]))] <- paste0("c",j)
   }
 
@@ -92,19 +88,20 @@ set_names <-  function(an){
   mix_order <- order(an$parameters$mixture_weights, decreasing = TRUE)
 
   an$parameters$mixture_weights <-  an$parameters$mixture_weights[mix_order]
-  if(!is.null(an$parameters$assignment_probs)) an$parameters$assignment_probs <- an$parameters$assignment_probs[,mix_order]
+  an$parameters$assignment_probs <- an$parameters$assignment_probs[,mix_order, drop = FALSE]
   names(an$parameters$mixture_weights) <-  paste0("c",new_clusters)
+  
   an$parameters$cnv_probs <- data.frame(an$parameters$cnv_probs)
-  an$parameters$cnv_probs <-  an$parameters$cnv_probs[mix_order,, drop = FALSE]
-  #rownames(an$parameters$cnv_probs) <- new_clusters
+  an$parameters$cnv_probs <-  an$parameters$cnv_probs[mix_order,,drop = FALSE]
 
   colnames(an$parameters$cnv_probs) <- an$dim_names$seg_names
   rownames(an$parameters$cnv_probs) <- new_clusters
+  
   names(an$parameters$norm_factor) <-  an$dim_names$cell_names
-
-
-
   names(an$parameters$assignement) <-  an$dim_names$cell_names
+  
+  colnames(an$parameters$assignment_probs) <- names(an$parameters$mixture_weights)
+  rownames(an$parameters$assignment_probs) <- an$dim_names$cell_names
 
   return(an)
 }
@@ -138,7 +135,7 @@ set_names <-  function(an){
 #'
 #' @examples
 run_inference <-  function(X , model, optim = "ClippedAdam", elbo = "TraceEnum_ELBO", inf_type = "SVI", steps = 300, lr = 0.05,
-                            param_list = list(), MAP = TRUE, posteriors = FALSE, seed = 3, step_post=300,  rerun = F){
+                            param_list = list(), MAP = TRUE, seed = 3, rerun = F){
 
   an <- reticulate::import("congas")
 
@@ -157,7 +154,6 @@ run_inference <-  function(X , model, optim = "ClippedAdam", elbo = "TraceEnum_E
   data_list <- tensorize(data_list)
   seed <- as.integer(seed)
   steps <-  as.integer(steps)
-  step_post <-  as.integer(step_post)
   model <-  choose_model(model)
   optim <-  choose_optim(optim)
   elbo <-  choose_loss(elbo)
@@ -172,15 +168,16 @@ run_inference <-  function(X , model, optim = "ClippedAdam", elbo = "TraceEnum_E
 
 
   loss <- int$run(steps=steps, seed = seed, param_optimizer=list('lr'= lr),  MAP = MAP)
-  parameters <- int$learned_parameters(posterior=posteriors, steps=step_post)
-
-  if(posteriors){
-
-    parameters$assignment_probs <- parameters$assignment_probs$numpy()
+  parameters <- int$learned_parameters()
+  parameters$assignment_probs <- t(parameters$assignment_probs) 
+  
+  if(param_list$K == 1){
+    #parameters$assignment_probs <- rep(1, length(cell_names)) 
+    parameters$assignement <- rep(1, length(cell_names))
+  } else{
     parameters$assignement <- apply(parameters$assignment_probs, 1, which.max)
-    rownames(parameters$assignment_probs) <- cell_names
-  }
-
+  }  
+  
 
   if(grepl(pattern = "Norm",model_name, ignore.case = T)) {
     parameters$norm_factor <- rep(x = 1, length(cell_names))
@@ -194,28 +191,13 @@ run_inference <-  function(X , model, optim = "ClippedAdam", elbo = "TraceEnum_E
 
     names(an$parameters) <- gsub(names(an$parameters), pattern = "param_", replacement = "")
 
-
   } else{
-
-
     an <-  set_names(list(loss = loss, parameters = parameters, dim_names = dim_names))
   }
-  
-  if(!posteriors & !rerun)
-    an$parameters$assignment_probs <- an$parameters[[4]] %>% reshape2::melt() %>% mutate(value = as.character(value)) %>% from_MAP_to_post()
-
-  # if(model_name == "MixtureGaussianDMP") {
-  #
-  #   an$parameters <- merge_clusters(an$parameters, "DMP", posterior=posteriors)
-  #
-  # } else {
-  #
-  #   an$parameters <- merge_clusters(an$parameters, type = "NONE", filt = filt_merge, posterior=posteriors)
-  # }
 
   an$run_information <-  list(model = model_name,optim = optim_name, elbo = elbo_name, inf_type = inf_type_name,
                               steps = steps, lr = lr, input_hyper_params = param_list, MAP = MAP,
-                              posteriors = posteriors, seed = seed, step_post=step_post)
+                              seed = seed)
   X$inference$models <- list(an)
 
   return(structure(an, class = "congas"))
@@ -233,7 +215,7 @@ run_complete <- function(x, steps = 300, lr = 0.01, seed = 3) {
                      norm_factor = bm$parameters$norm_factor, assignments = as.integer(bm$parameters$assignement - 1), cnv_locs = torch$tensor(as.matrix(bm$parameters$cnv_probs)))
 
   ret <- Rcongas::run_inference(x, model = bm$run_information$model, optim = bm$run_information$optim ,elbo = bm$run_information$elbo,inf_type = bm$run_information$inf_type, steps = steps
-,lr = lr,posteriors = F, MAP = F, seed = seed,  param_list = param_list, rerun = TRUE)
+,lr = lr, MAP = F, seed = seed,  param_list = param_list, rerun = TRUE)
   ret$loss_old <- bm$loss
   ret$run_information_old <- bm$run_information
   ret$parameters <- c(ret$parameters, bm$parameters)

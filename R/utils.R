@@ -32,21 +32,21 @@ get_gene_annotations = function(x)
 
 
 relative_to_absolute_coordinates <- function(df, genome = "hg38") {
-  karyo <- load_genome(genome)
+  karyo <- get_karyotype(list(reference_genome = genome))
   karyo_sum <- cumsum(c(0, karyo))
   karyo_sum <- karyo_sum[-length(karyo_sum)]
   names(karyo_sum) <- names(karyo)
   
   
   df <-
-    df %>% mutate(to = to + karyo_sum[chr], from = from + karyo_sum[chr])
+    df %>% dplyr::mutate(to = to + karyo_sum[chr], from = from + karyo_sum[chr])
   
   return(df)
 }
 
 
-absolute_t_relative_coordinates <- function(df, genome = "hg38") {
-  karyo <- load_genome(genome)
+absolute_to_relative_coordinates <- function(df, genome = "hg38") {
+  karyo <- get_karyotype(list(reference_genome = genome))
   karyo_sum <- cumsum(c(0, karyo))
   karyo_sum <- karyo_sum[-length(karyo_sum)]
   names(karyo_sum) <- names(karyo)
@@ -333,13 +333,13 @@ simplify_segs <-  function(df) {
   res <- data.frame()
   
   old_chr = df$chr[1]
-  old_start = df$start[1]
+  old_start = df$from[1]
   old_tot = df$tot[1]
   
   for (n in 2:nrow(df)) {
     curr_chr = df$chr[n]
     curr_tot = df$tot[n]
-    curr_start = df$start[n]
+    curr_start = df$from[n]
     
     if (curr_chr != old_chr) {
       res <-
@@ -347,7 +347,7 @@ simplify_segs <-  function(df) {
               data.frame(
                 t1 = old_chr,
                 t2 = old_start,
-                t3 = df$end[n - 1],
+                t3 = df$to[n - 1],
                 t4 = old_tot
               ))
       old_chr = curr_chr
@@ -360,7 +360,7 @@ simplify_segs <-  function(df) {
               data.frame(
                 t1 = old_chr,
                 t2 = old_start,
-                t3 = df$end[n - 1],
+                t3 = df$to[n - 1],
                 t4 = old_tot
               ))
       old_chr = curr_chr
@@ -375,7 +375,7 @@ simplify_segs <-  function(df) {
                 data.frame(
                   t1 = old_chr,
                   t2 = old_start,
-                  t3 = df$end[n - 1],
+                  t3 = df$to[n - 1],
                   t4 =  old_tot
                 ))
       }
@@ -384,7 +384,7 @@ simplify_segs <-  function(df) {
               data.frame(
                 t1 = curr_chr,
                 t2 = curr_start,
-                t3 = df$end[n],
+                t3 = df$to[n],
                 t4 =  curr_tot
               ))
     }

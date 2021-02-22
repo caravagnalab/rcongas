@@ -3,11 +3,11 @@
 
 get_karyotype <-  function(x) {
   if (x$reference_genome %in% c('hg19', 'GRCh37'))
-    data('hg19_karyo')
+    return(Rcongas::hg19_karyo)
   if (x$reference_genome %in% c('hg38', 'GRCh38'))
-    data('hg38_karyo')
+    return(Rcongas::hg38_karyo)
   if (x$reference_genome %in% c('mm10', 'GRCm38'))
-    data('mm10_karyo')
+    return(Rcongas::mm10_karyo)
 }
 
 get_best_model <- function(X) {

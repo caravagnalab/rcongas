@@ -31,6 +31,9 @@
     <loc>militeee.github.io/Rcongas/reference/filter_genes.html</loc>
   </url>
   <url>
+    <loc>militeee.github.io/Rcongas/reference/filter_quantiles_per_segments.html</loc>
+  </url>
+  <url>
     <loc>militeee.github.io/Rcongas/reference/generate_ploidy.html</loc>
   </url>
   <url>
@@ -62,6 +65,9 @@
   </url>
   <url>
     <loc>militeee.github.io/Rcongas/reference/get_gene_annotations.html</loc>
+  </url>
+  <url>
+    <loc>militeee.github.io/Rcongas/reference/get_genes_mapped_to_segments.html</loc>
   </url>
   <url>
     <loc>militeee.github.io/Rcongas/reference/get_input_raw_data.html</loc>
@@ -100,7 +106,13 @@
     <loc>militeee.github.io/Rcongas/reference/plot_DE_volcano.html</loc>
   </url>
   <url>
+    <loc>militeee.github.io/Rcongas/reference/plot_cell_statistics.html</loc>
+  </url>
+  <url>
     <loc>militeee.github.io/Rcongas/reference/plot_chromosome.html</loc>
+  </url>
+  <url>
+    <loc>militeee.github.io/Rcongas/reference/plot_counts_per_segment.html</loc>
   </url>
   <url>
     <loc>militeee.github.io/Rcongas/reference/plot_counts_rna_segments.html</loc>
@@ -125,6 +137,9 @@
   </url>
   <url>
     <loc>militeee.github.io/Rcongas/reference/plot_raw_data.html</loc>
+  </url>
+  <url>
+    <loc>militeee.github.io/Rcongas/reference/plot_report_segments.html</loc>
   </url>
   <url>
     <loc>militeee.github.io/Rcongas/reference/plot_segment_density.html</loc>

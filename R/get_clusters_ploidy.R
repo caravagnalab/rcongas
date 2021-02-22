@@ -45,7 +45,7 @@ get_clusters_ploidy <- function(x,
                                                                    into = c("chr", "from", "to"),
                                                                    sep = ":")
   colnames(res)[seq_along(best_model$parameters$mixture_weights)] <-
-    paste(seq_along(best_model$parameters$mixture_weights))
+    names(best_model$parameters$mixture_weights)
 
   res <-
     reshape2::melt(
@@ -63,28 +63,41 @@ get_clusters_ploidy <- function(x,
 
   joined_res = res
 
-  # Normalise CNA values for comparisons -- z_score_alike via offset_amplitude
+  # Normalise CNA values for comparisons -- z_score alike 
+  means = res %>%
+    dplyr::group_by(chr, from, to) %>%
+    dplyr::summarise(segment_mean = mean(CN), .groups = 'keep') %>%
+    dplyr::ungroup()
+  
+  joined_res = joined_res %>%
+    dplyr::full_join(means, by = c('chr', 'from', 'to')) %>%
+    dplyr::mutate(
+      # lognorm_CN = CN,
+      offset_CN = CN - segment_mean)
+  
+  joined_res = joined_res %>% idify
+  
+  # Make default CN to be the offset
   if (offset_amplitude)
-  {
-    means = res %>%
-      dplyr::group_by(chr, from, to) %>%
-      dplyr::summarise(segment_mean = mean(CN), .groups = 'keep') %>%
-      dplyr::ungroup()
+    joined_res = joined_res %>% dplyr::mutate(CN = offset_CN)
+  
+  # Determine highlights
+  table_highlight <- highlights(x, alpha) %>% 
+    filter(highlight) %>% 
+    pull(segment_id) %>% 
+    unique
+  
+  joined_res$highlight = 
+    joined_res$segment_id %in% table_highlight
+  
 
-    joined_res = joined_res %>%
-      dplyr::full_join(means, by = c('chr', 'from', 'to')) %>%
-      dplyr::mutate(lognorm_CN = CN,
-                    CN = CN - segment_mean)
-  }
 
-  joined_res$highlight <- create_highlights(joined_res, alpha)
-
-  if (!grepl('chr', joined_res$chr[1]))
-  {
-    cli::cli_alert_warning("Missing `chr` prefix in chromosomes labels, added now.")
-
-    joined_res = joined_res %>% dplyr::mutate(chr = paste0("chr", chr))
-  }
+  # if (!grepl('chr', joined_res$chr[1]))
+  # {
+  #   cli::cli_alert_warning("Missing `chr` prefix in chromosomes labels, added now.")
+  # 
+  #   joined_res = joined_res %>% dplyr::mutate(chr = paste0("chr", chr))
+  # }
 
   # Apply filters
   joined_res = joined_res %>% dplyr::filter(chr %in% chromosomes)
