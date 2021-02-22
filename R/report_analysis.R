@@ -59,6 +59,8 @@ report_analysis <- function(x, cex = 1, ...)
   
   highlights_segments = Rcongas:::get_segment_ids(x, highlight = TRUE) %>% unique
   
+  ph = plot_highlights(x)
+  
   # 2p
   p1 = lapply(plot_cohort_statistics(x, assembly = FALSE, ...), curate)
   
@@ -102,7 +104,8 @@ report_analysis <- function(x, cex = 1, ...)
   # p3 = p3a | p3b | p3c
   
   p3 =  p3a | p3b
-  p12 = p3c | p1[[1]]
+  # p12 = p3c | p1[[1]]
+  p12 = p3c | ph
   
   p4b <-
     Rcongas:::plot_counts_rna_segments(x, normalised = T, z_score = TRUE) %>%
