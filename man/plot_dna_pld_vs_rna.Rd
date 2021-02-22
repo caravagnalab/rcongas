@@ -7,8 +7,6 @@
 plot_dna_pld_vs_rna(x, library_size_norm = FALSE)
 }
 \arguments{
-\item{x}{}
-
 \item{library_size_norm}{}
 }
 \value{
