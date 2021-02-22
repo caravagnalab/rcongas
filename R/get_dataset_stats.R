@@ -19,6 +19,7 @@ get_dataset_stats = function(x)
   # number of cells, segments
   ncells = x$data$counts %>% nrow()
   nsegments = x$data$counts %>% ncol()
+  ngenes = x$data$gene_locations$gene %>% unique() %>% length()
   
   # clustering stats
   nclusters = sizes_cl = psizes_cl = NULL
@@ -37,6 +38,7 @@ get_dataset_stats = function(x)
   return(
     list(
       ncells = ncells,
+      ngenes = ngenes,
       nsegments = nsegments,
       clusters_k = nclusters,
       clusters_n = sizes_cl,

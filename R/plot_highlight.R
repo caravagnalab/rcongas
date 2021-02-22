@@ -189,6 +189,8 @@
 #' plot_highlights(x, alpha = 0.001)
 plot_highlights = function(x, alpha = 0.05)
 {
+  stopifnot(has_inference(x))
+  
   tests_table = highlights(x, alpha) %>%
     mutate(label = paste(cluster , 'vs', versus))
   
@@ -217,6 +219,14 @@ plot_highlights = function(x, alpha = 0.05)
     as_tibble() %>%
     mutate(label = paste(cluster , 'vs', versus))
   
+  
+  ann = tests_table %>% 
+    filter(highlight) %>% 
+    group_by(label) %>% 
+    summarise(slabel = paste(segment_id, collapse = '\n'), label = label) %>% 
+    distinct(label, slabel)
+
+  
   # Plot
   ggplot(tests_table,
          aes(diff, fill = highlight)) +
@@ -237,5 +247,13 @@ plot_highlights = function(x, alpha = 0.05)
       color = 'black',
       inherit.aes = F,
       size = .5
+    ) +
+    ggrepel::geom_text_repel(
+      data = ann,
+      aes(x = 0, y = Inf, label = slabel),
+      inherit.aes = F,
+      size = 2,
+      hjust = 0,
+      color = 'indianred3'
     )
 }

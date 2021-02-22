@@ -6,18 +6,19 @@
 \usage{
 get_input_raw_data(
   x,
-  transpose = FALSE,
-  only_clustered_cells = TRUE,
-  only_mapped_genes = TRUE,
-  as_tibble = FALSE
+  all_cells = FALSE,
+  all_genes = FALSE,
+  add_locations = FALSE,
+  add_clusters = FALSE,
+  as_matrix = FALSE
 )
 }
 \arguments{
-\item{transpose}{}
-
-\item{as_tibble}{}
-
 \item{all_cells}{}
+
+\item{all_genes}{}
+
+\item{as_matrix}{}
 }
 \value{
 
