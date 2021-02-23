@@ -56,7 +56,7 @@ calculate_BIC <-  function(inf, data, mu,llikelihood = gauss_lik) {
   log_lik <- llikelihood(data,mu,inf$parameters)
 
 
-  return(n_param * log(nrow(data)) - 2 * log_lik)
+  return(n_param * log(nrow(data) * ncol(data)) - 2 * log_lik)
 
 
 }
