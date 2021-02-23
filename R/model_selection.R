@@ -141,18 +141,18 @@ gauss_lik_old <-  function(data,mu,par) {
 
   })
 
-  log_lk <- matrix(nrow = nrow(data), ncol = ncol(data))
+  log_lk <- array(0, dim = c(length(mixture_weights), nrow(data), ncol(data)))
 
   for(n in 1:nrow(data)){
     for(i in 1:ncol(data)){
       lk <-  vector(length = length(mixture_weights))
       for(k in 1:length(mixture_weights))
-        lk[k] <- dpois(as.numeric(data[n,i]), as.numeric(lambdas[[k]][n,i]), log = TRUE) + log(mixture_weights[k])
-      log_lk[n,i] <- log_sum_exp(lk)
+        log_lk[k,n,i] <- dpois(as.numeric(data[n,i]), as.numeric(lambdas[[k]][n,i]), log = TRUE) 
     }
   }
-
-
+  log_lk <- apply(log_lk,c(1,2), sum) + log(mixture_weights)
+  log_lk <- log_sum_exp(log_lk)
+  
   log_lk <-  sum(log_lk)
 
   return(log_lk)
@@ -173,18 +173,20 @@ gauss_lik <-  function(data,mu,par) {
 
   })
 
-  log_lk <- matrix(nrow = nrow(data), ncol = ncol(data))
-
+  log_lk <- array(0, dim = c(length(mixture_weights), nrow(data), ncol(data)))
+  
   for(n in 1:nrow(data)){
     for(i in 1:ncol(data)){
       lk <-  vector(length = length(mixture_weights))
       for(k in 1:length(mixture_weights))
-        lk[k] <- dpois(as.numeric(data[n,i]), as.numeric(lambdas[[k]][n,i]), log = TRUE) + log(mixture_weights[k])
-      log_lk[n,i] <- log_sum_exp(lk)
+        log_lk[k,n,i] <- dpois(as.numeric(data[n,i]), as.numeric(lambdas[[k]][n,i]), log = TRUE) 
     }
   }
-
-
+  log_lk <- apply(log_lk,c(1,2), sum) 
+  log_lk <- apply(log_lk, 2, function(x) x + log(mixture_weights))
+  if(length(mixture_weights) > 1 )
+   log_lk <- apply(log_lk, 2, function(x) log_sum_exp(x))
+  
   log_lk <-  sum(log_lk)
 
   return(log_lk)
