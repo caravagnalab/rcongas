@@ -18,7 +18,13 @@ log_sum_exp <- function(x) {
 
 
 calculate_entropy <- function(x) {
-  tmp <- apply(x, 1, function(x)  x * log(x) )
+  tmp <- apply(x, 1, function(x) {
+    x = x + 1e9
+    x = x/sum(x)
+    
+    x * log(x) 
+  }
+              )
   -sum(tmp)
 }
 
@@ -26,7 +32,7 @@ calculate_entropy <- function(x) {
 calculate_ICL <- function(inf, data, mu,llikelihood = gauss_lik) {
 
   BIC <- calculate_BIC(inf, data, mu,llikelihood)
-  H <- calculate_entropy(inf$parameters$assignment_probs + 1e-8)
+  H <- calculate_entropy(inf$parameters$assignment_probs)
   return(BIC + H)
 }
 
