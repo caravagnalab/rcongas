@@ -65,12 +65,13 @@ filter_cluster_aux <- function(x, ncells, abundance) {
 
 
 
+  
   cli::cli_alert_info("Reculcating cluster assignement and renormalizing posterior probabilities")
 
 
   x$parameters$assignment_probs <- x$parameters$assignment_probs[,mask, drop = FALSE]
   x$parameters$assignment_probs <- x$parameters$assignment_probs / rowSums(as.matrix(x$parameters$assignment_probs))
-  x$parameters$assignement <- apply(as.matrix(x$parameters$assignment_probs), 1, which.max)
+  x$parameters$assignement <- apply(x$parameters$assignment_probs, 1,function(x) x$parameters$mixture_weights[which.max(x)])
 
   
 
