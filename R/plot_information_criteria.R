@@ -4,7 +4,7 @@ plot_information_criteria <- function(x){
   res <- matrix(0,nrow = length(x$inference$models), ncol = length(ic))
   
   colnames(res) <- ic
-  rownames(res) <- sapply(tmp$inference$models, function(y) y$run_information$input_hyper_params$K)
+  rownames(res) <- sapply(x$inference$models, function(y) y$run_information$input_hyper_params$K)
     
   for(i in ic){
     tmp <- recalculate_information_criteria(x, i)
