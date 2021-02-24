@@ -122,17 +122,19 @@ plot_gw_cna_profiles = function(x,
     # Thicker
     segments_sc_highlight = NULL
     
-    for (i in 1:nrow(table_highlights))
-      segments_sc_highlight = segments_sc_highlight %>%
-      bind_rows(
-        segments_sc %>%
-          filter(table_highlights$segment_id[i] == segment_id) %>%
-          filter(
-            cluster %in% c(table_highlights$cluster[i], table_highlights$versus[i])
-          )
-      ) %>% 
-      distinct(segment_id, cluster, .keep_all =T)
-  
+    if(nrow(table_highlights) > 0)
+    {
+      for (i in 1:nrow(table_highlights))
+        segments_sc_highlight = segments_sc_highlight %>%
+        bind_rows(
+          segments_sc %>%
+            filter(table_highlights$segment_id[i] == segment_id) %>%
+            filter(
+              cluster %in% c(table_highlights$cluster[i], table_highlights$versus[i])
+            )
+        ) %>% 
+        distinct(segment_id, cluster, .keep_all =T)
+    
     
     segments_plot = segments_plot+
       geom_segment(
@@ -148,6 +150,7 @@ plot_gw_cna_profiles = function(x,
       ) +
       scale_colour_manual(values = get_clusters_colors(segments_sc$cluster)) +
       guides(color = guide_legend(bquote("Cluster ("*alpha*' = '*.(alpha)*")")))
+    }
   }
 
   if (!whole_genome)
