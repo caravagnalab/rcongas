@@ -52,6 +52,12 @@ report_analysis_chromosome <- function(x,
     x = x
   )
   
+  if(length(list_plots) == 0)
+  {
+    message("Nothing to inspect, this plot makes no sense, making it empty")
+    return(CNAqc:::eplot())
+  }
+  
   
   # arrange
   # nplots = list_plots %>% length
