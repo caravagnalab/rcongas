@@ -61,7 +61,7 @@ filter_cluster_aux <- function(x, ncells, abundance) {
   cli::cli_alert_warning("Filtering {nremoved} cluster{?s} due to low cell counts or abudance")
   
   x$parameters$mixture_weights <- x$parameters$mixture_weights[mask] / sum(x$parameters$mixture_weights[mask])
-  cnv_probs_new <- x$parameters$cnv_probs[mask,]
+  cnv_probs_new <- x$parameters$cnv_probs[mask,, drop = FALSE]
 
 
 
@@ -69,11 +69,11 @@ filter_cluster_aux <- function(x, ncells, abundance) {
   cli::cli_alert_info("Reculcating cluster assignement and renormalizing posterior probabilities")
 
 
-  x$parameters$assignment_probs <- x$parameters$assignment_probs[,mask, drop = FALSE]
-  x$parameters$assignment_probs <- x$parameters$assignment_probs / rowSums(as.matrix(x$parameters$assignment_probs))
-  x$parameters$assignement <- apply(x$parameters$assignment_probs, 1,function(x) x$parameters$mixture_weights[which.max(x)])
-
-  
+  x$parameters$assignment_probs <- x$parameters$assignment_probs[,mask, drop = FALSE] 
+  x$parameters$assignment_probs <- exp(log(x$parameters$assignment_probs)  - log(rowSums(x$parameters$assignment_probs)))
+  x$parameters$assignement <- apply(x$parameters$assignment_probs, 1,function(y) names(x$parameters$mixture_weights)[which.max(y) %>%  as.numeric]) %>%  as.character()
+  x$parameters$assignement[x$parameters$assignement == "character(0)"] <- "c1"
+  names(x$parameters$assignement) <-  rownames(x$parameters$assignment_probs)
 
   x$parameters$cnv_probs <- cnv_probs_new
 

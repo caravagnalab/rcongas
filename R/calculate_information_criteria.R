@@ -10,7 +10,7 @@
 #' @examples
 #' 
 recalculate_information_criteria <-  function(x, method){
-  if(!has_inference(x)) stop("Cannot calculate ICs prior to inference")
+  #if(!has_inference(x)) stop("Cannot calculate ICs prior to inference")
   x$inference$model_selection$IC <- calculate_information_criteria(x$inference$models, x, method)
   x$inference$model_selection$IC_type <- method
   return(x)  
