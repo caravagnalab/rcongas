@@ -35,6 +35,19 @@ highlights <- function(x, alpha = 0.05)
     )) %>%
     dplyr::as_tibble() %>% idify()
   
+  if(length(unique(cn_table$cluster)) == 1) 
+  {
+    cn_table$versus =
+      cn_table$diff = 
+      cn_table$shape =
+      cn_table$rate = NA
+  
+    cn_table$highlight = FALSE
+    
+    return(cn_table)
+  }
+    
+  
   # Pairwise testing
   clusters = combn(unique(cn_table$cluster), 2)
   
