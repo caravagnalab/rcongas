@@ -100,7 +100,7 @@ gauss_lik_with_means <-  function(data,mu,par) {
   lambdas <-  lapply(1:length(mixture_weights), function(x) {
 
 
-    lambdas <- matrix(par$norm_factor, ncol = 1) %*% (as.numeric(par$cnv_probs[x,]) * mu * as.numeric(par$segment_mean[x]))
+    lambdas <- matrix(par$norm_factor, ncol = 1) %*% (as.numeric(par$cnv_probs[x,]) * mu * as.numeric(par$segment_factor[x]))
 
     return(lambdas)
 

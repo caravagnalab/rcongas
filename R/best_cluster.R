@@ -39,7 +39,7 @@ best_cluster <-
            MAP = TRUE,
            seed = 3,
            mixture = NULL,
-           method = "AIC") {
+           method = "AIC", norm_factor = NULL) {
     if (is.null(mixture)) {
       mixture <- rep(NULL, length(clusters))
     }
@@ -57,6 +57,7 @@ best_cluster <-
           param_list = c(param_list, list('K' = x, 'mixture' = mixture[[x]])),
           MAP = MAP,
           seed = seed,
+          norm_factor = norm_factor
         ))
 
     IC <- calculate_information_criteria(res,X,method)

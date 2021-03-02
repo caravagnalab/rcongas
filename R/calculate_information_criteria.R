@@ -49,7 +49,7 @@ calculate_information_criteria <- function(res, x, method){
 choose_likelihood <- function(model) {
   if (grepl(tolower(model), pattern = "norm")) {
     lik_fun <-  gauss_lik_norm
-  } else if (grepl(tolower(model), pattern = "EXP")) {
+  } else if (grepl(tolower(model), pattern = "Categorical")) {
     lik_fun <- gauss_lik_with_means
   } else if (grepl(tolower(model), pattern = "Old")) {
     lik_fun <- gauss_lik_old

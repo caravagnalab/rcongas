@@ -86,3 +86,10 @@ is_gaussian <-  function(x) {
   return(grepl("Norm", bm$run_information$model, ignore.case = T))
 }
 
+is_categorical <-  function(x){
+  bm <-  get_best_model(x)
+  
+  return(grepl("Categorical", bm$run_information$model, ignore.case=T))
+  
+}
+

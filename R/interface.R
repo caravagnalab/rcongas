@@ -145,8 +145,8 @@ set_names <-  function(an){
 #' @export
 #'
 #' @examples
-run_inference <-  function(X , model, optim = "ClippedAdam", elbo = "TraceEnum_ELBO", inf_type = "SVI", steps = 300, lr = 0.05,
-                            param_list = list(), MAP = TRUE, seed = 3, rerun = F){
+run_inference <-  function(X , model, optim = "ClippedAdam", elbo = "TraceGraph_ELBO", inf_type = "SVI", steps = 300, lr = 0.05,
+                            param_list = list(), MAP = TRUE, seed = 3, rerun = F, norm_factor = NULL){
 
   an <- reticulate::import("congas")
 
@@ -155,6 +155,11 @@ run_inference <-  function(X , model, optim = "ClippedAdam", elbo = "TraceEnum_E
 
     data_list <- from_simulation_to_data_list(X)
   }
+
+  if(grepl("MixtureCategorical", model, ignore.case=T)){
+    data_list$norm_factor <- norm_factor
+  }
+  
 
   model_name <- model
   optim_name <- optim
@@ -192,24 +197,32 @@ run_inference <-  function(X , model, optim = "ClippedAdam", elbo = "TraceEnum_E
 
   if(grepl(pattern = "Norm",model_name, ignore.case = T)) {
     parameters$norm_factor <- rep(x = 1, length(cell_names))
+  } else if(grepl("Categorical", model, ignore.case=T)) {
+    parameters$norm_factor <- norm_factor
+    parameters$cnv_probs <- apply(parameters$CNV_probabilities, 2 , which.max) %>%  as.data.frame() %>%  t
   }
+  
 
   dim_names <- list(cell_names = cell_names, seg_names = seg_names)
+  
 
-
-  if(rerun | grepl(pattern = "EXP",model_name)){
+  if(rerun){
     an <-  list(loss = loss, parameters = parameters, dim_names = dim_names)
 
     names(an$parameters) <- gsub(names(an$parameters), pattern = "param_", replacement = "")
 
   } else{
+    
     an <-  set_names(list(loss = loss, parameters = parameters, dim_names = dim_names))
+  
   }
 
   an$run_information <-  list(model = model_name,optim = optim_name, elbo = elbo_name, inf_type = inf_type_name,
                               steps = steps, lr = lr, input_hyper_params = param_list, MAP = MAP,
                               seed = seed)
   X$inference$models <- list(an)
+  
+  
 
   return(structure(an, class = "congas"))
 
