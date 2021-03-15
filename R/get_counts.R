@@ -1,4 +1,5 @@
 
+
 #' Title
 #'
 #' @param inf_obj
@@ -17,15 +18,18 @@ get_counts <-
            z_score = FALSE,
            sum_denominator = TRUE)
   {
-    best_model <- Rcongas:::get_best_model(x)
-    
     data_matrix = x$data$counts
     
-    
     if (normalise) {
+      
+      if (!has_inference(x)) stop("To use normalise = TRUE you need to compute a model fit first.")
+      
+      best_model <- Rcongas:::get_best_model(x)
+      
       if (is.null(best_model$parameters$norm_factor))
         best_model$parameters$norm_factor <-
-          rep(1, length(best_model$parameters$assignement))
+        rep(1, length(best_model$parameters$assignement))
+      
       normalisation_factors = best_model$parameters$norm_factor
       
       assignments = get_cluster_assignments(x) %>% gsub(pattern = "C",
@@ -59,11 +63,11 @@ get_counts <-
     }
     
     M <-
-      long_counts(data_matrix) %>%  
+      long_counts(data_matrix) %>%
       select(chr, from, to, cell, n) %>%
       dplyr::arrange(chr, from, to)
     
-    if(has_inference(x))
+    if (has_inference(x))
     {
       clts <- as.data.frame(best_model$parameters$assignement)
       colnames(clts) <- "cluster"
