@@ -191,7 +191,7 @@ run_inference <-  function(X , model, optim = "ClippedAdam", elbo = "TraceGraph_
     #parameters$assignment_probs <- rep(1, length(cell_names)) 
     parameters$assignement <- rep(1, length(cell_names))
   } else{
-    parameters$assignement <- apply(parameters$assignment_probs, 1, which.max)
+    parameters$assignement <- apply(parameters$assignment_probs, 2, which.max)
   }  
   
 
