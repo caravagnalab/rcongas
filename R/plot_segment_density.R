@@ -45,20 +45,28 @@ plot_segment_density = function(x,
     return(ggplot())
   }
   
-  if (is_gaussian(x))
+  if (is_gaussian(x)){
     plots = lapply(
       segments_ids,
       plot_single_segment_gaussian,
       x = x,
-      sum_denominator = sum_denominator
-    )
-  else
-    plots = lapply(
-      segments_ids,
-      plot_single_segment_poisson,
-      x = x,
-      sum_denominator = sum_denominator
-    )
+      sum_denominator = sum_denominator)
+  } else if (is_categorica(x)){
+      plots = lapply(
+        segments_ids,
+        plot_single_segment_NB,
+        x = x,
+        sum_denominator = sum_denominator)
+      
+    } else {
+      plots = lapply(
+        segments_ids,
+        plot_single_segment_poisson,
+        x = x,
+        sum_denominator = sum_denominator
+      )
+    }
+    
   
   names(plots) = segments_ids
   

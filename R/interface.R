@@ -199,7 +199,11 @@ run_inference <-  function(X , model, optim = "ClippedAdam", elbo = "TraceGraph_
     parameters$norm_factor <- rep(x = 1, length(cell_names))
   } else if(grepl("Categorical", model, ignore.case=T)) {
     parameters$norm_factor <- norm_factor
-    parameters$cnv_probs <- apply(parameters$CNV_probabilities, c(1,2) , which.max) %>%  as.data.frame() %>%  t
+    if(param_list$K == 1)
+      parameters$cnv_probs <- apply(parameters$CNV_probabilities, 2 , which.max) %>%  as.data.frame() %>%  t
+    else
+      parameters$cnv_probs <- apply(parameters$CNV_probabilities, c(1,2) , which.max) %>%  as.data.frame()
+
   }
   
 
@@ -213,7 +217,8 @@ run_inference <-  function(X , model, optim = "ClippedAdam", elbo = "TraceGraph_
 
   } else{
     
-    an <-  set_names(list(loss = loss, parameters = parameters, dim_names = dim_names))
+    #an <-  set_names(list(loss = loss, parameters = parameters, dim_names = dim_names))
+    an <- list(loss = loss, parameters = parameters, dim_names = dim_names)
   
   }
 

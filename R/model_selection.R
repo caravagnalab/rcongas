@@ -92,7 +92,7 @@ gauss_lik_norm <-  function(data,mu,par) {
 }
 
 
-gauss_lik_with_means <-  function(data,mu,par) {
+NB_lik_with_means <-  function(data,mu,par) {
 
   mixture_weights <- par$mixture_weights
 
@@ -100,11 +100,13 @@ gauss_lik_with_means <-  function(data,mu,par) {
   lambdas <-  lapply(1:length(mixture_weights), function(x) {
 
 
-    lambdas <- matrix(par$norm_factor, ncol = 1) %*% (as.numeric(par$cnv_probs[x,]) * mu * as.numeric(par$segment_factor[x]))
+    lambdas <- matrix(par$norm_factor, ncol = 1) %*% (6 - as.numeric(par$cnv_probs[x,]) * as.numeric(par$segment_factor))
 
     return(lambdas)
 
   })
+  
+  
 
   log_lk <- matrix(nrow = nrow(data), ncol = ncol(data))
 
@@ -112,7 +114,7 @@ gauss_lik_with_means <-  function(data,mu,par) {
     for(i in 1:ncol(data)){
       lk <-  vector(length = length(mixture_weights))
       for(k in 1:length(mixture_weights))
-        lk[k] <- dpois(as.numeric(data[n,i]), as.numeric(lambdas[[k]][n,i]), log = TRUE) + log(mixture_weights[k])
+        lk[k] <- dnbinom(as.numeric(data[n,i]),mu =  as.numeric(lambdas[[k]][n,i]), size = par$NB_size[i],log = TRUE) + log(mixture_weights[k])
       log_lk[n,i] <- log_sum_exp(lk)
     }
   }

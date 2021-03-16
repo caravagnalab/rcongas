@@ -1,7 +1,7 @@
 estimate_segment_factors <- function(data, norm_factors, plot = T){
  
-  x <-  data$data$counts /  norm_factors
-  x <-  x / data$data$cnv$ploidy_real
+  x <-  apply(data$data$counts, 2, function(y) y/  norm_factors)
+  x <-  apply(x, 1, function(y) y / data$data$cnv$ploidy_real) %>%  t
   
   par(mfrow = c(5,5))
   
