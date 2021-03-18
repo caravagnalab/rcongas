@@ -1,207 +1,240 @@
-#' Title
-#'
-#' @param data 
-#' @param cnv_data 
-#' @param chromosomes 
-#' @param fun 
-#' @param online 
-#' @param reference_genome 
-#' @param correct_bins 
-#' @param gene_format 
-#' @param description 
-#'
-#' @return
-#' @export
-#'
-#' @examples
-init <-
-  function(data,
-           cnv_data,
-           chromosomes = paste0("chr", (1:22)),
-           fun = sum,
-           online = FALSE,
-           reference_genome = "hg38",
-           correct_bins = TRUE,
-           gene_format = "hgnc_symbol",
-           description = "My CONGAS dataset"
-           )
-    
-  {
-    cli::cli_alert_info("Extracting gene data from reference.")
-    
-    sanitise_input(data, cnv_data)
-    
-    # Salvatore's mapping
-    df_list <-
-      getChromosomeDF(
-        data,
-        genome = reference_genome,
-        online = online,
-        chrs = chromosomes,
-        filters = gene_format
-      )
-    
-    data_splitted <- df_list[[1]]
-    chrs_cord <- df_list[[2]]
-    
-    
-    # Process data
-    cli::cli_alert_info("Processing input counts.")
-    
-    cp <-
-      cnv_data %>% mutate(dist = to - from,
-                          to = as.integer(to),
-                          from = as.integer(from)) %>% filter(chr %in% chromosomes)
-    
-    if (nrow(cp) == 0)
-      stop("Nothing mapped? Check your inputs..")
-    
-    if (correct_bins)
-      cp <- correct_bins(cp, filt = 1.0e+07, hard = TRUE)
-    
-    # Data split
-    bins_splitted <- split(cp , cp$chr)
-    bins_splitted <-
-      bins_splitted[gtools::mixedsort(names(bins_splitted))]
-    
-    chrs_cord <-
-      chrs_cord[names(chrs_cord) %in% names(bins_splitted)]
-    
-    data_splitted <-
-      data_splitted[names(data_splitted) %in% names(bins_splitted)]
-    
-    mask <- mapply(
-      bins_splitted,
-      chrs_cord,
-      FUN = function(x, y) {
-        res <- vector(length = nrow(x))
-        for (i in seq_len(nrow(x))) {
-          res[i] <-
-            any(x$from[i] <  y$start_position &
-                  x$to[i] > y$end_position)
-        }
-        return(res)
-      }
-    )
-    
-    data_binned <-
-      mapply(
-        data_splitted,
-        chrs_cord,
-        bins_splitted ,
-        FUN = function(x, y, z)
-          custom_fixed_binned_apply(x, y, z, fun)
-      )
-    
-    # Assembly final object
-    cli::cli_alert_info("Assembly Rcongas object.")
-    
-    result <- data_binned[seq(1, length(data_binned), 4)]
-    result_bindim <- data_binned[seq(2, length(data_binned), 4)]
-    fixed_bindim <- data_binned[seq(3, length(data_binned), 4)]
-    genes_in_bins <- data_binned[seq(4, length(data_binned), 4)]
-    
-    result <- t(do.call(rbind, result))
-    result_bindim <- t(do.call(rbind, result_bindim))
-    fixed_bindim <- do.call(c, fixed_bindim)
-    colnames(result_bindim) <- colnames(result)
-    cp <- do.call(rbind, bins_splitted)
-    
-    cp$mu <- apply(result_bindim, 2, median)
-    cp$fixed_mu <- fixed_bindim
-    colnames(cp)[4] <- "ploidy_real"
-    
-    gene_locations <-
-      as.matrix(do.call(rbind, genes_in_bins)) %>%
-      dplyr::as_tibble()
-    
-    locations = Reduce(bind_rows, chrs_cord) %>% distinct()
-    colnames(locations) = c('gene', 'chr', 'from', 'to')
-    
-    gene_locations = gene_locations %>%
-      left_join(locations, by = 'gene') %>%
-      select(gene, chr, from, to, segment_id)
-    
-    # Retain only what is mappable for sure
-    nr = gene_locations %>% nrow
-    gene_locations = gene_locations[complete.cases(gene_locations), ]
-    nr2 = gene_locations %>% nrow
-
-    if(nr - nr2 > 0) 
-    {
-      cli::cli_alert_warning("Mapping inconsistent for {.field {nr-nr2}} genes out {.field {nr}}, removing those from the raw data table.")
-    }
-    
-    # Tibble data
-    data_tb = data %>% as_tibble()
-    data_tb$gene = rownames(data)
-    
-    data_tb = data_tb %>%
-      reshape2::melt(id = 'gene', value.name = 'n') %>%
-      mutate(variable = paste(variable)) %>% 
-      as_tibble() %>%
-      rename(cell = variable) %>%
-      filter(n > 0)
-    
-    ds = format(object.size(data_tb), units = 'Mb') %>% crayon::blue()
-    dsm = format(object.size(data), units = 'Mb') %>% crayon::red()
-    
-    cli::cli_alert_info(
-      "Retaining {.value {ds}} long-format tibble data with {.field {data_tb %>% nrow}} points, matrix was {.value {dsm}}."
-    )
-    
-    data_list <-
-      list(
-        counts = as.matrix(result),
-        bindims = result_bindim,
-        cnv = cp %>%  dplyr::as_tibble() %>% idify(),
-        gene_locations = gene_locations,
-        raw = data_tb
-      )
-    
-    ret <-
-      structure(
-        list(
-          data = data_list,
-          reference_genome = reference_genome,
-          description = description
-        ),
-        class = "rcongas"
-      )
-    
-    ds = format(object.size(ret), units = 'Mb') %>% crayon::blue()
-    
-    cli::cli_alert_info("Object size in memory: {.value {ds}}.")
-    cat("\n")
-    print(ret)
-    
-    return(ret)
-    
-  }
-
-# Sanitise input requrements
-sanitise_input = function(data, cnv_data)
+init = function(
+  rna,
+  atac,
+  segmentation,
+  normalisation_factors,
+  rna_likelihood = "G",
+  atac_likelihood = "NB",
+  description = "CONGAS+ model"
+)
 {
-  # Duplicate gene or cell ids
-  cell_names = colnames(data) %>% table
-  gene_names = rownames(data) %>% table
+  if(is.null(rna) & is.null(atac))
+    stop("Cannot have both assays null.")
   
-  if(cell_names[cell_names>1] %>% length > 0)
-    stop("Cell ids cannot be duplicated: ", cell_names[cell_names>1] %>% names %>% paste(collapse = ', '))
+  # Output object
+  ret_obj = list()
+  class(ret_obj) = 'rcongasplus'
+  
+  ret_obj$description = description
+  
+  cli::boxx(description, 
+            padding = 1,
+            float = 'center') %>% cat
+  cat("\n")
 
-  if(gene_names[gene_names>1] %>% length > 0)
-    stop("Gene ids cannot be duplicated: ", gene_names[gene_names>1] %>% names %>% paste(collapse = ', '))
+  # Sanitise by data type and required columns
+  sanitize_input(rna, 
+                 required_input_columns = c("chr", "from", "to", "count", "cell"),
+                 types_required = c("character", "integer", "integer", "integer", "character")
+  )
   
-  # CNV data format check
-  if (!all(c("chr", "from", "to", "tot") %in% colnames(cnv_data))) {
-    stop("Chromsomes wrong format...")
+  sanitize_input(atac, 
+                 required_input_columns = c("chr", "from", "to", "count", "cell"),
+                 types_required = c("character", "integer", "integer", "integer", "character")
+  )
+  
+  sanitize_input(segmentation, 
+                 required_input_columns = c("chr", "from", "to", "copies"),
+                 types_required = c("character", "integer", "integer", "integer")
+  )
+  
+  sanitize_input(normalisation_factors, 
+                 required_input_columns = c("cell", "normalisation_factor", "modality"),
+                 types_required = c("character", "numeric", "character")
+  )
+  
+  # Non unique cell ids
+  nu_ids = intersect(rna$cell, atac$cell)
+  
+  if(!is.null(nu_ids) & (length(nu_ids) > 0))
+  {
+    stop("ATAC and RNA cells have shared ids.")
   }
   
-  if (!all(grepl('chr', cnv_data$chr))) {
-    stop("Chromsomes format has to be chr1, chr2, ....")
+  # Check that normalisation factors are available for all cells
+  all_sample_cells = c(rna$cell, atac$cell) %>% unique
+  
+  if(!all(all_sample_cells %in% normalisation_factors$cell))
+  {
+    message("Error with this tibble")
+    normalisation_factors %>% print()
+    
+    stop("Missing normalisation factors for some input cells.")
   }
   
-  cli::cli_alert_success(
-    "Validated input(s): {.field {cell_names %>% length}} cells, {.field {gene_names %>% length}} genes and {.field {cnv_data %>% nrow}} CNA segments."
+  # Check likelihood
+  if(!(rna_likelihood %in% c("NB", "P", "G")))
+  {
+    stop("Unsupported RNA likelihood, use:
+      - NB (Negative-Binomial), 
+      - P (Poisson),
+      - G (Gaussian, with z-score).")
+  }
+  
+  if(!(atac_likelihood %in% c("NB", "P", "G")))
+  {
+    stop("Unsupported RNA likelihood, use:
+      - NB (Negative-Binomial), 
+      - P (Poisson),
+      - G (Gaussian, with z-score).")
+  }
+  
+  # Prepare segment
+  segmentation = segmentation %>% idify()
+  
+  segmentation$RNA_genes = 
+    segmentation$RNA_events =   
+    segmentation$ATAC_peaks = 
+    segmentation$ATAC_events = 0
+    
+  # Create RNA modality data
+  rna_modality_data = create_modality(
+    modality = "RNA",
+    data = rna,
+    segmentation = segmentation,
+    normalisation_factors = normalisation_factors,
+    likelihood = rna_likelihood)
+  
+  if(!is.null(rna))
+  {
+    rna = rna_modality_data$data
+    segmentation = rna_modality_data$segmentation
+  }
+  
+  # Create ATAC modality data
+  atac_modality_data = create_modality(
+    modality = "ATAC",
+    data = atac,
+    segmentation = segmentation,
+    normalisation_factors = normalisation_factors,
+    likelihood = atac_likelihood)
+  
+  if(!is.null(atac))
+  {
+    atac = atac_modality_data$data
+    segmentation = atac_modality_data$segmentation
+  }
+
+  # Add to the return object
+  ret_obj$input$dataset = bind_rows(rna, atac)
+  ret_obj$input$normalisation = normalisation_factors
+  ret_obj$input$segmentation = segmentation
+  
+  return(ret_obj %>% sanitize_obj)
+}
+
+create_modality = function(modality, data, segmentation, normalisation_factors, likelihood)
+{
+  # Special case, data are missing
+  if(is.null(data)) {
+    
+    return(list(data = NULL, segmentation = segmentation))
+  }
+  
+  # # Report input information for RNA
+  cli::cli_h3("{.value {modality}} modality")
+  cat("\n")
+  
+  cli::cli_alert("Input events: {.field {data %>% nrow}}")
+  cli::cli_alert("Input cells: {.field {data %>% distinct(cell) %>% nrow}}")
+  cli::cli_alert("Input locations: {.field {data %>% distinct(chr, from, to) %>% nrow}}")
+  
+  # Computing mapping for RNA 
+  segmentation = segmentation %>% idify()
+  
+  evt_lbs = paste0(modality, '_events')
+  loc_lbs = ifelse(
+    modality == 'RNA',
+    paste0(modality, '_genes'),
+    paste0(modality, '_peaks')
+  )
+  
+  segmentation[[evt_lbs]] = 0
+  segmentation[[loc_lbs]] = 0
+  
+  data$segment_id = NA
+
+  for(i in 1:nrow(x_segmentation))
+  {
+    what_maps = which(
+      data$chr == segmentation$chr[i] &
+        data$from >= segmentation$from[i] &
+        data$to <= segmentation$to[i]
+    )
+    
+    if(length(what_maps) == 0) next;
+    
+    data$segment_id[what_maps] = segmentation$segment_id[i]
+    
+    segmentation[[evt_lbs]][i] = what_maps %>% length
+    segmentation[[loc_lbs]][i] = data[what_maps, ] %>% 
+      distinct(chr, from, to) %>% 
+      nrow()
+  }
+  
+  n_na = is.na(data$segment_id) %>% sum()
+  nn_na = (data %>% nrow) - n_na
+  
+  cli::cli_alert("Entries mapped: {.field {nn_na}}, with {.field {n_na}} outside input segments.")
+  
+  # Mapped RNA counts 
+  mapped = data %>% 
+    group_by(segment_id, cell) %>% 
+    summarise(count = sum(count), .groups = 'keep') %>% 
+    ungroup() %>% 
+    mutate(modality = !!modality) %>% 
+    rename(value = count)
+  
+  # Handle data type request: convert to z-score if required
+  mapped$value_type = likelihood
+  
+  what_lik = case_when(
+    likelihood == "NB" ~ "Negative Binomial",
+    likelihood == "P" ~ "Poisson",
+    likelihood == "G" ~ "Gaussian"
+  )
+  
+  cli::cli_alert("Using RNA likelihood: {.field {what_lik}}.")
+  
+  if(likelihood %in% c("G"))
+  {
+    cli::cli_alert("Required z-score representation, computing after normalising data with input factors.")
+    
+    factors = normalisation_factors %>% 
+      filter(modality == !!modality) %>% 
+      dplyr::select(-modality)
+    
+    # Divide counts by per-cell normalization_factor
+    mapped = mapped %>% 
+      left_join(factors, by = 'cell') %>% 
+      mutate(value = value/normalisation_factor)
+    
+    zscore_params = mapped %>% 
+      group_by(segment_id) %>% 
+      summarise(counts_mean = mean(value), counts_sd = sd(value), .groups = 'keep')
+    
+    mapped = mapped %>% 
+      left_join(zscore_params, by = 'segment_id') %>% 
+      mutate(
+        value = (value - counts_mean)/counts_sd # z-score
+      ) 
+    
+    n_na = mapped$value %>% is.na %>% sum
+    
+    if(n_na > 0)
+    {
+      cli::cli_alert_warning("There are {.field {n_na}} z-scores that are NA, will be removed.")
+      mapped %>% filter(is.na(value)) %>% print
+      
+      mapped = mapped %>% filter(!is.na(value))
+    }
+  }
+  
+  return(
+    list(
+      data = mapped,
+      segmentation = segmentation
+    )
   )
 }
+

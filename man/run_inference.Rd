@@ -8,16 +8,15 @@ run_inference(
   X,
   model,
   optim = "ClippedAdam",
-  elbo = "TraceEnum_ELBO",
+  elbo = "TraceGraph_ELBO",
   inf_type = "SVI",
   steps = 300,
   lr = 0.05,
   param_list = list(),
   MAP = TRUE,
-  posteriors = FALSE,
   seed = 3,
-  step_post = 300,
-  rerun = F
+  rerun = F,
+  norm_factor = NULL
 )
 }
 \arguments{

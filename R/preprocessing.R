@@ -307,171 +307,171 @@ getChromosomeDF <-
     
   }
 
-get_data <-
-  function(data,
-           bindim = 100,
-           chrs = paste0("chr", (1:22)),
-           filter = NULL,
-           fun = sum,
-           type = c("binning", "smoothing", "fixed_binning"),
-           cnv_data = NULL,
-           online = FALSE,
-           genome = "hg38",
-           startsWithchr = FALSE,
-           correct_bins = TRUE,
-           gene_filters = "hgnc_symbol",
-           save_gene_matrix = TRUE,
-           custom_gene_matrix = NULL)
-
-  {
-    if (!is.null(filter)) {
-      data <- data[rownames(data) %in% filter, ]
-    }
-    
-    df_list <-
-      getChromosomeDF(
-        data,
-        genome = genome,
-        online = online,
-        chrs = chrs,
-        filters = gene_filters
-      )
-    
-    data_splitted <- df_list[[1]]
-    chrs_cord <- df_list[[2]]
-    
-    
-    
-    if (type == "binning") {
-      data_binned <-
-        mapply(
-          data_splitted,
-          chrs_cord ,
-          FUN = function(x, y)
-            binned_mean(x, y, binSize = bindim , fun)
-        )
-      result <- t(do.call(rbind, data_binned))
-      chrs_cord <- t(do.call(rbind, chrs_cord))
-      return(list(counts = result, genes_cords  = chrs_cord))
-    } else if (type == "smoothing") {
-      data_binned <-
-        mapply(
-          data_splitted,
-          chrs_cord ,
-          FUN = function(x, y)
-            binned_recalibration(x, y, binSize = bindim , fun)
-        )
-      result <- t(co.call(rbind, data_binned))
-      chrs_cord <- t(do.call(rbind, chrs_cord))
-      return(list(counts = result, genes_cords  = chrs_cord))
-    } else if (type == "fixed_binning") {
-      # cnv_data <- CNAqc::smooth_segments(cnv_data, maximum_distance = 10^8)
-      
-      if (startsWithchr) {
-        cnv_data <-
-          cnv_data %>% mutate(chr = gsub(chr, pattern = "chr", replacement = ""))
-      }
-      
-      if (all(c("start", "end") %in% colnames(cnv_data))) {
-        cnv_data <- cnv_data %>% mutate(from = start, to = end)
-      }
-      
-      cp <-
-        cnv_data %>% mutate(dist = to - from,
-                            to = as.integer(to),
-                            from = as.integer(from)) %>% filter(chr %in% chrs)
-      
-      if (correct_bins)
-        cp <- correct_bins(cp, filt = 1.0e+07, hard = TRUE)
-      
-      
-      bins_splitted <- split(cp , cp$chr)
-      bins_splitted <-
-        bins_splitted[gtools::mixedsort(names(bins_splitted))]
-      #bins_splitted <- bins_splitted[names(bins_splitted) %in% names(chrs_cord)]
-      
-      
-      
-      chrs_cord <-
-        chrs_cord[names(chrs_cord) %in% names(bins_splitted)]
-      data_splitted <-
-        data_splitted[names(data_splitted) %in% names(bins_splitted)]
-      
-      
-      
-      
-      mask <- mapply(
-        bins_splitted,
-        chrs_cord,
-        FUN = function(x, y) {
-          res <- vector(length = nrow(x))
-          for (i in seq_len(nrow(x))) {
-            res[i] <-
-              any(x$from[i] <  y$start_position &
-                    x$to[i] > y$end_position)
-          }
-          return(res)
-        }
-      )
-      
-      
-      #bins_splitted <- mapply(bins_splitted, mask, FUN =  function(x,y) x[y,], SIMPLIFY = F)
-      
-      
-      data_binned <-
-        mapply(
-          data_splitted,
-          chrs_cord,
-          bins_splitted ,
-          FUN = function(x, y, z)
-            custom_fixed_binned_apply(x, y, z, fun)
-        )
-      
-      
-      result <- data_binned[seq(1, length(data_binned), 4)]
-      result_bindim <- data_binned[seq(2, length(data_binned), 4)]
-      fixed_bindim <- data_binned[seq(3, length(data_binned), 4)]
-      genes_in_bins <- data_binned[seq(4, length(data_binned), 4)]
-      
-      result <- t(do.call(rbind, result))
-      result_bindim <- t(do.call(rbind, result_bindim))
-      fixed_bindim <- do.call(c, fixed_bindim)
-      colnames(result_bindim) <- colnames(result)
-      cp <- do.call(rbind, bins_splitted)
-      
-      cp$mu <- apply(result_bindim, 2, median)
-      cp$fixed_mu <- fixed_bindim
-      colnames(cp)[4] <- "ploidy_real"
-      
-      gene_locations <-
-        as.matrix(do.call(rbind, genes_in_bins)) %>% dplyr::as_tibble() %>%
-        tidyr::separate(segment_id,
-                        into = c("chr", "from", "to"),
-                        sep = ":") %>%
-        mutate(segment_id = gsub(
-          paste(.$chr, .$from, .$to, sep = ":"),
-          pattern = " ",
-          replacement = ""
-        ))
-      data_list <-
-        list(
-          counts = as.matrix(result),
-          bindims = result_bindim,
-          cnv = cp %>%  dplyr::as_tibble() %>% idify(),
-          gene_locations = gene_locations
-        )
-      
-      ret <-
-        structure(list(data = data_list, reference_genome = genome), class = "rcongas")
-      
-      if (save_gene_matrix) {
-        if (!is.null(custom_gene_matrix))
-          ret$data$gene_counts <- custom_gene_matrix
-        else
-          ret$data$gene_counts <- data
-      }
-      
-      return(ret)
-      
-    }
-  }
+# get_data <-
+#   function(data,
+#            bindim = 100,
+#            chrs = paste0("chr", (1:22)),
+#            filter = NULL,
+#            fun = sum,
+#            type = c("binning", "smoothing", "fixed_binning"),
+#            cnv_data = NULL,
+#            online = FALSE,
+#            genome = "hg38",
+#            startsWithchr = FALSE,
+#            correct_bins = TRUE,
+#            gene_filters = "hgnc_symbol",
+#            save_gene_matrix = TRUE,
+#            custom_gene_matrix = NULL)
+# 
+#   {
+#     if (!is.null(filter)) {
+#       data <- data[rownames(data) %in% filter, ]
+#     }
+#     
+#     df_list <-
+#       getChromosomeDF(
+#         data,
+#         genome = genome,
+#         online = online,
+#         chrs = chrs,
+#         filters = gene_filters
+#       )
+#     
+#     data_splitted <- df_list[[1]]
+#     chrs_cord <- df_list[[2]]
+#     
+#     
+#     
+#     if (type == "binning") {
+#       data_binned <-
+#         mapply(
+#           data_splitted,
+#           chrs_cord ,
+#           FUN = function(x, y)
+#             binned_mean(x, y, binSize = bindim , fun)
+#         )
+#       result <- t(do.call(rbind, data_binned))
+#       chrs_cord <- t(do.call(rbind, chrs_cord))
+#       return(list(counts = result, genes_cords  = chrs_cord))
+#     } else if (type == "smoothing") {
+#       data_binned <-
+#         mapply(
+#           data_splitted,
+#           chrs_cord ,
+#           FUN = function(x, y)
+#             binned_recalibration(x, y, binSize = bindim , fun)
+#         )
+#       result <- t(co.call(rbind, data_binned))
+#       chrs_cord <- t(do.call(rbind, chrs_cord))
+#       return(list(counts = result, genes_cords  = chrs_cord))
+#     } else if (type == "fixed_binning") {
+#       # cnv_data <- CNAqc::smooth_segments(cnv_data, maximum_distance = 10^8)
+#       
+#       if (startsWithchr) {
+#         cnv_data <-
+#           cnv_data %>% mutate(chr = gsub(chr, pattern = "chr", replacement = ""))
+#       }
+#       
+#       if (all(c("start", "end") %in% colnames(cnv_data))) {
+#         cnv_data <- cnv_data %>% mutate(from = start, to = end)
+#       }
+#       
+#       cp <-
+#         cnv_data %>% mutate(dist = to - from,
+#                             to = as.integer(to),
+#                             from = as.integer(from)) %>% filter(chr %in% chrs)
+#       
+#       if (correct_bins)
+#         cp <- correct_bins(cp, filt = 1.0e+07, hard = TRUE)
+#       
+#       
+#       bins_splitted <- split(cp , cp$chr)
+#       bins_splitted <-
+#         bins_splitted[gtools::mixedsort(names(bins_splitted))]
+#       #bins_splitted <- bins_splitted[names(bins_splitted) %in% names(chrs_cord)]
+#       
+#       
+#       
+#       chrs_cord <-
+#         chrs_cord[names(chrs_cord) %in% names(bins_splitted)]
+#       data_splitted <-
+#         data_splitted[names(data_splitted) %in% names(bins_splitted)]
+#       
+#       
+#       
+#       
+#       mask <- mapply(
+#         bins_splitted,
+#         chrs_cord,
+#         FUN = function(x, y) {
+#           res <- vector(length = nrow(x))
+#           for (i in seq_len(nrow(x))) {
+#             res[i] <-
+#               any(x$from[i] <  y$start_position &
+#                     x$to[i] > y$end_position)
+#           }
+#           return(res)
+#         }
+#       )
+#       
+#       
+#       #bins_splitted <- mapply(bins_splitted, mask, FUN =  function(x,y) x[y,], SIMPLIFY = F)
+#       
+#       
+#       data_binned <-
+#         mapply(
+#           data_splitted,
+#           chrs_cord,
+#           bins_splitted ,
+#           FUN = function(x, y, z)
+#             custom_fixed_binned_apply(x, y, z, fun)
+#         )
+#       
+#       
+#       result <- data_binned[seq(1, length(data_binned), 4)]
+#       result_bindim <- data_binned[seq(2, length(data_binned), 4)]
+#       fixed_bindim <- data_binned[seq(3, length(data_binned), 4)]
+#       genes_in_bins <- data_binned[seq(4, length(data_binned), 4)]
+#       
+#       result <- t(do.call(rbind, result))
+#       result_bindim <- t(do.call(rbind, result_bindim))
+#       fixed_bindim <- do.call(c, fixed_bindim)
+#       colnames(result_bindim) <- colnames(result)
+#       cp <- do.call(rbind, bins_splitted)
+#       
+#       cp$mu <- apply(result_bindim, 2, median)
+#       cp$fixed_mu <- fixed_bindim
+#       colnames(cp)[4] <- "ploidy_real"
+#       
+#       gene_locations <-
+#         as.matrix(do.call(rbind, genes_in_bins)) %>% dplyr::as_tibble() %>%
+#         tidyr::separate(segment_id,
+#                         into = c("chr", "from", "to"),
+#                         sep = ":") %>%
+#         mutate(segment_id = gsub(
+#           paste(.$chr, .$from, .$to, sep = ":"),
+#           pattern = " ",
+#           replacement = ""
+#         ))
+#       data_list <-
+#         list(
+#           counts = as.matrix(result),
+#           bindims = result_bindim,
+#           cnv = cp %>%  dplyr::as_tibble() %>% idify(),
+#           gene_locations = gene_locations
+#         )
+#       
+#       ret <-
+#         structure(list(data = data_list, reference_genome = genome), class = "rcongas")
+#       
+#       if (save_gene_matrix) {
+#         if (!is.null(custom_gene_matrix))
+#           ret$data$gene_counts <- custom_gene_matrix
+#         else
+#           ret$data$gene_counts <- data
+#       }
+#       
+#       return(ret)
+#       
+#     }
+#   }

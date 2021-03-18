@@ -15,11 +15,10 @@ best_cluster(
   lr = 0.05,
   param_list = list(),
   MAP = TRUE,
-  posteriors = FALSE,
   seed = 3,
-  step_post = 300,
   mixture = NULL,
-  method = "AIC"
+  method = "AIC",
+  norm_factor = NULL
 )
 }
 \arguments{
@@ -43,15 +42,15 @@ best_cluster(
 
 \item{MAP}{}
 
-\item{posteriors}{}
-
 \item{seed}{}
-
-\item{step_post}{}
 
 \item{mixture}{}
 
 \item{method}{}
+
+\item{posteriors}{}
+
+\item{step_post}{}
 }
 \value{
 

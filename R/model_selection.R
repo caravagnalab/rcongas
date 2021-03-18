@@ -92,6 +92,8 @@ gauss_lik_norm <-  function(data,mu,par) {
 }
 
 
+# par = model$parameters
+# mu = useless
 NB_lik_with_means <-  function(data,mu,par) {
 
   mixture_weights <- par$mixture_weights

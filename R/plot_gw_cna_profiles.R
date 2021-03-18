@@ -32,7 +32,7 @@ plot_gw_cna_profiles = function(x,
   segments_plot = NULL
 
   # Segments ploidy
-  segments = Rcongas::get_clusters_ploidy(x, chromosomes, ...)
+  segments = get_clusters_ploidy(x, chromosomes, ...)
   
   segments_h = CNAqc:::relative_to_absolute_coordinates(list(reference_genome = x$reference_genome), segments %>% dplyr::filter(highlight))
   segments_nh = CNAqc:::relative_to_absolute_coordinates(list(reference_genome = x$reference_genome), segments %>% dplyr::filter(!highlight))
