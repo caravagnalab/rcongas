@@ -68,14 +68,14 @@ plot_data_histogram = function(x, segments)
   what_RNA = get_input(x, what = 'data') %>% 
     filter(modality == "RNA")
 
-  if(nrow(what_RNA) > 0 & stats_data$rna_dtype != "G")  
+  if(nrow(what_RNA) > 0  && stats_data$rna_dtype != "G")  
     what_RNA = normalise_modality(what_RNA, norm_factors %>% filter(modality == "RNA"))
     
   # ATAC_data values
   what_ATAC = get_input(x, what = 'data') %>% 
     filter(modality == "ATAC")
   
-  if(nrow(what_ATAC) > 0 & stats_data$atac_dtype != "G")  
+  if(nrow(what_ATAC) > 0 && stats_data$atac_dtype != "G")  
     what_ATAC = normalise_modality(what_ATAC, norm_factors %>% filter(modality == "ATAC"))
   
   what = bind_rows(what_RNA, what_ATAC) %>%
@@ -133,14 +133,14 @@ plot_data_lineplot = function(x, segments)
   what_RNA = get_input(x, what = 'data') %>% 
     filter(modality == "RNA")
   
-  if(nrow(what_RNA) > 0 & stats_data$rna_dtype != "G")  
+  if(nrow(what_RNA) > 0 && stats_data$rna_dtype != "G")  
     what_RNA = normalise_modality(what_RNA, norm_factors %>% filter(modality == "RNA"))
   
   # ATAC_data values
   what_ATAC = get_input(x, what = 'data') %>% 
     filter(modality == "ATAC")
   
-  if(nrow(what_ATAC) > 0 & stats_data$atac_dtype != "G")  
+  if(nrow(what_ATAC) > 0 && stats_data$atac_dtype != "G")  
     what_ATAC = normalise_modality(what_ATAC, norm_factors %>% filter(modality == "ATAC"))
   
   # Pool all modalities plus the segmentation, apply filters

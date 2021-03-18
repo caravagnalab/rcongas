@@ -16,6 +16,41 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(Rcongas)
+
+data('example_input')
+
+# Example only RNA, with z-score representation (Gaussian likelihood)
+x = init(
+  rna = example_input$x_rna,
+  atac = NULL,
+  segmentation = example_input$x_segmentation,
+  normalisation_factors = example_input$x_normalisation_factors,
+  rna_likelihood = "G", 
+  atac_likelihood = 'NB',
+  description = 'My crazy model')
+
+plot_data(x, 
+          segments = c("chr15:0:102531392", "chr16:0:90354753",  "chr17:0:81195210"))
+
+plot_data(x, what = 'lineplot')
+
 ```
 
-High-level overview pf the package + lists of available vignettes
+```{r setup}
+# Joint RNA (as above), and ATAC (discrete count, Negative Binomial likelihood)
+x = init(
+  rna = example_input$x_rna,
+  atac = example_input$x_atac,
+  atac = NULL,
+  segmentation = example_input$x_segmentation,
+  normalisation_factors = example_input$x_normalisation_factors,
+  rna_likelihood = "G", 
+  atac_likelihood = 'NB',
+  description = 'My crazy model')
+
+plot_data(x, 
+          segments = c("chr15:0:102531392", "chr16:0:90354753",  "chr17:0:81195210"))
+
+plot_data(x, what = 'lineplot')
+
+```
