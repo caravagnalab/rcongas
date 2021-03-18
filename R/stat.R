@@ -11,13 +11,13 @@ stat = function(x, what = 'data')
 {
   x %>% sanitize_obj()
   
-  if(what == 'data') return(x %>% stat_input())
-  if(what == 'clusters') return(x %>% stat_input())
+  if(what == 'data') return(x %>% stat_data())
+  if(what == 'clusters') return(x %>% stat_clusters())
 
   stop("Unrecognised 'what': use any of 'data' or 'clusters'.")
 }
   
-stat_input = function(x)
+stat_data = function(x)
 {
   # number of cells, segments, genes, peaks and modalities
   ncells_RNA = x %>% get_data() %>% filter(modality == 'RNA') %>% distinct(cell) %>% nrow()
@@ -54,4 +54,9 @@ stat_input = function(x)
       atac_dtype = atac_dtype
     )
   )
+}
+
+stat_clusters = function(x)
+{
+ return(NULL)
 }

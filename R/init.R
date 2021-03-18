@@ -5,6 +5,7 @@ init = function(
   normalisation_factors,
   rna_likelihood = "G",
   atac_likelihood = "NB",
+  reference_genome = 'GRCh38',
   description = "CONGAS+ model"
 )
 {
@@ -16,8 +17,10 @@ init = function(
   class(ret_obj) = 'rcongasplus'
   
   ret_obj$description = description
+  ret_obj$reference_genome = reference_genome
   
-  cli::boxx(description, 
+  cli::boxx(paste("(R)CONGAS+:", description), 
+            background_col = 'orange',
             padding = 1,
             float = 'center') %>% cat
   cat("\n")
@@ -42,6 +45,10 @@ init = function(
                  required_input_columns = c("cell", "normalisation_factor", "modality"),
                  types_required = c("character", "numeric", "character")
   )
+  
+  # Reference
+  if(!(reference_genome %in% c("hg19", 'GRCh37', 'hg38', "GRCh38")))
+    stop("Unsupported reference, use any of 'hg19'/'GRCh37' or 'hg38'/'GRCh38'")
   
   # Non unique cell ids
   nu_ids = intersect(rna$cell, atac$cell)
@@ -92,12 +99,12 @@ init = function(
     modality = "RNA",
     data = rna,
     segmentation = segmentation,
-    normalisation_factors = normalisation_factors,
+    normalisation_factors = normalisation_factors %>% filter(modality == "RNA"),
     likelihood = rna_likelihood)
   
   if(!is.null(rna))
   {
-    rna = rna_modality_data$data
+    rna = rna_modality_data$data %>% select(segment_id, cell, value, modality, value_type)
     segmentation = rna_modality_data$segmentation
   }
   
@@ -106,12 +113,12 @@ init = function(
     modality = "ATAC",
     data = atac,
     segmentation = segmentation,
-    normalisation_factors = normalisation_factors,
+    normalisation_factors = normalisation_factors %>% filter(modality == "ATAC"),
     likelihood = atac_likelihood)
   
   if(!is.null(atac))
   {
-    atac = atac_modality_data$data
+    atac = atac_modality_data$data %>% select(segment_id, cell, value, modality, value_type)
     segmentation = atac_modality_data$segmentation
   }
 
@@ -154,7 +161,7 @@ create_modality = function(modality, data, segmentation, normalisation_factors, 
   
   data$segment_id = NA
 
-  for(i in 1:nrow(x_segmentation))
+  for(i in 1:nrow(segmentation))
   {
     what_maps = which(
       data$chr == segmentation$chr[i] &
@@ -200,14 +207,8 @@ create_modality = function(modality, data, segmentation, normalisation_factors, 
   {
     cli::cli_alert("Required z-score representation, computing after normalising data with input factors.")
     
-    factors = normalisation_factors %>% 
-      filter(modality == !!modality) %>% 
-      dplyr::select(-modality)
-    
-    # Divide counts by per-cell normalization_factor
-    mapped = mapped %>% 
-      left_join(factors, by = 'cell') %>% 
-      mutate(value = value/normalisation_factor)
+    # Normalise by factor - divide counts by per-cell normalization_factor
+    mapped = normalise_modality(mapped, normalisation_factors)
     
     zscore_params = mapped %>% 
       group_by(segment_id) %>% 

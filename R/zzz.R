@@ -1,25 +1,5 @@
 .onLoad <- function(libname, pkgname)
 {
-  #  # =-=-=-=-=-=-
-  #  # Required packages will be listed here
-  #  # =-=-=-=-=-=-
-  #  requirements = c(
-  #    'pio',
-  #    'easypar',
-  #    'tidyverse',
-  #    'tidygraph',
-  #    'ggraph',
-  #    'crayon',
-  #    'igraph',
-  #    'ggrepel',
-  #    'RColorBrewer',
-  #    'clisymbols',
-  #    'entropy',
-  #    'matrixcalc',
-  #    'reshape2'
-  #  )
-  #
-  #  suppressMessages(sapply(requirements, require, character.only = TRUE))
 
   # =-=-=-=-=-=-
   # Package options
@@ -36,7 +16,7 @@
   {
     pk = 'Rcongas'
     pk_l = 'Copy-Number genotyping from single cells'
-    www = "https://militeee.github.io/Rcongas/"
+    www = "https://github.com/caravagnalab/rcongas"
     em = "xxxx@gmail.com"
 
     cli::cli_alert_success(
