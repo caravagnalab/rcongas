@@ -17,6 +17,21 @@ sanitize_obj = function(x)
     }
   }
   
+  # Check for NA things
+  chk_na = function(x, cols)
+  {
+    what_incomplete = !complete.cases(x[, cols])
+    if(what_incomplete %>% any)
+    {
+      message("Error with this tibble: ")
+      print(x[what_incomplete, ])
+        
+      stop(
+        paste("NA values should not be here.")
+      )
+    }
+  }
+  
   # General input 
   stopifnot(inherits(x, 'rcongasplus'))
   
@@ -29,8 +44,13 @@ sanitize_obj = function(x)
   # Check that all the tibbles have the required information
   chk_cn(x$input$dataset, c("cell", "segment_id", "value", "modality"), "$input$dataset")
   chk_cn(x$input$normalisation, c("cell", "normalisation_factor", "modality"), "$input$normalisation")
-  chk_cn(x$input$segmentation, c("chr", "from", "to", "copies", "modality", "RNA_events" , "segment_id"), "$input$segmentation")
+  chk_cn(x$input$segmentation, c("chr", "from", "to", "copies", "segment_id"), "$input$segmentation")
   
+  # Some things CANNOT be NA
+  chk_na(x$input$dataset, c("cell", "segment_id", "value", "modality"))
+  chk_na(x$input$normalisation, c("cell", "normalisation_factor", "modality"))
+  chk_na(x$input$segmentation, c("chr", "from", "to", "copies", "segment_id"))
+
   # If available, fit information
   if('congas' %in% names(x))
   {
@@ -103,4 +123,8 @@ sanitize_input = function(x, required_input_columns, types_required)
 
   invisible(1)
 }
+
+
+
+
 

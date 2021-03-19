@@ -7,13 +7,47 @@
 #'
 #' @exportS3Method print rcongasplus
 #'
-#' @importFrom crayon white red green yellow black bgYellow blue bold
-#' @importFrom cli cli_rule cli_text
-#' @importFrom clisymbols symbol
+#' @import crayon
+#' @import cli
 #'
 #' @examples
 print.rcongasplus = function(x, ...)
 {
+  inline_segments_printer = function(x)
+  {
+    segments_vals = x %>% 
+      get_input(what = 'segmentation') %>% 
+      group_by(chr) %>% 
+      summarise(
+        copies = paste(copies, collapse = '')
+      ) %>% 
+      summarise(
+        copies = paste(copies, collapse = '|')
+      ) %>% 
+      pull(copies)
+    
+    colors = c(
+      `0` = crayon::bgCyan(' '),
+      `1` = crayon::bgBlue(' '),
+      `2` = crayon::bgGreen(' '),
+      `3` = crayon::bgRed(' '),
+      `4` = crayon::bgMagenta(' ')
+    )
+    
+    cat("\n\t")
+    for(char in strsplit(segments_vals,'') %>% unlist)
+    {
+      if(char %in% names(colors)) cat(colors[char])
+      else cat(char)
+    }
+    cat("\n\n\t", crayon::underline("Ploidy:"), ' ')
+    for(char in colors %>% names)
+      cat(colors[char], char, '  ')
+    cat('\n')
+    
+  }
+  
+  ############################################################################# 
   stopifnot(inherits(x, "rcongasplus"))
   
   stats_data = stat(x, what = 'data')
@@ -31,6 +65,8 @@ print.rcongasplus = function(x, ...)
   # Segments
   meanp = get_segmentation(x) %>% pull(copies) %>% mean %>% round(2)
   cli::cli_alert('Input {.field {stats_data$nsegments}} CNA segments, mean ploidy {.field {meanp}}.')
+  
+  x %>% inline_segments_printer()
     
   cli::cli_h3("Modalities")
   
@@ -45,7 +81,7 @@ print.rcongasplus = function(x, ...)
     cli::cli_alert(
       'RNA: {.field {stats_data$ncells_RNA}} cells with \\
       {.field {stats_data$rna_genes}} mapped genes, \\
-      {.field {stats_data$rna_events}} events annotated. \\
+      {.field {stats_data$rna_events}} non-zero values. \\
       Likelihood: {.field {what_rna_lik}}.'
     )
   else
@@ -64,7 +100,7 @@ print.rcongasplus = function(x, ...)
     cli::cli_alert(
       'ATAC: {.field {stats_data$ncells_ATAC}} cells with \\
       {.field {stats_data$atac_peak}} mapped peaks, \\
-      {.field {stats_data$atac_events}} events annotated. \\
+      {.field {stats_data$atac_events}} non-zero values. \\
       Likelihood: {.field {what_atac_lik}}.'
     )
   else
@@ -102,4 +138,11 @@ print.rcongasplus = function(x, ...)
   #     ),
   #     symbol = 'clisymbols::symbol$bullet'
   #   ) %>% cli::cli_text()
+  
+ 
+  
 }
+
+
+
+
