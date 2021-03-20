@@ -1,5 +1,12 @@
-smoothie = function(segments)
+smoothie = function(segments, reference = 'GRCh38')
 {
+  reference = CNAqc:::get_reference(ref = reference)
+  
+  # Use the CNAqc implementation, requires some tweaks
+  # segments$Major = segments$minor = segments$CCF = 1
+  
+  # CNAqc:::split_cna_to_arms(x = list(reference_genome = 'GRCh38'), segments)
+  
   smoothed_segments = NULL
   
   for (chr in unique(segments$chr))
