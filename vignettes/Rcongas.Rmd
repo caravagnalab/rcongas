@@ -14,9 +14,14 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
+```{r, warning==FALSE}
 library(Rcongas)
+library(dplyr)
+```
 
+# Single-molecule assay
+
+```{r}
 data('example_input')
 
 # Example only RNA, with z-score representation (Gaussian likelihood)
@@ -29,28 +34,49 @@ x = init(
   atac_likelihood = 'NB',
   description = 'My crazy model')
 
-plot_data(x, 
-          segments = c("chr15:0:102531392", "chr16:0:90354753",  "chr17:0:81195210"))
-
-plot_data(x, what = 'lineplot')
-
+print(x)
 ```
 
-```{r setup}
+```{r, fig.width=6, fig.height=6}
+# Select the first 5 segments to plot
+some_segments = get_input(x, what = "segmentation") %>% 
+  filter(row_number() < 5) %>% 
+  pull(segment_id)
+
+plot_data(x, what = 'histogram', segments = some_segments)
+```
+
+```{r, fig.width=8, fig.height=4}
+plot_data(x, what = 'lineplot')
+```
+
+```{r, fig.width=6, fig.height=6}
+plot_data(x, what = 'heatmap')
+```
+
+
+# Two single-molecule assays
+
+```{r}
 # Joint RNA (as above), and ATAC (discrete count, Negative Binomial likelihood)
 x = init(
   rna = example_input$x_rna,
   atac = example_input$x_atac,
-  atac = NULL,
   segmentation = example_input$x_segmentation,
   normalisation_factors = example_input$x_normalisation_factors,
   rna_likelihood = "G", 
   atac_likelihood = 'NB',
   description = 'My crazy model')
+```
 
-plot_data(x, 
-          segments = c("chr15:0:102531392", "chr16:0:90354753",  "chr17:0:81195210"))
+```{r, fig.width=6, fig.height=6}
+plot_data(x, what = 'histogram', segments = some_segments)
+```
 
+```{r, fig.width=8, fig.height=4}
 plot_data(x, what = 'lineplot')
+```
 
+```{r, fig.width=6, fig.height=8}
+plot_data(x, what = 'heatmap')
 ```

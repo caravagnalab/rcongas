@@ -26,10 +26,10 @@ stat_data = function(x)
   nsegments = x %>% get_segmentation() %>% nrow()
   nmodalities = x %>% get_data() %>% pull(modality) %>% unique() %>% length()
   
-  rna_events = x %>% get_segmentation() %>% pull(RNA_events) %>% sum()
+  rna_events = x %>% get_segmentation() %>% pull(RNA_nonzerovals) %>% sum()
   rna_genes = x %>% get_segmentation() %>% pull(RNA_genes) %>% sum()
   
-  atac_events = x %>% get_segmentation() %>% pull(ATAC_events) %>% sum()
+  atac_events = x %>% get_segmentation() %>% pull(ATAC_nonzerovals) %>% sum()
   atac_peaks = x %>% get_segmentation() %>% pull(ATAC_peaks) %>% sum()
   
   # data types and likelihood adopted

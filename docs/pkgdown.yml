@@ -2,12 +2,8 @@ pandoc: 2.11.0.4
 pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
-  1_Models: 1_Models.html
-  2_Getters: 2_Getters.html
-  3_Plotting_functions: 3_Plotting_functions.html
-  4_Propreocessing: 4_Propreocessing.html
   Rcongas: Rcongas.html
-last_built: 2021-02-12T17:18Z
+last_built: 2021-03-18T16:55Z
 urls:
   reference: militeee.github.io/Rcongas/reference
   article: militeee.github.io/Rcongas/articles

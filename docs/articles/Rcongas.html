@@ -56,27 +56,6 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-<li>
-      <a href="../articles/1_Models.html">Models available in this package</a>
-    </li>
-    <li>
-      <a href="../articles/2_Getters.html">Getter functions</a>
-    </li>
-    <li>
-      <a href="../articles/3_Plotting_functions.html">Plotting functions</a>
-    </li>
-    <li>
-      <a href="../articles/4_Propreocessing.html">Preprocessing</a>
-    </li>
-  </ul>
-</li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
@@ -95,7 +74,7 @@
 
       
 
-      </header><script src="Rcongas_files/header-attrs-2.6/header-attrs.js"></script><div class="row">
+      </header><script src="Rcongas_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Rcongas</h1>
@@ -110,13 +89,126 @@
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">Rcongas</span><span class="op">)</span>
-<span class="co">#&gt; ✓ Loading Rcongas, 'Copy-Number genotyping from single cells'. Support : &lt;https://militeee.github.io/Rcongas/&gt;</span></code></pre></div>
-<p>High-level overview pf the package + lists of available vignettes</p>
+<span class="co">#&gt; ✓ Loading Rcongas, 'Copy-Number genotyping from single cells'. Support : &lt;https://github.com/caravagnalab/rcongas&gt;</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Attaching package: 'dplyr'</span>
+<span class="co">#&gt; The following objects are masked from 'package:stats':</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;     filter, lag</span>
+<span class="co">#&gt; The following objects are masked from 'package:base':</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;     intersect, setdiff, setequal, union</span></code></pre></div>
+<div id="single-molecule-assay" class="section level1">
+<h1 class="hasAnchor">
+<a href="#single-molecule-assay" class="anchor"></a>Single-molecule assay</h1>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">'example_input'</span><span class="op">)</span>
+
+<span class="co"># Example only RNA, with z-score representation (Gaussian likelihood)</span>
+<span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="../reference/init.html">init</a></span><span class="op">(</span>
+  rna <span class="op">=</span> <span class="va">example_input</span><span class="op">$</span><span class="va">x_rna</span>,
+  atac <span class="op">=</span> <span class="cn">NULL</span>,
+  segmentation <span class="op">=</span> <span class="va">example_input</span><span class="op">$</span><span class="va">x_segmentation</span>,
+  normalisation_factors <span class="op">=</span> <span class="va">example_input</span><span class="op">$</span><span class="va">x_normalisation_factors</span>,
+  rna_likelihood <span class="op">=</span> <span class="st">"G"</span>, 
+  atac_likelihood <span class="op">=</span> <span class="st">'NB'</span>,
+  description <span class="op">=</span> <span class="st">'My crazy model'</span><span class="op">)</span>
+<span class="co">#&gt;                         ┌────────────────────────────────┐</span>
+<span class="co">#&gt;                         │                                │</span>
+<span class="co">#&gt;                         │   (R)CONGAS+: My crazy model   │</span>
+<span class="co">#&gt;                         │                                │</span>
+<span class="co">#&gt;                         └────────────────────────────────┘</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; ── RNA modality</span>
+<span class="co">#&gt; → Input events: 438133</span>
+<span class="co">#&gt; → Input cells: 53</span>
+<span class="co">#&gt; → Input locations: 17200</span>
+<span class="co">#&gt; → Entries mapped: 438133, with 0 outside input segments.</span>
+<span class="co">#&gt; → Using RNA likelihood: Gaussian.</span>
+<span class="co">#&gt; → Required z-score representation, computing after normalising data with input factors.</span>
+
+<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
+<span class="co">#&gt; ── [ (R)CONGAS+ ] My crazy model ───────────────────────────────────────────────</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; ── CNA segments (reference: GRCh38)</span>
+<span class="co">#&gt; → Input 22 CNA segments, mean ploidy 2.</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; ── Modalities</span>
+<span class="co">#&gt; → RNA: 53 cells with 17200 mapped genes, 438133 events annotated. Likelihood: Gaussian.</span>
+<span class="co">#&gt; → ATAC: not available</span>
+<span class="co">#&gt; ! Clusters: not available.</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Select the first 5 segments to plot</span>
+<span class="va">some_segments</span> <span class="op">=</span> <span class="fu"><a href="../reference/get_input.html">get_input</a></span><span class="op">(</span><span class="va">x</span>, what <span class="op">=</span> <span class="st">"segmentation"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/ranking.html">row_number</a></span><span class="op">(</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">5</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">segment_id</span><span class="op">)</span>
+
+<span class="fu"><a href="../reference/plot_data.html">plot_data</a></span><span class="op">(</span><span class="va">x</span>, what <span class="op">=</span> <span class="st">'histogram'</span>, segments <span class="op">=</span> <span class="va">some_segments</span><span class="op">)</span></code></pre></div>
+<p><img src="Rcongas_files/figure-html/unnamed-chunk-3-1.png" width="576"></p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/plot_data.html">plot_data</a></span><span class="op">(</span><span class="va">x</span>, what <span class="op">=</span> <span class="st">'lineplot'</span><span class="op">)</span>
+<span class="co">#&gt; Warning: replacing previous import 'cli::num_ansi_colors' by</span>
+<span class="co">#&gt; 'crayon::num_ansi_colors' when loading 'BMix'</span>
+<span class="co">#&gt; Warning: replacing previous import 'crayon::%+%' by 'ggplot2::%+%' when loading</span>
+<span class="co">#&gt; 'BMix'</span>
+<span class="co">#&gt; ✓ Loading BMix, 'Binomial and Beta-Binomial univariate mixtures'. Support : &lt;https://caravagnalab.github.io/BMix/&gt;</span>
+<span class="co">#&gt; ✓ Loading CNAqc, 'Copy Number Alteration quality check'. Support : &lt;https://caravagn.github.io/CNAqc/&gt;</span></code></pre></div>
+<p><img src="Rcongas_files/figure-html/unnamed-chunk-4-1.png" width="768"></p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/plot_data.html">plot_data</a></span><span class="op">(</span><span class="va">x</span>, what <span class="op">=</span> <span class="st">'heatmap'</span><span class="op">)</span></code></pre></div>
+<p><img src="Rcongas_files/figure-html/unnamed-chunk-5-1.png" width="576"></p>
+</div>
+<div id="two-single-molecule-assays" class="section level1">
+<h1 class="hasAnchor">
+<a href="#two-single-molecule-assays" class="anchor"></a>Two single-molecule assays</h1>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Joint RNA (as above), and ATAC (discrete count, Negative Binomial likelihood)</span>
+<span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="../reference/init.html">init</a></span><span class="op">(</span>
+  rna <span class="op">=</span> <span class="va">example_input</span><span class="op">$</span><span class="va">x_rna</span>,
+  atac <span class="op">=</span> <span class="va">example_input</span><span class="op">$</span><span class="va">x_atac</span>,
+  segmentation <span class="op">=</span> <span class="va">example_input</span><span class="op">$</span><span class="va">x_segmentation</span>,
+  normalisation_factors <span class="op">=</span> <span class="va">example_input</span><span class="op">$</span><span class="va">x_normalisation_factors</span>,
+  rna_likelihood <span class="op">=</span> <span class="st">"G"</span>, 
+  atac_likelihood <span class="op">=</span> <span class="st">'NB'</span>,
+  description <span class="op">=</span> <span class="st">'My crazy model'</span><span class="op">)</span>
+<span class="co">#&gt;                         ┌────────────────────────────────┐</span>
+<span class="co">#&gt;                         │                                │</span>
+<span class="co">#&gt;                         │   (R)CONGAS+: My crazy model   │</span>
+<span class="co">#&gt;                         │                                │</span>
+<span class="co">#&gt;                         └────────────────────────────────┘</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; ── RNA modality</span>
+<span class="co">#&gt; → Input events: 438133</span>
+<span class="co">#&gt; → Input cells: 53</span>
+<span class="co">#&gt; → Input locations: 17200</span>
+<span class="co">#&gt; → Entries mapped: 438133, with 0 outside input segments.</span>
+<span class="co">#&gt; → Using RNA likelihood: Gaussian.</span>
+<span class="co">#&gt; → Required z-score representation, computing after normalising data with input factors.</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; ── ATAC modality</span>
+<span class="co">#&gt; → Input events: 27019</span>
+<span class="co">#&gt; → Input cells: 42</span>
+<span class="co">#&gt; → Input locations: 11116</span>
+<span class="co">#&gt; → Entries mapped: 27019, with 0 outside input segments.</span>
+<span class="co">#&gt; → Using RNA likelihood: Negative Binomial.</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/plot_data.html">plot_data</a></span><span class="op">(</span><span class="va">x</span>, what <span class="op">=</span> <span class="st">'histogram'</span>, segments <span class="op">=</span> <span class="va">some_segments</span><span class="op">)</span></code></pre></div>
+<p><img src="Rcongas_files/figure-html/unnamed-chunk-7-1.png" width="576"></p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/plot_data.html">plot_data</a></span><span class="op">(</span><span class="va">x</span>, what <span class="op">=</span> <span class="st">'lineplot'</span><span class="op">)</span></code></pre></div>
+<p><img src="Rcongas_files/figure-html/unnamed-chunk-8-1.png" width="768"></p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/plot_data.html">plot_data</a></span><span class="op">(</span><span class="va">x</span>, what <span class="op">=</span> <span class="st">'heatmap'</span><span class="op">)</span></code></pre></div>
+<p><img src="Rcongas_files/figure-html/unnamed-chunk-9-1.png" width="576"></p>
+</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
-      </div>
+        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
+    </nav>
+</div>
 
 </div>
 
