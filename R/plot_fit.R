@@ -14,7 +14,7 @@
 #' @export
 #'
 #' @examples
-plot_fit = function(x, ...)
+plot_fit = function(x, what = 'CNA', ...)
 {
   x %>% sanitize_obj()
   

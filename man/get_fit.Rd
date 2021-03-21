@@ -4,7 +4,7 @@
 \alias{get_fit}
 \title{Get fit data.}
 \usage{
-get_fit(x, what = "segment_factors")
+get_fit(x, what = "CNA")
 }
 \arguments{
 \item{x}{}

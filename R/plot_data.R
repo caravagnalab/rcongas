@@ -7,7 +7,8 @@
 #' @param segments Can subset the plot only to certain segments, which are indexed
 #' by the \code{segment_id} format in the tibble returned by function \code{get_input}
 #' with \code{what = 'segmentation'} as parameter.
-#' @param what Any of \code{"histogram"},  \code{"lineplot"},  or \code{"heatmap"}.
+#' @param what Any of \code{"histogram"}, \code{"lineplot"}, \code{"heatmap"} or
+#' \code{"mapping"}.
 #'
 #' @return A \code{ggplot} or \code{cowplot} figure, depending on the number of
 #' modalities and plot required.
@@ -16,26 +17,29 @@
 #'
 #' @examples
 plot_data = function(x,
-                     segments = get_input(x, what = 'segmentation') %>% pull(segment_id),
                      what = 'histogram',
                      ...)
 {
   x %>% sanitize_obj()
   
   if (what == 'histogram')
-    return(x %>% plot_data_histogram(segments = segments))
+    return(x %>% plot_data_histogram(...))
   
   if (what == 'lineplot')
-    return(x %>% plot_data_lineplot(segments = segments, ...))
+    return(x %>% plot_data_lineplot(...))
   
   if (what == 'heatmap')
-    return(x %>% plot_data_heatmap(segments = segments))
+    return(x %>% plot_data_heatmap(...))
   
-  stop("Unrecognised 'what': use any of 'histogram', 'lineplot' or 'heatmap'.")
+  if (what == 'mapping')
+    return(x %>% plot_data_mapping())
+  
+  stop("Unrecognised 'what': use any of 'histogram', 'lineplot', 'heatmap' or 'mapping'.")
 }
 
-
-plot_data_histogram = function(x, segments)
+plot_data_histogram = function(x,
+                               segments = get_input(x, what = 'segmentation') %>% pull(segment_id)
+                               )
 {
   stats_data = stat(x, what = 'data')
   
@@ -103,7 +107,9 @@ plot_data_histogram = function(x, segments)
          y = 'Observations')
 }
 
-plot_data_lineplot = function(x, segments, alpha)
+plot_data_lineplot = function(x, 
+                              segments = get_input(x, what = 'segmentation') %>% pull(segment_id), 
+                              alpha = 1)
 {
   stats_data = stat(x, what = 'data')
   
@@ -138,22 +144,18 @@ plot_data_lineplot = function(x, segments, alpha)
   
   # RNA_data values
   what_RNA = get_input(x, what = 'data') %>%
-    filter(modality == "RNA") %>% 
-    mutate(
-      alpha = alpha,
-      size = .5
-    )
+    filter(modality == "RNA") %>%
+    mutate(alpha = alpha,
+           size = .5)
   
   if (nrow(what_RNA) > 0 && stats_data$rna_dtype != "G")
     what_RNA = normalise_modality(what_RNA, norm_factors %>% filter(modality == "RNA"))
   
   # ATAC_data values
   what_ATAC = get_input(x, what = 'data') %>%
-    filter(modality == "ATAC") %>% 
-    mutate(
-      alpha = alpha,
-      size = .5
-    )
+    filter(modality == "ATAC") %>%
+    mutate(alpha = alpha,
+           size = .5)
   
   if (nrow(what_ATAC) > 0 && stats_data$atac_dtype != "G")
     what_ATAC = normalise_modality(what_ATAC, norm_factors %>% filter(modality == "ATAC"))
@@ -163,24 +165,20 @@ plot_data_lineplot = function(x, segments, alpha)
   {
     cli::cli_alert("Scaling RNA observed values by number of genes mapped per segment.")
     
-    what_RNA = what_RNA %>% 
-      left_join(
-        x %>% get_input(what = 'segmentation') %>% select(segment_id, RNA_genes),
-        by = 'segment_id'
-      ) %>% 
-      mutate(value = value/RNA_genes)
+    what_RNA = what_RNA %>%
+      left_join(x %>% get_input(what = 'segmentation') %>% select(segment_id, RNA_genes),
+                by = 'segment_id') %>%
+      mutate(value = value / RNA_genes)
   }
   
   if (nrow(what_ATAC) > 0)
   {
     cli::cli_alert("Scaling ATAC observed values by number of peaks mapped per segment.")
     
-    what_ATAC = what_ATAC %>% 
-      left_join(
-        x %>% get_input(what = 'segmentation') %>% select(segment_id, ATAC_peaks),
-        by = 'segment_id'
-      ) %>% 
-      mutate(value = value/ATAC_peaks)
+    what_ATAC = what_ATAC %>%
+      left_join(x %>% get_input(what = 'segmentation') %>% select(segment_id, ATAC_peaks),
+                by = 'segment_id') %>%
+      mutate(value = value / ATAC_peaks)
   }
   
   # Pool all modalities plus the segmentation, apply filters
@@ -189,11 +187,9 @@ plot_data_lineplot = function(x, segments, alpha)
     what_ATAC %>% deidify(),
     get_input(x, what = 'segmentation') %>%
       mutate(modality = " Input segmentation") %>% # add space for factors ordering
-      rename(value = copies) %>% 
-      mutate(
-        alpha = 1,
-        size = 2
-      )
+      rename(value = copies) %>%
+      mutate(alpha = 1,
+             size = 2)
   ) %>%
     idify() %>%
     filter(segment_id %in% segments) %>%
@@ -209,7 +205,7 @@ plot_data_lineplot = function(x, segments, alpha)
   
   # Genome plot call
   blank_genome(ref = x$reference_genome,
-                       chromosomes = what$chr %>% unique()) +
+               chromosomes = what$chr %>% unique()) +
     geom_segment(
       data = what,
       aes(
@@ -223,7 +219,7 @@ plot_data_lineplot = function(x, segments, alpha)
       ),
       inherit.aes = FALSE
     ) +
-    facet_wrap( ~ modality, ncol = 1, scales = 'free_y') +
+    facet_wrap(~ modality, ncol = 1, scales = 'free_y') +
     guides(color = FALSE) +
     scale_color_manual(values = modality_colors(what$modality %>% unique)) +
     labs(title = x$description,
@@ -232,13 +228,11 @@ plot_data_lineplot = function(x, segments, alpha)
     labs(x = "Chromosomes",
          y = 'Input',
          caption = "Per segment values are normalised by number of mapped RNA genes/ATAC peaks.") +
-    guides(
-      alpha = FALSE,
-      size = FALSE
-    )
+    guides(alpha = FALSE,
+           size = FALSE)
 }
 
-plot_data_heatmap = function(x, segments)
+plot_data_heatmap = function(x, segments = get_input(x, what = 'segmentation') %>% pull(segment_id))
 {
   stats_data = stat(x, what = 'data')
   
@@ -308,8 +302,7 @@ plot_data_heatmap = function(x, segments)
       labs(x = "Segments",
            y = subtitle_RNA) +
       theme(axis.text.y = element_blank(),
-            axis.text.x = element_text(angle = 45, hjust = 1),
-      ) +
+            axis.text.x = element_text(angle = 45, hjust = 1),) +
       guides(fill = guide_colorbar(paste('RNA (', what_rna_lik, ')'),
                                    barheight = unit(3, 'cm')))
     
@@ -330,8 +323,7 @@ plot_data_heatmap = function(x, segments)
       labs(x = "Segments",
            y = subtitle_ATAC) +
       theme(axis.text.y = element_blank(),
-            axis.text.x = element_text(angle = 45, hjust = 1),
-      ) +
+            axis.text.x = element_text(angle = 45, hjust = 1),) +
       guides(fill = guide_colorbar(paste('ATAC (', what_atac_lik, ')'),
                                    barheight = unit(3, 'cm')))
     
@@ -371,6 +363,39 @@ plot_data_heatmap = function(x, segments)
   }
 }
 
+plot_data_mapping = function(x)
+{
+  mapping = x %>%
+    get_input(what = 'segmentation')
+  
+  w = "segment_id"
+  if ("RNA" %in% stat(x)$modalities)
+    w = c(w, "RNA_genes")
+  if ("ATAC" %in% stat(x)$modalities)
+    w = c(w, "ATAC_peaks")
+  
+  reshape2::melt(mapping[w], id = "segment_id") %>%
+    deidify() %>%
+    mutate(segment_id = paste(from, ':', to)) %>%
+    mutate(value = ifelse(value == 0, NA, value)) %>%
+    ggplot(aes(
+      y = segment_id,
+      x = variable,
+      fill = value,
+      label = value
+    )) +
+    geom_tile() +
+    geom_text(size = 2) +
+    theme_linedraw(base_size = 9) +
+    theme(strip.text.y.right = element_text(angle = 0)) +
+    scale_fill_distiller(palette = 'Spectral',
+                         direction = -1,
+                         na.value = 'gray') +
+    facet_grid(chr ~ "Mapping", scales = "free_y", space = "free_y") +
+    labs(x = "Modality", y = "Segments")
+}
+
+
 
 blank_genome = function(ref = "GRCh38",
                         chromosomes = paste0("chr", c(1:22, "X", "Y")),
@@ -405,7 +430,7 @@ blank_genome = function(ref = "GRCh38",
       size = 0.1,
       color = "black",
       linetype = 8
-    ) + 
+    ) +
     labs(x = "Chromosome",
          y = "Value") + ggpubr::rotate_y_text() +
     scale_x_continuous(

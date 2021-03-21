@@ -4,25 +4,21 @@
 \alias{plot_data}
 \title{Plot data.}
 \usage{
-plot_data(
-  x,
-  segments = get_input(x, what = "segmentation") \%>\% pull(segment_id),
-  what = "histogram"
-)
+plot_data(x, what = "histogram", ...)
 }
 \arguments{
+\item{what}{Any of \code{"histogram"}, \code{"lineplot"}, \code{"heatmap"} or
+\code{"mapping"}.}
+
 \item{segments}{Can subset the plot only to certain segments, which are indexed
 by the \code{segment_id} format in the tibble returned by function \code{get_input}
 with \code{what = 'segmentation'} as parameter.}
-
-\item{what}{Any of \code{"segment_factors"}, \code{"CNA"},  \code{"posterior_CNA"},
-\code{"mixing_proportions"},  \code{"cluster_assignments"},  or \code{"z_nk"}.}
 }
 \value{
-A tibble.
+A \code{ggplot} or \code{cowplot} figure, depending on the number of
+modalities and plot required.
 }
 \description{
-General plot for data, accessing getter function to return
-segment_factors, CNAs (point estimates), posterior CNA (distribution),
-mixing proportions, clustering assignments or the latent responsibilities.
+General plot for data, showing data as a histogram, a lineplot
+or a heatmap. Discrete count data are normalised by input factors.
 }

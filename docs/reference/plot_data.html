@@ -47,9 +47,8 @@
 
 
 <meta property="og:title" content="Plot data. — plot_data" />
-<meta property="og:description" content="General plot for data, accessing getter function to return
-segment_factors, CNAs (point estimates), posterior CNA (distribution),
-mixing proportions, clustering assignments or the latent responsibilities." />
+<meta property="og:description" content="General plot for data, showing data as a histogram, a lineplot
+or a heatmap. Discrete count data are normalised by input factors." />
 <meta property="og:image" content="militeee.github.io/Rcongas/logo.png" />
 
 
@@ -100,6 +99,18 @@ mixing proportions, clustering assignments or the latent responsibilities." />
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/Plotting.html">Plotting functions</a>
+    </li>
+  </ul>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -127,36 +138,32 @@ mixing proportions, clustering assignments or the latent responsibilities." />
     </div>
 
     <div class="ref-description">
-    <p>General plot for data, accessing getter function to return
-segment_factors, CNAs (point estimates), posterior CNA (distribution),
-mixing proportions, clustering assignments or the latent responsibilities.</p>
+    <p>General plot for data, showing data as a histogram, a lineplot
+or a heatmap. Discrete count data are normalised by input factors.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>plot_data</span><span class='op'>(</span>
-  <span class='va'>x</span>,
-  segments <span class='op'>=</span> <span class='fu'><a href='get_input.html'>get_input</a></span><span class='op'>(</span><span class='va'>x</span>, what <span class='op'>=</span> <span class='st'>"segmentation"</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'>pull</span><span class='op'>(</span><span class='va'>segment_id</span><span class='op'>)</span>,
-  what <span class='op'>=</span> <span class='st'>"histogram"</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>plot_data</span><span class='op'>(</span><span class='va'>x</span>, what <span class='op'>=</span> <span class='st'>"histogram"</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>what</th>
+      <td><p>Any of <code>"histogram"</code>, <code>"lineplot"</code>, <code>"heatmap"</code> or
+<code>"mapping"</code>.</p></td>
+    </tr>
     <tr>
       <th>segments</th>
       <td><p>Can subset the plot only to certain segments, which are indexed
 by the <code>segment_id</code> format in the tibble returned by function <code>get_input</code>
 with <code>what = 'segmentation'</code> as parameter.</p></td>
     </tr>
-    <tr>
-      <th>what</th>
-      <td><p>Any of <code>"segment_factors"</code>, <code>"CNA"</code>,  <code>"posterior_CNA"</code>,
-<code>"mixing_proportions"</code>,  <code>"cluster_assignments"</code>,  or <code>"z_nk"</code>.</p></td>
-    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A tibble.</p>
+    <p>A <code>ggplot</code> or <code>cowplot</code> figure, depending on the number of
+modalities and plot required.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

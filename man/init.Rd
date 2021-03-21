@@ -12,24 +12,10 @@ init(
   rna_likelihood = "G",
   atac_likelihood = "NB",
   reference_genome = "GRCh38",
-  description = "Your (R)CONGAS+ model"
+  description = "A (R)CONGAS+ model"
 )
 }
 \arguments{
-\item{rna}{}
-
-\item{atac}{}
-
-\item{segmentation}{}
-
-\item{normalisation_factors}{}
-
-\item{rna_likelihood}{}
-
-\item{atac_likelihood}{}
-
-\item{reference_genome}{}
-
 \item{description}{}
 }
 \value{

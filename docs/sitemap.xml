@@ -4,7 +4,19 @@
     <loc>militeee.github.io/Rcongas/index.html</loc>
   </url>
   <url>
+    <loc>militeee.github.io/Rcongas/reference/cap_values_by_quantile.html</loc>
+  </url>
+  <url>
     <loc>militeee.github.io/Rcongas/reference/example_input.html</loc>
+  </url>
+  <url>
+    <loc>militeee.github.io/Rcongas/reference/example_object.html</loc>
+  </url>
+  <url>
+    <loc>militeee.github.io/Rcongas/reference/filter_known_genes.html</loc>
+  </url>
+  <url>
+    <loc>militeee.github.io/Rcongas/reference/filter_values_by_quantile.html</loc>
   </url>
   <url>
     <loc>militeee.github.io/Rcongas/reference/get_fit.html</loc>
@@ -19,13 +31,16 @@
     <loc>militeee.github.io/Rcongas/reference/plot_data.html</loc>
   </url>
   <url>
-    <loc>militeee.github.io/Rcongas/reference/plot_gw_cna_profiles.html</loc>
+    <loc>militeee.github.io/Rcongas/reference/plot_fit.html</loc>
   </url>
   <url>
     <loc>militeee.github.io/Rcongas/reference/print.rcongasplus.html</loc>
   </url>
   <url>
     <loc>militeee.github.io/Rcongas/reference/stat.html</loc>
+  </url>
+  <url>
+    <loc>militeee.github.io/Rcongas/articles/Plotting.html</loc>
   </url>
   <url>
     <loc>militeee.github.io/Rcongas/articles/Rcongas.html</loc>

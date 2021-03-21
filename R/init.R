@@ -274,14 +274,18 @@ create_modality = function(modality, data, segmentation, normalisation_factors, 
 
   # Center the new scores to the ploidy value
   if(likelihood %in% c("G")){
+    cli::cli_alert_warning("Center the new scores around the ploidy values.")
+    
     zscore_params = mapped %>%
       group_by(segment_id) %>%
       summarise(value_mean = mean(value), value_sd = sd(value), .groups = 'keep')
+    
     mapped = mapped %>%
       left_join(zscore_params, by = c("segment_id")) %>%
       mutate(
         value = (value - value_mean)/value_sd # z-score
       )
+    
     mapped =  mapped %>%
       left_join(segmentation, by = c("segment_id")) %>%
       mutate(

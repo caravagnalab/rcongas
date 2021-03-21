@@ -7,8 +7,6 @@
 get_input(x, what = "data")
 }
 \arguments{
-\item{x}{}
-
 \item{what}{Any of \code{"data"}, \code{"segmentation"} or
 \code{"normalisation"}.}
 }

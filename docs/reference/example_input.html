@@ -98,6 +98,18 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/Plotting.html">Plotting functions</a>
+    </li>
+  </ul>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -140,7 +152,7 @@
 <span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>example_input</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; $x_rna
 #&gt; <span style='color: #949494;'># A tibble: 438,133 x 6</span><span>
-#&gt;    gene     cell       count chr        from        to
+#&gt;    gene     cell       value chr        from        to
 #&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>      </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>     </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>     </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>
 #&gt; </span><span style='color: #BCBCBC;'> 1</span><span> DPM1     SRR5578183     1 chr20  50</span><span style='text-decoration: underline;'>934</span><span>867  50</span><span style='text-decoration: underline;'>958</span><span>555
 #&gt; </span><span style='color: #BCBCBC;'> 2</span><span> SCYL3    SRR5578183    10 chr1  169</span><span style='text-decoration: underline;'>849</span><span>631 169</span><span style='text-decoration: underline;'>894</span><span>267
@@ -155,20 +167,20 @@
 #&gt; </span><span style='color: #949494;'># … with 438,123 more rows</span><span>
 #&gt; 
 #&gt; $x_atac
-#&gt; </span><span style='color: #949494;'># A tibble: 27,019 x 6</span><span>
-#&gt;    gene     cell             count chr        from        to
+#&gt; </span><span style='color: #949494;'># A tibble: 27,303 x 6</span><span>
+#&gt;    gene     cell             value chr        from        to
 #&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>            </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>     </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>     </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> COX6A1   SRR5578193 dfwfd    48 chr12 120</span><span style='text-decoration: underline;'>438</span><span>090 120</span><span style='text-decoration: underline;'>440</span><span>737
-#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> RRP1     SRR5578286 dfwfd    61 chr21  43</span><span style='text-decoration: underline;'>789</span><span>513  43</span><span style='text-decoration: underline;'>805</span><span>293
-#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> RPS3AP47 SRR5578224 dfwfd    53 chr15  43</span><span style='text-decoration: underline;'>115</span><span>702  43</span><span style='text-decoration: underline;'>116</span><span>493
-#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> FECH     SRR5578244 dfwfd    37 chr18  57</span><span style='text-decoration: underline;'>544</span><span>377  57</span><span style='text-decoration: underline;'>586</span><span>702
-#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> SLC35F1  SRR5578221 dfwfd    98 chr6  117</span><span style='text-decoration: underline;'>907</span><span>264 118</span><span style='text-decoration: underline;'>317</span><span>676
-#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> RBM28    SRR5578228 dfwfd    85 chr7  128</span><span style='text-decoration: underline;'>297</span><span>685 128</span><span style='text-decoration: underline;'>343</span><span>908
-#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> C11orf54 SRR5578198 dfwfd    85 chr11  93</span><span style='text-decoration: underline;'>741</span><span>591  93</span><span style='text-decoration: underline;'>764</span><span>749
-#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> AASDHPPT SRR5578244 dfwfd    30 chr11 106</span><span style='text-decoration: underline;'>075</span><span>501 106</span><span style='text-decoration: underline;'>098</span><span>699
-#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> NPFFR1   SRR5578219 dfwfd    24 chr10  70</span><span style='text-decoration: underline;'>247</span><span>329  70</span><span style='text-decoration: underline;'>284</span><span>004
-#&gt; </span><span style='color: #BCBCBC;'>10</span><span> HEATR1   SRR5578236 dfwfd    43 chr1  236</span><span style='text-decoration: underline;'>549</span><span>005 236</span><span style='text-decoration: underline;'>604</span><span>516
-#&gt; </span><span style='color: #949494;'># … with 27,009 more rows</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> MRE11    SRR5578299 dfwfd    44 chr11  94</span><span style='text-decoration: underline;'>415</span><span>570  94</span><span style='text-decoration: underline;'>493</span><span>885
+#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> HK1      SRR5578219 dfwfd    35 chr10  69</span><span style='text-decoration: underline;'>269</span><span>984  69</span><span style='text-decoration: underline;'>401</span><span>884
+#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> MCPH1    SRR5578235 dfwfd    38 chr8    6</span><span style='text-decoration: underline;'>406</span><span>596   6</span><span style='text-decoration: underline;'>648</span><span>508
+#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> ABCC6    SRR5578226 dfwfd    89 chr16  16</span><span style='text-decoration: underline;'>148</span><span>928  16</span><span style='text-decoration: underline;'>223</span><span>522
+#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> ZNF213   SRR5578231 dfwfd    11 chr16   3</span><span style='text-decoration: underline;'>129</span><span>777   3</span><span style='text-decoration: underline;'>142</span><span>804
+#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> CD84     SRR5578229 dfwfd     2 chr1  160</span><span style='text-decoration: underline;'>541</span><span>095 160</span><span style='text-decoration: underline;'>579</span><span>516
+#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> KCTD10   SRR5578260 dfwfd    14 chr12 109</span><span style='text-decoration: underline;'>448</span><span>655 109</span><span style='text-decoration: underline;'>477</span><span>359
+#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> RPS27AP1 SRR5578187 dfwfd    79 chr17  10</span><span style='text-decoration: underline;'>258</span><span>762  10</span><span style='text-decoration: underline;'>259</span><span>232
+#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> UQCC3    SRR5578238 dfwfd    52 chr11  62</span><span style='text-decoration: underline;'>670</span><span>273  62</span><span style='text-decoration: underline;'>673</span><span>686
+#&gt; </span><span style='color: #BCBCBC;'>10</span><span> KLHL21   SRR5578238 dfwfd    22 chr1    6</span><span style='text-decoration: underline;'>590</span><span>724   6</span><span style='text-decoration: underline;'>614</span><span>607
+#&gt; </span><span style='color: #949494;'># … with 27,293 more rows</span><span>
 #&gt; 
 #&gt; $x_segmentation
 #&gt; </span><span style='color: #949494;'># A tibble: 22 x 4</span><span>
@@ -187,113 +199,20 @@
 #&gt; </span><span style='color: #949494;'># … with 12 more rows</span><span>
 #&gt; 
 #&gt; $x_normalisation_factors
-#&gt;                 cell normalisation_factor modality
-#&gt; 1         SRR5578183                    1      RNA
-#&gt; 2         SRR5578187                    1      RNA
-#&gt; 3         SRR5578188                    1      RNA
-#&gt; 4         SRR5578189                    1      RNA
-#&gt; 5         SRR5578190                    1      RNA
-#&gt; 6         SRR5578193                    1      RNA
-#&gt; 7         SRR5578198                    1      RNA
-#&gt; 8         SRR5578199                    1      RNA
-#&gt; 9         SRR5578200                    1      RNA
-#&gt; 10        SRR5578201                    1      RNA
-#&gt; 11        SRR5578203                    1      RNA
-#&gt; 12        SRR5578205                    1      RNA
-#&gt; 13        SRR5578206                    1      RNA
-#&gt; 14        SRR5578207                    1      RNA
-#&gt; 15        SRR5578209                    1      RNA
-#&gt; 16        SRR5578210                    1      RNA
-#&gt; 17        SRR5578214                    1      RNA
-#&gt; 18        SRR5578216                    1      RNA
-#&gt; 19        SRR5578217                    1      RNA
-#&gt; 20        SRR5578218                    1      RNA
-#&gt; 21        SRR5578219                    1      RNA
-#&gt; 22        SRR5578221                    1      RNA
-#&gt; 23        SRR5578222                    1      RNA
-#&gt; 24        SRR5578224                    1      RNA
-#&gt; 25        SRR5578226                    1      RNA
-#&gt; 26        SRR5578227                    1      RNA
-#&gt; 27        SRR5578228                    1      RNA
-#&gt; 28        SRR5578229                    1      RNA
-#&gt; 29        SRR5578230                    1      RNA
-#&gt; 30        SRR5578231                    1      RNA
-#&gt; 31        SRR5578233                    1      RNA
-#&gt; 32        SRR5578235                    1      RNA
-#&gt; 33        SRR5578236                    1      RNA
-#&gt; 34        SRR5578238                    1      RNA
-#&gt; 35        SRR5578239                    1      RNA
-#&gt; 36        SRR5578240                    1      RNA
-#&gt; 37        SRR5578243                    1      RNA
-#&gt; 38        SRR5578244                    1      RNA
-#&gt; 39        SRR5578246                    1      RNA
-#&gt; 40        SRR5578248                    1      RNA
-#&gt; 41        SRR5578249                    1      RNA
-#&gt; 42        SRR5578257                    1      RNA
-#&gt; 43        SRR5578258                    1      RNA
-#&gt; 44        SRR5578260                    1      RNA
-#&gt; 45        SRR5578271                    1      RNA
-#&gt; 46        SRR5578278                    1      RNA
-#&gt; 47        SRR5578280                    1      RNA
-#&gt; 48        SRR5578281                    1      RNA
-#&gt; 49        SRR5578282                    1      RNA
-#&gt; 50        SRR5578286                    1      RNA
-#&gt; 51        SRR5578292                    1      RNA
-#&gt; 52        SRR5578298                    1      RNA
-#&gt; 53        SRR5578299                    1      RNA
-#&gt; 54  SRR5578193 dfwfd                    1     ATAC
-#&gt; 55  SRR5578210 dfwfd                    1     ATAC
-#&gt; 56  SRR5578205 dfwfd                    1     ATAC
-#&gt; 57  SRR5578286 dfwfd                    1     ATAC
-#&gt; 58  SRR5578233 dfwfd                    1     ATAC
-#&gt; 59  SRR5578243 dfwfd                    1     ATAC
-#&gt; 60  SRR5578224 dfwfd                    1     ATAC
-#&gt; 61  SRR5578244 dfwfd                    1     ATAC
-#&gt; 62  SRR5578183 dfwfd                    1     ATAC
-#&gt; 63  SRR5578221 dfwfd                    1     ATAC
-#&gt; 64  SRR5578228 dfwfd                    1     ATAC
-#&gt; 65  SRR5578198 dfwfd                    1     ATAC
-#&gt; 66  SRR5578219 dfwfd                    1     ATAC
-#&gt; 67  SRR5578236 dfwfd                    1     ATAC
-#&gt; 68  SRR5578235 dfwfd                    1     ATAC
-#&gt; 69  SRR5578249 dfwfd                    1     ATAC
-#&gt; 70  SRR5578226 dfwfd                    1     ATAC
-#&gt; 71  SRR5578292 dfwfd                    1     ATAC
-#&gt; 72  SRR5578248 dfwfd                    1     ATAC
-#&gt; 73  SRR5578238 dfwfd                    1     ATAC
-#&gt; 74  SRR5578298 dfwfd                    1     ATAC
-#&gt; 75  SRR5578206 dfwfd                    1     ATAC
-#&gt; 76  SRR5578299 dfwfd                    1     ATAC
-#&gt; 77  SRR5578203 dfwfd                    1     ATAC
-#&gt; 78  SRR5578281 dfwfd                    1     ATAC
-#&gt; 79  SRR5578214 dfwfd                    1     ATAC
-#&gt; 80  SRR5578189 dfwfd                    1     ATAC
-#&gt; 81  SRR5578239 dfwfd                    1     ATAC
-#&gt; 82  SRR5578282 dfwfd                    1     ATAC
-#&gt; 83  SRR5578190 dfwfd                    1     ATAC
-#&gt; 84  SRR5578207 dfwfd                    1     ATAC
-#&gt; 85  SRR5578246 dfwfd                    1     ATAC
-#&gt; 86  SRR5578227 dfwfd                    1     ATAC
-#&gt; 87  SRR5578201 dfwfd                    1     ATAC
-#&gt; 88  SRR5578217 dfwfd                    1     ATAC
-#&gt; 89  SRR5578222 dfwfd                    1     ATAC
-#&gt; 90  SRR5578216 dfwfd                    1     ATAC
-#&gt; 91  SRR5578199 dfwfd                    1     ATAC
-#&gt; 92  SRR5578280 dfwfd                    1     ATAC
-#&gt; 93  SRR5578230 dfwfd                    1     ATAC
-#&gt; 94  SRR5578187 dfwfd                    1     ATAC
-#&gt; 95  SRR5578257 dfwfd                    1     ATAC
-#&gt; 96  SRR5578229 dfwfd                    1     ATAC
-#&gt; 97  SRR5578258 dfwfd                    1     ATAC
-#&gt; 98  SRR5578278 dfwfd                    1     ATAC
-#&gt; 99  SRR5578271 dfwfd                    1     ATAC
-#&gt; 100 SRR5578231 dfwfd                    1     ATAC
-#&gt; 101 SRR5578260 dfwfd                    1     ATAC
-#&gt; 102 SRR5578200 dfwfd                    1     ATAC
-#&gt; 103 SRR5578240 dfwfd                    1     ATAC
-#&gt; 104 SRR5578188 dfwfd                    1     ATAC
-#&gt; 105 SRR5578218 dfwfd                    1     ATAC
-#&gt; 106 SRR5578209 dfwfd                    1     ATAC
+#&gt; </span><span style='color: #949494;'># A tibble: 95 x 3</span><span>
+#&gt;    cell       normalisation_factor modality
+#&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>                     </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>   
+#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> SRR5578183                    1 RNA     
+#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> SRR5578187                    1 RNA     
+#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> SRR5578188                    1 RNA     
+#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> SRR5578189                    1 RNA     
+#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> SRR5578190                    1 RNA     
+#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> SRR5578193                    1 RNA     
+#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> SRR5578198                    1 RNA     
+#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> SRR5578199                    1 RNA     
+#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> SRR5578200                    1 RNA     
+#&gt; </span><span style='color: #BCBCBC;'>10</span><span> SRR5578201                    1 RNA     
+#&gt; </span><span style='color: #949494;'># … with 85 more rows</span><span>
 #&gt; </div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

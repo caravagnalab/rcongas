@@ -12,14 +12,14 @@
 #' @export
 #'
 #' @examples
-get_fit = function(x, what = 'segment_factors')
+get_fit = function(x, what = 'CNA')
 {
   x %>% sanitize_obj()
   
   if(!('best_fit' %in% names(x)))
     stop("Missing fits for the input object, cannot extract ")
   
-  if(what == 'segment_factors') return(x %>% get_segment_factors())
+  if(what == 'segment_parameters') return(x %>% get_segment_parameters())
   if(what == 'CNA') return(x %>% get_CNA())
   if(what == 'posterior_CNA') return(x %>% get_posterior_CNA())
   if(what == 'mixing_proportions') return(x %>% get_mixing_proportions())
@@ -32,7 +32,7 @@ get_fit = function(x, what = 'segment_factors')
 
 get_segment_factors = function(x)
 {
-  x$best_fit$segment_factors
+  x$best_fit$segment_parameters
 }
 
 get_CNA = function(x)

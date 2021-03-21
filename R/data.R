@@ -14,3 +14,20 @@
 #' data(example_input)
 #' print(example_input)
 "example_input"
+
+#' Example object from (R)Congas+
+#'
+#' @description Example object from (R)Congas+
+#'
+#' @docType data
+#'
+#' @usage data(example_object)
+#'
+#' @format Example object.
+#'
+#' @keywords datasets
+#'
+#' @examples
+#' data(example_object)
+#' print(example_object)
+"example_object"
