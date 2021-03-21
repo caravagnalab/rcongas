@@ -61,12 +61,15 @@ gamma_shape_rate <-  function(x, modality = "RNA", torch = reticulate::import("t
 
 
   inp = reshape2::acast(get_data(x) %>% filter(modality == !!modality), cell~segment_id, value.var="value")
-  inp = inp[order(rownames(inp)),]
+  inp = inp[order(rownames(inp)),order(colnames(inp))]
   norm_raw = get_normalisation(x) %>% filter(modality == !!modality) %>% select(normalisation_factor, cell)
   norm = norm_raw$normalisation_factor
   names(norm) = norm_raw$cell
   norm = norm[order(rownames(inp))]
+
   ploidy <- x$input$segmentation$copies
+  names(ploidy) <- x$input$segmentation$segment_id
+  ploidy <-  ploidy[order(colnames(inp))]
 
   theta_factors = estimate_segment_factors(inp,norm, ploidy,plot=F)
 

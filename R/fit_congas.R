@@ -1,24 +1,27 @@
 fit_congas <-  function(x, K, learning_rate, model_parameters, latent_variables = "D", compile = FALSE, steps = 500, model_selection = "ICL"){
 
-  if(!inherits(x, "rconags")) {
+  if(!inherits(x, "rcongasplus")) {
     stop("Input object needs to be an rcongas instance!")
   }
 
   runs <- lapply(K, function(k) fit_congas_single_run(x,model_parameters, k, learning_rate, latent_variables, compile, steps))
-  names(run) <-  paste(K)
+  names(runs) <-  paste(K)
 
-  model_selection <-  sapply(runs, function(y) y$ICs)
-  model_selection$K <- K
+  model_selection_df <-  lapply(runs, function(y) y$ICs)
+  model_selection_df <-  do.call(rbind, model_selection_df) %>%  as_tibble()
 
-  bms_idx <- order(model_selection[[model_selection]])
+
+  model_selection_df$K <- K
+
+  bms_idx <- order(model_selection_df %>%  pull(!!model_selection))
 
   runs <-  runs[bms_idx]
 
-  best_model  <-  format_best_model(runs[1])
+  best_model  <-  format_best_model(x, runs[[1]])
 
   x$runs <-  runs
   x$best_model <-  best_model
-  x$model_selection <-  model_selection
+  x$model_selection <-  model_selection_df
 
   return(x)
 
@@ -51,7 +54,7 @@ fit_congas_single_run <-  function(x, parameters,K, learning_rate,latent_variabl
     elbo <- elbo_p$TraceGraph_ELBO
     elbo_string <- "TraceGraph_ELBO"
   } else {
-    elbo <-  elbo$JitTraceGraph_ELBO
+    elbo <-  elbo_p$JitTraceGraph_ELBO
     elbo_string <- "JitTraceGraph_ELBO"
   }
   int <- cg$Interface()
@@ -66,6 +69,7 @@ fit_congas_single_run <-  function(x, parameters,K, learning_rate,latent_variabl
 
   fit_params = int$learned_parameters()
   ICs = int$calculate_ICs()
+
 
   hyperparams = c(list("model" = model_string, "loss" = elbo_string, "optimizer" = "ClippedAdam"),parameters )
 
