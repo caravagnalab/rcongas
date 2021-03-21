@@ -6,12 +6,17 @@ estimate_segment_factors <- function(data, norm_factors, pld, plot = T){
 
   res <-  lapply(1:ncol(x),function(y) {estimate_segment_factors_aux(x[,y], plot = plot)})
 
-  names(res) <-  colnames(data$data$counts)
+  names(res) <-  colnames(data)
   return(res)
 }
 
 estimate_segment_factors_aux <- function(data_mle, plot){
   data_mle <-  ifelse(data_mle == 0, rnorm(1,1e2, 1e2), data_mle)
+
+  quants = quantile(data_mle, probs = c(0.03,0.097))
+
+  data_mle <-  ifelse(data_mle < quants[1], quants[1], data_mle)
+  data_mle <-  ifelse(data_mle > quants[2], quants[2], data_mle)
 
   LL <-  function(theta_shape, theta_rate){
 
@@ -19,14 +24,18 @@ estimate_segment_factors_aux <- function(data_mle, plot){
     return(-sum(R))
   }
 
-  coeff <-  stats4::mle(minuslogl = LL, start = list(theta_shape = mean(data_mle), theta_rate = 1), ,
-                        lower = c(1e-16, 1e-16), upper = c(Inf, Inf))@coef
+  MAXT = 10
+  ct = 0
+  while(ct < MAXT){
+    tryCatch({
+      coeff <-  stats4::mle(minuslogl = LL, start = list(theta_shape = mean(data_mle), theta_rate = 1),
+                            lower = c(1e-16, 1e-16), upper = c(Inf, Inf))@coef; ct = MAXT}, ct = ct + 1)
+  }
+
   if(plot){
 
-    par(mfrow = c(5,5))
 
-
-    hist(data_mle, prob = TRUE, col = "grey" ,main= "Inferred segment prior", xlab = "", breaks = 50)
+    hist(data_mle, prob = TRUE, col = "grey" ,main= "Inferred segment prior", xlab = "", breaks = 500)
     curve(dgamma(x,shape = coeff[1], rate = coeff[2] ), from = min(data_mle), to = max(data_mle),
           n = 1000, col = "blue", add = TRUE, main= "", xlab = "", lwd = 2)
   }
