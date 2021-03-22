@@ -29,7 +29,7 @@ print.rcongasplus = function(x, ...)
       segments_vals = x %>% 
         get_input(what = 'segmentation') %>% 
         group_by(chr) %>% 
-        mutate(ifelse(copies > 4, "*", copies)) %>% 
+        mutate(copies = ifelse(copies > 4, "*", paste(copies))) %>% 
         summarise(
           copies = paste(copies, collapse = '')
         ) %>% 
@@ -43,7 +43,7 @@ print.rcongasplus = function(x, ...)
       segments_vals = get_fit(x, what = 'CNA') %>% 
         filter(cluster == what) %>% 
         deidify() %>% 
-        mutate(value = ifelse(value > 4, "*", value)) %>% 
+        mutate(value = ifelse(value > 4, "*", paste(value))) %>% 
         group_by(chr) %>% 
         summarise(
           value = paste(value, collapse = '')
