@@ -17,13 +17,21 @@
 #' @param latent_variables specify the nature of the latent variable modelling the copy number profile. Currently only "D" (discrete) is available
 #' @param compile use JIT compiler for the Pyro ba
 #' @param steps number of steps of optimization
-#' @param model_selection one of ICL, NLL, BIC, AIC
+#' @param model_selection information criteria to which perform the model selection (one of ICL, NLL, BIC, AIC)
 #'
-#' @return
+#' @return An object ot class \code{rcongasplus} with a slot \code{bset_fit} with the learned parameters for the selected model in tiblle format. A slot \code{runs}
+#' with all the runs performed ordered by the selectde IC and a slot \code{model_selection} with all the information to perform model selection.
 #' @export
 #'
 #' @examples
-fit_congas <-  function(x, K, learning_rate, model_parameters, latent_variables = "D", compile = FALSE, steps = 500, model_selection = "ICL"){
+#' library(Rcongas)
+#'\dontrun{
+#' K <-  1:4
+#' hyperparams <- auto_config_run(example_object, 1:4)
+#'
+#' fit <- fit_congas(example_object, K = 1:4,learning_rate = 0.05, model_parameters = hyperparams)
+#' }
+fit_congas <-  function(x, K, model_parameters,learning_rate = 0.05, latent_variables = "D", compile = FALSE, steps = 500, model_selection = "ICL"){
 
   if(!inherits(x, "rcongasplus")) {
     stop("Input object needs to be an rcongas instance!")
