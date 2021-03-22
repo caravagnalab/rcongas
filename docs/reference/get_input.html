@@ -74,7 +74,7 @@ in a gene mapping within the segment.
 what = &quot;normalisation&quot;: just modality.
 
 " />
-<meta property="og:image" content="militeee.github.io/Rcongas/logo.png" />
+<meta property="og:image" content="caravagnalab.github.io/Rcongas/logo.png" />
 
 
 
@@ -106,7 +106,7 @@ what = &quot;normalisation&quot;: just modality.
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Rcongas</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -142,7 +142,7 @@ what = &quot;normalisation&quot;: just modality.
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/militeee/Rcongas/">
+  <a href="https://github.com/caravagnalab/Rcongas/">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -161,7 +161,7 @@ what = &quot;normalisation&quot;: just modality.
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Extract input data.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/militeee/RcongasR/get_input.R'><code>R/get_input.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/caravagnalab/RcongasR/get_input.R'><code>R/get_input.R</code></a></small>
     <div class="hidden name"><code>get_input.Rd</code></div>
     </div>
 
@@ -235,8 +235,21 @@ in a gene mapping within the segment.</p></li>
 #&gt; </span><span style='color: #BCBCBC;'>10</span><span> chr1:143264541:193212282 AAACGCTAGCATCAGG -</span><span style='color: #BB0000;'>25.5</span><span>  RNA      G         
 #&gt; </span><span style='color: #949494;'># … with 343,484 more rows</span><span></div><div class='input'>
 <span class='co'># e.g., in this way you can get input ATAC values</span>
-<span class='fu'>get_input</span><span class='op'>(</span><span class='va'>example_object</span>, what <span class='op'>=</span> <span class='st'>'data'</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://rdrr.io/r/stats/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>modality</span> <span class='op'>==</span> <span class='st'>'ATAC'</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in filter(., modality == "ATAC"): object 'modality' not found</span></div><div class='input'> 
+<span class='fu'>get_input</span><span class='op'>(</span><span class='va'>example_object</span>, what <span class='op'>=</span> <span class='st'>'data'</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>modality</span> <span class='op'>==</span> <span class='st'>'ATAC'</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 179,766 x 5</span><span>
+#&gt;    segment_id               cell                    value modality value_type
+#&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>                    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>                   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>     
+#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> chr1:143264541:193212282 AAACGAACACGGCCAT-CRC_17    28 ATAC     NB        
+#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> chr1:143264541:193212282 AAACGAACATGGAGGT-CRC_17    42 ATAC     NB        
+#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> chr1:143264541:193212282 AAACGAAGTCAGTGTT-CRC_17    28 ATAC     NB        
+#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> chr1:143264541:193212282 AAACGAAGTCCACCAG-CRC_17    20 ATAC     NB        
+#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> chr1:143264541:193212282 AAACGAAGTGGACCAA-CRC_17    24 ATAC     NB        
+#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> chr1:143264541:193212282 AAACGAATCACCACAA-CRC_17    50 ATAC     NB        
+#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> chr1:143264541:193212282 AAACGAATCACGGGTC-CRC_17    29 ATAC     NB        
+#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> chr1:143264541:193212282 AAACGAATCACGTGTA-CRC_17    17 ATAC     NB        
+#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> chr1:143264541:193212282 AAACTCGAGCAAGGTC-CRC_17    54 ATAC     NB        
+#&gt; </span><span style='color: #BCBCBC;'>10</span><span> chr1:143264541:193212282 AAACTCGAGTAATCAG-CRC_17    10 ATAC     NB        
+#&gt; </span><span style='color: #949494;'># … with 179,756 more rows</span><span></div><div class='input'> 
 <span class='co'># Extract the input segmentation. </span>
 <span class='fu'>get_input</span><span class='op'>(</span><span class='va'>example_object</span>, what <span class='op'>=</span> <span class='st'>'segmentation'</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 36 x 9</span><span>
@@ -281,7 +294,7 @@ in a gene mapping within the segment.</p></li>
 
       <footer>
       <div class="copyright">
-  <p>Developed by <a href='https://www.caravagnalab.org'>Salvatore Milite</a>, <a href='https://www.caravagnalab.org'>Giulio Caravagna</a>.</p>
+  <p>Developed by <a href='https://www.caravagnalab.org'>Salvatore Milite</a>, <a href='https://www.caravagnalab.org'>Riccardo Bergamin</a>, <a href='https://www.caravagnalab.org'>Giulio Caravagna</a>.</p>
 </div>
 
 <div class="pkgdown">

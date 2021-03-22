@@ -1,54 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>militeee.github.io/Rcongas/index.html</loc>
+    <loc>caravagnalab.github.io/Rcongas/index.html</loc>
   </url>
   <url>
-    <loc>militeee.github.io/Rcongas/reference/cap_values_by_quantile.html</loc>
+    <loc>caravagnalab.github.io/Rcongas/reference/cap_values_by_quantile.html</loc>
   </url>
   <url>
-    <loc>militeee.github.io/Rcongas/reference/example_input.html</loc>
+    <loc>caravagnalab.github.io/Rcongas/reference/example_input.html</loc>
   </url>
   <url>
-    <loc>militeee.github.io/Rcongas/reference/example_object.html</loc>
+    <loc>caravagnalab.github.io/Rcongas/reference/example_object.html</loc>
   </url>
   <url>
-    <loc>militeee.github.io/Rcongas/reference/filter_known_genes.html</loc>
+    <loc>caravagnalab.github.io/Rcongas/reference/filter_known_genes.html</loc>
   </url>
   <url>
-    <loc>militeee.github.io/Rcongas/reference/filter_values_by_quantile.html</loc>
+    <loc>caravagnalab.github.io/Rcongas/reference/filter_values_by_quantile.html</loc>
   </url>
   <url>
-    <loc>militeee.github.io/Rcongas/reference/get_fit.html</loc>
+    <loc>caravagnalab.github.io/Rcongas/reference/fit_congas.html</loc>
   </url>
   <url>
-    <loc>militeee.github.io/Rcongas/reference/get_input.html</loc>
+    <loc>caravagnalab.github.io/Rcongas/reference/get_fit.html</loc>
   </url>
   <url>
-    <loc>militeee.github.io/Rcongas/reference/init.html</loc>
+    <loc>caravagnalab.github.io/Rcongas/reference/get_input.html</loc>
   </url>
   <url>
-    <loc>militeee.github.io/Rcongas/reference/pipe.html</loc>
+    <loc>caravagnalab.github.io/Rcongas/reference/init.html</loc>
   </url>
   <url>
-    <loc>militeee.github.io/Rcongas/reference/plot.rcongasplus.html</loc>
+    <loc>caravagnalab.github.io/Rcongas/reference/pipe.html</loc>
   </url>
   <url>
-    <loc>militeee.github.io/Rcongas/reference/plot_data.html</loc>
+    <loc>caravagnalab.github.io/Rcongas/reference/plot.rcongasplus.html</loc>
   </url>
   <url>
-    <loc>militeee.github.io/Rcongas/reference/plot_fit.html</loc>
+    <loc>caravagnalab.github.io/Rcongas/reference/plot_data.html</loc>
   </url>
   <url>
-    <loc>militeee.github.io/Rcongas/reference/print.rcongasplus.html</loc>
+    <loc>caravagnalab.github.io/Rcongas/reference/plot_fit.html</loc>
   </url>
   <url>
-    <loc>militeee.github.io/Rcongas/reference/stat.html</loc>
+    <loc>caravagnalab.github.io/Rcongas/reference/print.rcongasplus.html</loc>
   </url>
   <url>
-    <loc>militeee.github.io/Rcongas/articles/Plotting.html</loc>
+    <loc>caravagnalab.github.io/Rcongas/reference/stat.html</loc>
   </url>
   <url>
-    <loc>militeee.github.io/Rcongas/articles/Rcongas.html</loc>
+    <loc>caravagnalab.github.io/Rcongas/articles/Plotting.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/Rcongas/articles/Rcongas.html</loc>
   </url>
 </urlset>

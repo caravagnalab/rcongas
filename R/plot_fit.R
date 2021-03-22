@@ -8,15 +8,17 @@
 #' * (\code{what = "CNA"}) A genome-wide plot of Copy Number Alteration profiles (inferred) per cluster;
 #' * (\code{what = "mixing_proportions"}) The normalized size of each cluster, per modality;
 #' * (\code{what = "density"}) The density per cluster and segment, split by modality. By default this is shown
-#' only for segments that differ for a segment CNA value among one of the inferred clusters.
+#' only for segments that differ for a segment CNA value among one of the inferred clusters;
 #' * (\code{what = "heatmap"}) The same heatmap plot from \code{\link{plot_data}} with 
-#' \code{what = "heatmap"}, where rows are sorted by cluster and cluster annotations reported.
+#' \code{what = "heatmap"}, where rows are sorted by cluster and cluster annotations reported;
+#' * (\code{what = "scores"}) The scores used for model selection;
 #' 
 #' This function has the same logic of \code{\link{plot_data}} with respect to the ellipsis and 
 #' input parameters.
 #'
 #' @param x An object of class \code{rcongasplus}.
-#' @param what Any of \code{"CNA"},  \code{"density"}, \code{"mixing_proportions"} or \code{"heatmap"}.
+#' @param what Any of \code{"CNA"},  \code{"density"}, \code{"mixing_proportions"}, \code{"heatmap"}
+#' or \code{"scores"}.
 #' @param ... Parameters forwarded to the internal plotting functions.
 #'
 #' @return A \code{ggplot} plot, or a more complex \code{cowplot} figure.
@@ -37,11 +39,14 @@
 #' 
 #' # Fit heatmap
 #' plot_fit(example_object, what = 'heatmap')
+#' 
+#' # Scores for model selection
+#' plot_fit(example_object, what = 'scores')
 plot_fit = function(x, what = 'CNA', ...)
 {
   x %>% sanitize_obj()
 
-  if(!('best_model' %in% (x %>% names))) {
+  if(!('best_fit' %in% (x %>% names))) {
     cli::cli_alert_danger("No fits available, returning empty plot.")
 
     return(ggplot())
@@ -59,7 +64,9 @@ plot_fit = function(x, what = 'CNA', ...)
   if (what == 'heatmap')
     return(x %>% plot_fit_heatmap(...))
   
-
+  if (what == 'heatmap')
+    return(x %>% plot_fit_scores())
+  
   stop("Unrecognised 'what': use any of 'CNA', 'density' or 'plot_mixing_proportions'.")
 }
 
@@ -332,3 +339,39 @@ plot_fit_heatmap = function(x, segments = get_input(x, what = 'segmentation') %>
   if(x %>% has_atac) return(atac_plot)    
 }
 
+
+plot_fit_scores = function(x)
+{
+  scores = reshape2::melt(
+    x$model_selection %>% 
+      select(-n_observations),
+    id = 'K'
+  ) 
+  
+  IC_best = scores %>% 
+    group_by(variable) %>% 
+    filter(value == min(value)) %>% 
+    filter(variable != 'entropy')
+
+  H_best = scores %>% 
+    group_by(variable) %>% 
+    filter(value == max(value)) %>% 
+    filter(variable == 'entropy')
+  
+  scores %>% 
+    ggplot(aes(x = K, y = value)) +
+    geom_line() +
+    geom_point() +
+    facet_wrap(~variable, scales = 'free') +
+    geom_point(
+      data = H_best,
+      color = 'red'
+    ) +
+    geom_point(
+      data = IC_best,
+      color = 'red'
+    ) +
+    labs(title = x$description) +
+    theme_linedraw(base_size = 9) + 
+    scale_y_continuous(labels = function(x) format(x, scientific = TRUE, digits = 3))
+}

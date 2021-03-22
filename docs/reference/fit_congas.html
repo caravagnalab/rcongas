@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Plot for an object of class 'rcongasplus'. — plot.rcongasplus • Rcongas</title>
+<title>Fit a list of CONGAS model — fit_congas • Rcongas</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,8 +46,11 @@
 
 
 
-<meta property="og:title" content="Plot for an object of class 'rcongasplus'. — plot.rcongasplus" />
-<meta property="og:description" content="Plot for an object of class 'rcongasplus'." />
+<meta property="og:title" content="Fit a list of CONGAS model — fit_congas" />
+<meta property="og:description" content="This function is general interface for fitting a congas model in R. The model briefly consist in a joint
+mixture model over two modalities, currently scATAC and scRNA-seq. For more information about the theoretical fundations of the approach refer
+to the vignette. This function performs modele selection over a specified number of clusters, using a specific information criterium (IC). ICs
+and results for all the runs are, however, reported in the object." />
 <meta property="og:image" content="caravagnalab.github.io/Rcongas/logo.png" />
 
 
@@ -134,40 +137,86 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Plot for an object of class <code>'rcongasplus'</code>.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/caravagnalab/RcongasR/S3_methods_rcongasplus.R'><code>R/S3_methods_rcongasplus.R</code></a></small>
-    <div class="hidden name"><code>plot.rcongasplus.Rd</code></div>
+    <h1>Fit a list of CONGAS model</h1>
+    <small class="dont-index">Source: <a href='https://github.com/caravagnalab/RcongasR/fit_congas.R'><code>R/fit_congas.R</code></a></small>
+    <div class="hidden name"><code>fit_congas.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Plot for an object of class <code>'rcongasplus'</code>.</p>
+    <p>This function is general interface for fitting a <a href='https://github.com/Militeee/congas'>congas</a> model in R. The model briefly consist in a joint
+mixture model over two modalities, currently scATAC and scRNA-seq. For more information about the theoretical fundations of the approach refer
+to the vignette. This function performs modele selection over a specified number of clusters, using a specific information criterium (IC). ICs
+and results for all the runs are, however, reported in the object.</p>
     </div>
 
-    <pre class="usage"><span class='co'># S3 method for rcongasplus</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>fit_congas</span><span class='op'>(</span>
+  <span class='va'>x</span>,
+  <span class='va'>K</span>,
+  <span class='va'>model_parameters</span>,
+  learning_rate <span class='op'>=</span> <span class='fl'>0.05</span>,
+  latent_variables <span class='op'>=</span> <span class='st'>"D"</span>,
+  compile <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  steps <span class='op'>=</span> <span class='fl'>500</span>,
+  model_selection <span class='op'>=</span> <span class='st'>"ICL"</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>An object of class <code>'rcongasplus'</code>.</p></td>
+      <td><p>An <code>rcongasplus</code> object with the input dataset, constructed with <code><a href='init.html'>Rcongas::init</a></code>.</p></td>
     </tr>
     <tr>
-      <th>...</th>
-      <td><p>Unused ellipsis.</p></td>
+      <th>K</th>
+      <td><p>a vector of integers with the number of clusters we want to test</p></td>
+    </tr>
+    <tr>
+      <th>model_parameters</th>
+      <td><p>a list with model hyperparameters. As errors coming from wrong hyperparameters initialization
+are quite hard to troubleshoot is higly suggested to use <code>Rcongas::auto_config_run()</code> to generate
+a template and eventually modify it.</p></td>
+    </tr>
+    <tr>
+      <th>learning_rate</th>
+      <td><p>a learning rate for the Adam optimizer</p></td>
+    </tr>
+    <tr>
+      <th>latent_variables</th>
+      <td><p>specify the nature of the latent variable modelling the copy number profile. Currently only "D" (discrete) is available</p></td>
+    </tr>
+    <tr>
+      <th>compile</th>
+      <td><p>use JIT compiler for the Pyro ba</p></td>
+    </tr>
+    <tr>
+      <th>steps</th>
+      <td><p>number of steps of optimization</p></td>
+    </tr>
+    <tr>
+      <th>model_selection</th>
+      <td><p>information criteria to which perform the model selection (one of ICL, NLL, BIC, AIC)</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>One of the plots available in the package, computed with
-<code><a href='plot_data.html'>plot_data</a></code> or <code><a href='plot_data.html'>plot_data</a></code> functions.</p>
+    <p>An object ot class <code>rcongasplus</code> with a slot <code>bset_fit</code> with the learned parameters for the selected model in tiblle format. A slot <code>runs</code>
+with all the runs performed ordered by the selectde IC and a slot <code>model_selection</code> with all the information to perform model selection.</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>The functions assume a list of model hyperparameters. As the the model formulation isquite complex, and those hyperparameters are extremely difficult to
+set by hand we suggest the usage of the function <code>Rcongas::auto_config_run()</code></p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"example_object"</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>example_object</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in !("best_model" %in% x %&gt;% names): invalid argument type</span></div></pre>
+    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>Rcongas</span><span class='op'>)</span>
+<span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='va'>K</span> <span class='op'>&lt;-</span>  <span class='fl'>1</span><span class='op'>:</span><span class='fl'>4</span>
+<span class='va'>hyperparams</span> <span class='op'>&lt;-</span> <span class='fu'>auto_config_run</span><span class='op'>(</span><span class='va'>example_object</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>4</span><span class='op'>)</span>
+
+<span class='va'>fit</span> <span class='op'>&lt;-</span> <span class='fu'>fit_congas</span><span class='op'>(</span><span class='va'>example_object</span>, K <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>4</span>,learning_rate <span class='op'>=</span> <span class='fl'>0.05</span>, model_parameters <span class='op'>=</span> <span class='va'>hyperparams</span><span class='op'>)</span>
+<span class='op'>}</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

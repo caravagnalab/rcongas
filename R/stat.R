@@ -96,5 +96,60 @@ stat_fit = function(x)
 {
   if(!('best_fit' %in% names(x))) return(NULL)
   
-  return("BINGOBONGO")
+  # Runs and tested k
+  nruns = x$runs %>% length
+  tested_k = x$runs %>% names
+  
+  # IC and score
+  fit_IC = x$used_IC
+  fit_score = x$best_fit$parameters$ICs[fit_IC] %>% as.numeric()
+  
+  # Hyperparameters 
+  fit_model = x$best_fit$parameters$hyperparameters$model
+  fit_loss = x$best_fit$parameters$hyperparameters$loss
+  fit_optimizer = x$best_fit$parameters$hyperparameters$optimizer
+  fit_lambda = x$best_fit$parameters$hyperparameters$lambda
+  fit_k = x$best_fit$parameters$hyperparameters$K
+  
+  # Mixing
+  fit_mixing = x$best_fit$mixing_proportions
+  
+  fit_mixing_RNA_n = x$best_fit$cluster_assignments %>% 
+    filter(modality == 'RNA') %>% 
+    pull(cluster) %>% 
+    table %>% 
+    as.numeric()
+  names(fit_mixing_RNA_n) = x$best_fit$cluster_assignments %>% 
+    filter(modality == 'RNA') %>% 
+    pull(cluster) %>% 
+    table %>% 
+    names
+  
+  fit_mixing_ATAC_n = x$best_fit$cluster_assignments %>% 
+    filter(modality == 'ATAC') %>% 
+    pull(cluster) %>% 
+    table %>% 
+    as.numeric()
+  names(fit_mixing_ATAC_n) = x$best_fit$cluster_assignments %>% 
+    filter(modality == 'ATAC') %>% 
+    pull(cluster) %>% 
+    table %>% 
+    names
+  
+  return(
+    list(
+      nruns = nruns,
+      tested_k = tested_k,
+      fit_IC = fit_IC,
+      fit_score = fit_score,
+      fit_model = fit_model,
+      fit_loss = fit_loss,
+      fit_optimizer = fit_optimizer,
+      fit_lambda = fit_lambda,
+      fit_k = fit_k,
+      fit_mixing = fit_mixing,
+      fit_mixing_RNA_n = fit_mixing_RNA_n,
+      fit_mixing_ATAC_n = fit_mixing_ATAC_n
+    )
+  )
 }

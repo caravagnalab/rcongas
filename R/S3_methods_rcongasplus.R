@@ -138,15 +138,14 @@ print.rcongasplus = function(x, ...)
       'ATAC: {crayon::red("not available")}'
     )
   
-  cat("\n")
+  # cat("\n")
   
   # Handle clusters
   stats_fit = stat(x, what = 'fit')
   
   if (!is.null(stats_fit))
-    cli::cli_alert_info(
-      "Clusters .... "
-      # 'Clusters: {.field k = {stats_data$clusters_k}}, model with {.field {stats_data$score_type}} = {.value {round(stats_data$score, 2)}}.'
+    cli::cli_h3(
+      'Clusters: {.field k = {stats_fit$fit_k}}, model with {.field {stats_fit$fit_IC}} = {.value {round(stats_fit$fit_score, 2)}}.'
     )
   else
     {
@@ -160,7 +159,29 @@ print.rcongasplus = function(x, ...)
   for(cluster in cluster_labels)
     x %>% inline_segments_printer(what = cluster)
   
-  # cat('\n')
+  cat('\n\n')
+  
+  stats_fit
+  
+  if(x %>% has_rna)
+  {
+    L_n = stats_fit$fit_mixing_RNA_n 
+    L = 25 * (L_n/sum(L_n)) %>% round()
+    
+    cat('   ', crayon::underline("RNA"), '\n')
+    for(cl in names(L))
+      cat('\t', cl, ': ', rep("\u25A0", L[cl]) %>% paste(collapse = ''), 'n =', L_n[cl], '\n')  
+  }
+  
+  if(x %>% has_atac)
+  {
+    L_n = stats_fit$fit_mixing_ATAC_n 
+    L = 25 * (L_n/sum(L_n)) %>% round()
+    
+    cat('   ', crayon::underline("ATAC"), '\n')
+    for(cl in names(L))
+      cat('\t', cl, ': ', rep("\u25A0", L[cl]) %>% paste(collapse = ''), 'n =', L_n[cl], '\n')  
+  }
   
   
   # myp = function (m, symbol = "clisymbols::symbol$pointer")
@@ -203,7 +224,7 @@ plot.rcongasplus = function(x, ...)
 {
   stopifnot(inherits(x, "rcongasplus"))
   
-  if(!('best_model' %in% x %>% names)) 
+  if(!('best_fit' %in% x %>% names)) 
     return(x %>% plot_fit(what = 'CNA'))
   else
     return(x %>% plot_data(what = 'histogram'))

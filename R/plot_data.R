@@ -382,7 +382,6 @@ plot_data_heatmap = function(x, segments = get_input(x, what = 'segmentation') %
       ATAC_plot = ATAC_plot + scale_fill_distiller(palette = 'GnBu', direction = 1)
   }
   
-  
   # Figure assembly
   if (stats_data$nmodalities == 1)
   {
