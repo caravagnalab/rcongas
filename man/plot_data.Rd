@@ -7,18 +7,61 @@
 plot_data(x, what = "histogram", ...)
 }
 \arguments{
+\item{x}{An object of class \code{rcongasplus}.}
+
 \item{what}{Any of \code{"histogram"}, \code{"lineplot"}, \code{"heatmap"} or
 \code{"mapping"}.}
 
-\item{segments}{Can subset the plot only to certain segments, which are indexed
-by the \code{segment_id} format in the tibble returned by function \code{get_input}
-with \code{what = 'segmentation'} as parameter.}
+\item{...}{Parameters forwarded to the internal plotting functions.}
 }
 \value{
 A \code{ggplot} or \code{cowplot} figure, depending on the number of
 modalities and plot required.
 }
 \description{
-General plot for data, showing data as a histogram, a lineplot
-or a heatmap. Discrete count data are normalised by input factors.
+General plotting function for data. This function uses a \code{what} parameter
+to dispatch visualization to a number of internal functions. For the input data one can visualize:
+\itemize{
+\item (\code{what = "histogram"}) a histogram of input values per segment, per modality;
+\item (\code{what = "lineplot"}) a lineplot showing, for all cells and modality, all values drawn as segments on a genome-wide plot.
+In this case also the input segmentation is visualized;
+\item (\code{what = "heatmap"}) a heatmap showing, for all cells and modality, all values per segment;
+\item (\code{what = "mapping"}) a tile plot reporting the number of RNA genes or ATAC peaks associated to each segment.
+}
+
+Where appropriate, input values are normalized by input factors. In some cases (lineplot), they are also
+scaled by the number of events mapped to each segment - this makes them comparable across segments.
+
+In most cases all the plot functions return one \code{ggplot} figure. An exception is made for the
+heatmap visualisation when there are more than one modalities: in that case all the generated figures
+are assembled into a \code{cowplot} figure.
+
+The internal plotting functions can have some parameters in input. Passage of parameters to those functions
+is done by a top-level ellipsis. The formals of the internal parameters are described in the Plotting
+vignette of the package, where example runs are shown. Please refer to that to see how to customise input
+plots.
+}
+\examples{
+
+# Formals of all internal functions (see package Plotting vignette)
+formals(Rcongas:::plot_data_histogram) \%>\% names()
+formals(Rcongas:::plot_data_lineplot) \%>\% names()
+formals(Rcongas:::plot_data_heatmap) \%>\% names()
+formals(Rcongas:::plot_data_mapping) \%>\% names()
+
+data("example_object")
+
+# Data histogram plot (default all segments)  
+plot_data(example_object, what = 'histogram')
+
+# Subset what to plot
+ 
+# Lineplot segments (default)  
+plot_data(example_object, what = 'lineplot')
+
+# Data heatmap
+plot_data(example_object, what = 'heatmap')
+
+# Events mapping per segment
+plot_data(example_object, what = 'mapping')
 }

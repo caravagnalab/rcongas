@@ -1,50 +1,80 @@
 #' Print for an object of class \code{'rcongasplus'}.
 #'
-#' @param x Object of class \code{'rcongasplus'}.
-#' @param ... Unused.
+#' @param x An object of class \code{'rcongasplus'}.
+#' @param ... Unused ellipsis.
 #'
 #' @return Nothing.
 #'
 #' @exportS3Method print rcongasplus
 #'
-#' @import crayon
-#' @import cli
-#'
 #' @examples
+#' data("example_object")
+#' print(example_object)
 print.rcongasplus = function(x, ...)
 {
-  inline_segments_printer = function(x)
+  inline_segments_printer = function(x, what = 'segmentation')
   {
-    segments_vals = x %>% 
-      get_input(what = 'segmentation') %>% 
-      group_by(chr) %>% 
-      summarise(
-        copies = paste(copies, collapse = '')
-      ) %>% 
-      summarise(
-        copies = paste(copies, collapse = '|')
-      ) %>% 
-      pull(copies)
-    
+    # Color coding
     colors = c(
       `0` = crayon::bgCyan(' '),
       `1` = crayon::bgBlue(' '),
       `2` = crayon::bgGreen(' '),
       `3` = crayon::bgRed(' '),
-      `4` = crayon::bgMagenta(' ')
+      `4` = crayon::bgMagenta(' '),
+      `*` = crayon::bgWhite(' ')
     )
     
-    cat("\n\t")
-    for(char in strsplit(segments_vals,'') %>% unlist)
-    {
-      if(char %in% names(colors)) cat(colors[char])
-      else cat(char)
-    }
-    cat("\n\n\t", crayon::underline("Ploidy:"), ' ')
-    for(char in colors %>% names)
-      cat(colors[char], char, '  ')
-    cat('\n')
+    # Segments
+    if(what == 'segmentation')
+      segments_vals = x %>% 
+        get_input(what = 'segmentation') %>% 
+        group_by(chr) %>% 
+        mutate(ifelse(copies > 4, "*", copies)) %>% 
+        summarise(
+          copies = paste(copies, collapse = '')
+        ) %>% 
+        summarise(
+          copies = paste(copies, collapse = '|')
+        ) %>% 
+        pull(copies)
     
+    # It is a cluster, eg. what = 'C1'
+    if(what != 'segmentation')
+      segments_vals = get_fit(x, what = 'CNA') %>% 
+        filter(cluster == what) %>% 
+        deidify() %>% 
+        mutate(value = ifelse(value > 4, "*", value)) %>% 
+        group_by(chr) %>% 
+        summarise(
+          value = paste(value, collapse = '')
+        ) %>% 
+        summarise(
+          value = paste(value, collapse = '|')
+        ) %>% 
+        pull(value)
+  
+    # Different print strategies
+    if(what == 'segmentation')
+    {
+      cat("\n\t")
+      for(char in strsplit(segments_vals,'') %>% unlist)
+      {
+        if(char %in% names(colors)) cat(colors[char])
+        else cat(char)
+      }
+      cat("\n\n\t", crayon::underline("Ploidy:"), ' ')
+      for(char in colors %>% names)
+        cat(colors[char], char, '  ')
+      cat('\n')
+    }
+    else{
+      cat("\n  ", what, '  ')
+      for(char in strsplit(segments_vals,'') %>% unlist)
+      {
+        if(char %in% names(colors)) cat(colors[char])
+        else cat(char)
+      }
+    }
   }
   
   ############################################################################# 
@@ -66,7 +96,7 @@ print.rcongasplus = function(x, ...)
   meanp = get_segmentation(x) %>% pull(copies) %>% mean %>% round(2)
   cli::cli_alert('Input {.field {stats_data$nsegments}} CNA segments, mean ploidy {.field {meanp}}.')
   
-  x %>% inline_segments_printer()
+  x %>% inline_segments_printer(what = 'segmentation')
     
   cli::cli_h3("Modalities")
   
@@ -110,12 +140,25 @@ print.rcongasplus = function(x, ...)
   
   cat("\n")
   
-  if (!is.null(stats_data$clusters_k))
+  # Handle clusters
+  stats_fit = stat(x, what = 'fit')
+  
+  if (!is.null(stats_fit))
     cli::cli_alert_info(
-      'Clusters: {.field k = {stats_data$clusters_k}}, model with {.field {stats_data$score_type}} = {.value {round(stats_data$score, 2)}}.'
+      "Clusters .... "
+      # 'Clusters: {.field k = {stats_data$clusters_k}}, model with {.field {stats_data$score_type}} = {.value {round(stats_data$score, 2)}}.'
     )
   else
-    cli::cli_alert_warning('Clusters: {crayon::red("not available")}.')
+    {
+      cli::cli_alert_warning('Clusters: {crayon::red("not available")}.')
+      
+      invisible(return(0))
+    }
+  
+  cluster_labels = get_fit(x, what = 'CNA') %>% pull(cluster) %>% unique
+  
+  for(cluster in cluster_labels)
+    x %>% inline_segments_printer(what = cluster)
   
   # cat('\n')
   
@@ -140,9 +183,31 @@ print.rcongasplus = function(x, ...)
   #   ) %>% cli::cli_text()
   
  
-  
+  invisible(return(0))
 }
 
+#' Plot for an object of class \code{'rcongasplus'}.
+#'
+#' @param x An object of class \code{'rcongasplus'}.
+#' @param ... Unused ellipsis.
+#'
+#' @return One of the plots available in the package, computed with
+#' \code{\link{plot_data}} or \code{\link{plot_data}} functions.
+#'
+#' @exportS3Method plot rcongasplus
+#'
+#' @examples
+#' data("example_object")
+#' plot(example_object)
+plot.rcongasplus = function(x, ...)
+{
+  stopifnot(inherits(x, "rcongasplus"))
+  
+  if(!('best_model' %in% x %>% names)) 
+    return(x %>% plot_fit(what = 'CNA'))
+  else
+    return(x %>% plot_data(what = 'histogram'))
+}
 
 
 

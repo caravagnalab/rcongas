@@ -1,24 +1,91 @@
-#' Title
+#' Create a dataset.
+#' 
+#' @description 
+#' 
+#' This function creates a dataset (an object of class \code{rcongasplus}) by assembling multiple single-cell input measurements 
+#' (ATAC and/or RNA data modalities), the input segmentation (from bulk DNA sequencing),
+#' and the per-cell normalisation factors for the data. 
+#' 
+#' All input data are passed as tibbles; the input formats are as follows:
+#' 
+#' * for single-cell ATAC/RNA data, the \code{cell} identifier, the genomic coordinates
+#' (\code{chr}, \code{from}, \code{to}) which refer either to an ATAC peak, or an RNA gene
+#' identifier, and a \code{value} reporting the reads mapped.
+#' 
+#' * for the input segmentation, the genomic coordinates
+#' (\code{chr}, \code{from}, \code{to}) which refer to the segment, and the number of
+#' \code{copies} (i.e., DNA ploidy) of the segment.
+#' 
+#' * for normalization factors the \code{cell} identifier, the actual \code{normalisation_factor}
+#' and the \code{modality} to wihch the factor refers to
+#' 
+#' This function receives also other parameters - e.g., the models likelihoods - which 
+#' will determine the overall behaviour of the underlying model, and how data are preared for inference.
+#' 
+#' * A Negative Binomial likelihood (\code{"NB"}), which works directly from raw counts data
+#' 
+#' * A Gaussian likelihood (\code{"G"}), which requires a z-score transformation of the data. This consists
+#' in :
+#'     * scaling raw counts by the input normalization factors;
+#'     * computing z-scores per cell;
+#'     * summing up z-scores per segment;
+#'     * computing z-scores per segment;
+#'     * center the z-scores mean to the input ploidy.
 #'
-#' @param rna
-#' @param atac
-#' @param segmentation
-#' @param normalisation_factors
-#' @param rna_likelihood
-#' @param atac_likelihood
-#' @param reference_genome
-#' @param description
+#' @param rna A tibble with single-cell RNA data.
+#' @param atac A tibble with single-cell ATAC data.
+#' @param segmentation A tibble with the input segmentation.
+#' @param normalisation_factors A tibble with the input per-cell normalisation factors.
+#' @param rna_likelihood Type of likelihood used for RNA data (\code{"G"} for Gaussian and
+#' \code{""NB} for Negative Binomial). The RNA default is \code{"G"}.
+#' @param atac_likelihood Type of likelihood used for ATAC data, with default \code{"NB"}.
+#' @param reference_genome Either \code{"GRCh38"} or \code{"hg19"}.
+#' @param description A model in-words description.
 #'
-#' @return
+#' @return An object of class \code{rcongasplus}
 #'
-#' @import cli
+#' @importFrom tidyr separate pivot_longer
+#' @importFrom tibble rownames_to_column
+#' @importFrom crayon bgCyan bgBlue bgGreen bgRed bgMagenta bgWhite underline bgYellow blue red
+#' @importFrom cli cli_rule cli_h3 cli_alert cli_alert_info cli_alert_warning cli_alert_danger
+#' @importFrom reshape2 acast melt
+#' @importFrom stats4 mle
+#' @importFrom cowplot plot_grid
+#' @importFrom progress progress_bar
+#' @importFrom graphics curve hist
+#' @importFrom stats complete.cases dgamma quantile rnorm sd
+#' @importFrom utils head object.size
 #' @import dplyr
 #' @import ggplot2
-#' @import progress
+#' @import CNAqc
 #'
 #' @export
 #'
 #' @examples
+#' data("example_input")
+#' 
+#' # For instance, RNA data
+#' example_input$x_rna %>% print
+#' 
+#' # .. or ATAC data
+#' example_input$x_atac %>% print
+#' 
+#' # .. and segmentation
+#' example_input$x_segmentation %>% print
+#' 
+#' # .. and x_normalisation factors
+#' example_input$x_normalisation_factors %>% print
+#' 
+#' x = init(
+#'   rna = example_input$x_rna,
+#'   atac = example_input$x_atac,
+#'   segmentation = example_input$x_segmentation,
+#'   normalisation_factors = example_input$x_normalisation_factors,
+#'   rna_likelihood = "G", 
+#'   atac_likelihood = 'NB',
+#'   description = 'My crazy model')
+#'   
+#' print(x)
 init = function(
   rna,
   atac,

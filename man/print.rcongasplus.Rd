@@ -7,13 +7,17 @@
 \method{print}{rcongasplus}(x, ...)
 }
 \arguments{
-\item{x}{Object of class \code{'rcongasplus'}.}
+\item{x}{An object of class \code{'rcongasplus'}.}
 
-\item{...}{Unused.}
+\item{...}{Unused ellipsis.}
 }
 \value{
 Nothing.
 }
 \description{
 Print for an object of class \code{'rcongasplus'}.
+}
+\examples{
+data("example_object")
+print(example_object)
 }

@@ -2,21 +2,43 @@
 % Please edit documentation in R/plot_fit.R
 \name{plot_fit}
 \alias{plot_fit}
-\title{Plot fits}
+\title{Plot fits.}
 \usage{
 plot_fit(x, what = "CNA", ...)
 }
 \arguments{
-\item{what}{Any of \code{"histogram"},  \code{"lineplot"},  or \code{"heatmap"}.}
+\item{x}{An object of class \code{rcongasplus}.}
 
-\item{segments}{Can subset the plot only to certain segments, which are indexed
-by the \code{segment_id} format in the tibble returned by function \code{get_input}
-with \code{what = 'segmentation'} as parameter.}
+\item{what}{Any of \code{"CNA"},  \code{"density"},  or \code{"mixing_proportions"}.}
+
+\item{...}{Parameters forwarded to the internal plotting functions.}
 }
 \value{
-A \code{ggplot} or \code{cowplot} figure, depending on the number of
-modalities and plot required.
+A \code{ggplot} plot.
 }
 \description{
-General plot for fits, showing them as .....
+This function is like \code{\link{plot_data}}, but shows information about a fit model.
+
+As \code{\link{plot_data}}, this function uses a \code{what} parameter
+to dispatch visualization to a number of internal functions. For the fits one can visualize:
+\itemize{
+\item (\code{what = "CNA"}) a genome-wide plot of Copy Number Alteration profiles (inferred) per cluster;
+\item (\code{what = "mixing_proportions"}) The normalized size of each cluster, per modality;
+\item (\code{what = "density"}) The density per cluster and segment, split by modality. By default this is shown
+only for segments that differ for a segment CNA value among one of the inferred clusters.
+}
+
+This function has the same logic of \code{\link{plot_data}} (with the ellipsis and parameters).
+}
+\examples{
+data("example_object")
+
+# Genome-wide segments plo
+plot_fit(example_object, what = 'CNA')
+
+# Density plot
+plot_fit(example_object, what = 'density')
+
+# Mixing proportions
+plot_fit(example_object, what = 'mixing_proportions')
 }

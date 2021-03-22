@@ -47,8 +47,24 @@
 
 
 <meta property="og:title" content="Plot data. — plot_data" />
-<meta property="og:description" content="General plot for data, showing data as a histogram, a lineplot
-or a heatmap. Discrete count data are normalised by input factors." />
+<meta property="og:description" content="General plotting function for data. This function uses a what parameter
+to dispatch visualization to a number of internal functions. For the input data one can visualize:
+(what = &quot;histogram&quot;) a histogram of input values per segment, per modality;
+(what = &quot;lineplot&quot;) a lineplot showing, for all cells and modality, all values drawn as segments on a genome-wide plot.
+In this case also the input segmentation is visualized;
+(what = &quot;heatmap&quot;) a heatmap showing, for all cells and modality, all values per segment;
+(what = &quot;mapping&quot;) a tile plot reporting the number of RNA genes or ATAC peaks associated to each segment.
+
+
+Where appropriate, input values are normalized by input factors. In some cases (lineplot), they are also
+scaled by the number of events mapped to each segment - this makes them comparable across segments.
+In most cases all the plot functions return one ggplot figure. An exception is made for the
+heatmap visualisation when there are more than one modalities: in that case all the generated figures
+are assembled into a cowplot figure.
+The internal plotting functions can have some parameters in input. Passage of parameters to those functions
+is done by a top-level ellipsis. The formals of the internal parameters are described in the Plotting
+vignette of the package, where example runs are shown. Please refer to that to see how to customise input
+plots." />
 <meta property="og:image" content="militeee.github.io/Rcongas/logo.png" />
 
 
@@ -111,6 +127,9 @@ or a heatmap. Discrete count data are normalised by input factors." />
     </li>
   </ul>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -138,8 +157,24 @@ or a heatmap. Discrete count data are normalised by input factors." />
     </div>
 
     <div class="ref-description">
-    <p>General plot for data, showing data as a histogram, a lineplot
-or a heatmap. Discrete count data are normalised by input factors.</p>
+    <p>General plotting function for data. This function uses a <code>what</code> parameter
+to dispatch visualization to a number of internal functions. For the input data one can visualize:</p><ul>
+<li><p>(<code>what = "histogram"</code>) a histogram of input values per segment, per modality;</p></li>
+<li><p>(<code>what = "lineplot"</code>) a lineplot showing, for all cells and modality, all values drawn as segments on a genome-wide plot.
+In this case also the input segmentation is visualized;</p></li>
+<li><p>(<code>what = "heatmap"</code>) a heatmap showing, for all cells and modality, all values per segment;</p></li>
+<li><p>(<code>what = "mapping"</code>) a tile plot reporting the number of RNA genes or ATAC peaks associated to each segment.</p></li>
+</ul>
+
+<p>Where appropriate, input values are normalized by input factors. In some cases (lineplot), they are also
+scaled by the number of events mapped to each segment - this makes them comparable across segments.</p>
+<p>In most cases all the plot functions return one <code>ggplot</code> figure. An exception is made for the
+heatmap visualisation when there are more than one modalities: in that case all the generated figures
+are assembled into a <code>cowplot</code> figure.</p>
+<p>The internal plotting functions can have some parameters in input. Passage of parameters to those functions
+is done by a top-level ellipsis. The formals of the internal parameters are described in the Plotting
+vignette of the package, where example runs are shown. Please refer to that to see how to customise input
+plots.</p>
     </div>
 
     <pre class="usage"><span class='fu'>plot_data</span><span class='op'>(</span><span class='va'>x</span>, what <span class='op'>=</span> <span class='st'>"histogram"</span>, <span class='va'>...</span><span class='op'>)</span></pre>
@@ -148,15 +183,17 @@ or a heatmap. Discrete count data are normalised by input factors.</p>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
+      <th>x</th>
+      <td><p>An object of class <code>rcongasplus</code>.</p></td>
+    </tr>
+    <tr>
       <th>what</th>
       <td><p>Any of <code>"histogram"</code>, <code>"lineplot"</code>, <code>"heatmap"</code> or
 <code>"mapping"</code>.</p></td>
     </tr>
     <tr>
-      <th>segments</th>
-      <td><p>Can subset the plot only to certain segments, which are indexed
-by the <code>segment_id</code> format in the tibble returned by function <code>get_input</code>
-with <code>what = 'segmentation'</code> as parameter.</p></td>
+      <th>...</th>
+      <td><p>Parameters forwarded to the internal plotting functions.</p></td>
     </tr>
     </table>
 
@@ -165,6 +202,30 @@ with <code>what = 'segmentation'</code> as parameter.</p></td>
     <p>A <code>ggplot</code> or <code>cowplot</code> figure, depending on the number of
 modalities and plot required.</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'>
+<span class='co'># Formals of all internal functions (see package Plotting vignette)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/formals.html'>formals</a></span><span class='op'>(</span><span class='fu'>Rcongas</span><span class='fu'>:::</span><span class='va'>plot_data_histogram</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] "x"        "segments"</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/formals.html'>formals</a></span><span class='op'>(</span><span class='fu'>Rcongas</span><span class='fu'>:::</span><span class='va'>plot_data_lineplot</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] "x"        "segments" "alpha"   </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/formals.html'>formals</a></span><span class='op'>(</span><span class='fu'>Rcongas</span><span class='fu'>:::</span><span class='va'>plot_data_heatmap</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] "x"        "segments"</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/formals.html'>formals</a></span><span class='op'>(</span><span class='fu'>Rcongas</span><span class='fu'>:::</span><span class='va'>plot_data_mapping</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] "x"</div><div class='input'>
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"example_object"</span><span class='op'>)</span>
+
+<span class='co'># Data histogram plot (default all segments)  </span>
+<span class='fu'>plot_data</span><span class='op'>(</span><span class='va'>example_object</span>, what <span class='op'>=</span> <span class='st'>'histogram'</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>→ Normalising <span style='color: #00BB00;'>ATAC</span><span> counts using input normalisation factors.</span></div><div class='img'><img src='plot_data-1.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='co'># Subset what to plot</span>
+ 
+<span class='co'># Lineplot segments (default)  </span>
+<span class='fu'>plot_data</span><span class='op'>(</span><span class='va'>example_object</span>, what <span class='op'>=</span> <span class='st'>'lineplot'</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>→ Normalising </span><span style='color: #00BB00;'>ATAC</span><span> counts using input normalisation factors.</span></div><div class='output co'>#&gt; <span class='message'>→ Scaling RNA observed values by number of genes mapped per segment.</span></div><div class='output co'>#&gt; <span class='message'>→ Scaling ATAC observed values by number of peaks mapped per segment.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: replacing previous import ‘cli::num_ansi_colors’ by ‘crayon::num_ansi_colors’ when loading ‘BMix’</span></div><div class='output co'>#&gt; <span class='warning'>Warning: replacing previous import ‘crayon::%+%’ by ‘ggplot2::%+%’ when loading ‘BMix’</span></div><div class='output co'>#&gt; <span class='message'></span><span style='color: #00BB00;'>✓</span><span> Loading </span><span style='color: #00BB00;'>BMix</span><span>, </span><span style='font-style: italic;'>'Binomial and Beta-Binomial univariate mixtures'</span><span>. Support : </span><span style='color: #0000BB;font-style: italic;'>&lt;https://caravagnalab.github.io/BMix/&gt;</span><span></span></div><div class='output co'>#&gt; <span class='message'></span><span style='color: #00BB00;'>✓</span><span> Loading </span><span style='color: #00BB00;'>CNAqc</span><span>, </span><span style='font-style: italic;'>'Copy Number Alteration quality check'</span><span>. Support : </span><span style='color: #0000BB;font-style: italic;'>&lt;https://caravagn.github.io/CNAqc/&gt;</span><span></span></div><div class='img'><img src='plot_data-2.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='co'># Data heatmap</span>
+<span class='fu'>plot_data</span><span class='op'>(</span><span class='va'>example_object</span>, what <span class='op'>=</span> <span class='st'>'heatmap'</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>→ Normalising </span><span style='color: #00BB00;'>ATAC</span><span> counts using input normalisation factors.</span></div><div class='img'><img src='plot_data-3.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='co'># Events mapping per segment</span>
+<span class='fu'>plot_data</span><span class='op'>(</span><span class='va'>example_object</span>, what <span class='op'>=</span> <span class='st'>'mapping'</span><span class='op'>)</span>
+</div><div class='img'><img src='plot_data-4.png' alt='' width='700' height='433' /></div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -176,7 +237,7 @@ modalities and plot required.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by <a href='https://sites.google.com/view/cdslab'>Salvatore Milite</a>, <a href='https://sites.google.com/view/cdslab'>Giulio Caravagna</a>.</p>
+  <p>Developed by <a href='https://www.caravagnalab.org'>Salvatore Milite</a>, <a href='https://www.caravagnalab.org'>Giulio Caravagna</a>.</p>
 </div>
 
 <div class="pkgdown">

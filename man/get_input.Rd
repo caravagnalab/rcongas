@@ -2,18 +2,64 @@
 % Please edit documentation in R/get_input.R
 \name{get_input}
 \alias{get_input}
-\title{Get input data.}
+\title{Extract input data.}
 \usage{
 get_input(x, what = "data")
 }
 \arguments{
+\item{x}{An object of class \code{rcongasplus}.}
+
 \item{what}{Any of \code{"data"}, \code{"segmentation"} or
 \code{"normalisation"}.}
 }
 \value{
-A tibble.
+A tibble; its format depends on \code{what}. See the examples.
 }
 \description{
 General data accessing getter function to return
-input data, segmentation or normalisation.
+any of:
+\itemize{
+\item data,
+\item segmentation,
+\item normalisation factors.
+}
+
+The function uses the \code{what} parameter to return the
+appropriate type of information
+
+Since the input formats are different, the outputs are also
+different based on the value of \code{what}, but they are
+always in tibble format.
+
+Besides obvious columns, these information will also be
+available in the returned tibbles.
+\itemize{
+\item \code{what = "data"}: \code{modality} and \code{value_type}, the latter reporting the likelihood
+code associated to the modality.
+\item \code{what = "segmentation"}:
+\itemize{
+\item \code{ATAC_nonzerovals} and \code{ATAC_peaks}, reporting the number of ATAC entries mapped to a
+segment, and the number of peaks these come from. Note that one non-zero entry is given by a cell that reported a
+ATAC count in a peak mapping within the segment.
+\item \code{RNA_nonzerovals} and \code{RNA_genes}, reporting the number of RNA entries mapped to a segment,
+and the number of genes these come from. For RNA, one non-zero entry is given by a cell that reported an RNA count
+in a gene mapping within the segment.
+}
+\item \code{what = "normalisation"}: just \code{modality}.
+}
+}
+\examples{
+data(example_object)
+
+# Extract the input data, after mapping to segments
+get_input(example_object, what = 'data') 
+
+# e.g., in this way you can get input ATAC values
+get_input(example_object, what = 'data') \%>\% dplyr::filter(modality == 'ATAC')
+ 
+# Extract the input segmentation. 
+get_input(example_object, what = 'segmentation')
+ 
+# Extract the input normalisation factors
+get_input(example_object, what = 'normalisation')
 }

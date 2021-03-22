@@ -109,6 +109,9 @@
     </li>
   </ul>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -145,7 +148,7 @@
       <tr>
         <th colspan="2">
           <h2 id="section-available-data" class="hasAnchor"><a href="#section-available-data" class="anchor"></a>Available data</h2>
-          <p class="section-desc"><p>Data released with the package</p></p>
+          <p class="section-desc"><p>Data released with the package.</p></p>
         </th>
       </tr>
       
@@ -153,12 +156,24 @@
     </tbody><tbody>
       
       
-      
+      <tr>
+        
+        <td>
+          <p><code><a href="example_input.html">example_input</a></code> </p>
+        </td>
+        <td><p>Example tibbles with input data in the format for (R)Congas+</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="example_object.html">example_object</a></code> </p>
+        </td>
+        <td><p>Example object from (R)Congas+</p></td>
+      </tr>
     </tbody><tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-fitting-functions" class="hasAnchor"><a href="#section-fitting-functions" class="anchor"></a>Fitting functions</h2>
-          <p class="section-desc"><p>Functions to cluster the data.</p></p>
+          <h2 id="section-main-functions" class="hasAnchor"><a href="#section-main-functions" class="anchor"></a>Main functions</h2>
+          <p class="section-desc"><p>Functions to create and fit a dataset.</p></p>
         </th>
       </tr>
       
@@ -166,12 +181,18 @@
     </tbody><tbody>
       
       
-      
+      <tr>
+        
+        <td>
+          <p><code><a href="init.html">init()</a></code> </p>
+        </td>
+        <td><p>Create a dataset.</p></td>
+      </tr>
     </tbody><tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-s-functions" class="hasAnchor"><a href="#section-s-functions" class="anchor"></a>S3 functions</h2>
-          <p class="section-desc"><p>The <code>rcongas</code> S3 object.</p></p>
+          <h2 id="section-getters" class="hasAnchor"><a href="#section-getters" class="anchor"></a>Getters</h2>
+          <p class="section-desc"><p>Functions to extract information from a model.</p></p>
         </th>
       </tr>
       
@@ -179,7 +200,25 @@
     </tbody><tbody>
       
       
-      
+      <tr>
+        
+        <td>
+          <p><code><a href="get_input.html">get_input()</a></code> </p>
+        </td>
+        <td><p>Extract input data.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_fit.html">get_fit()</a></code> </p>
+        </td>
+        <td><p>Extract fit data.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="stat.html">stat()</a></code> </p>
+        </td>
+        <td><p>Compute the statistics of a dataset.</p></td>
+      </tr>
     </tbody><tbody>
       <tr>
         <th colspan="2">
@@ -192,12 +231,24 @@
     </tbody><tbody>
       
       
-      
+      <tr>
+        
+        <td>
+          <p><code><a href="plot_data.html">plot_data()</a></code> </p>
+        </td>
+        <td><p>Plot data.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plot_fit.html">plot_fit()</a></code> </p>
+        </td>
+        <td><p>Plot fits.</p></td>
+      </tr>
     </tbody><tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-getters-for-clustering-results" class="hasAnchor"><a href="#section-getters-for-clustering-results" class="anchor"></a>Getters for clustering results</h2>
-          <p class="section-desc"><p>Functions to extract clustering information from a model.</p></p>
+          <h2 id="section-s-functions" class="hasAnchor"><a href="#section-s-functions" class="anchor"></a>S3 functions</h2>
+          <p class="section-desc"><p>The <code>rcongasplus</code> S3 object functions.</p></p>
         </th>
       </tr>
       
@@ -205,59 +256,19 @@
     </tbody><tbody>
       
       
-      
-    </tbody><tbody>
       <tr>
-        <th colspan="2">
-          <h2 id="section-getters-for-input-data" class="hasAnchor"><a href="#section-getters-for-input-data" class="anchor"></a>Getters for input data</h2>
-          <p class="section-desc"><p>Functions to extract information of the data stored in a model.</p></p>
-        </th>
+        
+        <td>
+          <p><code><a href="print.rcongasplus.html">print(<i>&lt;rcongasplus&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Print for an object of class <code>'rcongasplus'</code>.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plot.rcongasplus.html">plot(<i>&lt;rcongasplus&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Plot for an object of class <code>'rcongasplus'</code>.</p></td>
       </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      
-    </tbody><tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-filter-functions" class="hasAnchor"><a href="#section-filter-functions" class="anchor"></a>Filter functions</h2>
-          <p class="section-desc"><p>Functions to filter out information from a model.</p></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      
-    </tbody><tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-synthetic-data-generation-functions" class="hasAnchor"><a href="#section-synthetic-data-generation-functions" class="anchor"></a>Synthetic data generation functions</h2>
-          <p class="section-desc"><p>Functions to sample from the generative model.</p></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      
-    </tbody><tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-other-analyses-de-gse-" class="hasAnchor"><a href="#section-other-analyses-de-gse-" class="anchor"></a>Other analyses (DE, GSE)</h2>
-          <p class="section-desc"><p>Differential Expression, Gene Set Enrichment, etc.</p></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      
     </tbody>
     </table>
   </div>
@@ -272,7 +283,7 @@
 
       <footer>
       <div class="copyright">
-  <p>Developed by <a href='https://sites.google.com/view/cdslab'>Salvatore Milite</a>, <a href='https://sites.google.com/view/cdslab'>Giulio Caravagna</a>.</p>
+  <p>Developed by <a href='https://www.caravagnalab.org'>Salvatore Milite</a>, <a href='https://www.caravagnalab.org'>Giulio Caravagna</a>.</p>
 </div>
 
 <div class="pkgdown">

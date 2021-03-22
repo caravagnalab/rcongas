@@ -2,18 +2,54 @@
 % Please edit documentation in R/stat.R
 \name{stat}
 \alias{stat}
-\title{Title}
+\title{Compute the statistics of a dataset.}
 \usage{
 stat(x, what = "data")
 }
 \arguments{
-\item{x}{}
+\item{x}{An object of class \code{rcongasplus}.}
 
-\item{what}{}
+\item{what}{The type of statistics that needs to be computed. It can be one of
+\code{"data"} or \code{"fit"}. By deafult it is \code{"data"}.}
 }
 \value{
-
+A named list with the available statistics.
 }
 \description{
-Title
+The statistics of a dataset regard the input data, and the fits.
+These are accessed by using different values for the \code{what} parameter
+passed to this function (by default, data are used).
+
+The result value is a named list with several information that are usefull
+to summarise the model. The names should be self explicatory.
+
+For data  the following information are reported:
+\itemize{
+\item it is reported the number of cells in each modality,
+\item the number of non-zero ATAC/RNA input entries used to create the object
+\item the number of RNA genes and ATAC peaks used
+\item the number of segments
+\item the number of modalities
+\item the keyword for each  modality (\code{"RNA"} or \code{"ATAC"})
+\item the likelihood for each  modality (\code{"G"} for Gaussian or \code{"NB"} for Negative Binomial)
+}
+
+For fits the following information are reported:
+\itemize{
+\item ...
+}
+
+If fits are not available, \code{NULL} is returned.
+}
+\examples{
+data(example_object)
+
+# Compare the information here 
+print(example_object)
+
+# ... to the one reported here for data
+stat(example_object, what = 'data')
+
+# ... and here for fits
+stat(example_object, what = 'fit')
 }

@@ -2,107 +2,55 @@ destination: docs
 
 template:
   params:
-    part_of: evoverse
-    footer: S. Milite and G. Caravagna.
+    footer: S. Milite, R. Bergamin and G. Caravagna.
 url:
-  militeee.github.io/Rcongas
+  caravagnalab.github.io/Rcongas
 
 repo:
   url:
-    home: https://github.com/militeee/Rcongas/
-    source: https://github.com/militeee/Rcongas
-    issue: https://github.com/militeee/Rcongas/issues
-    user: https://github.com/militeee
-
-
+    home: https://github.com/caravagnalab/Rcongas/
+    source: https://github.com/caravagnalab/Rcongas
+    issue: https://github.com/caravagnalab/Rcongas/issues
+    user: https://github.com/caravagnalab
 
 authors:
   Salvatore Milite:
-    href: https://sites.google.com/view/cdslab
+    href: https://www.caravagnalab.org
+  Riccardo Bergamin:
+    href: https://www.caravagnalab.org
   Giulio Caravagna:
-    href: https://sites.google.com/view/cdslab
+    href: https://www.caravagnalab.org
 
 reference:
 - title: Available data
-  desc:  Data released with the package
+  desc:  Data released with the package.
   contents:
-  - congas_example
+  - example_input
+  - example_object
 
-- title: Fitting functions
-  desc:  Functions to cluster the data.
+- title: Main functions
+  desc:  Functions to create and fit a dataset.
   contents:
-  - approx_theta_prior_params
-  - best_cluster
-  - list_models
-  - recalculate_information_criteria
-  - run_inference
+  - init
 
-- title: S3 functions
-  desc: The `rcongas` S3 object.
+- title: Getters
+  desc:  Functions to extract information from a model.
   contents:
-  - print.rcongas
-  - summary.rcongas
-  - plot.rcongas
-
+  - get_input
+  - get_fit
+  - stat
+  
 - title: Plotting functions
   desc:  Functions to plot data and fits.
   contents:
-  - plot_chromosome
-  - plot_gw_cna_profiles
-  - plot_inference_report
-  - plot_counts_rna_segments
-  - plot_raw_data
-  - plot_highlights
-  - plot_latent_variables
-  - plot_mixing_proportions
-  - plot_normalization_factors
-  - plot_segment_density
-  - report_analysis
-
-- title: Getters for clustering results
-  desc:  Functions to extract clustering information from a model.
-  contents:
-  - get_clusters
-  - get_clusters_ploidy
-  - get_clusters_size
-  - get_k
-  - get_segment_test_counts
-
-- title: Getters for input data
-  desc:  Functions to extract information of the data stored in a model.
-  contents:
-  - get_counts
-  - get_input_segmentation
-  - get_mapped_genes
-  - get_input_raw_data
-  - get_reference_genome
-  - get_gene_annotations
-  - get_dataset_stats
-  - get_segment_ids
-  - get_model_description
+  - plot_data
+  - plot_fit
   
-- title: Filter functions
-  desc:  Functions to filter out information from a model.
+- title: S3 functions
+  desc: The `rcongasplus` S3 object functions.
   contents:
-  - filter_clusters
-
-  
-- title: Synthetic data generation functions
-  desc:  Functions to sample from the generative model.
-  contents:
-  - generate_random_tree
-  - run_simulation
-
-
-- title: Other analyses (DE, GSE)
-  desc:  Differential Expression, Gene Set Enrichment, etc.
-  contents:
-  - calculate_DE
-  - get_DE_table
-  - plot_DE_gw
-  - plot_DE_volcano
-
-
+  - print.rcongasplus
+  - plot.rcongasplus
 
 
 
