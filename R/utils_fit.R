@@ -116,6 +116,7 @@ format_best_model <-  function(x, inf){
 
     mixing_proportions_atac <-  mixing_proportions_atac %>% as.data.frame()  %>%  tibble::rownames_to_column("cluster")
     colnames(mixing_proportions_atac)[2] <- "mixing"
+    mixing_proportions_atac$modality <-  "ATAC"
 
     z_nk_atac <- z_nk_atac %>% as_tibble()  %>% mutate(modality = "ATAC")
 
@@ -174,6 +175,7 @@ format_best_model <-  function(x, inf){
 
     mixing_proportions_rna <-  mixing_proportions_rna %>% as.data.frame()  %>%  tibble::rownames_to_column("cluster")
     colnames(mixing_proportions_rna)[2] <- "mixing"
+    mixing_proportions_rna$modality <-  "RNA"
 
     z_nk_rna <- z_nk_rna %>% as_tibble()  %>% mutate(modality = "RNA")
 
@@ -209,7 +211,7 @@ format_best_model <-  function(x, inf){
   ret$posterior_CNA <-  posterior_CNA
   ret$mixing_proportions <- rbind(mixing_proportions_atac, mixing_proportions_rna)
   ret$cluster_assignments <- rbind(cluster_assignments_atac, cluster_assignments_rna)
-  ret$z_nk <-  rbind(z_nk_atac, z_nk_rna)
+  ret$z_nk <-  rbind(z_nk_atac, z_nk_rna) %>% tidyr::pivot_longer(tidyr::starts_with("C", ignore.case = F), names_to = "cluster", values_to = "z_nk")
   ret$segment_parameters <- rbind(segment_parameters_atac, segment_parameters_rna)
 
 

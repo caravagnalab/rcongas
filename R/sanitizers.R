@@ -57,7 +57,7 @@ sanitize_obj = function(x)
     if(!('best_fit' %in% names(x))) stop("Missing best_fit")
 
     if(!('parameters' %in% names(x$best_fit))) stop("Missing best_fit$parameters")
-    if(!('cluster_assigments' %in% names(x$best_fit))) stop("Missing best_fit$parameters")
+    if(!('cluster_assignments' %in% names(x$best_fit))) stop("Missing best_fit$cluster_assigments")
     if(!('segment_parameters' %in% names(x$best_fit))) stop("Missing best_fit$segment_parameters")
     if(!('CNA' %in% names(x$best_fit))) stop("Missing best_fit$CNA")
     if(!('posterior_CNA' %in% names(x$best_fit))) stop("Missing best_fit$posterior_CNA")
@@ -69,7 +69,7 @@ sanitize_obj = function(x)
 
     # Check that all the tibbles have the required information
     chk_cn(x$best_fit$segment_parameters, c("segment_id", "parameter", "value", "modality"))
-    chk_cn(x$best_fit$CNA, c("cluster", "segment_id", "parameter", "value"))
+    chk_cn(x$best_fit$CNA, c("cluster", "segment_id", "value"))
     chk_cn(x$best_fit$posterior_CNA, c("cluster", "segment_id", "probability", "value"))
     chk_cn(x$best_fit$mixing_proportions, c("cluster", "mixing", "modality"))
     chk_cn(x$best_fit$cluster_assignments, c("cluster", "cell", "modality"))

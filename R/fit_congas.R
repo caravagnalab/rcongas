@@ -1,3 +1,28 @@
+#' Fit a list of CONGAS model
+#'
+#' This function is general interface for fitting a \href{https://github.com/Militeee/congas}{congas} model in R. The model briefly consist in a joint
+#' mixture model over two modalities, currently scATAC and scRNA-seq. For more information about the theoretical fundations of the approach refer
+#' to the vignette. This function performs modele selection over a specified number of clusters, using a specific information criterium (IC). ICs
+#' and results for all the runs are, however, reported in the object.
+#'
+#' The functions assume a list of model hyperparameters. As the the model formulation isquite complex, and those hyperparameters are extremely difficult to
+#' set by hand we suggest the usage of the function \code{\link[Rcongas::auto_config_run]{Rcongas::auto_config_run()}}
+#'
+#' @param x an rcongasplus object with the input dataset. We provide a constructor \code{\link[Rcongas::init]{Rcongas::init()}}}
+#' @param K a vector of integers with the number of clusters we want to test
+#' @param learning_rate a learning rate for the Adam optimizer
+#' @param model_parameters a list with model hyperparameters. As errors coming from wrong hyperparameters initialization
+#' are quite hard to troubleshoot is higly suggested to use \code{\link[Rcongas::auto_config_run]{Rcongas::auto_config_run()}} to generate
+#' a template and eventually modify it.
+#' @param latent_variables specify the nature of the latent variable modelling the copy number profile. Currently only "D" (discrete) is available
+#' @param compile use JIT compiler for the Pyro ba
+#' @param steps number of steps of optimization
+#' @param model_selection one of ICL, NLL, BIC, AIC
+#'
+#' @return
+#' @export
+#'
+#' @examples
 fit_congas <-  function(x, K, learning_rate, model_parameters, latent_variables = "D", compile = FALSE, steps = 500, model_selection = "ICL"){
 
   if(!inherits(x, "rcongasplus")) {
@@ -17,10 +42,10 @@ fit_congas <-  function(x, K, learning_rate, model_parameters, latent_variables 
 
   runs <-  runs[bms_idx]
 
-  best_model  <-  format_best_model(x, runs[[1]])
+  best_fit  <-  format_best_model(x, runs[[1]])
 
   x$runs <-  runs
-  x$best_model <-  best_model
+  x$best_fit <-  best_fit
   x$model_selection <-  model_selection_df
 
   return(x)
