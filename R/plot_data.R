@@ -72,8 +72,11 @@ plot_data = function(x,
   if (what == 'lineplot')
     return(x %>% plot_data_lineplot(...))
   
-  if (what == 'heatmap')
-    return(x %>% plot_data_heatmap(...))
+  if (what == 'heatmap'){
+    # This returns a more complex assembly
+    all_plots = x %>% plot_data_heatmap(...)
+    return(all_plots$figure)
+  }
   
   if (what == 'mapping')
     return(x %>% plot_data_mapping())
@@ -379,13 +382,14 @@ plot_data_heatmap = function(x, segments = get_input(x, what = 'segmentation') %
       ATAC_plot = ATAC_plot + scale_fill_distiller(palette = 'GnBu', direction = 1)
   }
   
+  
   # Figure assembly
   if (stats_data$nmodalities == 1)
   {
     if ("RNA" %in% stats_data$modalities)
-      return(RNA_plot)
+      return(list(figure = RNA_plot, plots = list(RNA_plot, ATAC_plot)))
     if ("ATAC" %in% stats_data$modalities)
-      return(ATAC_plot)
+      return(list(figure = ATAC_plot, plots = list(RNA_plot, ATAC_plot)))
   }
   else
   {
@@ -404,7 +408,7 @@ plot_data_heatmap = function(x, segments = get_input(x, what = 'segmentation') %
         axis = 'lr'
       )
     
-    return(figure)
+    return(list(figure = figure, plots = list(RNA_plot, ATAC_plot)))
   }
 }
 

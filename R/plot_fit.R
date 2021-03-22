@@ -5,18 +5,21 @@
 #' As \code{\link{plot_data}}, this function uses a \code{what} parameter
 #' to dispatch visualization to a number of internal functions. For the fits one can visualize:
 #'
-#' * (\code{what = "CNA"}) a genome-wide plot of Copy Number Alteration profiles (inferred) per cluster;
+#' * (\code{what = "CNA"}) A genome-wide plot of Copy Number Alteration profiles (inferred) per cluster;
 #' * (\code{what = "mixing_proportions"}) The normalized size of each cluster, per modality;
 #' * (\code{what = "density"}) The density per cluster and segment, split by modality. By default this is shown
 #' only for segments that differ for a segment CNA value among one of the inferred clusters.
-#'
-#' This function has the same logic of \code{\link{plot_data}} (with the ellipsis and parameters).
+#' * (\code{what = "heatmap"}) The same heatmap plot from \code{\link{plot_data}} with 
+#' \code{what = "heatmap"}, where rows are sorted by cluster and cluster annotations reported.
+#' 
+#' This function has the same logic of \code{\link{plot_data}} with respect to the ellipsis and 
+#' input parameters.
 #'
 #' @param x An object of class \code{rcongasplus}.
-#' @param what Any of \code{"CNA"},  \code{"density"},  or \code{"mixing_proportions"}.
+#' @param what Any of \code{"CNA"},  \code{"density"}, \code{"mixing_proportions"} or \code{"heatmap"}.
 #' @param ... Parameters forwarded to the internal plotting functions.
 #'
-#' @return A \code{ggplot} plot.
+#' @return A \code{ggplot} plot, or a more complex \code{cowplot} figure.
 #'
 #' @export
 #'
@@ -31,6 +34,9 @@
 #'
 #' # Mixing proportions
 #' plot_fit(example_object, what = 'mixing_proportions')
+#' 
+#' # Fit heatmap
+#' plot_fit(example_object, what = 'heatmap')
 plot_fit = function(x, what = 'CNA', ...)
 {
   x %>% sanitize_obj()
@@ -49,6 +55,10 @@ plot_fit = function(x, what = 'CNA', ...)
 
   if (what == 'mixing_proportions')
     return(x %>% plot_mixing_proportions(...))
+  
+  if (what == 'heatmap')
+    return(x %>% plot_fit_heatmap(...))
+  
 
   stop("Unrecognised 'what': use any of 'CNA', 'density' or 'plot_mixing_proportions'.")
 }
@@ -235,7 +245,6 @@ plot_mixing_proportions = function(x)
     facet_wrap(~modality, nrow = 1)
 }
 
-
 plot_fit_density_aux <- function(x, segment_id){
 
 
@@ -245,3 +254,81 @@ plot_fit_density_aux <- function(x, segment_id){
 
 
 }
+
+plot_fit_heatmap = function(x, segments = get_input(x, what = 'segmentation') %>% pull(segment_id))
+{
+  # devtools::load_all()
+  
+  # Create plots with internal function
+  data_plot = plot_data_heatmap(x, segments = segments)
+  
+  # Get assignments and upgrade plot row ordering
+  rna_clustering_assignments = atac_clustering_assignments = NULL
+  rna_plot = atac_plot = NULL
+  
+  if(x %>% has_rna)
+  {
+    rna_clustering_assignments = get_fit(x, what = 'cluster_assignments') %>%
+      filter(modality == 'RNA') %>% 
+      arrange(cluster)
+    
+    c_size = rna_clustering_assignments %>% group_by(cluster) %>% summarise(n = n())
+    
+    rna_plot = data_plot$plots[[1]] +
+      scale_y_discrete(limits = rna_clustering_assignments$cell) + 
+      geom_hline(
+        yintercept = cumsum(c_size$n)[-nrow(c_size)],
+        size = .6,
+        linetype = 'dashed'
+      )  + 
+      geom_point(data = rna_clustering_assignments,
+               aes(x = 0, y = cell, color = cluster),
+               size = 2) +
+      scale_color_brewer(palette = "Set1")
+  }
+  
+  if(x %>% has_atac)
+  {
+    atac_clustering_assignments = get_fit(x, what = 'cluster_assignments') %>%
+      filter(modality == 'ATAC') %>% 
+      arrange(cluster)
+    
+    c_size = atac_clustering_assignments %>% group_by(cluster) %>% summarise(n = n())
+    
+    atac_plot = data_plot$plots[[2]] +
+      scale_y_discrete(limits = atac_clustering_assignments$cell) + 
+      geom_hline(
+        yintercept = cumsum(c_size$n)[-nrow(c_size)],
+        size = .6,
+        linetype = 'dashed'
+      )  + 
+      geom_point(data = atac_clustering_assignments,
+                 aes(x = 0, y = cell, color = cluster),
+                 size = 2) +
+      scale_color_brewer(palette = "Set1")
+  }
+  
+  stats_data = stat(x)
+  
+  if(length(stats_data$modalities) > 1)
+  {
+    # Proportional to number of cells per assay
+    rel_height = c(stats_data$ncells_ATAC, stats_data$ncells_RNA) /
+      (stats_data$ncells_RNA + stats_data$ncells_ATAC)
+    
+    f = cowplot::plot_grid(
+      atac_plot + theme(axis.text.x = element_blank()) + labs(x = NULL),
+      rna_plot,
+      rel_heights = rel_height,
+      ncol = 1,
+      align = 'v',
+      axis = 'lr'
+    )
+    
+    return(f)
+  }
+  
+  if(x %>% has_rna) return(rna_plot)
+  if(x %>% has_atac) return(atac_plot)    
+}
+
