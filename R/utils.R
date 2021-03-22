@@ -3,6 +3,7 @@ idify = function(y) {
   y %>% dplyr::mutate(segment_id = paste(chr, as.integer(from), as.integer(to), sep = ":"))
 }
 
+
 deidify = function(y) {
   y %>% tidyr::separate(segment_id,
                         into = c('chr', 'from', 'to'),

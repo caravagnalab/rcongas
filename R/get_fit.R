@@ -1,17 +1,46 @@
-#' Get fit data.
+#' Extract fit data.
 #' 
-#' @description General fit accessing getter function to return
-#' segment_factors, CNAs (point estimates), posterior CNA (distribution),
-#' mixing proportions, clustering assignments or the latent responsibilities.
+#' @description This is like function \code{\link{get_input}}, but for fit information.
+#' With this getter you can obtain:
 #' 
-#' @param x 
-#' @param what Any of \code{"segment_factors"}, \code{"CNA"},  \code{"posterior_CNA"},
+#' * segment parameters (scaling factors and component-specific 
+#' values for the used distributions);
+#' * inferred Copy Number Alteration (CNA) values;
+#' * the posterior distribution over CNAs;
+#' * mixing proportions;
+#' * clustering assignments;
+#' * z_nk (the latent variables of the model)
+#' 
+#' Like \code{get_input}, the function uses the \code{what} parameter to return the 
+#' appropriate type of information.
+#' 
+#' @param x An object of class \code{rcongasplus}.
+#' @param what Any of \code{"segment_parameters"}, \code{"CNA"},  \code{"posterior_CNA"},
 #'  \code{"mixing_proportions"},  \code{"cluster_assignments"},  or \code{"z_nk"}.
 #'
-#' @return A tibble.
+#' @return A tibble; its format depends on \code{what}. See the examples.
 #' @export
 #'
 #' @examples
+#' data(example_object)
+#' 
+#' # Extract segment parameters
+#' get_fit(example_object, what = 'segment_parameters') 
+#' 
+#' # Extract CNAs
+#' get_fit(example_object, what = 'CNA') 
+#' 
+#' # Extract CNAs
+#' get_fit(example_object, what = 'posterior_CNA') 
+#' 
+#' # Extract mixing proportions
+#' get_fit(example_object, what = 'mixing_proportions') 
+#' 
+#' # Extract clustering assignments
+#' get_fit(example_object, what = 'cluster_assignments') 
+#' 
+#' # Extract the clustering responsibilities
+#' get_fit(example_object, what = 'z_nk') 
 get_fit = function(x, what = 'CNA')
 {
   x %>% sanitize_obj()

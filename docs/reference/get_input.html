@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Get input data. — get_input • Rcongas</title>
+<title>Extract input data. — get_input • Rcongas</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,9 +46,34 @@
 
 
 
-<meta property="og:title" content="Get input data. — get_input" />
+<meta property="og:title" content="Extract input data. — get_input" />
 <meta property="og:description" content="General data accessing getter function to return
-input data, segmentation or normalisation." />
+any of:
+data,
+segmentation,
+normalisation factors.
+
+
+The function uses the what parameter to return the
+appropriate type of information
+Since the input formats are different, the outputs are also
+different based on the value of what, but they are
+always in tibble format.
+Besides obvious columns, these information will also be
+available in the returned tibbles.
+what = &quot;data&quot;: modality and value_type, the latter reporting the likelihood
+code associated to the modality.
+what = &quot;segmentation&quot;:
+ATAC_nonzerovals and ATAC_peaks, reporting the number of ATAC entries mapped to a
+segment, and the number of peaks these come from. Note that one non-zero entry is given by a cell that reported a
+ATAC count in a peak mapping within the segment.
+RNA_nonzerovals and RNA_genes, reporting the number of RNA entries mapped to a segment,
+and the number of genes these come from. For RNA, one non-zero entry is given by a cell that reported an RNA count
+in a gene mapping within the segment.
+
+what = &quot;normalisation&quot;: just modality.
+
+" />
 <meta property="og:image" content="militeee.github.io/Rcongas/logo.png" />
 
 
@@ -111,6 +136,9 @@ input data, segmentation or normalisation." />
     </li>
   </ul>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -132,14 +160,39 @@ input data, segmentation or normalisation." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Get input data.</h1>
+    <h1>Extract input data.</h1>
     <small class="dont-index">Source: <a href='https://github.com/militeee/RcongasR/get_input.R'><code>R/get_input.R</code></a></small>
     <div class="hidden name"><code>get_input.Rd</code></div>
     </div>
 
     <div class="ref-description">
     <p>General data accessing getter function to return
-input data, segmentation or normalisation.</p>
+any of:</p><ul>
+<li><p>data,</p></li>
+<li><p>segmentation,</p></li>
+<li><p>normalisation factors.</p></li>
+</ul>
+
+<p>The function uses the <code>what</code> parameter to return the
+appropriate type of information</p>
+<p>Since the input formats are different, the outputs are also
+different based on the value of <code>what</code>, but they are
+always in tibble format.</p>
+<p>Besides obvious columns, these information will also be
+available in the returned tibbles.</p><ul>
+<li><p><code>what = "data"</code>: <code>modality</code> and <code>value_type</code>, the latter reporting the likelihood
+code associated to the modality.</p></li>
+<li><p><code>what = "segmentation"</code>:</p><ul>
+<li><p><code>ATAC_nonzerovals</code> and <code>ATAC_peaks</code>, reporting the number of ATAC entries mapped to a
+segment, and the number of peaks these come from. Note that one non-zero entry is given by a cell that reported a
+ATAC count in a peak mapping within the segment.</p></li>
+<li><p><code>RNA_nonzerovals</code> and <code>RNA_genes</code>, reporting the number of RNA entries mapped to a segment,
+and the number of genes these come from. For RNA, one non-zero entry is given by a cell that reported an RNA count
+in a gene mapping within the segment.</p></li>
+</ul></li>
+<li><p><code>what = "normalisation"</code>: just <code>modality</code>.</p></li>
+</ul>
+
     </div>
 
     <pre class="usage"><span class='fu'>get_input</span><span class='op'>(</span><span class='va'>x</span>, what <span class='op'>=</span> <span class='st'>"data"</span><span class='op'>)</span></pre>
@@ -149,7 +202,7 @@ input data, segmentation or normalisation.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td></td>
+      <td><p>An object of class <code>rcongasplus</code>.</p></td>
     </tr>
     <tr>
       <th>what</th>
@@ -160,8 +213,63 @@ input data, segmentation or normalisation.</p>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A tibble.</p>
+    <p>A tibble; its format depends on <code>what</code>. See the examples.</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>example_object</span><span class='op'>)</span>
+
+<span class='co'># Extract the input data, after mapping to segments</span>
+<span class='fu'>get_input</span><span class='op'>(</span><span class='va'>example_object</span>, what <span class='op'>=</span> <span class='st'>'data'</span><span class='op'>)</span> 
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 343,494 x 5</span><span>
+#&gt;    segment_id               cell              value modality value_type
+#&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>                    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>             </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>     
+#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> chr1:143264541:193212282 AAACCCAAGTCTGGTT  32.0  RNA      G         
+#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> chr1:143264541:193212282 AAACCCACAACTGCCG -</span><span style='color: #BB0000;'>10.7</span><span>  RNA      G         
+#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> chr1:143264541:193212282 AAACCCAGTAAGCGGT -</span><span style='color: #BB0000;'>72.9</span><span>  RNA      G         
+#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> chr1:143264541:193212282 AAACCCATCTCTTGCG  62.8  RNA      G         
+#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> chr1:143264541:193212282 AAACGAAAGCTAAATG  19.1  RNA      G         
+#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> chr1:143264541:193212282 AAACGAAGTATCTTCT  54.2  RNA      G         
+#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> chr1:143264541:193212282 AAACGAAGTTTACCAG   9.37 RNA      G         
+#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> chr1:143264541:193212282 AAACGAATCAAACGAA -</span><span style='color: #BB0000;'>11.6</span><span>  RNA      G         
+#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> chr1:143264541:193212282 AAACGAATCAAGTGGG   8.12 RNA      G         
+#&gt; </span><span style='color: #BCBCBC;'>10</span><span> chr1:143264541:193212282 AAACGCTAGCATCAGG -</span><span style='color: #BB0000;'>25.5</span><span>  RNA      G         
+#&gt; </span><span style='color: #949494;'># … with 343,484 more rows</span><span></div><div class='input'>
+<span class='co'># e.g., in this way you can get input ATAC values</span>
+<span class='fu'>get_input</span><span class='op'>(</span><span class='va'>example_object</span>, what <span class='op'>=</span> <span class='st'>'data'</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://rdrr.io/r/stats/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>modality</span> <span class='op'>==</span> <span class='st'>'ATAC'</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in filter(., modality == "ATAC"): object 'modality' not found</span></div><div class='input'> 
+<span class='co'># Extract the input segmentation. </span>
+<span class='fu'>get_input</span><span class='op'>(</span><span class='va'>example_object</span>, what <span class='op'>=</span> <span class='st'>'segmentation'</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 36 x 9</span><span>
+#&gt;    chr       from       to copies segment_id         ATAC_nonzerovals ATAC_peaks
+#&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>  </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>                         </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>      </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> chr1    1.69</span><span style='color: #949494;'>e</span><span>4   1.22</span><span style='color: #949494;'>e</span><span>8      3 chr1:16949:121596…            </span><span style='text-decoration: underline;'>54</span><span>609         11
+#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> chr1    1.43</span><span style='color: #949494;'>e</span><span>8   1.93</span><span style='color: #949494;'>e</span><span>8      3 chr1:143264541:19…            </span><span style='text-decoration: underline;'>19</span><span>882          4
+#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> chr1    2.14</span><span style='color: #949494;'>e</span><span>8   2.32</span><span style='color: #949494;'>e</span><span>8      4 chr1:214483397:23…             </span><span style='text-decoration: underline;'>4</span><span>998          1
+#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> chr2    1.73</span><span style='color: #949494;'>e</span><span>5   2.42</span><span style='color: #949494;'>e</span><span>8      4 chr2:173150:24176…           </span><span style='text-decoration: underline;'>114</span><span>664         23
+#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> chr3    3.20</span><span style='color: #949494;'>e</span><span>5   9.02</span><span style='color: #949494;'>e</span><span>7      3 chr3:319825:90229…            </span><span style='text-decoration: underline;'>39</span><span>621          8
+#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> chr3    9.39</span><span style='color: #949494;'>e</span><span>7   1.98</span><span style='color: #949494;'>e</span><span>8      3 chr3:93874275:198…            </span><span style='text-decoration: underline;'>44</span><span>565          9
+#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> chr4    3.73</span><span style='color: #949494;'>e</span><span>5   4.89</span><span style='color: #949494;'>e</span><span>7      3 chr4:372924:48892…            </span><span style='text-decoration: underline;'>14</span><span>762          3
+#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> chr4    5.25</span><span style='color: #949494;'>e</span><span>7   1.90</span><span style='color: #949494;'>e</span><span>8      3 chr4:52466188:190…            </span><span style='text-decoration: underline;'>63</span><span>740         13
+#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> chr5    1.69</span><span style='color: #949494;'>e</span><span>5   4.59</span><span style='color: #949494;'>e</span><span>7      4 chr5:169186:45891…            </span><span style='text-decoration: underline;'>14</span><span>847          3
+#&gt; </span><span style='color: #BCBCBC;'>10</span><span> chr5    5.04</span><span style='color: #949494;'>e</span><span>7   7.39</span><span style='color: #949494;'>e</span><span>7      4 chr5:50402346:739…             </span><span style='text-decoration: underline;'>4</span><span>945          1
+#&gt; </span><span style='color: #949494;'># … with 26 more rows, and 2 more variables: RNA_nonzerovals &lt;dbl&gt;,</span><span>
+#&gt; </span><span style='color: #949494;'>#   RNA_genes &lt;dbl&gt;</span><span></div><div class='input'> 
+<span class='co'># Extract the input normalisation factors</span>
+<span class='fu'>get_input</span><span class='op'>(</span><span class='va'>example_object</span>, what <span class='op'>=</span> <span class='st'>'normalisation'</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 9,547 x 3</span><span>
+#&gt;    cell             normalisation_factor modality
+#&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>                           </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>   
+#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> AAACCCAAGTCTGGTT                </span><span style='text-decoration: underline;'>15</span><span>619 RNA     
+#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> AAACCCACAACTGCCG                </span><span style='text-decoration: underline;'>28</span><span>531 RNA     
+#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> AAACCCAGTAAGCGGT                </span><span style='text-decoration: underline;'>42</span><span>057 RNA     
+#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> AAACCCATCTCTTGCG                </span><span style='text-decoration: underline;'>16</span><span>651 RNA     
+#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> AAACGAAAGCTAAATG                </span><span style='text-decoration: underline;'>21</span><span>235 RNA     
+#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> AAACGAAGTATCTTCT                </span><span style='text-decoration: underline;'>16</span><span>750 RNA     
+#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> AAACGAAGTTTACCAG                </span><span style='text-decoration: underline;'>17</span><span>389 RNA     
+#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> AAACGAATCAAACGAA                </span><span style='text-decoration: underline;'>24</span><span>646 RNA     
+#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> AAACGAATCAAGTGGG                </span><span style='text-decoration: underline;'>21</span><span>820 RNA     
+#&gt; </span><span style='color: #BCBCBC;'>10</span><span> AAACGCTAGCATCAGG                </span><span style='text-decoration: underline;'>29</span><span>114 RNA     
+#&gt; </span><span style='color: #949494;'># … with 9,537 more rows</span><span></div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -173,7 +281,7 @@ input data, segmentation or normalisation.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by <a href='https://sites.google.com/view/cdslab'>Salvatore Milite</a>, <a href='https://sites.google.com/view/cdslab'>Giulio Caravagna</a>.</p>
+  <p>Developed by <a href='https://www.caravagnalab.org'>Salvatore Milite</a>, <a href='https://www.caravagnalab.org'>Giulio Caravagna</a>.</p>
 </div>
 
 <div class="pkgdown">

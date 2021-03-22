@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Title — init • Rcongas</title>
+<title>Create a dataset. — init • Rcongas</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,8 +46,34 @@
 
 
 
-<meta property="og:title" content="Title — init" />
-<meta property="og:description" content="Title" />
+<meta property="og:title" content="Create a dataset. — init" />
+<meta property="og:description" content="This function creates a dataset (an object of class rcongasplus) by assembling multiple single-cell input measurements
+(ATAC and/or RNA data modalities), the input segmentation (from bulk DNA sequencing),
+and the per-cell normalisation factors for the data.
+All input data are passed as tibbles; the input formats are as follows:
+for single-cell ATAC/RNA data, the cell identifier, the genomic coordinates
+(chr, from, to) which refer either to an ATAC peak, or an RNA gene
+identifier, and a value reporting the reads mapped.
+for the input segmentation, the genomic coordinates
+(chr, from, to) which refer to the segment, and the number of
+copies (i.e., DNA ploidy) of the segment.
+for normalization factors the cell identifier, the actual normalisation_factor
+and the modality to wihch the factor refers to
+
+
+This function receives also other parameters - e.g., the models likelihoods - which
+will determine the overall behaviour of the underlying model, and how data are preared for inference.
+A Negative Binomial likelihood (&quot;NB&quot;), which works directly from raw counts data
+A Gaussian likelihood (&quot;G&quot;), which requires a z-score transformation of the data. This consists
+in :
+scaling raw counts by the input normalization factors;
+computing z-scores per cell;
+summing up z-scores per segment;
+computing z-scores per segment;
+center the z-scores mean to the input ploidy.
+
+
+" />
 <meta property="og:image" content="militeee.github.io/Rcongas/logo.png" />
 
 
@@ -110,6 +136,9 @@
     </li>
   </ul>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -131,13 +160,39 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Title</h1>
+    <h1>Create a dataset.</h1>
     <small class="dont-index">Source: <a href='https://github.com/militeee/RcongasR/init.R'><code>R/init.R</code></a></small>
     <div class="hidden name"><code>init.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Title</p>
+    <p>This function creates a dataset (an object of class <code>rcongasplus</code>) by assembling multiple single-cell input measurements
+(ATAC and/or RNA data modalities), the input segmentation (from bulk DNA sequencing),
+and the per-cell normalisation factors for the data.</p>
+<p>All input data are passed as tibbles; the input formats are as follows:</p><ul>
+<li><p>for single-cell ATAC/RNA data, the <code>cell</code> identifier, the genomic coordinates
+(<code>chr</code>, <code>from</code>, <code>to</code>) which refer either to an ATAC peak, or an RNA gene
+identifier, and a <code>value</code> reporting the reads mapped.</p></li>
+<li><p>for the input segmentation, the genomic coordinates
+(<code>chr</code>, <code>from</code>, <code>to</code>) which refer to the segment, and the number of
+<code>copies</code> (i.e., DNA ploidy) of the segment.</p></li>
+<li><p>for normalization factors the <code>cell</code> identifier, the actual <code>normalisation_factor</code>
+and the <code>modality</code> to wihch the factor refers to</p></li>
+</ul>
+
+<p>This function receives also other parameters - e.g., the models likelihoods - which
+will determine the overall behaviour of the underlying model, and how data are preared for inference.</p><ul>
+<li><p>A Negative Binomial likelihood (<code>"NB"</code>), which works directly from raw counts data</p></li>
+<li><p>A Gaussian likelihood (<code>"G"</code>), which requires a z-score transformation of the data. This consists
+in :</p><ul>
+<li><p>scaling raw counts by the input normalization factors;</p></li>
+<li><p>computing z-scores per cell;</p></li>
+<li><p>summing up z-scores per segment;</p></li>
+<li><p>computing z-scores per segment;</p></li>
+<li><p>center the z-scores mean to the input ploidy.</p></li>
+</ul></li>
+</ul>
+
     </div>
 
     <pre class="usage"><span class='fu'>init</span><span class='op'>(</span>
@@ -156,44 +211,141 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>rna</th>
-      <td></td>
+      <td><p>A tibble with single-cell RNA data.</p></td>
     </tr>
     <tr>
       <th>atac</th>
-      <td></td>
+      <td><p>A tibble with single-cell ATAC data.</p></td>
     </tr>
     <tr>
       <th>segmentation</th>
-      <td></td>
+      <td><p>A tibble with the input segmentation.</p></td>
     </tr>
     <tr>
       <th>normalisation_factors</th>
-      <td></td>
+      <td><p>A tibble with the input per-cell normalisation factors.</p></td>
     </tr>
     <tr>
       <th>rna_likelihood</th>
-      <td></td>
+      <td><p>Type of likelihood used for RNA data (<code>"G"</code> for Gaussian and
+<code>""NB</code> for Negative Binomial). The RNA default is <code>"G"</code>.</p></td>
     </tr>
     <tr>
       <th>atac_likelihood</th>
-      <td></td>
+      <td><p>Type of likelihood used for ATAC data, with default <code>"NB"</code>.</p></td>
     </tr>
     <tr>
       <th>reference_genome</th>
-      <td></td>
+      <td><p>Either <code>"GRCh38"</code> or <code>"hg19"</code>.</p></td>
     </tr>
     <tr>
       <th>description</th>
-      <td></td>
+      <td><p>A model in-words description.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    
+    <p>An object of class <code>rcongasplus</code></p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"example_input"</span><span class='op'>)</span>
 
-
+<span class='co'># For instance, RNA data</span>
+<span class='va'>example_input</span><span class='op'>$</span><span class='va'>x_rna</span> <span class='op'>%&gt;%</span> <span class='va'>print</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 438,133 x 6</span><span>
+#&gt;    gene     cell       value chr        from        to
+#&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>      </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>     </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>     </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> DPM1     SRR5578183     1 chr20  50</span><span style='text-decoration: underline;'>934</span><span>867  50</span><span style='text-decoration: underline;'>958</span><span>555
+#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> SCYL3    SRR5578183    10 chr1  169</span><span style='text-decoration: underline;'>849</span><span>631 169</span><span style='text-decoration: underline;'>894</span><span>267
+#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> C1orf112 SRR5578183    26 chr1  169</span><span style='text-decoration: underline;'>662</span><span>007 169</span><span style='text-decoration: underline;'>854</span><span>080
+#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> CFH      SRR5578183     6 chr1  196</span><span style='text-decoration: underline;'>652</span><span>043 196</span><span style='text-decoration: underline;'>747</span><span>504
+#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> STPG1    SRR5578183    73 chr1   24</span><span style='text-decoration: underline;'>356</span><span>999  24</span><span style='text-decoration: underline;'>416</span><span>934
+#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> NIPAL3   SRR5578183     5 chr1   24</span><span style='text-decoration: underline;'>415</span><span>802  24</span><span style='text-decoration: underline;'>472</span><span>976
+#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> CFTR     SRR5578183     1 chr7  117</span><span style='text-decoration: underline;'>287</span><span>120 117</span><span style='text-decoration: underline;'>715</span><span>971
+#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> CYP51A1  SRR5578183     3 chr7   92</span><span style='text-decoration: underline;'>112</span><span>153  92</span><span style='text-decoration: underline;'>134</span><span>803
+#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> KRIT1    SRR5578183     3 chr7   92</span><span style='text-decoration: underline;'>198</span><span>969  92</span><span style='text-decoration: underline;'>246</span><span>166
+#&gt; </span><span style='color: #BCBCBC;'>10</span><span> RAD52    SRR5578183     1 chr12    </span><span style='text-decoration: underline;'>911</span><span>736    </span><span style='text-decoration: underline;'>990</span><span>053
+#&gt; </span><span style='color: #949494;'># … with 438,123 more rows</span><span></div><div class='input'>
+<span class='co'># .. or ATAC data</span>
+<span class='va'>example_input</span><span class='op'>$</span><span class='va'>x_atac</span> <span class='op'>%&gt;%</span> <span class='va'>print</span>
+</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 27,303 x 6</span><span>
+#&gt;    gene     cell             value chr        from        to
+#&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>            </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>     </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>     </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> MRE11    SRR5578299 dfwfd    44 chr11  94</span><span style='text-decoration: underline;'>415</span><span>570  94</span><span style='text-decoration: underline;'>493</span><span>885
+#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> HK1      SRR5578219 dfwfd    35 chr10  69</span><span style='text-decoration: underline;'>269</span><span>984  69</span><span style='text-decoration: underline;'>401</span><span>884
+#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> MCPH1    SRR5578235 dfwfd    38 chr8    6</span><span style='text-decoration: underline;'>406</span><span>596   6</span><span style='text-decoration: underline;'>648</span><span>508
+#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> ABCC6    SRR5578226 dfwfd    89 chr16  16</span><span style='text-decoration: underline;'>148</span><span>928  16</span><span style='text-decoration: underline;'>223</span><span>522
+#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> ZNF213   SRR5578231 dfwfd    11 chr16   3</span><span style='text-decoration: underline;'>129</span><span>777   3</span><span style='text-decoration: underline;'>142</span><span>804
+#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> CD84     SRR5578229 dfwfd     2 chr1  160</span><span style='text-decoration: underline;'>541</span><span>095 160</span><span style='text-decoration: underline;'>579</span><span>516
+#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> KCTD10   SRR5578260 dfwfd    14 chr12 109</span><span style='text-decoration: underline;'>448</span><span>655 109</span><span style='text-decoration: underline;'>477</span><span>359
+#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> RPS27AP1 SRR5578187 dfwfd    79 chr17  10</span><span style='text-decoration: underline;'>258</span><span>762  10</span><span style='text-decoration: underline;'>259</span><span>232
+#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> UQCC3    SRR5578238 dfwfd    52 chr11  62</span><span style='text-decoration: underline;'>670</span><span>273  62</span><span style='text-decoration: underline;'>673</span><span>686
+#&gt; </span><span style='color: #BCBCBC;'>10</span><span> KLHL21   SRR5578238 dfwfd    22 chr1    6</span><span style='text-decoration: underline;'>590</span><span>724   6</span><span style='text-decoration: underline;'>614</span><span>607
+#&gt; </span><span style='color: #949494;'># … with 27,293 more rows</span><span></div><div class='input'>
+<span class='co'># .. and segmentation</span>
+<span class='va'>example_input</span><span class='op'>$</span><span class='va'>x_segmentation</span> <span class='op'>%&gt;%</span> <span class='va'>print</span>
+</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 22 x 4</span><span>
+#&gt;    chr    from        to copies
+#&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>     </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>  </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> chr1      0 249</span><span style='text-decoration: underline;'>250</span><span>621      2
+#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> chr2      0 243</span><span style='text-decoration: underline;'>199</span><span>373      2
+#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> chr3      0 198</span><span style='text-decoration: underline;'>022</span><span>430      2
+#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> chr4      0 191</span><span style='text-decoration: underline;'>154</span><span>276      2
+#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> chr5      0 180</span><span style='text-decoration: underline;'>915</span><span>260      2
+#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> chr6      0 171</span><span style='text-decoration: underline;'>115</span><span>067      2
+#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> chr7      0 159</span><span style='text-decoration: underline;'>138</span><span>663      2
+#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> chr8      0 146</span><span style='text-decoration: underline;'>364</span><span>022      2
+#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> chr9      0 141</span><span style='text-decoration: underline;'>213</span><span>431      2
+#&gt; </span><span style='color: #BCBCBC;'>10</span><span> chr10     0 135</span><span style='text-decoration: underline;'>534</span><span>747      2
+#&gt; </span><span style='color: #949494;'># … with 12 more rows</span><span></div><div class='input'>
+<span class='co'># .. and x_normalisation factors</span>
+<span class='va'>example_input</span><span class='op'>$</span><span class='va'>x_normalisation_factors</span> <span class='op'>%&gt;%</span> <span class='va'>print</span>
+</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 95 x 3</span><span>
+#&gt;    cell       normalisation_factor modality
+#&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>                     </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>   
+#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> SRR5578183                    1 RNA     
+#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> SRR5578187                    1 RNA     
+#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> SRR5578188                    1 RNA     
+#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> SRR5578189                    1 RNA     
+#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> SRR5578190                    1 RNA     
+#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> SRR5578193                    1 RNA     
+#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> SRR5578198                    1 RNA     
+#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> SRR5578199                    1 RNA     
+#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> SRR5578200                    1 RNA     
+#&gt; </span><span style='color: #BCBCBC;'>10</span><span> SRR5578201                    1 RNA     
+#&gt; </span><span style='color: #949494;'># … with 85 more rows</span><span></div><div class='input'>
+<span class='va'>x</span> <span class='op'>=</span> <span class='fu'>init</span><span class='op'>(</span>
+  rna <span class='op'>=</span> <span class='va'>example_input</span><span class='op'>$</span><span class='va'>x_rna</span>,
+  atac <span class='op'>=</span> <span class='va'>example_input</span><span class='op'>$</span><span class='va'>x_atac</span>,
+  segmentation <span class='op'>=</span> <span class='va'>example_input</span><span class='op'>$</span><span class='va'>x_segmentation</span>,
+  normalisation_factors <span class='op'>=</span> <span class='va'>example_input</span><span class='op'>$</span><span class='va'>x_normalisation_factors</span>,
+  rna_likelihood <span class='op'>=</span> <span class='st'>"G"</span>, 
+  atac_likelihood <span class='op'>=</span> <span class='st'>'NB'</span>,
+  description <span class='op'>=</span> <span class='st'>'My crazy model'</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;                         ┌────────────────────────────────┐
+#&gt;                         │</span><span style='background-color: #FFAF00;'>                                </span><span>│
+#&gt;                         │</span><span style='background-color: #FFAF00;'>   (R)CONGAS+: My crazy model   </span><span>│
+#&gt;                         │</span><span style='background-color: #FFAF00;'>                                </span><span>│
+#&gt;                         └────────────────────────────────┘</div><div class='output co'>#&gt; </div><div class='output co'>#&gt; <span class='message'>── </span><span style='color: #00BB00;'>RNA</span><span> modality (16.755992 Mb) </span></div><div class='output co'>#&gt; </div><div class='output co'>#&gt; <span class='message'>→ Input events: </span><span style='color: #00BB00;'>438133</span><span></span></div><div class='output co'>#&gt; <span class='message'>→ Input cells: </span><span style='color: #00BB00;'>53</span><span></span></div><div class='output co'>#&gt; <span class='message'>→ Input locations: </span><span style='color: #00BB00;'>17200</span><span></span></div><div class='output co'>#&gt; <span class='message'>→ Entries mapped: </span><span style='color: #00BB00;'>438133</span><span>, with </span><span style='color: #00BB00;'>0</span><span> outside input segments that will be discarded.</span></div><div class='output co'>#&gt; <span class='message'>→ Using likelihood: </span><span style='color: #00BB00;'>G</span><span>.</span></div><div class='output co'>#&gt; <span class='message'></span><span style='color: #BBBB00;'>!</span><span> Gaussian likelihood requires z-score representation of input values.</span></div><div class='output co'>#&gt; <span class='message'>→ Normalising </span><span style='color: #00BB00;'>RNA</span><span> counts using input normalisation factors.</span></div><div class='output co'>#&gt; <span class='message'>→ Computing z-score.</span></div><div class='output co'>#&gt; <span class='message'></span><span style='color: #BBBB00;'>!</span><span> There are </span><span style='color: #00BB00;'>2994</span><span> z-scores that are NA, will be removed.</span></div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 2,994 x 10</span><span>
+#&gt;    gene  cell  value chr     from     to segment_id modality value_mean value_sd
+#&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>  </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>  </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>      </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>         </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> TBX15 SRR5…   </span><span style='color: #BB0000;'>NaN</span><span> chr1  1.19</span><span style='color: #949494;'>e</span><span>8 1.19</span><span style='color: #949494;'>e</span><span>8 chr1:0:24… RNA               1        0
+#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> PLAU  SRR5…    </span><span style='color: #BB0000;'>NA</span><span> chr10 7.39</span><span style='color: #949494;'>e</span><span>7 7.39</span><span style='color: #949494;'>e</span><span>7 chr10:0:1… RNA               5       </span><span style='color: #BB0000;'>NA</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> TRIM… SRR5…    </span><span style='color: #BB0000;'>NA</span><span> chr11 5.59</span><span style='color: #949494;'>e</span><span>7 5.59</span><span style='color: #949494;'>e</span><span>7 chr11:0:1… RNA               2       </span><span style='color: #BB0000;'>NA</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> EDN2  SRR5…    </span><span style='color: #BB0000;'>NA</span><span> chr1  4.15</span><span style='color: #949494;'>e</span><span>7 4.15</span><span style='color: #949494;'>e</span><span>7 chr1:0:24… RNA               1       </span><span style='color: #BB0000;'>NA</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> CHL1  SRR5…    </span><span style='color: #BB0000;'>NA</span><span> chr3  1.97</span><span style='color: #949494;'>e</span><span>5 4.09</span><span style='color: #949494;'>e</span><span>5 chr3:0:19… RNA               1       </span><span style='color: #BB0000;'>NA</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> DNAJ… SRR5…    </span><span style='color: #BB0000;'>NA</span><span> chr2  2.19</span><span style='color: #949494;'>e</span><span>8 2.19</span><span style='color: #949494;'>e</span><span>8 chr2:0:24… RNA              51       </span><span style='color: #BB0000;'>NA</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> RAPG… SRR5…   </span><span style='color: #BB0000;'>NaN</span><span> chr7  2.21</span><span style='color: #949494;'>e</span><span>7 2.24</span><span style='color: #949494;'>e</span><span>7 chr7:0:15… RNA               1        0
+#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> HMCN1 SRR5…    </span><span style='color: #BB0000;'>NA</span><span> chr1  1.86</span><span style='color: #949494;'>e</span><span>8 1.86</span><span style='color: #949494;'>e</span><span>8 chr1:0:24… RNA               1       </span><span style='color: #BB0000;'>NA</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> ACTA1 SRR5…   </span><span style='color: #BB0000;'>NaN</span><span> chr1  2.29</span><span style='color: #949494;'>e</span><span>8 2.29</span><span style='color: #949494;'>e</span><span>8 chr1:0:24… RNA               1        0
+#&gt; </span><span style='color: #BCBCBC;'>10</span><span> MUC4  SRR5…    </span><span style='color: #BB0000;'>NA</span><span> chr3  1.96</span><span style='color: #949494;'>e</span><span>8 1.96</span><span style='color: #949494;'>e</span><span>8 chr3:0:19… RNA               1       </span><span style='color: #BB0000;'>NA</span><span>
+#&gt; </span><span style='color: #949494;'># … with 2,984 more rows</span><span></div><div class='output co'>#&gt; <span class='message'></span><span style='color: #BBBB00;'>!</span><span> Center the new scores around the ploidy values.</span></div><div class='output co'>#&gt; </div><div class='output co'>#&gt; <span class='message'>── </span><span style='color: #00BB00;'>ATAC</span><span> modality (1.62176 Mb) </span></div><div class='output co'>#&gt; </div><div class='output co'>#&gt; <span class='message'>→ Input events: </span><span style='color: #00BB00;'>27303</span><span></span></div><div class='output co'>#&gt; <span class='message'>→ Input cells: </span><span style='color: #00BB00;'>42</span><span></span></div><div class='output co'>#&gt; <span class='message'>→ Input locations: </span><span style='color: #00BB00;'>11192</span><span></span></div><div class='output co'>#&gt; <span class='message'>→ Entries mapped: </span><span style='color: #00BB00;'>27303</span><span>, with </span><span style='color: #00BB00;'>0</span><span> outside input segments that will be discarded.</span></div><div class='output co'>#&gt; <span class='message'>→ Using likelihood: </span><span style='color: #00BB00;'>NB</span><span>.</span></div><div class='output co'>#&gt; </div><div class='output co'>#&gt; <span class='message'>── Checking segmentation </span></div><div class='output co'>#&gt; </div><div class='output co'>#&gt; <span class='message'></span><span style='color: #00BB00;'>✓</span><span> Nothing to process.</span></div><div class='input'>  
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>── </span><span style='color: #000000;background-color: #BBBB00;'>[ (R)CONGAS+ ]</span><span style='color: #0000BB;'> My crazy model</span><span> ───────────────────────────────────────────────</span></div><div class='output co'>#&gt; </div><div class='output co'>#&gt; <span class='message'>── CNA segments (reference: </span><span style='color: #00BB00;'>GRCh38</span><span>) </span></div><div class='output co'>#&gt; <span class='message'>→ Input </span><span style='color: #00BB00;'>22</span><span> CNA segments, mean ploidy </span><span style='color: #00BB00;'>2</span><span>.</span></div><div class='output co'>#&gt; 
+#&gt; 	</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #00BB00;'> </span><span>
+#&gt; 
+#&gt; 	 </span><span style='text-decoration: underline;'>Ploidy:</span><span>  </span><span style='background-color: #00BBBB;'> </span><span> 0   </span><span style='background-color: #0000BB;'> </span><span> 1   </span><span style='background-color: #00BB00;'> </span><span> 2   </span><span style='background-color: #BB0000;'> </span><span> 3   </span><span style='background-color: #BB00BB;'> </span><span> 4   </span><span style='background-color: #BBBBBB;'> </span><span> *   </div><div class='output co'>#&gt; </div><div class='output co'>#&gt; <span class='message'>── Modalities </span></div><div class='output co'>#&gt; <span class='message'>→ RNA: </span><span style='color: #00BB00;'>53</span><span> cells with </span><span style='color: #00BB00;'>17200</span><span> mapped genes, </span><span style='color: #00BB00;'>438133</span><span> non-zero values. Likelihood: </span><span style='color: #00BB00;'>Gaussian</span><span>.</span></div><div class='output co'>#&gt; <span class='message'>→ ATAC: </span><span style='color: #00BB00;'>42</span><span> cells with </span><span style='color: #00BB00;'>11192</span><span> mapped peaks, </span><span style='color: #00BB00;'>27303</span><span> non-zero values. Likelihood: </span><span style='color: #00BB00;'>Negative Binomial</span><span>.</span></div><div class='output co'>#&gt; </div><div class='output co'>#&gt; <span class='message'></span><span style='color: #BBBB00;'>!</span><span> Clusters: </span><span style='color: #BB0000;'>not available</span><span>.</span></div><div class='output co'>#&gt; [1] 0</div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -205,7 +357,7 @@
 
       <footer>
       <div class="copyright">
-  <p>Developed by <a href='https://sites.google.com/view/cdslab'>Salvatore Milite</a>, <a href='https://sites.google.com/view/cdslab'>Giulio Caravagna</a>.</p>
+  <p>Developed by <a href='https://www.caravagnalab.org'>Salvatore Milite</a>, <a href='https://www.caravagnalab.org'>Giulio Caravagna</a>.</p>
 </div>
 
 <div class="pkgdown">

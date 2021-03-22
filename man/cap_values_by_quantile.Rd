@@ -7,7 +7,7 @@
 cap_values_by_quantile(x, upper_quantile = 0.98)
 }
 \arguments{
-\item{x}{An input RNA/ATAC dataset where entries are indexeable by genomic 
+\item{x}{An input RNA/ATAC dataset where entries are indexeable by genomic
 coordinate: "chr", "from" and "to".}
 
 \item{upper_quantile}{The maximum quantile to determine cuts. If a value
