@@ -341,7 +341,7 @@ create_modality = function(modality, data, segmentation, normalisation_factors, 
 
   # Center the new scores to the ploidy value
   if(likelihood %in% c("G")){
-    cli::cli_alert_warning("Center the new scores around the ploidy values.")
+    cli::cli_alert("Centering the new scores around input ploidy values.")
     
     zscore_params = mapped %>%
       group_by(segment_id) %>%
