@@ -43,7 +43,7 @@ fit_congas <-
     if (!inherits(x, "rcongasplus")) {
       stop("Input object needs to be an rcongas instance!")
     }
-    
+
     runs <-
       lapply(K, function(k)
         fit_congas_single_run(
@@ -56,35 +56,36 @@ fit_congas <-
           steps
         ))
     names(runs) <-  paste(K)
-    
+
     cli::cli_h3("Inference completed, choosing best model.")
-    
+
     model_selection_df <-  lapply(runs, function(y)
       y$ICs)
     model_selection_df <-
       do.call(rbind, model_selection_df) %>%  as_tibble()
-    
+
     if(model_selection_df %>% is.na %>% any)
     {
       cli::cli_alert_danger("NA found in model scores, aborting")
       model_selection_df[!complete.cases(model_selection_df), ] %>% print
       stop("Cannot select best model!")
     }
-    
+
     model_selection_df$K <- K
-    
+
     bms_idx <- order(model_selection_df %>%  pull(!!model_selection))
-    
+
     runs <-  runs[bms_idx]
-    
+
     best_fit  <-  format_best_model(x, runs[[1]])
-    
+
     x$runs <-  runs
     x$best_fit <-  best_fit
     x$model_selection <-  model_selection_df
-    
+    x$used_IC <- model_selection
+
     return(x)
-    
+
   }
 
 
@@ -96,18 +97,18 @@ fit_congas_single_run <-
            latent_variables,
            compile,
            steps) {
-    
+
     cli::cli_h3("Fit with k = {.field {K}}.")
-    
+
     cg <- reticulate::import("congas")
     cg_mod <- reticulate::import("congas.models")
     pyro_optim <- reticulate::import("pyro.optim")
-    
+
     data <- input_data_from_rcongas(x)
     param_optimizer <-  list()
     parameters$K <-  as.integer(K)
     param_optimizer$lr <- learning_rate
-    
+
     ### LOAD MODEL AND GUIDE ###
     if (latent_variables == "D") {
       model <- cg_mod$LatentCategorical
@@ -115,9 +116,9 @@ fit_congas_single_run <-
     } else {
       stop("Continous latent variable model not yet implemented.")
     }
-    
+
     ### LOAD THE ELBO-LOSS ###
-    
+
     elbo_p <- reticulate::import("pyro.infer")
     if (compile) {
       elbo <- elbo_p$TraceGraph_ELBO
@@ -127,19 +128,19 @@ fit_congas_single_run <-
       elbo_string <- "JitTraceGraph_ELBO"
     }
     int <- cg$Interface()
-    
+
     int$set_model(model)
     int$set_optimizer(pyro_optim$ClippedAdam)
     int$set_loss(elbo)
     int$initialize_model(data)
     int$set_model_params(parameters)
-    
+
     loss = int$run(steps = as.integer(steps), param_optimizer = param_optimizer)
-    
+
     fit_params = int$learned_parameters()
     ICs = int$calculate_ICs()
-    
-    
+
+
     hyperparams = c(
       list(
         "model" = model_string,
@@ -148,15 +149,15 @@ fit_congas_single_run <-
       ),
       parameters
     )
-    
+
     ret <-  list(
       "inferred_params" = fit_params,
-      "hyperparameters" = hyperparams,
+      "hyperparameters" = lapply(hyperparams, detensorize),
       "ICs" = ICs %>% as.data.frame(),
       "loss" = loss
     )
     class(ret) <- "congas"
     return(ret)
-    
-    
+
+
   }

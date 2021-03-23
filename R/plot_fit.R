@@ -9,11 +9,11 @@
 #' * (\code{what = "mixing_proportions"}) The normalized size of each cluster, per modality;
 #' * (\code{what = "density"}) The density per cluster and segment, split by modality. By default this is shown
 #' only for segments that differ for a segment CNA value among one of the inferred clusters;
-#' * (\code{what = "heatmap"}) The same heatmap plot from \code{\link{plot_data}} with 
+#' * (\code{what = "heatmap"}) The same heatmap plot from \code{\link{plot_data}} with
 #' \code{what = "heatmap"}, where rows are sorted by cluster and cluster annotations reported;
 #' * (\code{what = "scores"}) The scores used for model selection;
-#' 
-#' This function has the same logic of \code{\link{plot_data}} with respect to the ellipsis and 
+#'
+#' This function has the same logic of \code{\link{plot_data}} with respect to the ellipsis and
 #' input parameters.
 #'
 #' @param x An object of class \code{rcongasplus}.
@@ -36,10 +36,10 @@
 #'
 #' # Mixing proportions
 #' plot_fit(example_object, what = 'mixing_proportions')
-#' 
+#'
 #' # Fit heatmap
 #' plot_fit(example_object, what = 'heatmap')
-#' 
+#'
 #' # Scores for model selection
 #' plot_fit(example_object, what = 'scores')
 plot_fit = function(x, what = 'CNA', ...)
@@ -60,13 +60,13 @@ plot_fit = function(x, what = 'CNA', ...)
 
   if (what == 'mixing_proportions')
     return(x %>% plot_mixing_proportions(...))
-  
+
   if (what == 'heatmap')
     return(x %>% plot_fit_heatmap(...))
-  
+
   if (what == 'heatmap')
     return(x %>% plot_fit_scores())
-  
+
   stop("Unrecognised 'what': use any of 'CNA', 'density' or 'plot_mixing_proportions'.")
 }
 
@@ -252,77 +252,135 @@ plot_mixing_proportions = function(x)
     facet_wrap(~modality, nrow = 1)
 }
 
-plot_fit_density_aux <- function(x, segment_id){
+plot_fit_density = function(x, highlights = TRUE)
+{
+  # CNAs where these are different
+  CNAs = get_fit(x, 'CNA')
+
+  if (highlights)
+  {
+    nclusters = CNAs$cluster %>% unique %>% length()
+
+    CNAs = CNAs %>%
+      group_by(segment_id, value) %>%
+      mutate(grp_size = n()) %>%
+      filter(grp_size != nclusters) %>%
+      pull(segment_id) %>%
+      unique
+
+    cli::cli_alert("Plotting segments where different CNAs are present: {.field {CNAs}}.")
+  }
+  else
+  {
+    CNAs = CNAs %>%
+      pull(segment_id) %>%
+      unique
+
+    cli::cli_alert("Showing all segments (this plot can be large).")
+  }
+
+  #CNAs <-  segment_id
+
+  plots <- plot_data_histogram(x, CNAs)
+
+  data_hist <-  plots$data
 
 
-  dplot <- plot_data_histogram(x, segments = segment_id)
-  dplot()
+  plots <- plot_data_histogram(x, segment_id)
 
+  # Per cell clustering assignments
+  clustering_assignments = get_fit(x, what = 'cluster_assignments') %>%
+    select(-modality)
 
+  clusters <- clustering_assignments$cluster
+  names(clusters) <-  clustering_assignments$cell
+  clusters <- clusters[plots$data$cell]
+
+  data_hist$clusters <- clusters
+
+  data_hist$modality <- sapply(data_hist$modality %>%  strsplit(" "), function(y) y[1])
+
+  densities <- assemble_likelihood_tibble(x, CNAs)
+  colnames(densities)[c(3,5)] <-  c("clusters", "segment_id")
+
+  data_hist %>%
+    ggplot(aes(value, fill = clusters)) +
+    geom_histogram(aes(y=..density.. ), color = "black", bins = 50, alpha = 0.4) +
+    geom_line(aes(x = X, y = value, color = clusters), data = densities, size = 1.2) +
+    geom_point(aes(x = X, y = value, color = clusters), data = densities, size = 0.6) +
+    facet_grid(segment_id ~ modality, scales = 'free') +
+    labs(title = x$description) +
+    guides(fill = FALSE) +
+    theme_linedraw(base_size = 9) +
+    scale_fill_brewer(palette = "Set1", aesthetics = c("color", "fill")) +
+    labs(x = "Input",
+         y = 'Observations') +
+    theme(strip.text.y.right = element_text(angle = 0))
 
 }
+
 
 plot_fit_heatmap = function(x, segments = get_input(x, what = 'segmentation') %>% pull(segment_id))
 {
   # devtools::load_all()
-  
+
   # Create plots with internal function
   data_plot = plot_data_heatmap(x, segments = segments)
-  
+
   # Get assignments and upgrade plot row ordering
   rna_clustering_assignments = atac_clustering_assignments = NULL
   rna_plot = atac_plot = NULL
-  
+
   if(x %>% has_rna)
   {
     rna_clustering_assignments = get_fit(x, what = 'cluster_assignments') %>%
-      filter(modality == 'RNA') %>% 
+      filter(modality == 'RNA') %>%
       arrange(cluster)
-    
+
     c_size = rna_clustering_assignments %>% group_by(cluster) %>% summarise(n = n())
-    
+
     rna_plot = data_plot$plots[[1]] +
-      scale_y_discrete(limits = rna_clustering_assignments$cell) + 
+      scale_y_discrete(limits = rna_clustering_assignments$cell) +
       geom_hline(
         yintercept = cumsum(c_size$n)[-nrow(c_size)],
         size = .6,
         linetype = 'dashed'
-      )  + 
+      )  +
       geom_point(data = rna_clustering_assignments,
                aes(x = 0, y = cell, color = cluster),
                size = 2) +
       scale_color_brewer(palette = "Set1")
   }
-  
+
   if(x %>% has_atac)
   {
     atac_clustering_assignments = get_fit(x, what = 'cluster_assignments') %>%
-      filter(modality == 'ATAC') %>% 
+      filter(modality == 'ATAC') %>%
       arrange(cluster)
-    
+
     c_size = atac_clustering_assignments %>% group_by(cluster) %>% summarise(n = n())
-    
+
     atac_plot = data_plot$plots[[2]] +
-      scale_y_discrete(limits = atac_clustering_assignments$cell) + 
+      scale_y_discrete(limits = atac_clustering_assignments$cell) +
       geom_hline(
         yintercept = cumsum(c_size$n)[-nrow(c_size)],
         size = .6,
         linetype = 'dashed'
-      )  + 
+      )  +
       geom_point(data = atac_clustering_assignments,
                  aes(x = 0, y = cell, color = cluster),
                  size = 2) +
       scale_color_brewer(palette = "Set1")
   }
-  
+
   stats_data = stat(x)
-  
+
   if(length(stats_data$modalities) > 1)
   {
     # Proportional to number of cells per assay
     rel_height = c(stats_data$ncells_ATAC, stats_data$ncells_RNA) /
       (stats_data$ncells_RNA + stats_data$ncells_ATAC)
-    
+
     f = cowplot::plot_grid(
       atac_plot + theme(axis.text.x = element_blank()) + labs(x = NULL),
       rna_plot,
@@ -331,34 +389,34 @@ plot_fit_heatmap = function(x, segments = get_input(x, what = 'segmentation') %>
       align = 'v',
       axis = 'lr'
     )
-    
+
     return(f)
   }
-  
+
   if(x %>% has_rna) return(rna_plot)
-  if(x %>% has_atac) return(atac_plot)    
+  if(x %>% has_atac) return(atac_plot)
 }
 
 
 plot_fit_scores = function(x)
 {
   scores = reshape2::melt(
-    x$model_selection %>% 
+    x$model_selection %>%
       select(-n_observations),
     id = 'K'
-  ) 
-  
-  IC_best = scores %>% 
-    group_by(variable) %>% 
-    filter(value == min(value)) %>% 
+  )
+
+  IC_best = scores %>%
+    group_by(variable) %>%
+    filter(value == min(value)) %>%
     filter(variable != 'entropy')
 
-  H_best = scores %>% 
-    group_by(variable) %>% 
-    filter(value == max(value)) %>% 
+  H_best = scores %>%
+    group_by(variable) %>%
+    filter(value == max(value)) %>%
     filter(variable == 'entropy')
-  
-  scores %>% 
+
+  scores %>%
     ggplot(aes(x = K, y = value)) +
     geom_line() +
     geom_point() +
@@ -372,6 +430,9 @@ plot_fit_scores = function(x)
       color = 'red'
     ) +
     labs(title = x$description) +
-    theme_linedraw(base_size = 9) + 
+    theme_linedraw(base_size = 9) +
     scale_y_continuous(labels = function(x) format(x, scientific = TRUE, digits = 3))
 }
+
+
+

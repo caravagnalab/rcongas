@@ -18,6 +18,7 @@ input_data_from_rcongas <- function(x){
   ret <-  list()
   if(has_atac(x)){
     ret$data_atac <- get_data(x) %>%  filter(modality == "ATAC") %>%  reshape2::acast(segment_id  ~ cell, value.var = "value")
+    ret$data_atac[is.na(ret$data_atac)] <-  0
     ret$data_atac <- ret$data_atac[order(rownames(ret$data_atac)),order(colnames(ret$data_atac))]
     norm_tmp <- get_normalisation(x) %>%  filter(modality == "ATAC")
     norm_factor_atac <- norm_tmp$normalisation_factor
@@ -27,6 +28,7 @@ input_data_from_rcongas <- function(x){
 
   if(has_rna(x)){
     ret$data_rna <- get_data(x) %>%  filter(modality == "RNA") %>%  reshape2::acast(segment_id  ~ cell, value.var = "value")
+    ret$data_rna[is.na(ret$data_rna)] <-  0
     ret$data_rna <- ret$data_rna[order(rownames(ret$data_rna)),order(colnames(ret$data_rna))]
     norm_tmp <- get_normalisation(x) %>%  filter(modality == "RNA")
     norm_factor_rna <- norm_tmp$normalisation_factor
@@ -53,9 +55,9 @@ input_data_from_rcongas <- function(x){
 format_best_model <-  function(x, inf){
   ret <-  list()
 
-  hyperpars <- lapply(inf$hyperparameters, detensorize)
+  hyperpars <- inf$hyperparameters
 
-  ret$parameters <-  list(ICs = inf$model_selection, hyperparameters = hyperpars)
+  ret$parameters <-  list(ICs = inf$ICs, hyperparameters = hyperpars)
 
   cluster_names <- paste0("C", 1:inf$hyperparameters$K)
   segment_names <-  get_segmentation(x) %>%  pull(segment_id) %>%  sort()
