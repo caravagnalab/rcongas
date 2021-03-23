@@ -285,34 +285,31 @@ plot_fit_density = function(x, highlights = TRUE)
 
   data_hist <-  plots$data
 
-
-  plots <- plot_data_histogram(x, segment_id)
-
   # Per cell clustering assignments
   clustering_assignments = get_fit(x, what = 'cluster_assignments') %>%
     select(-modality)
 
-  clusters <- clustering_assignments$cluster
-  names(clusters) <-  clustering_assignments$cell
-  clusters <- clusters[plots$data$cell]
-
-  data_hist$clusters <- clusters
-
   data_hist$modality <- sapply(data_hist$modality %>%  strsplit(" "), function(y) y[1])
 
-  densities <- assemble_likelihood_tibble(x, CNAs)
-  colnames(densities)[c(3,5)] <-  c("clusters", "segment_id")
+  data_hist <-  dplyr::left_join(data_hist, clustering_assignments)
 
-  data_hist %>%
-    ggplot(aes(value, fill = clusters)) +
-    geom_histogram(aes(y=..density.. ), color = "black", bins = 50, alpha = 0.4) +
-    geom_line(aes(x = X, y = value, color = clusters), data = densities, size = 1.2) +
-    geom_point(aes(x = X, y = value, color = clusters), data = densities, size = 0.6) +
-    facet_grid(segment_id ~ modality, scales = 'free') +
+  mixing_props <- get_mixing_proportions(x)
+
+
+  densities <- assemble_likelihood_tibble(x, CNAs)
+  colnames(densities)[c(3,5)] <-  c("cluster", "segment_id")
+  densities <- dplyr::left_join(densities,mixing_props) %>%  mutate(value = value * mixing)
+
+
+    ggplot() +
+    geom_histogram(aes(y=..count.. / sum(..count..), x = value, fill = cluster, group = cluster), data = data_hist, color = "black", bins = 50, alpha = 0.4) +
+    geom_line(aes(x = X, y = value, color = cluster), data = densities, size = 0.8) +
+    geom_point(aes(x = X, y = value, color = cluster), data = densities, size = 0.4) +
+    facet_wrap(segment_id ~ modality, scales = 'free') +
     labs(title = x$description) +
     guides(fill = FALSE) +
     theme_linedraw(base_size = 9) +
-    scale_fill_brewer(palette = "Set1", aesthetics = c("color", "fill")) +
+    scale_color_brewer(palette = "Set1") +
     labs(x = "Input",
          y = 'Observations') +
     theme(strip.text.y.right = element_text(angle = 0))
