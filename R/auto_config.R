@@ -126,7 +126,7 @@ gamma_shape_rate <-
                           value.var = "value")
     inp[is.na(inp)] <- 0
 
-    inp = inp[order(rownames(inp)), order(colnames(inp)), drop =FALSE]
+    inp = inp[order(rownames(inp)), order(colnames(inp)),drop=FALSE]
 
     norm_raw = get_normalisation(x) %>%
       filter(modality == !!modality) %>%
@@ -141,9 +141,9 @@ gamma_shape_rate <-
     names(ploidy) <- x$input$segmentation$segment_id
 
     ploidy <-  ploidy[order(colnames(inp))]
-
+    
     theta_factors = estimate_segment_factors(data = inp, norm_factors = norm, pld = ploidy, plot = F)
-
+    
     theta_shape = torch$tensor(sapply(theta_factors, function(x)
       x[1]))
     theta_rate = torch$tensor(sapply(theta_factors, function(x)

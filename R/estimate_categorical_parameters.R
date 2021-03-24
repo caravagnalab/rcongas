@@ -4,10 +4,17 @@ estimate_segment_factors <-
     cli::cli_h3("Estimating segment factors")
     
     x <-  apply(data, 2, function(y)
-      y /  norm_factors)
-    x <-  apply(x, 1, function(y)
-      y / pld) %>%  t
+      y /  norm_factors) 
     
+    if(ncol(x)>1){
+      
+    x <-  apply(x, 1, function(y)
+      y / pld) %>% t 
+    
+    }else{
+  
+              x <- x/pld  
+}
     
     res <-
       lapply(1:ncol(x), function(y) {
