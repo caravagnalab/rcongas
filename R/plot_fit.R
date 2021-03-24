@@ -64,10 +64,10 @@ plot_fit = function(x, what = 'CNA', ...)
   if (what == 'heatmap')
     return(x %>% plot_fit_heatmap(...))
 
-  if (what == 'heatmap')
+  if (what == 'scores')
     return(x %>% plot_fit_scores())
 
-  stop("Unrecognised 'what': use any of 'CNA', 'density' or 'plot_mixing_proportions'.")
+  stop("Unrecognised 'what': use any of 'CNA', 'density', 'plot_mixing_proportions', 'heatmap' or 'scores'.")
 }
 
 plot_fit_CNA = function(x)
