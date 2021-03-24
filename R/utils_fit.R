@@ -46,6 +46,7 @@ input_data_from_rcongas <- function(x){
 
   ret$segments <- as.integer(length(ret$pld))
 
+
   return(ret)
 
 }
@@ -215,7 +216,7 @@ format_best_model <-  function(x, inf){
   ret$cluster_assignments <- rbind(cluster_assignments_atac, cluster_assignments_rna)
   ret$z_nk <-  rbind(z_nk_atac, z_nk_rna) %>% tidyr::pivot_longer(tidyr::starts_with("C", ignore.case = F), names_to = "cluster", values_to = "z_nk")
   ret$segment_parameters <- rbind(segment_parameters_atac, segment_parameters_rna)
-
+  ret$CNA_real <- ret$posterior_CNA %>% group_by(segment_id, cluster) %>% summarise(value = sum(probability * as.integer(value))) %>%  ungroup()
 
   return(ret)
 

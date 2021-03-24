@@ -281,6 +281,10 @@ plot_fit_density = function(x, highlights = TRUE)
 
   #CNAs <-  segment_id
 
+  if(length(CNAs) == 0){
+    return(ggplot()+ geom_blank())
+  }
+
   plots <- plot_data_histogram(x, CNAs)
 
   data_hist <-  plots$data

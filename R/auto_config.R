@@ -6,7 +6,9 @@ auto_config_run <-
            lambda = 0.3,
            a_sd = 1,
            b_sd = 100,
-           prior_cn = c(0.2, 0.6, 0.2, 0.05, 0.05))
+           prior_cn = c(0.2, 0.6, 0.2, 0.05, 0.05),
+           hidden_dim = 5)
+
     {
     cli::cli_h1("(R)CONGAS+ hyperparameters auto-config")
     param_list <-  list()
@@ -110,6 +112,8 @@ auto_config_run <-
     }
 
     param_list$lambda <- lambda
+    param_list$hidden_dim <- as.integer(hidden_dim)
+
 
     return(param_list)
 
