@@ -126,7 +126,7 @@ gamma_shape_rate <-
                           value.var = "value")
     inp[is.na(inp)] <- 0
 
-    inp = inp[order(rownames(inp)), order(colnames(inp))]
+    inp = inp[order(rownames(inp)), order(colnames(inp)), drop = FALSE]
 
     norm_raw = get_normalisation(x) %>%
       filter(modality == !!modality) %>%
