@@ -1,29 +1,29 @@
 #' Create a dataset.
-#' 
-#' @description 
-#' 
-#' This function creates a dataset (an object of class \code{rcongasplus}) by assembling multiple single-cell input measurements 
+#'
+#' @description
+#'
+#' This function creates a dataset (an object of class \code{rcongasplus}) by assembling multiple single-cell input measurements
 #' (ATAC and/or RNA data modalities), the input segmentation (from bulk DNA sequencing),
-#' and the per-cell normalisation factors for the data. 
-#' 
+#' and the per-cell normalisation factors for the data.
+#'
 #' All input data are passed as tibbles; the input formats are as follows:
-#' 
+#'
 #' * for single-cell ATAC/RNA data, the \code{cell} identifier, the genomic coordinates
 #' (\code{chr}, \code{from}, \code{to}) which refer either to an ATAC peak, or an RNA gene
 #' identifier, and a \code{value} reporting the reads mapped.
-#' 
+#'
 #' * for the input segmentation, the genomic coordinates
 #' (\code{chr}, \code{from}, \code{to}) which refer to the segment, and the number of
 #' \code{copies} (i.e., DNA ploidy) of the segment.
-#' 
+#'
 #' * for normalization factors the \code{cell} identifier, the actual \code{normalisation_factor}
 #' and the \code{modality} to wihch the factor refers to
-#' 
-#' This function receives also other parameters - e.g., the models likelihoods - which 
+#'
+#' This function receives also other parameters - e.g., the models likelihoods - which
 #' will determine the overall behaviour of the underlying model, and how data are preared for inference.
-#' 
+#'
 #' * A Negative Binomial likelihood (\code{"NB"}), which works directly from raw counts data
-#' 
+#'
 #' * A Gaussian likelihood (\code{"G"}), which requires a z-score transformation of the data. This consists
 #' in :
 #'     * scaling raw counts by the input normalization factors;
@@ -63,28 +63,28 @@
 #'
 #' @examples
 #' data("example_input")
-#' 
+#'
 #' # For instance, RNA data
 #' example_input$x_rna %>% print
-#' 
+#'
 #' # .. or ATAC data
 #' example_input$x_atac %>% print
-#' 
+#'
 #' # .. and segmentation
 #' example_input$x_segmentation %>% print
-#' 
+#'
 #' # .. and x_normalisation factors
 #' example_input$x_normalisation_factors %>% print
-#' 
+#'
 #' x = init(
 #'   rna = example_input$x_rna,
 #'   atac = example_input$x_atac,
 #'   segmentation = example_input$x_segmentation,
 #'   normalisation_factors = example_input$x_normalisation_factors,
-#'   rna_likelihood = "G", 
+#'   rna_likelihood = "G",
 #'   atac_likelihood = 'NB',
 #'   description = 'My crazy model')
-#'   
+#'
 #' print(x)
 init = function(
   rna,
@@ -270,26 +270,28 @@ create_modality = function(modality, data, segmentation, normalisation_factors, 
 
   pb$tick(0)
 
-  for(i in 1:nrow(segmentation))
-  {
+  # for(i in 1:nrow(segmentation))
+  # {
+  #
+  #   pb$tick()
+  #
+  #   what_maps = which(
+  #     data$chr == segmentation$chr[i] &
+  #       data$from >= segmentation$from[i] &
+  #       data$to <= segmentation$to[i]
+  #   )
+  #
+  #   if(length(what_maps) == 0) next;
+  #
+  #   data$segment_id[what_maps] = segmentation$segment_id[i]
+  #
+  #   segmentation[[evt_lbs]][i] = what_maps %>% length
+  #   segmentation[[loc_lbs]][i] = data[what_maps, ] %>%
+  #     distinct(chr, from, to) %>%
+  #     nrow()
+  # }
 
-    pb$tick()
 
-    what_maps = which(
-      data$chr == segmentation$chr[i] &
-        data$from >= segmentation$from[i] &
-        data$to <= segmentation$to[i]
-    )
-
-    if(length(what_maps) == 0) next;
-
-    data$segment_id[what_maps] = segmentation$segment_id[i]
-
-    segmentation[[evt_lbs]][i] = what_maps %>% length
-    segmentation[[loc_lbs]][i] = data[what_maps, ] %>%
-      distinct(chr, from, to) %>%
-      nrow()
-  }
 
   n_na = is.na(data$segment_id) %>% sum()
   nn_na = (data %>% nrow) - n_na
@@ -342,17 +344,17 @@ create_modality = function(modality, data, segmentation, normalisation_factors, 
   # Center the new scores to the ploidy value
   if(likelihood %in% c("G")){
     cli::cli_alert("Centering the new scores around input ploidy values.")
-    
+
     zscore_params = mapped %>%
       group_by(segment_id) %>%
       summarise(value_mean = mean(value), value_sd = sd(value), .groups = 'keep')
-    
+
     mapped = mapped %>%
       left_join(zscore_params, by = c("segment_id")) %>%
       mutate(
         value = (value - value_mean)/value_sd # z-score
       )
-    
+
     mapped =  mapped %>%
       left_join(segmentation, by = c("segment_id")) %>%
       mutate(

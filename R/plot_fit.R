@@ -285,6 +285,7 @@ plot_fit_density = function(x, highlights = TRUE)
 
   data_hist <-  plots$data
 
+
   # Per cell clustering assignments
   clustering_assignments = get_fit(x, what = 'cluster_assignments') %>%
     select(-modality)
@@ -298,21 +299,59 @@ plot_fit_density = function(x, highlights = TRUE)
 
   densities <- assemble_likelihood_tibble(x, CNAs)
   colnames(densities)[c(3,5)] <-  c("cluster", "segment_id")
-  densities <- dplyr::left_join(densities,mixing_props) %>%  mutate(value = value * mixing)
+  densities <- dplyr::left_join(densities,mixing_props) %>%  mutate(value = value * (mixing + 1e-3))
+
+  CNA <-  get_CNA(x)
+
+  colnames(CNA)[3] <-  "CNA"
+
+  data_hist <-  dplyr::left_join(data_hist, CNA)
+
+  ret <- lapply(CNAs, function(s) plot_fit_density_aux(data_hist, densities,s))
+
+  return(ret)
 
 
-    ggplot() +
-    geom_histogram(aes(y=..count.. / sum(..count..), x = value, fill = cluster, group = cluster), data = data_hist, color = "black", bins = 50, alpha = 0.4) +
-    geom_line(aes(x = X, y = value, color = cluster), data = densities, size = 0.8) +
-    geom_point(aes(x = X, y = value, color = cluster), data = densities, size = 0.4) +
+}
+
+
+plot_fit_density_aux <-  function(df, densities, segment){
+
+  df <-  df %>%  filter(segment_id == segment)
+  densities <-  densities %>%  filter(segment_id == segment)
+
+
+  cols <- RColorBrewer::brewer.pal(9, "Set1")
+  CNA <- df %>% arrange(cluster) %>%  select(cluster,CNA) %>%  unique() %>%  pull(CNA)
+  clts <- sort(df$cluster %>%  unique())
+
+
+  p1 <- ggplot( ) +
+    geom_histogram(aes(x = value, fill = factor(cluster, levels = clts)
+    ),bins = 50,  data = df, color = "black", alpha = 0.4, position="identity") +
     facet_wrap(segment_id ~ modality, scales = 'free') +
-    labs(title = x$description) +
-    guides(fill = FALSE) +
+    guides() +
     theme_linedraw(base_size = 9) +
-    scale_color_brewer(palette = "Set1") +
+    scale_fill_manual("CN value", values = cols, labels = CNA, drop=FALSE) +
     labs(x = "Input",
          y = 'Observations') +
-    theme(strip.text.y.right = element_text(angle = 0))
+    theme(strip.text.y.right = element_text(angle = 0), , axis.text.y = element_blank(), axis.ticks.y = element_blank())
+
+  p2 <-ggplot() +
+    geom_line(aes(x = X, y = value, color = factor(cluster, levels = clts)), data = densities, size = 0.8) +
+    geom_point(aes(x = X, y = value, color = factor(cluster, levels = clts)), data = densities, size = 0.3) +
+    facet_wrap(segment_id ~ modality, scales = 'free') +
+    labs(title = x$description, subtitle = "Cell cluster assignments and densities") +
+    guides(fill = FALSE) +
+    theme_linedraw(base_size = 9) +
+    scale_color_manual("Clusters",values = cols, drop=FALSE) +
+    labs(x = "Input",
+         y = 'Density') +
+    theme(strip.text.y.right = element_text(angle = 0), axis.text.y = element_blank(), axis.ticks.y = element_blank())
+
+  cowplot::plot_grid(p2,p1, align = "hv", axis = "lrtb", ncol = 1)
+
+
 
 }
 
