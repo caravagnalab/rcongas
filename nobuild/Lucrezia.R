@@ -286,5 +286,8 @@ dev.off()
 plot_data(x, what = 'heatmap') %>% ggsave(filename = 'hmap.png', width = 12, height = 18)
 
 
+require(Rcongas)
 
+x$input$dataset
+x$input$segmentation
 
