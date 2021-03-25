@@ -25,7 +25,7 @@ estimate_segment_factors_aux <- function(data_mle, plot) {
   data_mle <-  ifelse(data_mle == 0, rnorm(1, 1e2, 1e2), data_mle)
   data_mle = data_mle[!is.na(data_mle)]
 
-  quants = quantile(data_mle, probs = c(0.03, 0.097), na.rm = TRUE)
+  quants = quantile(data_mle, probs = c(0.03, 0.97), na.rm = TRUE)
 
   data_mle <-  ifelse(data_mle < quants[1], quants[1], data_mle)
   data_mle <-  ifelse(data_mle > quants[2], quants[2], data_mle)

@@ -39,7 +39,8 @@ fit_congas <-
            latent_variables = "D",
            compile = FALSE,
            steps = 500,
-           model_selection = "ICL") {
+           model_selection = "ICL",
+           temperature = 10) {
     if (!inherits(x, "rcongasplus")) {
       stop("Input object needs to be an rcongas instance!")
     }
@@ -53,7 +54,8 @@ fit_congas <-
           learning_rate,
           latent_variables,
           compile,
-          steps
+          steps,
+          temperature
         ))
     names(runs) <-  paste(K)
 
@@ -96,7 +98,8 @@ fit_congas_single_run <-
            learning_rate,
            latent_variables,
            compile,
-           steps) {
+           steps,
+           temperature) {
 
     cli::cli_h3("Fit with k = {.field {K}}.")
 
@@ -107,13 +110,21 @@ fit_congas_single_run <-
     data <- input_data_from_rcongas(x)
     param_optimizer <-  list()
     parameters$K <-  as.integer(K)
+    parameters$Temperature <-  temperature
     param_optimizer$lr <- learning_rate
 
     ### LOAD MODEL AND GUIDE ###
     if (latent_variables == "D") {
       model <- cg_mod$LatentCategorical
       model_string <-  "LatentCategorical"
-    } else {
+      parameters$latent_type <- "D"
+    } else if (latent_variables == "C"){
+
+      model <- cg_mod$LatentCategorical
+      model_string <-  "LatentCategorical"
+      parameters$latent_type <- "C"
+
+    }else {
       stop("Continous latent variable model not yet implemented.")
     }
 

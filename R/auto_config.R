@@ -7,7 +7,8 @@ auto_config_run <-
            a_sd = 1,
            b_sd = 100,
            prior_cn = c(0.2, 0.6, 0.2, 0.05, 0.05),
-           hidden_dim = 5)
+           hidden_dim = 5,
+           init_importance = 5)
 
     {
     cli::cli_h1("(R)CONGAS+ hyperparameters auto-config")
@@ -16,6 +17,7 @@ auto_config_run <-
     torch <-  reticulate::import("torch")
 
     param_list$probs <-  torch$tensor(prior_cn)
+    param_list$init_probs <- init_importance
 
     if (has_atac(x)) {
 

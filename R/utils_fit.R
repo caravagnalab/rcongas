@@ -1,7 +1,11 @@
 tensorize <-  function(x){
 
   torch <- reticulate::import("torch")
-  ret <-  torch$tensor(x)
+  np <-  reticulate::import("numpy")
+
+  x <- np$array(reticulate::r_to_py(x))
+  ret <-  torch$from_numpy(x)
+
   return(ret)
 }
 
