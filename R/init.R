@@ -55,6 +55,7 @@
 #' @importFrom graphics curve hist
 #' @importFrom stats complete.cases dgamma quantile rnorm sd
 #' @importFrom utils head object.size
+#' @importFrom gtools mixedsort
 #' @import dplyr
 #' @import ggplot2
 #' @import CNAqc

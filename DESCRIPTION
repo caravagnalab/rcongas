@@ -33,7 +33,8 @@ Imports:
     ggplot2,
     CNAqc,
     reticulate,
-    magrittr
+    magrittr,
+    gtools
 Suggests:
     biomaRt,
     knitr,
