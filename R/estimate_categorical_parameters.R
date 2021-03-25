@@ -5,9 +5,14 @@ estimate_segment_factors <-
 
     x <-  apply(data, 2, function(y)
       y /  norm_factors)
-    x <-  apply(x, 1, function(y)
-      y / pld) %>%  t
 
+    if (ncol(x) > 1) {
+      x <-  apply(x, 1, function(y)
+        y / pld) %>% t
+
+    } else{
+      x <- x / pld
+    }
 
     res <-
       lapply(1:ncol(x), function(y) {
@@ -21,11 +26,16 @@ estimate_segment_factors <-
     return(res)
   }
 
-estimate_segment_factors_aux <- function(data_mle, plot) {
-  data_mle <-  ifelse(data_mle == 0, rnorm(1, 1e2, 1e2), data_mle)
+estimate_segment_factors_aux <- function(data_mle, plot)
+{
+  # data_mle = x[, 2]
+  # hist(data_mle, breaks = 100)
+
+  # data_mle <-  ifelse(data_mle == 0, rnorm(1, 1e2, 1e2), data_mle)
+  data_mle = data_mle[data_mle > 0]
   data_mle = data_mle[!is.na(data_mle)]
 
-  quants = quantile(data_mle, probs = c(0.03, 0.97), na.rm = TRUE)
+  quants = quantile(data_mle, probs = c(0.005, 0.995), na.rm = TRUE)
 
   data_mle <-  ifelse(data_mle < quants[1], quants[1], data_mle)
   data_mle <-  ifelse(data_mle > quants[2], quants[2], data_mle)
@@ -51,7 +61,7 @@ estimate_segment_factors_aux <- function(data_mle, plot) {
           minuslogl = LL,
           start = list(
             theta_shape = mean(data_mle, na.rm = TRUE),
-            theta_rate = 1
+            theta_rate = sd(data_mle, na.rm = TRUE)
           ),
           lower = c(1e-16, 1e-16),
           upper = c(Inf, Inf)

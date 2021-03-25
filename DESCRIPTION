@@ -6,10 +6,10 @@ Authors@R: c(person("Salvatore", "Milite", role=c("aut", "cre"), email="militesa
     person("Riccardo", "Bergamin", role=c("aut"), email="riccardo.bergamin@units.it"),
     person("Giulio", "Caravagna", role=c("aut"), email="gcaravagn@gmail.com"))
 Maintainer: Cancer Data Science Laboratory <gcaravagn@gmail.com>
-Description: This package is built upon the congas Python package, aiming at the creation of an easy
-    frontend to work from R and run the Pyro-based analyis described in congas. The package interfaces 
-    with Python through the reticulate package, and contains a number of functions to input and pre-process
-    datasets, as well as to visualise and post-process fits.
+Description: This package provides an interface, implemented through reticulate, to the CONGAS Python package; thus
+    acting as an easy frontend to work from R and run the Pyro models available in CONGAS. While it should be callsed (R)CONGAS+, 
+    for simplicity we keep calling it just Rcongas. The package contains anumber of functions to input and pre-process 
+    single-cell datasets, to compute fits through the Pyro modules in Python, as well as to visualise and post-process fits within R.
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true

@@ -1,3 +1,18 @@
+#' Title
+#'
+#' @param x 
+#' @param K 
+#' @param NB_size_atac 
+#' @param NB_size_rna 
+#' @param lambda 
+#' @param a_sd 
+#' @param b_sd 
+#' @param prior_cn 
+#'
+#' @return
+#' @export
+#'
+#' @examples
 auto_config_run <-
   function(x,
            K,
@@ -132,7 +147,11 @@ gamma_shape_rate <-
                           value.var = "value")
     inp[is.na(inp)] <- 0
 
+<<<<<<< HEAD
     inp = inp[order(rownames(inp)), order(colnames(inp)), drop = FALSE]
+=======
+    inp = inp[order(rownames(inp)), order(colnames(inp)),drop=FALSE]
+>>>>>>> 1fd2adae4494f6920607dc4ffc3a55198bf16a48
 
     norm_raw = get_normalisation(x) %>%
       filter(modality == !!modality) %>%
@@ -147,9 +166,9 @@ gamma_shape_rate <-
     names(ploidy) <- x$input$segmentation$segment_id
 
     ploidy <-  ploidy[order(colnames(inp))]
-
+    
     theta_factors = estimate_segment_factors(data = inp, norm_factors = norm, pld = ploidy, plot = F)
-
+    
     theta_shape = torch$tensor(sapply(theta_factors, function(x)
       x[1]))
     theta_rate = torch$tensor(sapply(theta_factors, function(x)
@@ -159,3 +178,48 @@ gamma_shape_rate <-
 
     return(ret)
   }
+
+
+#' Compute empirical normalisation factors (library size)
+#' 
+#' @description For a tibble dataset with a \code{cell} and \code{value} 
+#' columns, it sums up all values per cell (total library size), and scales
+#' the value for \code{10^x} where \code{x} is the median nuimber of digits
+#' in each total value size. 
+#' 
+#' For instance for numbers of the order of ~1000 it will rescale the library
+#' size by a factor 1000, taking all values around ~1.
+#'
+#' @param x A tibble with a \code{cell} and \code{value} columns.
+#'
+#' @return A tibble, aggregated by cell with total values (sum), rescaled
+#' by the estimated constant.
+#' 
+#' @export
+#'
+#' @examples
+#' data('example_input')
+#' example_input$x_rna %>% auto_normalisation_factor
+auto_normalisation_factor = function(x)
+{
+  if(!("cell" %in% colnames(x))) stop("Missing cell column.")
+  if(!("value" %in% colnames(x))) stop("Missing value column.")
+  
+  cli::cli_alert("Computing library size factors as total counts.")
+  
+  norm_x = x %>% 
+    group_by(cell) %>% 
+    summarise(normalisation_factor = sum(value)) 
+  
+  ndigits = median(nchar(norm_x$normalisation_factor))
+  scaling = `^`(10,ndigits)
+  
+  cli::cli_alert("Median digits per factor {.field {ndigits}}, scaling by {.field {scaling}}.")
+  
+  # norm_x$normalisation_factor %>% summary %>% print()
+  norm_x$normalisation_factor = norm_x$normalisation_factor / scaling 
+  # norm_x$normalisation_factor %>% summary
+  norm_x$normalisation_factor %>% summary %>% print
+  
+  norm_x %>% return
+}

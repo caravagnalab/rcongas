@@ -184,12 +184,29 @@ filter_values_by_quantile = function(x, upper_quantile = .98)
     group_by(chr, from, to) %>% 
     summarise(
       q_max = quantile(value, upper_quantile),
+      # sd = sd(value),
+      # median = median(value),
       .groups = 'drop'
     )
   
   x = x %>% 
     left_join(map_quantiles, by = c('chr', 'from', 'to')) %>% 
     mutate(del = value > q_max)
+  
+  # x %>% arrange(desc(sd))
+  # x %>% arrange(desc(value))
+  # hist(x %>% filter(chr == 'chr9', to == '140135734', from== '140135234') %>% pull(value), breaks = 100) 
+  # 
+  # m_atac = quantile(x$value, .98)
+  # x %>% filter
+  
+  # hist(norm_atac$normalisation_factor, breaks = 100)
+  
+  
+  # hist(log(x$sd), breaks = 100) 
+  
+  # ggplot(x %>% filter(log(x$sd) > 2), aes(x = median, y = sd, color = del)) +
+  #   geom_point()
   
   r_cap = x %>% filter(del)
   
@@ -206,9 +223,111 @@ filter_values_by_quantile = function(x, upper_quantile = .98)
       filter(!del)
   }
   
-  return(x %>% select(-q_max, -cap))
+  return(x %>% select(-q_max, -del))
 }
 
+#' Filter cells by upper and lower quantile of their normalisation factors.
+#'
+#' @param x A tibble with a cell and normalisation_factor column.
+#' @param lower_quantile The minimum quantile to determine cuts. 
+#' @param upper_quantile The maximum quantile to determine cuts. 
+#'
+#' @return The input data with normalisation factors in between the quantiles range.
+#' @export
+#'
+#' @examples
+#' data('example_input')
+filter_cells_by_quantile = function(x, lower_quantile = 0.05, upper_quantile = .95)
+{
+  m_quantile = quantile(x$normalisation_factor, upper_quantile)
+  l_quantile = quantile(x$normalisation_factor, lower_quantile)
+  
+  x = x %>% 
+    mutate(del = normalisation_factor > m_quantile | normalisation_factor < l_quantile)
+  
+  r_cap = x %>% filter(del)
+  
+  if(nrow(r_cap) > 0)
+  {
+    cli::cli_h3("Upper quantile {.field {upper_quantile}}")
+    
+    cli::cli_alert_info("{.field n = {nrow(r_cap)}} entries to remove")
+    
+    cat("\n")
+    r_cap  %>% print
+    
+    x = x %>% 
+      filter(!del)
+  }
+  
+  return(x %>% select(-del))
+}
+
+
+filter_segment_values_by_quantile = function(x, lower_quantile = 0.02, upper_quantile = .98)
+{
+  # Work out one modality
+  aux_fun = function(modality)
+  {
+    input =  get_input(x, what = 'data') %>% filter(modality == !!modality)
+    
+    scaled_data = normalise_modality(
+      input,
+      get_input(x, what = 'normalisation') %>% filter(modality == !!modality)
+    )
+    
+    map_quantiles = scaled_data %>% 
+      group_by(segment_id, modality) %>% 
+      summarise(
+        q_min = quantile(value, lower_quantile),
+        q_max = quantile(value, upper_quantile),
+        .groups = 'drop'
+      )
+    
+    x_mapped = scaled_data  %>% 
+      left_join(map_quantiles, by = c('segment_id', 'modality')) %>% 
+      mutate(del = value > q_max | value < q_min)
+    
+    r_cap = x_mapped %>% filter(del)
+    
+    if(nrow(r_cap) > 0)
+    {
+      cli::cli_h3("{.field {modality}} quantiles: lower {.field {lower_quantile}}, upper {.field {upper_quantile}}.")
+      
+      cli::cli_alert_info("{.field n = {nrow(r_cap)}} entries to remove")
+      
+      cat("\n")
+      r_cap  %>% print
+      
+      x_mapped = x_mapped %>% 
+        filter(!del) %>% 
+        mutate(key = paste0(segment_id, cell))
+      
+      input = input %>% 
+        mutate(key = paste0(segment_id, cell)) %>% 
+        filter(key %in% x_mapped$key) %>% 
+        select(-key)
+    }
+    
+    return(input)
+  }
+  
+  retained = NULL
+  
+  if(x %>% has_rna)
+    retained = "RNA" %>% aux_fun
+  
+  if(x %>% has_atac)
+    retained = bind_rows(retained, "ATAC" %>% aux_fun)
+  
+  x$input$dataset = retained
+  
+  return(x)
+}
+
+  
+
+# My first commit
 
 # rna %>%
 #   group_by(gene) %>%
