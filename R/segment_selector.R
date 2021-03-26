@@ -209,14 +209,6 @@ model_selection = function(x, K = 1:3, samples = 10, epsilon = 1e-4)
 
 
 
-Message Riccardo Bergamin
-
-
-
-
-
-
-
 
 
 
