@@ -321,6 +321,7 @@ filter_segment_values_by_quantile = function(x, lower_quantile = 0.02, upper_qua
     retained = bind_rows(retained, "ATAC" %>% aux_fun)
   
   x$input$dataset = retained
+  x$description = paste0(x$description, "; post-map q[", lower_quantile, ', ', upper_quantile, ']')
   
   return(x)
 }

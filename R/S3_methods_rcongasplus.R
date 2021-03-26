@@ -19,8 +19,9 @@ print.rcongasplus = function(x, ...)
       `0` = crayon::bgCyan(' '),
       `1` = crayon::bgBlue(' '),
       `2` = crayon::bgGreen(' '),
-      `3` = crayon::bgRed(' '),
-      `4` = crayon::bgMagenta(' '),
+      `3` = crayon::bgYellow(' '),
+      `4` = crayon::bgRed(' '),
+      `5` = crayon::bgMagenta(' '),
       `*` = crayon::bgWhite(' ')
     )
     
@@ -161,12 +162,10 @@ print.rcongasplus = function(x, ...)
   
   cat('\n\n')
   
-  stats_fit
-  
   if(x %>% has_rna)
   {
     L_n = stats_fit$fit_mixing_RNA_n 
-    L = 25 * (L_n/sum(L_n)) %>% round()
+    L = (25 * (L_n/sum(L_n))) %>% round()
     
     cat('   ', crayon::underline("RNA"), '\n')
     for(cl in names(L))
@@ -176,7 +175,7 @@ print.rcongasplus = function(x, ...)
   if(x %>% has_atac)
   {
     L_n = stats_fit$fit_mixing_ATAC_n 
-    L = 25 * (L_n/sum(L_n)) %>% round()
+    L = (25 * (L_n/sum(L_n))) %>% round()
     
     cat('   ', crayon::underline("ATAC"), '\n')
     for(cl in names(L))
@@ -224,7 +223,7 @@ plot.rcongasplus = function(x, ...)
 {
   stopifnot(inherits(x, "rcongasplus"))
   
-  if(!('best_fit' %in% x %>% names)) 
+  if(!('best_fit' %in% (x %>% names))) 
     return(x %>% plot_fit(what = 'CNA'))
   else
     return(x %>% plot_data(what = 'histogram'))
