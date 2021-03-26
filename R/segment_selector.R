@@ -1,4 +1,4 @@
-x <- readRDS("3.rcongas_tumour.rds")
+# x <- readRDS("3.rcongas_tumour.rds")
 
 model_selection = function(x, K = 1:3, samples = 10, epsilon = 1e-4)
 {
