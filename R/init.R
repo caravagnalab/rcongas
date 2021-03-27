@@ -232,7 +232,8 @@ init = function(
   ret_obj$input$normalisation = normalisation_factors
   ret_obj$input$segmentation = segmentation
 
-  return(ret_obj %>% sanitize_obj)
+  return(ret_obj %>% sanitize_obj %>% sanitize_zeroes
+  )
 }
 
 create_modality = function(modality, data, segmentation, normalisation_factors, likelihood)

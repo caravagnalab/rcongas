@@ -125,6 +125,55 @@ sanitize_input = function(x, required_input_columns, types_required)
   invisible(1)
 }
 
+sanitize_zeroes = function(x)
+{
+  stats_x = stat(x, what = 'data')
+  
+  if(!is.null(stats_x$zero_counts_cells_RNA))
+  { 
+    nsegs = stats_x$nsegments
+    ncells = stats_x$zero_counts_cells_RNA %>% nrow
+    st_zeroes = stats_x$zero_counts_cells_RNA
+    st_zeroes$`%` = paste0(st_zeroes$`%`, '%')
+    
+    # Error message
+    top = min(5, ncells)
+
+    cat("\n")
+    cli::cli_alert_danger("{crayon::bold(crayon::red('Warning'))} {crayon::red('RNA 0-counts cells.')} \\
+                            {.field {ncells}} cells have no data in any of {.field {nsegs}} segments, \\
+                            top {.field {top}} with missing data are:")
+    
+    for(i in 1:top)
+      cli_alert_danger("Cell {.field {st_zeroes$cell[i]}} with \\
+                         {crayon::red(st_zeroes$n[i])} 0-segments ({crayon::red(st_zeroes$`%`[i])})")
+      cat("\n")
+    
+  }
+  
+  if(!is.null(stats_x$zero_counts_cells_ATAC))
+  { 
+    nsegs = stats_x$nsegments
+    ncells = stats_x$zero_counts_cells_ATAC %>% nrow
+    st_zeroes = stats_x$zero_counts_cells_ATAC
+    st_zeroes$`%` = paste0(st_zeroes$`%`, '%')
+    
+    # Error message
+    top = min(5, ncells)
+    
+    cat("\n")
+    cli::cli_alert_danger("{crayon::bold(crayon::red('Warning'))} {crayon::red('ATAC 0-counts cells.')} \\
+                            {.field {ncells}} cells have no data in any of {.field {nsegs}} segments, \\
+                            top {.field {top}} with missing data are:")
+    
+    for(i in 1:top)
+      cli_alert_danger("Cell {.field {st_zeroes$cell[i]}} with \\
+                         {crayon::red(st_zeroes$n[i])} 0-segments ({crayon::red(st_zeroes$`%`[i])})")
+    cat("\n")
+  }
+  
+  return(x)
+}
 
 
 

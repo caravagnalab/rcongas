@@ -81,6 +81,9 @@ print.rcongasplus = function(x, ...)
   ############################################################################# 
   stopifnot(inherits(x, "rcongasplus"))
   
+  # Sanitize zeroes - first thing to show
+  x %>% sanitize_zeroes()
+  
   stats_data = stat(x, what = 'data')
   
   # Header
@@ -201,7 +204,6 @@ print.rcongasplus = function(x, ...)
   #     ),
   #     symbol = 'clisymbols::symbol$bullet'
   #   ) %>% cli::cli_text()
-  
  
   invisible(return(0))
 }
