@@ -40,8 +40,9 @@ fit_congas <-
            compile = FALSE,
            steps = 500,
            model_selection = "ICL",
-           temperature = 10) {
-    
+           temperature = 10
+           ) {
+
     if (!inherits(x, "rcongasplus")) {
       stop("Input object needs to be an rcongas instance!")
     }
@@ -49,7 +50,7 @@ fit_congas <-
     # Sanitizers obj and zeroes
     x %>% sanitize_obj()
     x %>% sanitize_zeroes()
-    
+
     runs <-
       lapply(K, function(k)
         fit_congas_single_run(
@@ -151,7 +152,16 @@ fit_congas_single_run <-
     int$initialize_model(data)
     int$set_model_params(parameters)
 
-    loss = reticulate::py_suppress_warnings(int$run(steps = as.integer(steps), param_optimizer = param_optimizer))
+    warnings <-  reticulate::import("warnings")
+
+    #ignore tracer warnings
+    wcont = warnings$catch_warnings()
+
+    wcont$`__enter__`()
+    warnings$filterwarnings("ignore")
+    loss = int$run(steps = as.integer(steps), param_optimizer = param_optimizer)
+    wcont$`__exit__`()
+
 
     fit_params = int$learned_parameters()
     ICs = int$calculate_ICs()

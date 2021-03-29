@@ -8,9 +8,10 @@ NB_likelihood <- function(x, segment_id, cluster, modality = "RNA"){
     filter(modality == !!modality, parameter=="NB_size", segment_id == !!segment_id) %>%
     pull(value)
   CNA <- bm$CNA %>% filter(cluster == !!cluster, segment_id == !!segment_id) %>% pull()
+  mean_norm <- x$input$normalisation %>%  filter(modality == !!modality) %>% pull(normalisation_factor) %>% mean()
 
   ret <- function(linspace){
-    return(dnbinom(linspace, mu = CNA * segment_factors, size = size))
+    return(dnbinom(linspace, mu = CNA * segment_factors * mean_norm, size = size))
   }
 
   return(ret)
@@ -44,9 +45,11 @@ P_likelihood <- function(x, segment_id, cluster, modality = "RNA"){
     filter(modality == !!modality, parameter=="segment_factor", segment_id == !!segment_id) %>%
     pull(value)
   CNA <- bm$CNA %>% filter(cluster == !!cluster, segment_id == !!segment_id) %>% pull()
+  mean_norm <- x$input$normalisation %>%  filter(modality == !!modality) %>% pull(normalisation_factor) %>% mean()
+
 
   ret <- function(linspace){
-    return(dpois(linspace, lambda = CNA * segment_factors))
+    return(dpois(linspace, lambda = CNA * segment_factors * mean_norm))
   }
 
   return(ret)
@@ -65,8 +68,10 @@ assemble_likelihood_tibble <- function(x, segments){
       filter(modality == "ATAC")
 
     if (which_likelihood(x, "ATAC") != "G"){
+      norm_avg <- x$input$normalisation %>%  filter(modality == "ATAC") %>% pull(normalisation_factor) %>% mean()
+
       what_ATAC = normalise_modality(what_ATAC, norm_factors %>% filter(modality == "ATAC")) %>%
-        group_by(segment_id) %>%  summarize(min = min(value), max = max(value))
+        group_by(segment_id) %>%  summarize(min = min(value * norm_avg), max = max(value * norm_avg))
     } else {
       what_ATAC = what_ATAC %>%
         group_by(segment_id) %>%  summarize(min = min(value), max = max(value))
@@ -88,11 +93,12 @@ assemble_likelihood_tibble <- function(x, segments){
       filter(modality == "RNA")
 
     if (which_likelihood(x, "RNA") != "G"){
+      norm_avg <- x$input$normalisation %>%  filter(modality == "RNA") %>% pull(normalisation_factor) %>% mean()
       what_RNA = normalise_modality(what_RNA, norm_factors %>% filter(modality == "RNA")) %>%
-        group_by(segment_id) %>%  summarize(min = min(value), max = max(value))
+        group_by(segment_id) %>%  summarize(min = min(value * norm_avg), max = max(value * norm_avg))
     } else {
       what_RNA = what_RNA %>%
-        group_by(segment_id) %>%  summarize(min = min(value), max = max(value))
+        group_by(segment_id) %>%  summarize(min = min(value * norm_avg), max = max(value * norm_avg))
     }
 
 
