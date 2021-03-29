@@ -55,19 +55,21 @@ estimate_segment_factors_aux <- function(data_mle, plot)
   MAXT = 10
   ct = 0
   while (ct < MAXT) {
-    tryCatch({
+    tryCatch(expr = {
       coeff <-
         stats4::mle(
           minuslogl = LL,
           start = list(
-            theta_shape = mean(data_mle, na.rm = TRUE),
-            theta_rate = sd(data_mle, na.rm = TRUE)
+            theta_shape = mean(data_mle) / sd(data_mle) * 10 ,
+            theta_rate =  1 / sd(data_mle) * 10
           ),
           lower = c(1e-16, 1e-16),
-          upper = c(Inf, Inf)
-        )@coef
-      ct = MAXT
-    }, ct = ct + 1)
+          upper = c(Inf, Inf), nobs = length(data_mle),
+        )
+
+      ct = ifelse(is.null(coeff),ct,MAXT)
+      coeff <-  coeff@coef
+    }, error = function(e) {ct = ct + 1})
   }
 
   if (plot) {

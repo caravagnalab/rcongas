@@ -146,7 +146,7 @@ fit_congas_single_run <-
     int$initialize_model(data)
     int$set_model_params(parameters)
 
-    loss = int$run(steps = as.integer(steps), param_optimizer = param_optimizer)
+    loss = reticulate::py_suppress_warnings(int$run(steps = as.integer(steps), param_optimizer = param_optimizer))
 
     fit_params = int$learned_parameters()
     ICs = int$calculate_ICs()
