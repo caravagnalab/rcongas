@@ -75,6 +75,45 @@ stat_data = function(x)
   # Modalities
   modalities = x %>% get_data() %>% pull(modality) %>% unique()
   
+  # Zero-counts cells - for sanitization
+  zeroes_in_modality = function(modality)
+  {
+    zero_counts_cells = NULL
+    
+    M = x$input$dataset %>% 
+      filter(modality == !!modality) %>% 
+      select(segment_id, cell, value) %>% 
+      pivot_wider(names_from = segment_id, values_from = value)
+    
+    # Cells stats - number of 0s
+    cell_ids = which(is.na(M), arr.ind = TRUE)[, 1]
+    
+    if((cell_ids %>% length()) > 1)
+    {
+      cell_freq_z = M$cell[cell_ids] %>% table
+      cell_freq_z = sort(cell_freq_z, decreasing = TRUE)
+      
+      # Stats
+      ncells = length(cell_freq_z)
+      nsegs = dim(M)[2] - 1
+      
+      # Proportions
+      cell_freq_z_p = ((cell_freq_z/nsegs) * 100) %>% round
+      cell_freq_z_p = paste0(cell_freq_z_p, '%')
+      
+      zero_counts_cells = cell_freq_z %>% 
+        as_tibble() %>% 
+        mutate(`%` = ((n/nsegs) * 100) %>% round, modality = !!modality)
+      
+      colnames(zero_counts_cells)[1] = 'cell'
+    }
+    
+    return(zero_counts_cells)
+  }
+  
+  zero_counts_cells_RNA = zeroes_in_modality("RNA")
+  zero_counts_cells_ATAC = zeroes_in_modality("ATAC")
+  
   return(
     list(
       ncells_RNA = ncells_RNA,
@@ -87,7 +126,9 @@ stat_data = function(x)
       nmodalities = nmodalities,
       modalities = modalities,
       rna_dtype = rna_dtype,
-      atac_dtype = atac_dtype
+      atac_dtype = atac_dtype,
+      zero_counts_cells_RNA = zero_counts_cells_RNA,
+      zero_counts_cells_ATAC = zero_counts_cells_ATAC
     )
   )
 }
@@ -130,6 +171,7 @@ stat_fit = function(x)
     pull(cluster) %>% 
     table %>% 
     as.numeric()
+  
   names(fit_mixing_ATAC_n) = x$best_fit$cluster_assignments %>% 
     filter(modality == 'ATAC') %>% 
     pull(cluster) %>% 

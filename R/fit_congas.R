@@ -41,10 +41,15 @@ fit_congas <-
            steps = 500,
            model_selection = "ICL",
            temperature = 10) {
+    
     if (!inherits(x, "rcongasplus")) {
       stop("Input object needs to be an rcongas instance!")
     }
 
+    # Sanitizers obj and zeroes
+    x %>% sanitize_obj()
+    x %>% sanitize_zeroes()
+    
     runs <-
       lapply(K, function(k)
         fit_congas_single_run(

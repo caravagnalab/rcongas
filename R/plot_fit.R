@@ -12,6 +12,7 @@
 #' * (\code{what = "heatmap"}) The same heatmap plot from \code{\link{plot_data}} with
 #' \code{what = "heatmap"}, where rows are sorted by cluster and cluster annotations reported;
 #' * (\code{what = "scores"}) The scores used for model selection;
+#' * (\code{what = "posterior_CNA"}) The posterior probability for CNA values;
 #'
 #' This function has the same logic of \code{\link{plot_data}} with respect to the ellipsis and
 #' input parameters.
@@ -42,6 +43,9 @@
 #'
 #' # Scores for model selection
 #' plot_fit(example_object, what = 'scores')
+#' 
+#' # Posterior for CNAs
+#' plot_fit(example_object, what = 'posterior_CNA')
 plot_fit = function(x, what = 'CNA', ...)
 {
   x %>% sanitize_obj()
@@ -67,7 +71,12 @@ plot_fit = function(x, what = 'CNA', ...)
   if (what == 'scores')
     return(x %>% plot_fit_scores())
 
-  stop("Unrecognised 'what': use any of 'CNA', 'density', 'plot_mixing_proportions', 'heatmap' or 'scores'.")
+  if (what == 'posterior_CNA')
+    return(x %>% plot_fit_posterior_CNA())
+  
+  what_supported = c("CNA", "density", "mixing_proportions", "heatmap", 'scores', "posterior_CNA")
+  
+  stop(paste0("Unrecognised 'what': use any of ", what_supported %>% paste(collapse = ', '), '.'))
 }
 
 plot_fit_CNA = function(x)
@@ -474,5 +483,24 @@ plot_fit_scores = function(x)
     scale_y_continuous(labels = function(x) format(x, scientific = TRUE, digits = 3))
 }
 
+plot_fit_posterior_CNA = function(x)
+{
+  x = get_fit(x, what = 'posterior_CNA')
+  
+  x %>% 
+    ggplot(aes(y = segment_id, x = value, fill = probability)) +
+    geom_tile() +
+    scale_fill_distiller(palette = 'Spectral') +
+    theme_linedraw(base_size = 9) +
+    theme(legend.position = 'bottom') +
+    labs(
+      x = "Copy Number",
+      y = "Segment"
+    ) +
+    guides(fill = guide_colorbar("Posterior", barheight = .5)) +
+    scale_y_discrete(limits = gtools::mixedsort(x$segment_id %>% unique) %>% rev) +
+    facet_wrap(~cluster)
+  
+}  
 
 

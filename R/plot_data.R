@@ -85,7 +85,8 @@ plot_data = function(x,
 }
 
 plot_data_histogram = function(x,
-                               segments = get_input(x, what = 'segmentation') %>% pull(segment_id)
+                               segments = get_input(x, what = 'segmentation') %>% pull(segment_id),
+                               whichfacet = ggplot2::facet_wrap
                                )
 {
   stats_data = stat(x, what = 'data')
@@ -138,13 +139,17 @@ plot_data_histogram = function(x,
     mutate(modality = case_when(
       modality == "RNA" ~ paste(modality, '(', what_rna_lik, ')'),
       modality == "ATAC" ~ paste(modality, '(', what_atac_lik, ')')
-    ))
-  
+    )) 
+
   # Call
   what %>%
+    # deidify() %>% 
+    # mutate(segment_id = factor(chr, levels = gtools::mixedsort(chr) %>% unique)) %>% 
+    mutate(segment_id = factor(segment_id, levels = gtools::mixedsort(segment_id) %>% unique)) %>%
     ggplot(aes(value, fill = modality)) +
-    geom_histogram(bins = 50) +
-    facet_grid(segment_id ~ modality, scales = 'free_x') +
+    geom_histogram(bins = 70) +
+    whichfacet(segment_id ~ modality, scales = 'free') +
+    # facet_wrap(chr ~ modality, scales = 'free') +
     labs(title = x$description,
          subtitle = subtitle) +
     guides(fill = FALSE) +
@@ -416,18 +421,24 @@ plot_data_mapping = function(x)
   mapping = x %>%
     get_input(what = 'segmentation')
   
-  w = "segment_id"
+  w = c("chr", "segment_id")
   if ("RNA" %in% stat(x)$modalities)
     w = c(w, "RNA_genes")
   if ("ATAC" %in% stat(x)$modalities)
     w = c(w, "ATAC_peaks")
   
-  reshape2::melt(mapping[w], id = "segment_id") %>%
-    deidify() %>%
-    mutate(segment_id = paste(from, ':', to)) %>%
+  order_segments = mapping %>% 
+    mutate(E = ATAC_peaks + RNA_genes) %>% 
+    arrange(chr, (E)) %>% 
+    pull(segment_id)
+  
+  reshape2::melt(mapping[w], id = c("segment_id", "chr")) %>%
+    # deidify() %>%
+    # mutate(segment_id = paste(from, ':', to)) %>%
+    mutate(chr = factor(chr, levels = gtools::mixedsort(chr) %>% unique)) %>% 
     mutate(value = ifelse(value == 0, NA, value)) %>%
     ggplot(aes(
-      y = segment_id,
+      y = factor(segment_id, levels = order_segments),
       x = variable,
       fill = value,
       label = value
@@ -439,8 +450,9 @@ plot_data_mapping = function(x)
     scale_fill_distiller(palette = 'Spectral',
                          direction = -1,
                          na.value = 'gray') +
-    facet_grid(chr ~ "Mapping", scales = "free_y", space = "free_y") +
-    labs(x = "Modality", y = "Segments")
+    facet_grid(chr ~ "Modality", scales = "free_y", space = "free_y") +
+    labs(x = "Modality", y = "Segments") 
+    # scale_y_discrete(limits = order_segments)
 }
 
 

@@ -21,10 +21,9 @@ auto_config_run <-
            lambda = 0.3,
            a_sd = 1,
            b_sd = 100,
-           prior_cn = c(0.2, 0.6, 0.2, 0.05, 0.05),
-           hidden_dim = 5,
-           init_importance = 5,
-           NB_size_prior = c())
+           prior_cn = c(0.2, 0.6, 0.2, 0.05, 0.025, 0.025),
+           hidden_dim = length(prior_cn),
+           init_importance = 0.6)
 
     {
     cli::cli_h1("(R)CONGAS+ hyperparameters auto-config")
@@ -150,7 +149,10 @@ gamma_shape_rate <-
     inp[is.na(inp)] <- 0
 
     inp = inp[order(rownames(inp)), order(colnames(inp)), drop = FALSE]
+<<<<<<< HEAD
 
+=======
+>>>>>>> f96dbd85ea3e93c1e56d2ef56ec0695dfbde89f2
 
     norm_raw = get_normalisation(x) %>%
       filter(modality == !!modality) %>%

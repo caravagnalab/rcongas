@@ -55,6 +55,7 @@
 #' @importFrom graphics curve hist
 #' @importFrom stats complete.cases dgamma quantile rnorm sd
 #' @importFrom utils head object.size
+#' @importFrom gtools mixedsort
 #' @import dplyr
 #' @import ggplot2
 #' @import CNAqc
@@ -231,7 +232,8 @@ init = function(
   ret_obj$input$normalisation = normalisation_factors
   ret_obj$input$segmentation = segmentation
 
-  return(ret_obj %>% sanitize_obj)
+  return(ret_obj %>% sanitize_obj %>% sanitize_zeroes
+  )
 }
 
 create_modality = function(modality, data, segmentation, normalisation_factors, likelihood)
@@ -270,26 +272,26 @@ create_modality = function(modality, data, segmentation, normalisation_factors, 
 
   pb$tick(0)
 
-  # for(i in 1:nrow(segmentation))
-  # {
-  #
-  #   pb$tick()
-  #
-  #   what_maps = which(
-  #     data$chr == segmentation$chr[i] &
-  #       data$from >= segmentation$from[i] &
-  #       data$to <= segmentation$to[i]
-  #   )
-  #
-  #   if(length(what_maps) == 0) next;
-  #
-  #   data$segment_id[what_maps] = segmentation$segment_id[i]
-  #
-  #   segmentation[[evt_lbs]][i] = what_maps %>% length
-  #   segmentation[[loc_lbs]][i] = data[what_maps, ] %>%
-  #     distinct(chr, from, to) %>%
-  #     nrow()
-  # }
+  for(i in 1:nrow(segmentation))
+  {
+
+    pb$tick()
+
+    what_maps = which(
+      data$chr == segmentation$chr[i] &
+        data$from >= segmentation$from[i] &
+        data$to <= segmentation$to[i]
+    )
+
+    if(length(what_maps) == 0) next;
+
+    data$segment_id[what_maps] = segmentation$segment_id[i]
+
+    segmentation[[evt_lbs]][i] = what_maps %>% length
+    segmentation[[loc_lbs]][i] = data[what_maps, ] %>%
+      distinct(chr, from, to) %>%
+      nrow()
+  }
 
 
 
