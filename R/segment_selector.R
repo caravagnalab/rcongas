@@ -54,10 +54,17 @@ model_selection = function(x, K = 1:3, samples = 10, epsilon = 1e-4)
     # NLL
     loglik = function(x) { -sum(x$assignments$likelihood) }
     
+    # initialize assignments
+    km=kmeans(x, centers=k, iter.max = 10, nstart = 1,
+           algorithm = c("Hartigan-Wong", "Lloyd", "Forgy",
+                         "MacQueen"), trace=FALSE)
+    
+    clustering_assignments=km$cluster
+    
     # Starting point random
     x = x %>% 
       rowwise() %>% 
-      mutate(value = value %>% round, cluster = sample(paste(1:k), 1)) %>% 
+      mutate(value = value %>% round, cluster = clustering_assignments) %>% 
       ungroup()
     
     y = NULL
@@ -95,8 +102,7 @@ model_selection = function(x, K = 1:3, samples = 10, epsilon = 1e-4)
     
     N_params = K_effective + 2 * K_effective
     BIC = N_params * log(x %>% nrow) + 2 * NLL
-    
-    # Plots assignmenta
+    # Plots assignments
     P = ggplot(final_step$assignments,
                aes(value, fill = cluster %>% paste)) +
       geom_histogram(bins = 50) +
