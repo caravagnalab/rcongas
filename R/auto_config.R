@@ -208,7 +208,7 @@ auto_normalisation_factor = function(x)
 
   norm_x = x %>%
     group_by(cell) %>%
-    summarise(normalisation_factor = sum(value))
+    summarise(normalisation_factor = sum(value, na.rm = TRUE))
 
   ndigits = median(nchar(norm_x$normalisation_factor))
   scaling = `^`(10,ndigits)

@@ -30,6 +30,7 @@ only for segments that differ for a segment CNA value among one of the inferred 
 \item (\code{what = "heatmap"}) The same heatmap plot from \code{\link{plot_data}} with
 \code{what = "heatmap"}, where rows are sorted by cluster and cluster annotations reported;
 \item (\code{what = "scores"}) The scores used for model selection;
+\item (\code{what = "posterior_CNA"}) The posterior probability for CNA values;
 }
 
 This function has the same logic of \code{\link{plot_data}} with respect to the ellipsis and
@@ -52,4 +53,7 @@ plot_fit(example_object, what = 'heatmap')
 
 # Scores for model selection
 plot_fit(example_object, what = 'scores')
+
+# Posterior for CNAs
+plot_fit(example_object, what = 'posterior_CNA')
 }

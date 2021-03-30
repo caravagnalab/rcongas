@@ -12,7 +12,8 @@ fit_congas(
   latent_variables = "D",
   compile = FALSE,
   steps = 500,
-  model_selection = "ICL"
+  model_selection = "ICL",
+  temperature = 10
 )
 }
 \arguments{

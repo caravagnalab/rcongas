@@ -29,9 +29,10 @@ x = init(
   rna = example_input$x_rna,
   atac = NULL,
   segmentation = example_input$x_segmentation,
-  normalisation_factors = example_input$x_normalisation_factors,
+  rna_normalisation_factors = example_input$x_rna %>% auto_normalisation_factor(),
+  atac_normalisation_factors = NULL,
   rna_likelihood = "G", 
-  atac_likelihood = 'NB',
+  atac_likelihood = NULL,
   description = 'My crazy model')
 
 print(x)
@@ -63,7 +64,8 @@ x = init(
   rna = example_input$x_rna,
   atac = example_input$x_atac,
   segmentation = example_input$x_segmentation,
-  normalisation_factors = example_input$x_normalisation_factors,
+  rna_normalisation_factors = example_input$x_rna %>% auto_normalisation_factor(),
+  atac_normalisation_factors = example_input$x_atac %>% auto_normalisation_factor(),
   rna_likelihood = "G", 
   atac_likelihood = 'NB',
   description = 'My crazy model')

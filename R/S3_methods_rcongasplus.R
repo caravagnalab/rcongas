@@ -12,6 +12,15 @@
 #' print(example_object)
 print.rcongasplus = function(x, ...)
 {
+  log = function()
+  {
+    # cat('\n')
+    # cli::cli_rule(crayon::red('LOG'))
+    
+    cli::cli_h2(crayon::bgMagenta(crayon::white(' LOG ')))
+    cat(x$log)
+  }
+  
   inline_segments_printer = function(x, what = 'segmentation')
   {
     # Color coding
@@ -155,6 +164,7 @@ print.rcongasplus = function(x, ...)
     {
       cli::cli_alert_warning('Clusters: {crayon::red("not available")}.')
       
+      log()
       invisible(return(0))
     }
   
@@ -204,6 +214,9 @@ print.rcongasplus = function(x, ...)
   #     ),
   #     symbol = 'clisymbols::symbol$bullet'
   #   ) %>% cli::cli_text()
+  
+  
+  log()
  
   invisible(return(0))
 }

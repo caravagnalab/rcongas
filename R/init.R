@@ -91,7 +91,8 @@ init = function(
   rna,
   atac,
   segmentation,
-  normalisation_factors,
+  rna_normalisation_factors,
+  atac_normalisation_factors,
   rna_likelihood = "G",
   atac_likelihood = "NB",
   reference_genome = 'GRCh38',
@@ -130,9 +131,14 @@ init = function(
                  types_required = c("character", "integer", "integer", "integer")
   )
 
-  sanitize_input(normalisation_factors,
-                 required_input_columns = c("cell", "normalisation_factor", "modality"),
-                 types_required = c("character", "numeric", "character")
+  sanitize_input(rna_normalisation_factors,
+                 required_input_columns = c("cell", "normalisation_factor"),
+                 types_required = c("character", "numeric")
+  )
+  
+  sanitize_input(atac_normalisation_factors,
+                 required_input_columns = c("cell", "normalisation_factor"),
+                 types_required = c("character", "numeric")
   )
 
   # Reference
@@ -148,12 +154,18 @@ init = function(
   }
 
   # Check that normalization factors are available for all cells
-  all_sample_cells = c(rna$cell, atac$cell) %>% unique
-
-  if(!all(all_sample_cells %in% normalisation_factors$cell))
+  if(!all(rna$cell %in% rna_normalisation_factors$cell))
   {
-    message("Error with this tibble")
-    normalisation_factors %>% print()
+    message("Error with this RNA tibble")
+    rna_normalisation_factors %>% print()
+    
+    stop("Missing normalisation factors for some input cells.")
+  }
+  
+  if(!all(atac$cell %in% atac_normalisation_factors$cell))
+  {
+    message("Error with this ATAC tibble")
+    atac_normalisation_factors %>% print()
 
     stop("Missing normalisation factors for some input cells.")
   }
@@ -182,19 +194,20 @@ init = function(
     segmentation$RNA_nonzerovals =
     segmentation$ATAC_peaks =
     segmentation$ATAC_nonzerovals = 0
-
+  
   # Create RNA modality data
   rna_modality_data = create_modality(
     modality = "RNA",
     data = rna,
     segmentation = segmentation,
-    normalisation_factors = normalisation_factors %>% filter(modality == "RNA"),
+    normalisation_factors = rna_normalisation_factors,
     likelihood = rna_likelihood)
 
   if(!is.null(rna))
   {
     rna = rna_modality_data$data %>% select(segment_id, cell, value, modality, value_type)
     segmentation = rna_modality_data$segmentation
+    rna_normalisation_factors = rna_modality_data$normalisation
   }
 
   # Create ATAC modality data
@@ -202,15 +215,17 @@ init = function(
     modality = "ATAC",
     data = atac,
     segmentation = segmentation,
-    normalisation_factors = normalisation_factors %>% filter(modality == "ATAC"),
+    normalisation_factors = atac_normalisation_factors,
     likelihood = atac_likelihood)
 
   if(!is.null(atac))
   {
     atac = atac_modality_data$data %>% select(segment_id, cell, value, modality, value_type)
     segmentation = atac_modality_data$segmentation
+    
+    atac_normalisation_factors = atac_modality_data$normalisation
   }
-
+  
   # The last thing we do is to sanitise the segmentation, this removes useless segments
   cli::cli_h3("Checking segmentation")
   cat("\n")
@@ -229,9 +244,12 @@ init = function(
 
   # Add to the return object
   ret_obj$input$dataset = bind_rows(rna, atac)
-  ret_obj$input$normalisation = normalisation_factors
+  ret_obj$input$normalisation = bind_rows(rna_normalisation_factors,
+                                          atac_normalisation_factors)
   ret_obj$input$segmentation = segmentation
 
+  ret_obj$log = paste('-', Sys.time(), "Created input object.")
+  
   return(ret_obj %>% sanitize_obj %>% sanitize_zeroes
   )
 }
@@ -242,6 +260,8 @@ create_modality = function(modality, data, segmentation, normalisation_factors, 
   if(is.null(data)) {
     return(list(data = NULL, segmentation = segmentation))
   }
+  
+  normalisation_factors = normalisation_factors %>% mutate(modality = !!modality)
 
   os = object.size(data)/1e6
 
@@ -274,7 +294,6 @@ create_modality = function(modality, data, segmentation, normalisation_factors, 
 
   for(i in 1:nrow(segmentation))
   {
-
     pb$tick()
 
     what_maps = which(
@@ -292,8 +311,6 @@ create_modality = function(modality, data, segmentation, normalisation_factors, 
       distinct(chr, from, to) %>%
       nrow()
   }
-
-
 
   n_na = is.na(data$segment_id) %>% sum()
   nn_na = (data %>% nrow) - n_na
@@ -316,7 +333,11 @@ create_modality = function(modality, data, segmentation, normalisation_factors, 
     zscore_params = data %>%
       group_by(chr, from, to) %>%
       summarise(value_mean = mean(value), value_sd = sd(value), .groups = 'keep')
-
+    
+    # Set to 1 normalisation factors
+    cli::cli_alert_warning("With Gaussian likelihood normalisation factors are changed to 1.")
+    normalisation_factors$normalisation_factor = 1
+    
     data = data %>%
       left_join(zscore_params, by = c('chr', 'from', 'to')) %>%
       mutate(
@@ -376,6 +397,7 @@ create_modality = function(modality, data, segmentation, normalisation_factors, 
   return(
     list(
       data = mapped,
+      normalisation = normalisation_factors,
       segmentation = segmentation
     )
   )
