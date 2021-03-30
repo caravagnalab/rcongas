@@ -35,20 +35,20 @@ appropriate type of information.
 data(example_object)
 
 # Extract segment parameters
-get_fit(example_object, what = 'segment_parameters') 
+get_fit(example_object, what = 'segment_parameters')
 
 # Extract CNAs
-get_fit(example_object, what = 'CNA') 
+get_fit(example_object, what = 'CNA')
 
 # Extract CNAs
-get_fit(example_object, what = 'posterior_CNA') 
+get_fit(example_object, what = 'posterior_CNA')
 
 # Extract mixing proportions
-get_fit(example_object, what = 'mixing_proportions') 
+get_fit(example_object, what = 'mixing_proportions')
 
 # Extract clustering assignments
-get_fit(example_object, what = 'cluster_assignments') 
+get_fit(example_object, what = 'cluster_assignments')
 
 # Extract the clustering responsibilities
-get_fit(example_object, what = 'z_nk') 
+get_fit(example_object, what = 'z_nk')
 }

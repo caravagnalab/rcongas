@@ -8,7 +8,8 @@ init(
   rna,
   atac,
   segmentation,
-  normalisation_factors,
+  rna_normalisation_factors,
+  atac_normalisation_factors,
   rna_likelihood = "G",
   atac_likelihood = "NB",
   reference_genome = "GRCh38",
@@ -22,8 +23,6 @@ init(
 
 \item{segmentation}{A tibble with the input segmentation.}
 
-\item{normalisation_factors}{A tibble with the input per-cell normalisation factors.}
-
 \item{rna_likelihood}{Type of likelihood used for RNA data (\code{"G"} for Gaussian and
 \code{""NB} for Negative Binomial). The RNA default is \code{"G"}.}
 
@@ -32,6 +31,8 @@ init(
 \item{reference_genome}{Either \code{"GRCh38"} or \code{"hg19"}.}
 
 \item{description}{A model in-words description.}
+
+\item{normalisation_factors}{A tibble with the input per-cell normalisation factors.}
 }
 \value{
 An object of class \code{rcongasplus}
@@ -88,9 +89,9 @@ x = init(
   atac = example_input$x_atac,
   segmentation = example_input$x_segmentation,
   normalisation_factors = example_input$x_normalisation_factors,
-  rna_likelihood = "G", 
+  rna_likelihood = "G",
   atac_likelihood = 'NB',
   description = 'My crazy model')
-  
+
 print(x)
 }
