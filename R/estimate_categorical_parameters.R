@@ -60,13 +60,13 @@ estimate_segment_factors_aux <- function(data_mle, plot)
         stats4::mle(
           minuslogl = LL,
           start = list(
-            theta_shape = mean(data_mle) / sd(data_mle) ,
-            theta_rate =  1 / sd(data_mle)
+            theta_shape = mean(data_mle) / sd(data_mle)*10 ,
+            theta_rate =  1 / sd(data_mle)*10
           ),
           lower = c(1e-16, 1e-16),
           upper = c(Inf, Inf), nobs = length(data_mle),
         )
-
+      
       ct = ifelse(is.null(coeff),ct,MAXT)
       coeff <-  coeff@coef
     }, error = function(e) {ct = ct + 1})
