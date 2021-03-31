@@ -51,12 +51,12 @@ formals(Rcongas:::plot_data_mapping) \%>\% names()
 
 data("example_object")
 
-# Data histogram plot (default all segments)  
+# Data histogram plot (default all segments)
 plot_data(example_object, what = 'histogram')
 
 # Subset what to plot
- 
-# Lineplot segments (default)  
+
+# Lineplot segments (default)
 plot_data(example_object, what = 'lineplot')
 
 # Data heatmap
