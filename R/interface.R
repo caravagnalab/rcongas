@@ -95,13 +95,24 @@ set_names <-  function(an){
   an$parameters$cnv_probs <-  an$parameters$cnv_probs[mix_order,,drop = FALSE]
 
   colnames(an$parameters$cnv_probs) <- an$dim_names$seg_names
-  rownames(an$parameters$cnv_probs) <- new_clusters
+  rownames(an$parameters$cnv_probs) <- names(an$parameters$mixture_weights)
   
   names(an$parameters$norm_factor) <-  an$dim_names$cell_names
   names(an$parameters$assignement) <-  an$dim_names$cell_names
   
   colnames(an$parameters$assignment_probs) <- names(an$parameters$mixture_weights)
   rownames(an$parameters$assignment_probs) <- an$dim_names$cell_names
+  
+  
+  ### Remove cluster not assigned 
+  clusters_assigned <- unique(an$parameters$assignement)
+  if(length(clusters_assigned) <  length(an$parameters$mixture_weights)) cli::cli_alert_warning("Removing clusters collapsed to 0 probability!")
+  an$parameters$cnv_probs <- an$parameters$cnv_probs[which(rownames(an$parameters$cnv_probs) %in% clusters_assigned),, drop = F]
+  an$parameters$mixture_weights <-  an$parameters$mixture_weights[which(names(an$parameters$mixture_weights) %in% clusters_assigned)]
+  an$parameters$mixture_weights <-  an$parameters$mixture_weights / sum(an$parameters$mixture_weights)
+  an$parameters$assignment_probs <- an$parameters$assignment_probs[, which(colnames(an$parameters$assignment_probs) %in% clusters_assigned), drop = F]
+  an$parameters$assignment_probs <- an$parameters$assignment_probs / rowSums(an$parameters$assignment_probs)
+  
 
   return(an)
 }

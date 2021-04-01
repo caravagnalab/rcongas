@@ -1,10 +1,11 @@
 
 
+
 #' Title
 #'
 #' @param x
 #' @param ...
-#' @param cex 
+#' @param cex
 #'
 #' @return
 #' @export
@@ -113,7 +114,7 @@ report_analysis <- function(x, cex = 1, ...)
   
   p5 <-
     (
-      Rcongas:::plot_gw_cna_profiles(x, whole_genome = TRUE) +
+      plot_gw_cna_profiles(x, whole_genome = TRUE) +
         labs(title = "Tumour CNA segments", subtitle = "Default highlight parameters.")
     ) %>%
     curate
@@ -124,32 +125,40 @@ report_analysis <- function(x, cex = 1, ...)
   ns = segments_ids %>% length %>% sqrt %>% ceiling
   
   # Density plots
-  density_plots = lapply(plot_segment_density(x, segments_ids = segments_ids),
-                         function(x)
-                           x %>% curate)
-  
-  if (segments_ids %>% length <= 4) 
+  if (ns > 0)
   {
-    ns = 1
+    density_plots = lapply(plot_segment_density(x, segments_ids = segments_ids),
+                           function(x)
+                             x %>% curate)
     
-    bottom_panel = ggpubr::ggarrange(
-      plotlist = density_plots,
-      nrow = 1,
-      ncol = segments_ids %>% length,
-      common.legend = TRUE,
-      legend = "bottom",
-      labels = 'h'
-    )
+    if (segments_ids %>% length <= 4)
+    {
+      ns = 1
+      
+      bottom_panel = ggpubr::ggarrange(
+        plotlist = density_plots,
+        nrow = 1,
+        ncol = segments_ids %>% length,
+        common.legend = TRUE,
+        legend = "bottom",
+        labels = 'h'
+      )
+    }
+    else {
+      bottom_panel = ggpubr::ggarrange(
+        plotlist = density_plots,
+        nrow = ifelse(ns * (ns - 1) < (segments_ids %>% length), ns, ns - 1),
+        ncol = ns,
+        common.legend = TRUE,
+        legend = "bottom",
+        labels = 'h'
+      )
+    }
   }
-  else {
-    bottom_panel = ggpubr::ggarrange(
-      plotlist = density_plots,
-      nrow = ifelse(ns * (ns - 1) < (segments_ids %>% length), ns, ns - 1),
-      ncol = ns,
-      common.legend = TRUE,
-      legend = "bottom",
-      labels = 'h'
-    )
+  else
+  {
+    density_plots = CNAqc:::eplot()
+    bottom_panel = density_plots
   }
   
   strip_top =  p2 + p5  +  plot_layout(widths =  c(1, 4),

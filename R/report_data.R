@@ -24,14 +24,23 @@ report_data = function(x, cex = 1, ...)
       )
   }
   
+
+  
   # Mid and bottom panels: what we show
   to_show = get_input_segmentation(x) %>% pull(chr) %>% unique
   
   if (has_inference(x))
+  {
     to_show = highlights(x, ...) %>%
-    filter(highlight) %>%
-    pull(chr) %>%
-    unique
+      filter(highlight) %>%
+      pull(chr) %>%
+      unique
+    
+    if(get_k(x) == 1) {
+      message("K=1, this plot makes no sense, making it empty")
+      return(CNAqc:::eplot())
+    }
+  }
   
   # Top panel
   prna = plot_counts_rna_segments(x, z_score = TRUE, chromosomes = to_show, ...) +

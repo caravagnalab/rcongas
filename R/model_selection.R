@@ -18,7 +18,13 @@ log_sum_exp <- function(x) {
 
 
 calculate_entropy <- function(x) {
-  tmp <- apply(x, 1, function(x)  x * log(x) )
+  tmp <- apply(x, 1, function(x) {
+    x = x + 1e9
+    x = x/sum(x)
+    
+    x * log(x) 
+  }
+              )
   -sum(tmp)
 }
 
@@ -26,7 +32,7 @@ calculate_entropy <- function(x) {
 calculate_ICL <- function(inf, data, mu,llikelihood = gauss_lik) {
 
   BIC <- calculate_BIC(inf, data, mu,llikelihood)
-  H <- calculate_entropy(inf$parameters$assignment_probs + 1e-8)
+  H <- calculate_entropy(inf$parameters$assignment_probs)
   return(BIC + H)
 }
 
@@ -135,19 +141,19 @@ gauss_lik_old <-  function(data,mu,par) {
 
   })
 
-  log_lk <- matrix(nrow = nrow(data), ncol = ncol(data))
+  log_lk <- array(0, dim = c(length(mixture_weights), nrow(data), ncol(data)))
 
   for(n in 1:nrow(data)){
     for(i in 1:ncol(data)){
       lk <-  vector(length = length(mixture_weights))
       for(k in 1:length(mixture_weights))
-        lk[k] <- dpois(as.numeric(data[n,i]), as.numeric(lambdas[[k]][n,i]), log = TRUE) + log(mixture_weights[k])
-      log_lk[n,i] <- log_sum_exp(lk)
+        log_lk[k,n,i] <- dpois(as.numeric(data[n,i]), as.numeric(lambdas[[k]][n,i]), log = TRUE) 
     }
   }
-
-
-  log_lk <-  sum(log_lk)
+  log_lk <- apply(log_lk,c(1,2), sum) + log(mixture_weights)
+  log_lk <- log_sum_exp(log_lk)
+  
+  log_lk <-  sum(log_lk) / ncol(data)
 
   return(log_lk)
 }
@@ -167,19 +173,21 @@ gauss_lik <-  function(data,mu,par) {
 
   })
 
-  log_lk <- matrix(nrow = nrow(data), ncol = ncol(data))
-
+  log_lk <- array(0, dim = c(length(mixture_weights), nrow(data), ncol(data)))
+  
   for(n in 1:nrow(data)){
     for(i in 1:ncol(data)){
       lk <-  vector(length = length(mixture_weights))
       for(k in 1:length(mixture_weights))
-        lk[k] <- dpois(as.numeric(data[n,i]), as.numeric(lambdas[[k]][n,i]), log = TRUE) + log(mixture_weights[k])
-      log_lk[n,i] <- log_sum_exp(lk)
+        log_lk[k,n,i] <- dpois(as.numeric(data[n,i]), as.numeric(lambdas[[k]][n,i]), log = TRUE) 
     }
   }
-
-
-  log_lk <-  sum(log_lk)
+  log_lk <- apply(log_lk,c(1,2), sum) 
+  log_lk <- apply(log_lk, 2, function(x) x + log(mixture_weights))
+  if(length(mixture_weights) > 1 )
+   log_lk <- apply(log_lk, 2, function(x) log_sum_exp(x))
+  
+  log_lk <-  sum(log_lk) / ncol(data)
 
   return(log_lk)
 }

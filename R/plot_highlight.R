@@ -196,6 +196,8 @@ plot_highlights = function(x, alpha = 0.05)
   
   nh = tests_table %>% filter(highlight) %>% nrow
   
+  if(nh == 0) return(CNAqc:::eplot())
+  
   # Density points
   params = tests_table %>% distinct(cluster, versus, shape, rate)
   

@@ -46,7 +46,6 @@ get_poisson_parameters <-  function(x) {
 
   lambdas <- apply(bm$parameters$cnv_probs, 1,function(y) (y * x$data$cnv$mu))
 
-  colnames(lambdas) <- paste0("c",  colnames(lambdas))
   ret  <-  reshape2::melt(lambdas %>%  as.matrix)
 
   colnames(ret) <- c("segment_id", "cluster", "lambda")
@@ -74,7 +73,6 @@ get_gaussian_parameters <-  function(x) {
 
   colnames(ret) <- c("cluster", "segment_id", "mean", "sd")
 
-  ret$cluster <- paste0("c", ret$cluster)
 
   ret <-  ret %>% deidify() %>% idify()
 
