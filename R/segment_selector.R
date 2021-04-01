@@ -2,7 +2,7 @@
 # x = model_selection(x)
 # 
 
-model_selection = function(x, K = 1:3, samples = 10, epsilon = 1e-4)
+segment_selector = function(x, K = 1:3, samples = 10, epsilon = 1e-4, score="ICL")
 {
   library(purrr)
   
@@ -55,16 +55,18 @@ model_selection = function(x, K = 1:3, samples = 10, epsilon = 1e-4)
     loglik = function(x) { -sum(x$assignments$likelihood) }
     
     # initialize assignments
-    km=kmeans(x, centers=k, iter.max = 10, nstart = 1,
-           algorithm = c("Hartigan-Wong", "Lloyd", "Forgy",
-                         "MacQueen"), trace=FALSE)
+    km=kmeans(x$value, centers=k, nstart = 100,  trace=FALSE)
     
-    clustering_assignments=km$cluster
+    index=1:k
+    labels=sample(index,round(length(km$cluster)*0.3),replace = T)
+    km$cluster[1:round(length(km$cluster)*0.3)]=labels
+    x$cluster=km$cluster
     
-    # Starting point random
+    
+    #Starting point random
     x = x %>% 
       rowwise() %>% 
-      mutate(value = value %>% round, cluster = clustering_assignments) %>% 
+      mutate(value = value %>% round) %>% 
       ungroup()
     
     y = NULL
@@ -85,12 +87,21 @@ model_selection = function(x, K = 1:3, samples = 10, epsilon = 1e-4)
       if (delta_ll < epsilon)
         break
       
-      x = iterations[[5]]$assignments
+       x = iterations[[5]]$assignments
     }
     
     # cat("FINISHED")
     
     final_step = y[[length(y)]]
+    
+    H = final_step$all_model %>% 
+      mutate(posterior = prior*likelihood) %>% 
+      group_by(cell) %>% 
+      mutate(posterior = posterior/sum(posterior)) %>% 
+      mutate(entropy= -sum(posterior*log(posterior))) %>% 
+      distinct(cell, entropy) %>% 
+      ungroup() 
+    
     
     # Values returned
     NLL = final_step$all_model %>% 
@@ -102,18 +113,22 @@ model_selection = function(x, K = 1:3, samples = 10, epsilon = 1e-4)
     
     N_params = K_effective + 2 * K_effective
     BIC = N_params * log(x %>% nrow) + 2 * NLL
+    ICL = BIC + sum(H$entropy)
+    
+    
     # Plots assignments
     P = ggplot(final_step$assignments,
                aes(value, fill = cluster %>% paste)) +
       geom_histogram(bins = 50) +
       guides(fill = FALSE) +
-      labs(title = paste0("k = ", K_effective, ', NLL = ', NLL %>% round, " BIC = ", BIC %>% round)) +
+      labs(title = paste0("k = ", K_effective, ', NLL = ', NLL %>% round, " BIC = ",
+                          BIC %>% round, " ICL = ", ICL %>% round)) +
       theme_linedraw(base_size = 8)
     
     # Density
     PD = NULL
-    for(i in final_step$fits$cluster %>% seq)
-    {
+    for(i in final_step$fits$cluster %>% seq){
+      
       PD_df = data.frame(
         x = seq(min(x$value), max(x$value), 10),
         cluster = final_step$fits$cluster[i]
@@ -136,6 +151,7 @@ model_selection = function(x, K = 1:3, samples = 10, epsilon = 1e-4)
       k = K_effective,
       NLL = NLL%>% as.numeric,
       BIC = BIC %>% as.numeric,
+      ICL = ICL %>% as.numeric,
       plot = P %>% list,
       nsteps = length(y)
     ) %>% 
@@ -161,9 +177,21 @@ model_selection = function(x, K = 1:3, samples = 10, epsilon = 1e-4)
       parallel = FALSE
     )
     
+    if(score=="BIC"){
+      
     trials_fit = Reduce(bind_rows, trials_fit) %>% 
       arrange(BIC)
-  }
+    
+    }else if(score=="ICL"){
+      
+      trials_fit = Reduce(bind_rows, trials_fit) %>% 
+        arrange(ICL)
+      
+    }else{
+      
+         stop("unkonwn score")
+    }
+}
   
   # Modality data, normalised by factors
   modality_data = x %>% 
@@ -172,8 +200,7 @@ model_selection = function(x, K = 1:3, samples = 10, epsilon = 1e-4)
   
   atac_norm_factors = x %>% get_input(what = "normalisation") %>% filter(modality == "ATAC")
   
-  modality_data = Rcongas:::normalise_modality(modality_data, atac_norm_factors) %>% 
-    group_split(segment_id)
+  modality_data = Rcongas:::normalise_modality(modality_data, atac_norm_factors) %>% group_split(segment_id)
   names(modality_data) = x$input$segmentation$segment_id %>% unique()
   
   all_fits = lapply(modality_data %>% names, function(x)
