@@ -3,7 +3,7 @@
 \docType{data}
 \name{example_input}
 \alias{example_input}
-\title{Example tibbles with input data in the format for (R)Congas+}
+\title{Example tibbles with input data in the format for (R)CONGAS+}
 \format{
 Example tibbles with input data.
 }
@@ -11,7 +11,7 @@ Example tibbles with input data.
 data(example_input)
 }
 \description{
-Example tibbles with input data in the format for (R)Congas+
+Example tibbles with input data in the format for (R)CONGAS+
 }
 \examples{
 data(example_input)

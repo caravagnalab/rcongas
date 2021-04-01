@@ -141,7 +141,7 @@ sanitize_zeroes = function(x)
 
     cat("\n")
     cli::cli_alert_danger("{crayon::bold(crayon::red('Warning'))} {crayon::red('RNA 0-counts cells.')} \\
-                            {.field {ncells}} cells have no data in any of {.field {nsegs}} segments, \\
+                            {.field {ncells}} cells have missing data in any of {.field {nsegs}} segments, \\
                             top {.field {top}} with missing data are:")
     
     for(i in 1:top)

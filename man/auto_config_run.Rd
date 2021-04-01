@@ -14,24 +14,11 @@ auto_config_run(
   b_sd = 100,
   prior_cn = c(0.2, 0.6, 0.2, 0.05, 0.025, 0.025),
   hidden_dim = length(prior_cn),
-  init_importance = 0.6
+  init_importance = 0.6,
+  NB_size_priors = c(15, 1000)
 )
 }
 \arguments{
-\item{x}{}
-
-\item{K}{}
-
-\item{NB_size_atac}{}
-
-\item{NB_size_rna}{}
-
-\item{lambda}{}
-
-\item{a_sd}{}
-
-\item{b_sd}{}
-
 \item{prior_cn}{}
 }
 \value{

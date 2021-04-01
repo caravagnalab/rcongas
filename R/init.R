@@ -91,12 +91,12 @@ init = function(
   rna,
   atac,
   segmentation,
-  rna_normalisation_factors,
-  atac_normalisation_factors,
+  rna_normalisation_factors = rna %>% auto_normalisation_factor(),
+  atac_normalisation_factors = atac %>% auto_normalisation_factor(),
   rna_likelihood = "G",
   atac_likelihood = "NB",
   reference_genome = 'GRCh38',
-  description = "A (R)CONGAS+ model"
+  description = "(R)CONGAS+ model"
 )
 {
   if(is.null(rna) & is.null(atac))
@@ -188,6 +188,8 @@ init = function(
   }
 
   # Prepare segment
+  segmentation = smoothie(segments = segmentation, reference = reference_genome)
+  
   segmentation = segmentation %>% idify()
 
   segmentation$RNA_genes =
@@ -403,3 +405,54 @@ create_modality = function(modality, data, segmentation, normalisation_factors, 
   )
 }
 
+# Segments smoothing function
+smoothie = function(segments, reference = 'GRCh38')
+{
+  cli::cli_alert("Smoothing {.field {nrow(segments)}} input segments.")
+  reference = CNAqc:::get_reference(ref = reference)
+  
+  smoothed_segments = NULL
+  
+  for (chr in unique(segments$chr))
+  {
+    chr_segments = segments %>% filter(chr == !!chr)
+    
+    if (nrow(chr_segments) == 1) {
+      smoothed_segments = bind_rows(smoothed_segments,
+                                    chr_segments)
+      next
+    }
+    
+    index = 1
+    
+    repeat {
+      template = chr_segments[index, ]
+      
+      j = index
+      repeat {
+        if (j == nrow(chr_segments))
+          break
+        
+        copies_match = chr_segments$copies[j + 1] == chr_segments$copies[j]
+        
+        if (copies_match)
+          j = j + 1
+        else
+          break
+      }
+      
+      template$to = chr_segments$to[j]
+      template$length = template$to - template$from
+      smoothed_segments = bind_rows(smoothed_segments,
+                                    template)
+      if (j == nrow(chr_segments))
+        break
+      index = j + 1
+    }
+    
+  }
+  
+  cli::cli_alert("After smoothing there are {.field {nrow(smoothed_segments)}} input segments.")
+  
+  return(smoothed_segments)
+}

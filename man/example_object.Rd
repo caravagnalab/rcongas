@@ -3,7 +3,7 @@
 \docType{data}
 \name{example_object}
 \alias{example_object}
-\title{Example object from (R)Congas+}
+\title{Example object from (R)CONGAS+}
 \format{
 Example object.
 }
@@ -11,7 +11,7 @@ Example object.
 data(example_object)
 }
 \description{
-Example object from (R)Congas+
+Example object from (R)CONGAS+
 }
 \examples{
 data(example_object)
