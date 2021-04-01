@@ -2,12 +2,12 @@
 # x = model_selection(x)
 # 
 
-segment_selector = function(x, K = 1:3, samples = 10, epsilon = 1e-4, score="ICL")
+segment_selector = function(x, K = 1:3, samples = 10, epsilon = 1e-4, score="ICL", mod="ATAC")
 {
   library(purrr)
   
   # EM
-  fit_em = function(x, k, epsilon = 1e-4)
+  fit_em = function(x, k, segment_id, epsilon = 1e-4)
   {
     # dnbinom(x, size, prob, mu, log = FALSE) is the likelihood function for a NB using size, mu as parameters
     fit_nb_mle <- function(x) {
@@ -121,8 +121,7 @@ segment_selector = function(x, K = 1:3, samples = 10, epsilon = 1e-4, score="ICL
                aes(value, fill = cluster %>% paste)) +
       geom_histogram(bins = 50) +
       guides(fill = FALSE) +
-      labs(title = paste0("k = ", K_effective, ', NLL = ', NLL %>% round, " BIC = ",
-                          BIC %>% round, " ICL = ", ICL %>% round)) +
+      labs(title = paste0("K= ", K_effective, ", segment_id = ", segment_id )) +
       theme_linedraw(base_size = 8)
     
     # Density
@@ -159,7 +158,7 @@ segment_selector = function(x, K = 1:3, samples = 10, epsilon = 1e-4, score="ICL
   }
   
   # Fit for k
-  runner_k = function(x)
+  runner_k = function(x,segment_id)
   {
     trials = expand.grid(k = K, r = 1:samples)
     
@@ -171,7 +170,7 @@ segment_selector = function(x, K = 1:3, samples = 10, epsilon = 1e-4, score="ICL
     # Model selection 
     trials_fit = easypar::run(
       FUN = function(i){
-        fit_em(x = x, k = trials$k[i], epsilon)
+        fit_em(x = x, k = trials$k[i], segment_id=segment_id, epsilon)
       },
       PARAMS = lapply(1:nrow(trials), list),
       parallel = FALSE
@@ -196,9 +195,9 @@ segment_selector = function(x, K = 1:3, samples = 10, epsilon = 1e-4, score="ICL
   # Modality data, normalised by factors
   modality_data = x %>% 
     get_data() %>% 
-    filter(modality == "ATAC") 
+    filter(modality == mod) 
   
-  atac_norm_factors = x %>% get_input(what = "normalisation") %>% filter(modality == "ATAC")
+  atac_norm_factors = x %>% get_input(what = "normalisation") %>% filter(modality == mod)
   
   modality_data = Rcongas:::normalise_modality(modality_data, atac_norm_factors) %>% group_split(segment_id)
   names(modality_data) = x$input$segmentation$segment_id %>% unique()
@@ -209,7 +208,7 @@ segment_selector = function(x, K = 1:3, samples = 10, epsilon = 1e-4, score="ICL
     
     cli::cli_h3("NB mixture: {.field {x}}")
     
-    results = runner_k(values %>% select(cell, value)) %>% 
+    results = runner_k(values %>% select(cell, value),x) %>% 
       mutate(segment_id = x)
     
     status = ifelse(results$k[1] == 1, "Monoclonal", "Polyclonal")

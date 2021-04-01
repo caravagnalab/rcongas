@@ -320,7 +320,7 @@ plot_fit_density = function(x, highlights = TRUE)
 
   data_hist <-  dplyr::left_join(data_hist, CNA)
 
-  ret <- lapply(CNAs, function(s) plot_fit_density_aux(data_hist, densities,s))
+  ret <- lapply(CNAs, function(s) plot_fit_density_aux(data_hist, densities,s, x))
 
   return(ret)
 
@@ -328,7 +328,7 @@ plot_fit_density = function(x, highlights = TRUE)
 }
 
 
-plot_fit_density_aux <-  function(df, densities, segment){
+plot_fit_density_aux <-  function(df, densities, segment, x){
 
   df <-  df %>%  filter(segment_id == segment)
   densities <-  densities %>%  filter(segment_id == segment)
