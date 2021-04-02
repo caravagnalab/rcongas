@@ -159,3 +159,5 @@ evaluate_likelihood <-  function(x,linspace_min, linspace_max, segment, modality
 
 
 }
+
+

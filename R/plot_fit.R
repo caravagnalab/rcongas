@@ -43,7 +43,7 @@
 #'
 #' # Scores for model selection
 #' plot_fit(example_object, what = 'scores')
-#' 
+#'
 #' # Posterior for CNAs
 #' plot_fit(example_object, what = 'posterior_CNA')
 plot_fit = function(x, what = 'CNA', ...)
@@ -73,9 +73,9 @@ plot_fit = function(x, what = 'CNA', ...)
 
   if (what == 'posterior_CNA')
     return(x %>% plot_fit_posterior_CNA())
-  
+
   what_supported = c("CNA", "density", "mixing_proportions", "heatmap", 'scores', "posterior_CNA")
-  
+
   stop(paste0("Unrecognised 'what': use any of ", what_supported %>% paste(collapse = ', '), '.'))
 }
 
@@ -341,7 +341,7 @@ plot_fit_density_aux <-  function(df, densities, segment, x){
 
   p1 <- ggplot( ) +
     geom_histogram(aes(x = value, fill = factor(cluster, levels = clts)
-    ),bins = 50,  data = df, color = "black", alpha = 0.4, position="identity") +
+    ),bins = 50,  data = df, color = "black", alpha = 0.4) +
     facet_wrap(segment_id ~ modality, scales = 'free') +
     guides() +
     theme_linedraw(base_size = 9) +
@@ -486,8 +486,8 @@ plot_fit_scores = function(x)
 plot_fit_posterior_CNA = function(x)
 {
   x = get_fit(x, what = 'posterior_CNA')
-  
-  x %>% 
+
+  x %>%
     ggplot(aes(y = segment_id, x = value, fill = probability)) +
     geom_tile() +
     scale_fill_distiller(palette = 'Spectral') +
@@ -500,7 +500,7 @@ plot_fit_posterior_CNA = function(x)
     guides(fill = guide_colorbar("Posterior", barheight = .5)) +
     scale_y_discrete(limits = gtools::mixedsort(x$segment_id %>% unique) %>% rev) +
     facet_wrap(~cluster)
-  
-}  
+
+}
 
 
