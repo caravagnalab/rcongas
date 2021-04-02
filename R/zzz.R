@@ -14,10 +14,10 @@
 
   if (rcongas_welcome_message)
   {
-    pk = 'Rcongas'
-    pk_l = 'Copy-Number genotyping from single cells'
+    pk = '(R)CONGAS+'
+    pk_l = 'Copy-Number genotyping from single cells ATAC/RNA'
     www = "https://github.com/caravagnalab/rcongas"
-    em = "xxxx@gmail.com"
+    em = "gcaravagna@gmail.com"
 
     cli::cli_alert_success(
       'Loading {.field {pk}}, {.emph \'{pk_l}\'}. Support : {.url { www}}' )

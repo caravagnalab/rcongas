@@ -8,12 +8,13 @@ init(
   rna,
   atac,
   segmentation,
-  rna_normalisation_factors,
-  atac_normalisation_factors,
+  rna_normalisation_factors = rna \%>\% auto_normalisation_factor(),
+  atac_normalisation_factors = atac \%>\% auto_normalisation_factor(),
   rna_likelihood = "G",
   atac_likelihood = "NB",
   reference_genome = "GRCh38",
-  description = "A (R)CONGAS+ model"
+  description = "(R)CONGAS+ model",
+  smooth = FALSE
 )
 }
 \arguments{
@@ -22,6 +23,12 @@ init(
 \item{atac}{A tibble with single-cell ATAC data.}
 
 \item{segmentation}{A tibble with the input segmentation.}
+
+\item{rna_normalisation_factors}{The RNA tibble with the input per-cell normalisation factors.
+By default these are computed by function \code{auto_normalisation_factor}.}
+
+\item{atac_normalisation_factors}{The ATAC tibble with the input per-cell normalisation factors.
+By default these are computed by function \code{auto_normalisation_factor}.}
 
 \item{rna_likelihood}{Type of likelihood used for RNA data (\code{"G"} for Gaussian and
 \code{""NB} for Negative Binomial). The RNA default is \code{"G"}.}
@@ -32,7 +39,8 @@ init(
 
 \item{description}{A model in-words description.}
 
-\item{normalisation_factors}{A tibble with the input per-cell normalisation factors.}
+\item{smooth}{If yes, input segments are smootheed by joining per chromosome segments that
+have the same ploidy.}
 }
 \value{
 An object of class \code{rcongasplus}
@@ -81,17 +89,16 @@ example_input$x_atac \%>\% print
 # .. and segmentation
 example_input$x_segmentation \%>\% print
 
-# .. and x_normalisation factors
-example_input$x_normalisation_factors \%>\% print
+# .. and normalisation factors can be computed (default)
+example_input$x_rna \%>\% auto_normalisation_factor()
 
 x = init(
   rna = example_input$x_rna,
   atac = example_input$x_atac,
   segmentation = example_input$x_segmentation,
-  normalisation_factors = example_input$x_normalisation_factors,
   rna_likelihood = "G",
   atac_likelihood = 'NB',
-  description = 'My crazy model')
+  description = 'My model')
 
 print(x)
 }

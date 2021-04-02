@@ -1,0 +1,142 @@
+---
+title: "Filtering functions"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Filtering functions}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+options(crayon.enabled = FALSE)
+
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+# old_hooks <- fansi::set_knit_hooks(knitr::knit_hooks, 
+#                                    which = c("output", "message", "error"))
+
+```
+
+```{r, warning=FALSE, message=FALSE}
+library(Rcongas)
+library(dplyr)
+```
+
+
+```{r}
+data('example_object')
+
+print(example_object)
+```
+
+# Filtering functions 
+
+Filtering functions are available for data _before_ it is loaded into the package, or _after_.
+
+## Before loading
+
+Functions that pre-process data before being inputed to the tool work requiring data in a format ready for usage in the tool; the output is the very same tibble with filtered entries (rows).
+
+## After loading
+
+Functions that process data that has already being inputed to the tool work and return an \code{rcongasplus} object.
+
+### Removing outliers from segments
+
+After mapping counts data to segments, a function
+can be used to determine quantiles of mapped data, and identify
+outliers in each segment and modality. 
+
+An outlier can then be removed or capped to the median cell value.
+The former option introduced 0-counts in the data, which we suggest
+to check with the `stat` function, and possibly remove by using
+the `filter_missing_data` function. Removal can be important as
+an excess of 0-counts cells (_missing data_) will drive the fit
+to use 0-mean components.
+
+Outliers are identified by using a quantile range $q = (q_l, q_r)$ with 
+$q_r,q_l\in [0,1]$ reporting lower and upper quantiles. The quantiles 
+are computed and applied per segment. 
+
+```{r fig.width=8, fig.height=7}
+# 1 segment from the object
+segment_id = example_object %>% 
+  get_input('segmentation') %>% 
+  filter(row_number() == 1) %>% 
+  pull(segment_id)
+  
+# Original segment plot
+segment_plot = plot_data(example_object, what = 'histogram', segments = segment_id)
+
+# Filter with default values, capping
+f_example_object = example_object %>% filter_outliers(action = 'cap')
+
+# Capped segment plot
+segment_plot_2 = plot_data(f_example_object, what = 'histogram', segments = segment_id)
+
+# Filter with default values, remove entries
+f2_example_object = example_object %>% filter_outliers(action = 'remove')
+
+# Removed segment plot
+segment_plot_3 = plot_data(f2_example_object, what = 'histogram', segments = segment_id)
+
+# Show the difference
+cowplot::plot_grid(
+  segment_plot,
+  segment_plot_2, # capped
+  segment_plot_3, # removed
+  nrow = 3,
+  ncol = 1
+)
+```
+
+
+> If you used \code{action = 'remove'} The returned object will contain fewer entries; it should be checked for an excess of zeros after filtering. We show an example below
+
+Compare 0-count cells before and after the filter
+
+```{r}
+# RNA 0-counts difference
+stat(example_object)$zero_counts_cells_RNA %>% print
+stat(f_example_object)$zero_counts_cells_RNA %>% print  # capped
+stat(f2_example_object)$zero_counts_cells_RNA %>% print # removed
+```
+
+```{r}
+# ATAC 0-counts difference
+stat(example_object)$zero_counts_cells_ATAC %>% print
+stat(f_example_object)$zero_counts_cells_ATAC %>% print  # capped
+stat(f2_example_object)$zero_counts_cells_ATAC %>% print # removed
+```
+
+The extent of the new 0-counts cells can be summarised printing the filtered object to console.
+
+```{r}
+f_example_object %>% print
+f2_example_object %>% print
+```
+
+### Removing 0-count cells
+
+Some cells can have have 0-counts because they have no events mapping to a certain segment, or because other filtering functions have removed entries, an inflated the number of 0-count cells.
+
+A filter is available to remove cells that have 0-counts in a proportion $p\in[0,1]$ of 
+
+> 0-count entries will be imputed to have value 0 by the fit algorithm. In case of an excess of 0-counts the model will try to explain 0-values with mixture components peaked at 0, which can make the inference more instable. We suggest therefore to remove such entries with this filtering function.
+
+We make a concrete example working with the `f2_example_object` object creted by the previous filter. As shown above, after filtering segment's outliers 
+
+```{r}
+# Observe the number of cells
+print(f2_example_object)
+
+# Apply the filter
+f2_example_object = f2_example_object %>% filter_missing_data()
+
+# Reduced number of cells
+print(f2_example_object)
+```
+

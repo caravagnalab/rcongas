@@ -4,7 +4,11 @@
 \name{campbell_bcpdx}
 \alias{campbell_bcpdx}
 \title{(R)CONGAS+ object for the breast cancer patient-derived xenograft,
-first used in the original CONGAS paper.}
+first used in the original CONGAS paper. The original paper describing
+this data is Campbell, K.R., Steif, A., Laks, E. et al. clonealign:
+statistical integration of independent single-cell RNA and DNA sequencing
+data from human cancers. Genome Biol 20, 54 (2019).
+https://doi.org/10.1186/s13059-019-1645-z}
 \format{
 (R)CONGAS+ object.
 }

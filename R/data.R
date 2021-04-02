@@ -34,7 +34,11 @@
 
 
 #' (R)CONGAS+ object for the breast cancer patient-derived xenograft,
-#' first used in the original CONGAS paper.
+#' first used in the original CONGAS paper. The original paper describing
+#' this data is Campbell, K.R., Steif, A., Laks, E. et al. clonealign: 
+#' statistical integration of independent single-cell RNA and DNA sequencing 
+#' data from human cancers. Genome Biol 20, 54 (2019). 
+#' https://doi.org/10.1186/s13059-019-1645-z
 #'
 #' @description Example object from (R)Congas+
 #'
@@ -50,3 +54,45 @@
 #' data(campbell_bcpdx)
 #' print(campbell_bcpdx)
 "campbell_bcpdx"
+
+#' (R)CONGAS+ object for the glioblastoma dataset,
+#' first used in the original CONGAS paper. The paper providing these data
+#' is Patel, Anoop P., et al. "Single-cell RNA-seq highlights intratumoral 
+#' heterogeneity in primary glioblastoma." Science 344.6190 (2014): 1396-1401.
+#'
+#' @description Example object from (R)Congas+
+#'
+#' @docType data
+#'
+#' @usage data(patel_gbmtn)
+#'
+#' @format (R)CONGAS+ object.
+#'
+#' @keywords datasets
+#'
+#' @examples
+#' data(patel_gbmtn)
+#' print(patel_gbmtn)
+"patel_gbmtn"
+
+#' (R)CONGAS+ object for the hematopoietic dataset,
+#' first used in the original CONGAS paper. The paper providing these data
+#' is Zhao, Xin, et al. "Single-cell RNA-seq reveals a distinct transcriptome
+#' signature of aneuploid hematopoietic cells." Blood 130.25 (2017): 2762-2773.
+#'
+#' @description Example object from (R)Congas+
+#'
+#' @docType data
+#'
+#' @usage data(zaho_hemato)
+#'
+#' @format (R)CONGAS+ object.
+#'
+#' @keywords datasets
+#'
+#' @examples
+#' data(zaho_hemato)
+#' print(zaho_hemato)
+"zaho_hemato"
+
+

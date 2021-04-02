@@ -106,6 +106,9 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
+      <a href="../articles/Filtering.html">Filtering functions</a>
+    </li>
+    <li>
       <a href="../articles/Plotting.html">Plotting functions</a>
     </li>
   </ul>
@@ -135,7 +138,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Filter genes from an RNA tibble.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/caravagnalab/RcongasR/external_utilities.R'><code>R/external_utilities.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/caravagnalab/RcongasR/filter_counts.R'><code>R/filter_counts.R</code></a></small>
     <div class="hidden name"><code>filter_known_genes.Rd</code></div>
     </div>
 
@@ -156,7 +159,7 @@
       <th>what</th>
       <td><p>A code string. If this contains "r" ribosomal genes are removed.
 If this contains "m" mitocondrial genes are removed. Both are matched by
-a regex.</p></td>
+a regular expression.</p></td>
     </tr>
     <tr>
       <th>specials</th>
@@ -166,25 +169,25 @@ a regex.</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>The RNA tibble withouth the required gene entries.</p>
+    <p>The RNA tibble without the required gene entries.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>'example_input'</span><span class='op'>)</span>
-<span class='fu'>filter_known_genes</span><span class='op'>(</span><span class='va'>example_input</span><span class='op'>$</span><span class='va'>x_rna</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; </div><div class='output co'>#&gt; <span class='message'>── Ribosomal </span></div><div class='output co'>#&gt; <span class='message'><span style='color: #00BBBB;'>ℹ</span><span> </span><span style='color: #00BB00;'>n = 845</span><span> genes found.</span></div><div class='output co'>#&gt; RPS20, RPL26L1, RPL18, RPL31, RPS5, MRPL28 , ...</div><div class='output co'>#&gt; </div><div class='output co'>#&gt; <span class='message'>── Mitochondrial </span></div><div class='output co'>#&gt; <span class='message'></span><span style='color: #00BBBB;'>ℹ</span><span> </span><span style='color: #00BB00;'>295</span><span> genes found.</span></div><div class='output co'>#&gt; KMT2E, POMT2, MTREX, KMT2C, MTA3, MTHFD2 , ...</div><div class='output co'>#&gt; </div><div class='output co'>#&gt; <span class='message'>── Specials </span></div><div class='output co'>#&gt; <span class='message'></span><span style='color: #00BBBB;'>ℹ</span><span> </span><span style='color: #00BB00;'>n = 0</span><span> genes found.</span></div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 417,913 x 6</span><span>
-#&gt;    gene     cell       value chr        from        to
-#&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>      </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>     </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>     </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> DPM1     SRR5578183     1 chr20  50</span><span style='text-decoration: underline;'>934</span><span>867  50</span><span style='text-decoration: underline;'>958</span><span>555
-#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> SCYL3    SRR5578183    10 chr1  169</span><span style='text-decoration: underline;'>849</span><span>631 169</span><span style='text-decoration: underline;'>894</span><span>267
-#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> C1orf112 SRR5578183    26 chr1  169</span><span style='text-decoration: underline;'>662</span><span>007 169</span><span style='text-decoration: underline;'>854</span><span>080
-#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> CFH      SRR5578183     6 chr1  196</span><span style='text-decoration: underline;'>652</span><span>043 196</span><span style='text-decoration: underline;'>747</span><span>504
-#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> STPG1    SRR5578183    73 chr1   24</span><span style='text-decoration: underline;'>356</span><span>999  24</span><span style='text-decoration: underline;'>416</span><span>934
-#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> NIPAL3   SRR5578183     5 chr1   24</span><span style='text-decoration: underline;'>415</span><span>802  24</span><span style='text-decoration: underline;'>472</span><span>976
-#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> CFTR     SRR5578183     1 chr7  117</span><span style='text-decoration: underline;'>287</span><span>120 117</span><span style='text-decoration: underline;'>715</span><span>971
-#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> CYP51A1  SRR5578183     3 chr7   92</span><span style='text-decoration: underline;'>112</span><span>153  92</span><span style='text-decoration: underline;'>134</span><span>803
-#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> KRIT1    SRR5578183     3 chr7   92</span><span style='text-decoration: underline;'>198</span><span>969  92</span><span style='text-decoration: underline;'>246</span><span>166
-#&gt; </span><span style='color: #BCBCBC;'>10</span><span> RAD52    SRR5578183     1 chr12    </span><span style='text-decoration: underline;'>911</span><span>736    </span><span style='text-decoration: underline;'>990</span><span>053
-#&gt; </span><span style='color: #949494;'># … with 417,903 more rows</span><span></div></span></pre>
+<span class='fu'>filter_known_genes</span><span class='op'>(</span><span class='va'>example_input</span><span class='op'>$</span><span class='va'>rna</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; </div><div class='output co'>#&gt; <span class='message'>── Ribosomal </span></div><div class='output co'>#&gt; <span class='message'><span style='color: #00BBBB;'>ℹ</span><span> </span><span style='color: #00BB00;'>n = 166</span><span> genes found.</span></div><div class='output co'>#&gt; MRPL20, RPL22, RPL11, MRPS15, RPS8, RPL5 , ...</div><div class='output co'>#&gt; </div><div class='output co'>#&gt; <span class='message'>── Mitochondrial </span></div><div class='output co'>#&gt; <span class='message'></span><span style='color: #00BBBB;'>ℹ</span><span> </span><span style='color: #00BB00;'>180</span><span> genes found.</span></div><div class='output co'>#&gt; ICMT, CAMTA1, MTF2, HENMT1, LAMTOR5, MTMR11 , ...</div><div class='output co'>#&gt; </div><div class='output co'>#&gt; <span class='message'>── Specials </span></div><div class='output co'>#&gt; <span class='message'></span><span style='color: #00BBBB;'>ℹ</span><span> </span><span style='color: #00BB00;'>n = 1</span><span> genes found.</span></div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 190,566 x 6</span><span>
+#&gt;    gene     chr      from      to cell                                 value
+#&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>   </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>   </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>                                </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> NOC2L    chr1   </span><span style='text-decoration: underline;'>944</span><span>203  </span><span style='text-decoration: underline;'>959</span><span>309 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     2
+#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> AGRN     chr1  1</span><span style='text-decoration: underline;'>020</span><span>120 1</span><span style='text-decoration: underline;'>056</span><span>118 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     1
+#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> SDF4     chr1  1</span><span style='text-decoration: underline;'>216</span><span>909 1</span><span style='text-decoration: underline;'>232</span><span>067 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     1
+#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> ACAP3    chr1  1</span><span style='text-decoration: underline;'>292</span><span>390 1</span><span style='text-decoration: underline;'>309</span><span>609 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     2
+#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> CPTP     chr1  1</span><span style='text-decoration: underline;'>324</span><span>756 1</span><span style='text-decoration: underline;'>328</span><span>896 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     1
+#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> AURKAIP1 chr1  1</span><span style='text-decoration: underline;'>373</span><span>730 1</span><span style='text-decoration: underline;'>375</span><span>495 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     1
+#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> CCNL2    chr1  1</span><span style='text-decoration: underline;'>385</span><span>711 1</span><span style='text-decoration: underline;'>399</span><span>335 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     2
+#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> CDK11B   chr1  1</span><span style='text-decoration: underline;'>635</span><span>225 1</span><span style='text-decoration: underline;'>659</span><span>012 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     1
+#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> CDK11A   chr1  1</span><span style='text-decoration: underline;'>702</span><span>379 1</span><span style='text-decoration: underline;'>724</span><span>357 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     1
+#&gt; </span><span style='color: #BCBCBC;'>10</span><span> WRAP73   chr1  3</span><span style='text-decoration: underline;'>630</span><span>767 3</span><span style='text-decoration: underline;'>652</span><span>761 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     2
+#&gt; </span><span style='color: #949494;'># … with 190,556 more rows</span><span></div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

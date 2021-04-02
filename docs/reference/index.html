@@ -105,6 +105,9 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
+      <a href="../articles/Filtering.html">Filtering functions</a>
+    </li>
+    <li>
       <a href="../articles/Plotting.html">Plotting functions</a>
     </li>
   </ul>
@@ -161,13 +164,24 @@
         <td>
           <p><code><a href="example_input.html">example_input</a></code> </p>
         </td>
-        <td><p>Example tibbles with input data in the format for (R)Congas+</p></td>
+        <td><p>Example tibbles with input data in the format for (R)CONGAS+</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="example_object.html">example_object</a></code> </p>
         </td>
-        <td><p>Example object from (R)Congas+</p></td>
+        <td><p>Example object from (R)CONGAS+</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="campbell_bcpdx.html">campbell_bcpdx</a></code> </p>
+        </td>
+        <td><p>(R)CONGAS+ object for the breast cancer patient-derived xenograft,
+first used in the original CONGAS paper. The original paper describing
+this data is Campbell, K.R., Steif, A., Laks, E. et al. clonealign:
+statistical integration of independent single-cell RNA and DNA sequencing
+data from human cancers. Genome Biol 20, 54 (2019).
+https://doi.org/10.1186/s13059-019-1645-z</p></td>
       </tr>
     </tbody><tbody>
       <tr>
@@ -187,6 +201,24 @@
           <p><code><a href="init.html">init()</a></code> </p>
         </td>
         <td><p>Create a dataset.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="auto_config_run.html">auto_config_run()</a></code> </p>
+        </td>
+        <td><p>Title</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="auto_normalisation_factor.html">auto_normalisation_factor()</a></code> </p>
+        </td>
+        <td><p>Compute empirical normalisation factors (library size)</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="fit_congas.html">fit_congas()</a></code> </p>
+        </td>
+        <td><p>Fit a list of CONGAS model</p></td>
       </tr>
     </tbody><tbody>
       <tr>
@@ -218,6 +250,37 @@
           <p><code><a href="stat.html">stat()</a></code> </p>
         </td>
         <td><p>Compute the statistics of a dataset.</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-filtering" class="hasAnchor"><a href="#section-filtering" class="anchor"></a>Filtering</h2>
+          <p class="section-desc"><p>Functions to pre-process inputs and post-process models.</p></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="filter_known_genes.html">filter_known_genes()</a></code> </p>
+        </td>
+        <td><p>Filter genes from an RNA tibble.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="filter_outliers.html">filter_outliers()</a></code> </p>
+        </td>
+        <td><p>Filter per-segment outliers by quantiles.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="filter_missing_data.html">filter_missing_data()</a></code> </p>
+        </td>
+        <td><p>Filter per-segment outliers by quantiles.</p></td>
       </tr>
     </tbody><tbody>
       <tr>

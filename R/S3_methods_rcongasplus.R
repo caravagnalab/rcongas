@@ -218,7 +218,7 @@ print.rcongasplus = function(x, ...)
   
   log()
  
-  invisible(return(0))
+  invisible(0)
 }
 
 #' Plot for an object of class \code{'rcongasplus'}.

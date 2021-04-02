@@ -27,11 +27,15 @@ reference:
   contents:
   - example_input
   - example_object
+  - campbell_bcpdx
 
 - title: Main functions
   desc:  Functions to create and fit a dataset.
   contents:
   - init
+  - auto_config_run
+  - auto_normalisation_factor
+  - fit_congas
 
 - title: Getters
   desc:  Functions to extract information from a model.
@@ -39,6 +43,18 @@ reference:
   - get_input
   - get_fit
   - stat
+
+- title: Filtering
+  desc:  Functions to pre-process inputs and post-process models.
+  contents:
+  - filter_known_genes
+  - filter_outliers
+  - filter_missing_data
+  
+# * cap_values_by_quantile
+# * filter_cells_by_quantile
+# * filter_values_by_quantile
+
   
 - title: Plotting functions
   desc:  Functions to plot data and fits.

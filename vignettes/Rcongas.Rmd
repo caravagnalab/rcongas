@@ -18,67 +18,103 @@ knitr::opts_chunk$set(
 library(Rcongas)
 library(dplyr)
 ```
+# Input formats
+
+```{r}
+# Example data available in the package
+data('example_input')
+```
+
+RNA and ATAC have the same input format reporting
+
+- `chr`, `from` and `to`: genomic locations of a gene (RNA) or a peak (ATAC)
+- `cell`: a cell identifier
+- `value`: the observed counts (discrete)
+
+```{r}
+# RNA
+example_input$rna %>% print()
+```
+
+```{r}
+# ATAC
+example_input$atac %>% print()
+```
+
+Segments have this format
+
+```{r}
+example_input$segments %>% print()
+```
+
+- `chr`, `from` and `to`: genomic range of the segment
+- `copies`: segemnts ploidy
 
 # Single-molecule assay
 
+RNA-only assay, with z-score representation (Gaussian likelihood, `"G"`) for the RNA counts
+
 ```{r}
-data('example_input')
-
-# Example only RNA, with z-score representation (Gaussian likelihood)
 x = init(
-  rna = example_input$x_rna,
+  rna = example_input$rna,
   atac = NULL,
-  segmentation = example_input$x_segmentation,
-  rna_normalisation_factors = example_input$x_rna %>% auto_normalisation_factor(),
-  atac_normalisation_factors = NULL,
-  rna_likelihood = "G", 
-  atac_likelihood = NULL,
-  description = 'My crazy model')
-
-print(x)
+  segmentation = example_input$segments,
+  rna_likelihood = "G",
+  description = 'SU008 sampled cells (example)')
 ```
 
-```{r, fig.width=6, fig.height=6}
-# Select the first 5 segments to plot
-some_segments = get_input(x, what = "segmentation") %>% 
-  filter(row_number() < 5) %>% 
-  pull(segment_id)
+S3 print method to visualise some information about the object
 
-plot_data(x, what = 'histogram', segments = some_segments)
+```{r}
+x %>% print
 ```
 
-```{r, fig.width=8, fig.height=4}
-plot_data(x, what = 'lineplot')
-```
 
-```{r, fig.width=6, fig.height=6}
-plot_data(x, what = 'heatmap')
-```
+<!-- ```{r, fig.width=6, fig.height=6} -->
+<!-- # Select the first 5 segments to plot -->
+<!-- some_segments = get_input(x, what = "segmentation") %>%  -->
+<!--   filter(row_number() < 5) %>%  -->
+<!--   pull(segment_id) -->
+
+<!-- plot_data(x, what = 'histogram', segments = some_segments) -->
+<!-- ``` -->
+
+<!-- ```{r, fig.width=8, fig.height=4} -->
+<!-- plot_data(x, what = 'lineplot') -->
+<!-- ``` -->
+
+<!-- ```{r, fig.width=6, fig.height=6} -->
+<!-- plot_data(x, what = 'heatmap') -->
+<!-- ``` -->
 
 
 # Two single-molecule assays
 
+Joint RNA (as above) plut ATAC (discrete count, Negative Binomial likelihood)
+
 ```{r}
-# Joint RNA (as above), and ATAC (discrete count, Negative Binomial likelihood)
 x = init(
-  rna = example_input$x_rna,
-  atac = example_input$x_atac,
-  segmentation = example_input$x_segmentation,
-  rna_normalisation_factors = example_input$x_rna %>% auto_normalisation_factor(),
-  atac_normalisation_factors = example_input$x_atac %>% auto_normalisation_factor(),
+  rna = example_input$rna,
+  atac = example_input$atac,
+  segmentation = example_input$segments,
   rna_likelihood = "G", 
   atac_likelihood = 'NB',
-  description = 'My crazy model')
+  description = 'SU008 sampled cells (example)')
 ```
 
-```{r, fig.width=6, fig.height=6}
-plot_data(x, what = 'histogram', segments = some_segments)
-```
+S3 print method
 
-```{r, fig.width=8, fig.height=4}
-plot_data(x, what = 'lineplot')
+```{r}
+x %>% print
 ```
+<!-- ```{r, fig.width=6, fig.height=6} -->
+<!-- plot_data(x, what = 'histogram', segments = some_segments) -->
+<!-- ``` -->
 
-```{r, fig.width=6, fig.height=8}
-plot_data(x, what = 'heatmap')
-```
+<!-- ```{r, fig.width=8, fig.height=4} -->
+<!-- plot_data(x, what = 'lineplot') -->
+<!-- ``` -->
+
+<!-- ```{r, fig.width=6, fig.height=8} -->
+<!-- plot_data(x, what = 'heatmap') -->
+<!-- ``` -->

@@ -4,6 +4,15 @@
     <loc>caravagnalab.github.io/Rcongas/index.html</loc>
   </url>
   <url>
+    <loc>caravagnalab.github.io/Rcongas/reference/auto_config_run.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/Rcongas/reference/auto_normalisation_factor.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/Rcongas/reference/campbell_bcpdx.html</loc>
+  </url>
+  <url>
     <loc>caravagnalab.github.io/Rcongas/reference/cap_values_by_quantile.html</loc>
   </url>
   <url>
@@ -13,7 +22,16 @@
     <loc>caravagnalab.github.io/Rcongas/reference/example_object.html</loc>
   </url>
   <url>
+    <loc>caravagnalab.github.io/Rcongas/reference/filter_cells_by_quantile.html</loc>
+  </url>
+  <url>
     <loc>caravagnalab.github.io/Rcongas/reference/filter_known_genes.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/Rcongas/reference/filter_missing_data.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/Rcongas/reference/filter_outliers.html</loc>
   </url>
   <url>
     <loc>caravagnalab.github.io/Rcongas/reference/filter_values_by_quantile.html</loc>
@@ -47,6 +65,9 @@
   </url>
   <url>
     <loc>caravagnalab.github.io/Rcongas/reference/stat.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/Rcongas/articles/Filtering.html</loc>
   </url>
   <url>
     <loc>caravagnalab.github.io/Rcongas/articles/Plotting.html</loc>
