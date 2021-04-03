@@ -2,7 +2,7 @@
 % Please edit documentation in R/auto_config.R
 \name{auto_config_run}
 \alias{auto_config_run}
-\title{Title}
+\title{Determine data-based hyperparameters for the Bayesian priors.}
 \usage{
 auto_config_run(
   x,
@@ -25,5 +25,5 @@ auto_config_run(
 
 }
 \description{
-Title
+
 }

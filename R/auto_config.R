@@ -1,4 +1,6 @@
-#' Title
+#' Determine data-based hyperparameters for the Bayesian priors.
+#' 
+#' @description 
 #'
 #' @param x
 #' @param K
@@ -201,6 +203,7 @@ gamma_shape_rate <-
 #' example_input$x_rna %>% auto_normalisation_factor
 auto_normalisation_factor = function(x)
 {
+  if(is.null(x)) return(NULL)
   if(!("cell" %in% colnames(x))) stop("Missing cell column.")
   if(!("value" %in% colnames(x))) stop("Missing value column.")
 
