@@ -28,6 +28,9 @@ reference:
   - example_input
   - example_object
   - campbell_bcpdx
+  - patel_gbmtn
+  - zaho_hemato
+  - satpathy_bcc
 
 - title: Main functions
   desc:  Functions to create and fit a dataset.

@@ -3,10 +3,7 @@
 \docType{data}
 \name{zaho_hemato}
 \alias{zaho_hemato}
-\title{(R)CONGAS+ object for the hematopoietic dataset,
-first used in the original CONGAS paper. The paper providing these data
-is Zhao, Xin, et al. "Single-cell RNA-seq reveals a distinct transcriptome
-signature of aneuploid hematopoietic cells." Blood 130.25 (2017): 2762-2773.}
+\title{Hematopoietic bone marrow failure (10x RNA, counts-based)}
 \format{
 (R)CONGAS+ object.
 }
@@ -14,7 +11,10 @@ signature of aneuploid hematopoietic cells." Blood 130.25 (2017): 2762-2773.}
 data(zaho_hemato)
 }
 \description{
-Example object from (R)Congas+
+(R)CONGAS+ object for the hematopoietic dataset,
+first used in the original CONGAS paper. The paper providing these data
+is Zhao, Xin, et al. "Single-cell RNA-seq reveals a distinct transcriptome
+signature of aneuploid hematopoietic cells." Blood 130.25 (2017): 2762-2773.
 }
 \examples{
 data(zaho_hemato)

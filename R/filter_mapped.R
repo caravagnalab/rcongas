@@ -1,3 +1,77 @@
+#' Filter segments.
+#' 
+#' @description After mapping data to segments, this function
+#' can be used to remove segments that are too short, or that have too
+#' few mapped RNA genes or ATAC peaks.
+#' 
+#' The function requires and returns an (R)CONGAS+ object.
+#'
+#' @param x An \code{rcongasplus} object.
+#' @param length Mimium size in number of bases for each segment. This is \code{0}
+#' by default, and therefore non effective.
+#' @param RNA_genes Required number of RNA genes, if RNA is available. This is
+#' \code{50} by default.
+#' @param ATAC_peaks Required number of ATAC peaks, if ATAC is available. This is
+#' \code{50} by default.
+#' 
+#' @return The object \code{x} where segments have been identified and 
+#' removed.
+#' 
+#' @export
+#'
+#' @examples
+#' data('example_object')
+#' 
+#' # Default
+#' print(example_object)
+#' 
+#' example_object %>% 
+#'   filter_segments() %>% 
+#'   print()
+#' 
+#' # Minimum size
+#' example_object %>% 
+#'   filter_segments(length = 1e7) %>% 
+#'   print()
+filter_segments = function(x, 
+                           length = 0,
+                           RNA_genes = 50,
+                           ATAC_peaks = 50
+                           )
+{
+  x %>% sanitize_obj()
+  
+  retained_segments = get_input(x, 'segmentation') %>%
+    mutate(
+      RNA = ifelse(has_rna((x)),
+                   RNA_genes > !!RNA_genes,
+                   TRUE),
+      ATAC = ifelse(has_atac((x)),
+                    ATAC_peaks > !!ATAC_peaks,
+                    TRUE)
+    ) %>%
+    filter(
+        (as.double(to) - as.double(from)) > !!length,
+           RNA,
+           ATAC)
+  
+  cli::cli_h3("Segments filter")
+  cli::cli_alert("{.field {nrow(retained_segments)}} retained segments out of {.field {stat(x)$nsegments}}.")
+  
+  if(nrow(retained_segments) == 0) stop("All segments removed with these parameters.")
+  
+  x$input$segmentation = retained_segments %>% dplyr::select(-RNA, -ATAC)
+  
+  x$input$dataset = x$input$dataset %>% 
+    filter(segment_id %in% retained_segments$segment_id)
+
+  x$log = paste0(x$log, '\n- ', 
+                 Sys.time(), " Filtered segments: [", length, 
+                 '|', RNA_genes, '|', ATAC_peaks, ']')
+  
+  return(x)
+}
+
 #' Filter per-segment outliers by quantiles.
 #' 
 #' @description After mapping counts data to segments, this function

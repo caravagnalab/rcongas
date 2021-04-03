@@ -1,4 +1,6 @@
-#' Title
+#' Determine data-based hyperparameters for the Bayesian priors.
+#' 
+#' @description 
 #'
 #' @param x
 #' @param K

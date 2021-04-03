@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Hematopoietic bone marrow failure (10x RNA, counts-based) — zaho_hemato • Rcongas</title>
+<title>Basal cell carcinoma (10x RNA and ATAC, counts-based) — satpathy_bcc • Rcongas</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,11 +46,12 @@
 
 
 
-<meta property="og:title" content="Hematopoietic bone marrow failure (10x RNA, counts-based) — zaho_hemato" />
-<meta property="og:description" content="(R)CONGAS+ object for the hematopoietic dataset,
-first used in the original CONGAS paper. The paper providing these data
-is Zhao, Xin, et al. &quot;Single-cell RNA-seq reveals a distinct transcriptome
-signature of aneuploid hematopoietic cells.&quot; Blood 130.25 (2017): 2762-2773." />
+<meta property="og:title" content="Basal cell carcinoma (10x RNA and ATAC, counts-based) — satpathy_bcc" />
+<meta property="og:description" content="(R)CONGAS+ object for the basal cell carcinoma dataset,
+used in the CONGAS+ paper. The paper providing these data
+is Satpathy, Ansuman T., et al. &quot;Massively parallel single-cell chromatin
+landscapes of human immune cell development and intratumoral T cell
+exhaustion.&quot; Nature Biotechnology 37.8 (2019): 925-936." />
 <meta property="og:image" content="caravagnalab.github.io/Rcongas/logo.png" />
 
 
@@ -140,19 +141,20 @@ signature of aneuploid hematopoietic cells.&quot; Blood 130.25 (2017): 2762-2773
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Hematopoietic bone marrow failure (10x RNA, counts-based)</h1>
+    <h1>Basal cell carcinoma (10x RNA and ATAC, counts-based)</h1>
     <small class="dont-index">Source: <a href='https://github.com/caravagnalab/RcongasR/data.R'><code>R/data.R</code></a></small>
-    <div class="hidden name"><code>zaho_hemato.Rd</code></div>
+    <div class="hidden name"><code>satpathy_bcc.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>(R)CONGAS+ object for the hematopoietic dataset,
-first used in the original CONGAS paper. The paper providing these data
-is Zhao, Xin, et al. "Single-cell RNA-seq reveals a distinct transcriptome
-signature of aneuploid hematopoietic cells." Blood 130.25 (2017): 2762-2773.</p>
+    <p>(R)CONGAS+ object for the basal cell carcinoma dataset,
+used in the CONGAS+ paper. The paper providing these data
+is Satpathy, Ansuman T., et al. "Massively parallel single-cell chromatin
+landscapes of human immune cell development and intratumoral T cell
+exhaustion." Nature Biotechnology 37.8 (2019): 925-936.</p>
     </div>
 
-    <pre class="usage"><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>zaho_hemato</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>satpathy_bcc</span><span class='op'>)</span></pre>
 
 
     <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
@@ -160,13 +162,13 @@ signature of aneuploid hematopoietic cells." Blood 130.25 (2017): 2762-2773.</p>
     <p>(R)CONGAS+ object.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>zaho_hemato</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>zaho_hemato</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>── <span style='color: #000000;background-color: #BBBB00;'>[ (R)CONGAS+ ]</span><span style='color: #0000BB;'> Zaho et al. MDS hematopoietical used in CONGAS (HCA)</span><span> ─────────</span></div><div class='output co'>#&gt; </div><div class='output co'>#&gt; <span class='message'>── CNA segments (reference: </span><span style='color: #00BB00;'>GRCh38</span><span>) </span></div><div class='output co'>#&gt; <span class='message'>→ Input </span><span style='color: #00BB00;'>21</span><span> CNA segments, mean ploidy </span><span style='color: #00BB00;'>2</span><span>.</span></div><div class='output co'>#&gt; 
-#&gt; 	</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #00BB00;'> </span><span>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>satpathy_bcc</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>satpathy_bcc</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>── <span style='color: #000000;background-color: #BBBB00;'>[ (R)CONGAS+ ]</span><span style='color: #0000BB;'> SU008 TUMOR 30 segments (73.66% genome)</span><span> ──────────────────────</span></div><div class='output co'>#&gt; </div><div class='output co'>#&gt; <span class='message'>── CNA segments (reference: </span><span style='color: #00BB00;'>GRCh38</span><span>) </span></div><div class='output co'>#&gt; <span class='message'>→ Input </span><span style='color: #00BB00;'>30</span><span> CNA segments, mean ploidy </span><span style='color: #00BB00;'>3.2</span><span>.</span></div><div class='output co'>#&gt; 
+#&gt; 	</span><span style='background-color: #BB0000;'> </span><span>|</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #BBBB00;'> </span><span>|</span><span style='background-color: #BBBB00;'>  </span><span>|</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #BBBB00;'> </span><span>|</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #00BB00;'>  </span><span>|</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #BB0000;'> </span><span>|</span><span style='background-color: #BBBB00;'> </span><span>|</span><span style='background-color: #BBBB00;'>  </span><span>|</span><span style='background-color: #BB0000;'> </span><span>|</span><span style='background-color: #BBBB00;'> </span><span>|</span><span style='background-color: #BBBB00;'> </span><span style='background-color: #BB0000;'> </span><span>|</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #BBBB00;'>  </span><span>|</span><span style='background-color: #00BB00;'> </span><span style='background-color: #BBBBBB;'>  </span><span>|</span><span style='background-color: #BB0000;'>  </span><span>|</span><span style='background-color: #BB0000;'> </span><span style='background-color: #BBBBBB;'> </span><span>|</span><span style='background-color: #BB0000;'> </span><span>
 #&gt; 
-#&gt; 	 </span><span style='text-decoration: underline;'>Ploidy:</span><span>  </span><span style='background-color: #00BBBB;'> </span><span> 0   </span><span style='background-color: #0000BB;'> </span><span> 1   </span><span style='background-color: #00BB00;'> </span><span> 2   </span><span style='background-color: #BBBB00;'> </span><span> 3   </span><span style='background-color: #BB0000;'> </span><span> 4   </span><span style='background-color: #BB00BB;'> </span><span> 5   </span><span style='background-color: #BBBBBB;'> </span><span> *   </div><div class='output co'>#&gt; </div><div class='output co'>#&gt; <span class='message'>── Modalities </span></div><div class='output co'>#&gt; <span class='message'>→ RNA: </span><span style='color: #00BB00;'>94</span><span> cells with </span><span style='color: #00BB00;'>18841</span><span> mapped genes, </span><span style='color: #00BB00;'>890478</span><span> non-zero values. Likelihood: </span><span style='color: #00BB00;'>Negative Binomial</span><span>.</span></div><div class='output co'>#&gt; <span class='message'>→ ATAC: </span><span style='color: #BB0000;'>not available</span><span></span></div><div class='output co'>#&gt; <span class='message'></span><span style='color: #BBBB00;'>!</span><span> Clusters: </span><span style='color: #BB0000;'>not available</span><span>.</span></div><div class='output co'>#&gt; </div><div class='output co'>#&gt; <span class='message'>── </span><span style='color: #BBBBBB;background-color: #BB00BB;font-weight: bold;'> LOG </span><span> ──</span></div><div class='output co'>#&gt; </div><div class='output co'>#&gt; - 2021-04-03 12:24:46 Created input object.
-#&gt; - 2021-04-03 12:24:48 Filtered outliers: [4.2|0.03|0.97]</div><div class='output co'>#&gt; [1] 0</div></span></pre>
+#&gt; 	 </span><span style='text-decoration: underline;'>Ploidy:</span><span>  </span><span style='background-color: #00BBBB;'> </span><span> 0   </span><span style='background-color: #0000BB;'> </span><span> 1   </span><span style='background-color: #00BB00;'> </span><span> 2   </span><span style='background-color: #BBBB00;'> </span><span> 3   </span><span style='background-color: #BB0000;'> </span><span> 4   </span><span style='background-color: #BB00BB;'> </span><span> 5   </span><span style='background-color: #BBBBBB;'> </span><span> *   </div><div class='output co'>#&gt; </div><div class='output co'>#&gt; <span class='message'>── Modalities </span></div><div class='output co'>#&gt; <span class='message'>→ RNA: </span><span style='color: #00BB00;'>714</span><span> cells with </span><span style='color: #00BB00;'>8613</span><span> mapped genes, </span><span style='color: #00BB00;'>1401728</span><span> non-zero values. Likelihood: </span><span style='color: #00BB00;'>Negative Binomial</span><span>.</span></div><div class='output co'>#&gt; <span class='message'>→ ATAC: </span><span style='color: #00BB00;'>259</span><span> cells with </span><span style='color: #00BB00;'>284316</span><span> mapped peaks, </span><span style='color: #00BB00;'>3083691</span><span> non-zero values. Likelihood: </span><span style='color: #00BB00;'>Negative Binomial</span><span>.</span></div><div class='output co'>#&gt; <span class='message'></span><span style='color: #BBBB00;'>!</span><span> Clusters: </span><span style='color: #BB0000;'>not available</span><span>.</span></div><div class='output co'>#&gt; </div><div class='output co'>#&gt; <span class='message'>── </span><span style='color: #BBBBBB;background-color: #BB00BB;font-weight: bold;'> LOG </span><span> ──</span></div><div class='output co'>#&gt; </div><div class='output co'>#&gt; - 2021-03-30 17:58:41 Created input object.
+#&gt; - 2021-03-30 17:58:43 Filtered outliers: [6|0.05|0.95]</div><div class='output co'>#&gt; [1] 0</div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

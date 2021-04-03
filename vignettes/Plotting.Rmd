@@ -52,7 +52,7 @@ formals(Rcongas:::plot_data_mapping) %>% names()
 
 This shows input values per modality, split by segments, as histogram.
 
-```{r, fig.width=4, fig.height=13}
+```{r, fig.width=13, fig.height=13}
 plot_data(example_object, what = 'histogram')
 ```
 

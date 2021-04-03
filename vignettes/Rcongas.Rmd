@@ -18,6 +18,26 @@ knitr::opts_chunk$set(
 library(Rcongas)
 library(dplyr)
 ```
+
+# Analysis workflow
+
+These data are required:
+
+- single-cell RNA or ATAC sequencing data from independent cells, in the form of counts per cell;
+- genome-wide segmentation with associated per-segment ploidy.
+
+The formats of the inputs is discussed here.
+
+The (R)CONGAS+ workflow consists in:
+
+- (optional) applying [filters](Filtering.html) on the input data;
+- creating an (R)CONGAS+ object;
+- (optional) applying [filters](Filtering.html) on the mapped data;
+- fitting a model
+
+The package comes with input data to show what the required input formats are, and ready to use
+objects for case studies that we have discussed in the main papers; see [References](../docs/reference/index.html) for details.
+
 # Input formats
 
 ```{r}
@@ -25,7 +45,7 @@ library(dplyr)
 data('example_input')
 ```
 
-RNA and ATAC have the same input format reporting
+RNA and ATAC have the same input format reporting:
 
 - `chr`, `from` and `to`: genomic locations of a gene (RNA) or a peak (ATAC)
 - `cell`: a cell identifier
@@ -36,23 +56,28 @@ RNA and ATAC have the same input format reporting
 example_input$rna %>% print()
 ```
 
+The `gene` column in the RNA dataset is required only to use some gene-based pre-processing filters
+discussed in the [filtering vignette](Filtering.html).
+
 ```{r}
 # ATAC
 example_input$atac %>% print()
 ```
 
-Segments have this format
+Segments have this format:
+
+- `chr`, `from` and `to`: genomic range of the segment
+- `copies`: ploidy of each segment
 
 ```{r}
 example_input$segments %>% print()
 ```
 
-- `chr`, `from` and `to`: genomic range of the segment
-- `copies`: segemnts ploidy
+# Creation of a new dataset
 
-# Single-molecule assay
+## Single-molecule assay (RNA)
 
-RNA-only assay, with z-score representation (Gaussian likelihood, `"G"`) for the RNA counts
+Single-cell RNA, with z-score representation (Gaussian likelihood, `"G"`) for the RNA counts.
 
 ```{r}
 x = init(
@@ -88,9 +113,9 @@ x %>% print
 <!-- ``` -->
 
 
-# Two single-molecule assays
+## Two-molecules assays (RNA and ATAC)
 
-Joint RNA (as above) plut ATAC (discrete count, Negative Binomial likelihood)
+Joint single-cell RNA as above, but also single-cellATAC medeled with discrete likelihood for counts (Negative Binomial,  `"NB"`)
 
 ```{r}
 x = init(
@@ -98,11 +123,11 @@ x = init(
   atac = example_input$atac,
   segmentation = example_input$segments,
   rna_likelihood = "G", 
-  atac_likelihood = 'NB',
+  atac_likelihood = 'NB', # This is a count-based modality
   description = 'SU008 sampled cells (example)')
 ```
 
-S3 print method
+The S3 print method reports the information about this object.
 
 ```{r}
 x %>% print
@@ -118,3 +143,33 @@ x %>% print
 <!-- ```{r, fig.width=6, fig.height=8} -->
 <!-- plot_data(x, what = 'heatmap') -->
 <!-- ``` -->
+
+# Datasets
+
+## RNA
+
+```{r}
+# Breast-cancer PDX
+data('campbell_bcpdx')
+campbell_bcpdx %>% print
+```
+
+```{r}
+# Glioblastoma tumour normal
+data('patel_gbmtn')
+patel_gbmtn %>% print
+```
+
+```{r}
+# Hematological bone marrow failure
+data('zaho_hemato')
+zaho_hemato %>% print
+```
+
+## RNA and ATAC
+
+```{r}
+# Basal cell carcinoma
+data('satpathy_bcc')
+satpathy_bcc %>% print
+```

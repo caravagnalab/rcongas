@@ -110,8 +110,6 @@ patel_gbmtn = x
 setwd('~/Documents/GitHub/rcongas/')
 usethis::use_data(patel_gbmtn, overwrite = TRUE)
 
-plot_data(campbell_bcpdx, segments = x$input$segmentation$segment_id[1:10])
-
 ############# 
 
 load("~/Projects/2020. CONGAS+/monosomy_res.rda")
@@ -131,8 +129,6 @@ df_counts = monosomy_res$data$gene_counts %>%
 
 df_counts = df_counts %>% filter(cell %in% !!cells)
 df_counts = df_counts %>% filter(gene %in% genes)
-# !(df_counts$gene %in% genes)
-
 
 load("~/Projects/2020. CONGAS+/hg38_gene_coordinates.rda")
 df_counts = df_counts %>% 
@@ -152,7 +148,7 @@ x = init(
   rna = df_counts,
   atac = NULL,
   segmentation = segments,
-  rna_likelihood = 'G',
+  rna_likelihood = 'NB',
   reference_genome = 'GRCh38',
   description = "Zaho et al. MDS hematopoietical used in CONGAS (HCA)",
   smooth = FALSE
@@ -172,31 +168,31 @@ plot_data(campbell_bcpdx, segments = x$input$segmentation$segment_id[1:10])
 
 
 
-library(biomaRt)
-mart <- useMart("ensembl")
-mart <- useDataset("hsapiens_gene_ensembl", mart)
-attributes <- c("ensembl_gene_id","start_position","end_position","hgnc_symbol","chromosome_name")
-filters <- c("chromosome_name","start","end")
-
-coo = CNAqc::chr_coordinates_GRCh38
-all_genes = NULL
-for(i in 1:nrow(coo)){
-  
-  values <- list(chromosome=gsub("chr", "", coo$chr[i]),start="0",end=paste(coo$to[i]))
-  all.genes <- getBM(attributes=attributes, filters=filters, values=values, mart=mart) %>% filter(hgnc_symbol!='') %>% 
-    group_by(hgnc_symbol) %>% 
-    filter(row_number() == 1) %>% 
-    ungroup()
-  
-  colnames(all.genes)[c(2,3,4,5)] = c('from', 'to', 'gene', 'chr')
-
-  all.genes = all.genes %>% 
-    mutate(chr = paste0('chr', chr)) %>% 
-    dplyr::select(chr, from, to, gene, ensembl_gene_id)
-  
-  all_genes = bind_rows(all_genes, all.genes)
-
-}
-
-all_genes
+# library(biomaRt)
+# mart <- useMart("ensembl")
+# mart <- useDataset("hsapiens_gene_ensembl", mart)
+# attributes <- c("ensembl_gene_id","start_position","end_position","hgnc_symbol","chromosome_name")
+# filters <- c("chromosome_name","start","end")
+# 
+# coo = CNAqc::chr_coordinates_GRCh38
+# all_genes = NULL
+# for(i in 1:nrow(coo)){
+#   
+#   values <- list(chromosome=gsub("chr", "", coo$chr[i]),start="0",end=paste(coo$to[i]))
+#   all.genes <- getBM(attributes=attributes, filters=filters, values=values, mart=mart) %>% filter(hgnc_symbol!='') %>% 
+#     group_by(hgnc_symbol) %>% 
+#     filter(row_number() == 1) %>% 
+#     ungroup()
+#   
+#   colnames(all.genes)[c(2,3,4,5)] = c('from', 'to', 'gene', 'chr')
+# 
+#   all.genes = all.genes %>% 
+#     mutate(chr = paste0('chr', chr)) %>% 
+#     dplyr::select(chr, from, to, gene, ensembl_gene_id)
+#   
+#   all_genes = bind_rows(all_genes, all.genes)
+# 
+# }
+# 
+# all_genes
 

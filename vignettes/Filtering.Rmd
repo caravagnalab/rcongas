@@ -59,20 +59,22 @@ library(dplyr)
 <!-- print(example_object) -->
 <!-- ``` -->
 
-Filtering functions are available for data to ba analysed before or after it is loaded into the package.
+Filtering functions are available to process data before or after it is loaded into the package.
 
-* **Before loading:** pre-process data that is ready for usage in the tool, returning an equivalent tibble with fewer rows;
+* pre-process data that is ready for usage in the tool, returning an equivalent tibble with fewer rows;
 
-* **After loading** process data that has already being inputed to the tool, returning a new \code{rcongasplus} object.
+* process data that has already being inputed to the tool, returning a new `rcongasplus` object.
 
 ## Filtering count data
 
+```{data}
+data("example_input")
+```
+
 ### Known genes
 
-We have observed high variability across ribosomal (`r`) and mitochondrial (`m`) genes, which confounds signals in the data, 
 
-We usually remove these genes, using function `filter_known_genes`. This function takes in input a `what` parameter (default `mr`) which
-determines what genes should be removed, plus an extra `specials` list of Hugo Symbols to remove. 
+Ribosomal (`r`) and mitochondrial (`m`) genes can be removed with function `filter_known_genes`. This function takes in input a `what` parameter (default `mr`) which determines what genes should be removed, plus an extra `specials` list of gene names to remove. 
 
 ```{r}
 # The default value for `specials`
@@ -81,32 +83,80 @@ formals(filter_known_genes)$specials
 
 Mitochondrial and ribosomal genes are identified by name using regular expression `"MT"` or `"RP[SL]"`, respectively.
 
+> To use this filter tf the input RNA data must contain a `gene` column.
+
+
 ```{r}
-data('example_input')
 example_input$rna %>% print
 
 # Remove default 
 example_input$rna %>% filter_known_genes()
-
-# Remove only ribosomal 
-example_input$rna %>%  filter_known_genes(what = 'r', specials = list())
 ```
+
+Remove only ribosomal genes.
+
+```{r}
+example_input$rna %>% filter_known_genes(what = 'r', specials = list())
+```
+
 
 ### Outliers
 
-Certain genes can have very high counts in certain cells. These outliers will affect the overall counts per segment used by `Rcongas` models, and can  be removed using function `filter_counts_by_quantile`, which computes an empirical quantile $q$ per event in the data (gene for RNA and peaks for ATAC).
+Certain genes can have very high counts in certain cells. 
+
+```{r, fig.width=4, fig.height=8}
+# Plot the distribution of maxima for each gene count (RNA data)
+my_view = function(x) x %>% 
+  group_by(gene) %>% 
+  filter(value == max(value)) %>% # max only
+  ggplot(aes(value)) + 
+  geom_histogram(bins = 70) +
+  scale_y_log10() +
+  theme_linedraw() +
+  xlim(0, 1000)
+  
+
+cowplot::plot_grid(
+  example_input$rna %>% my_view,
+  example_input$rna %>% 
+    filter_counts_by_quantile %>% # Filter
+    my_view,
+  nrow = 2
+)
+```
+
+These outliers will affect the overall counts per segment used by `Rcongas` models, and can  be removed using function `filter_counts_by_quantile`, which computes an empirical quantile $q$ per event in the data (gene for RNA and peaks for ATAC).
 
 The default quantile value for $q$ is 98% (`upper_quantile = .98`).
 
-```{r}
-# Filter
-example_input$rna = example_input$rna %>% filter_counts_by_quantile
-
-# New data
-example_input$rna %>% print
+```{r, fig.width=4, fig.height=4}
 ```
 
 ## Filtering mapped data
+
+```{r}
+data("example_object")
+
+example_object %>% print()
+```
+
+### Segments
+
+```{r, fig.width=5, fig.height=5}
+example_object %>% 
+  plot_data(what = 'mapping')
+```
+
+Segments that are too short, or have few mapped RNA genes or ATAC peaks can
+be removed using function `filter_segments`.
+
+
+```{r, fig.width=5, fig.height=3}
+# Retain segments longer than 100 Megabases
+example_object %>% 
+  filter_segments(length = 1e8, RNA_genes = 0, ATAC_peaks = 0) %>% 
+  plot_data(what = 'mapping')
+```
 
 ### Outliers per segments
 
@@ -123,20 +173,21 @@ input segments - and remove it if this frequency si above a certain cutoff.
 
 
 ```{r fig.width=8, fig.height=5}
-# A couple segments from the object
+# Some segments from the object
 segment_id = example_object %>%
   get_input('segmentation') %>%
-  filter(row_number() <= 2) %>%
   pull(segment_id)
 
+segment_id = segment_id[1:4]
+
 # Original segment plot
-plot_data(example_object, what = 'histogram', segments = segment_id) %>% print
+example_object %>% 
+  plot_data(what = 'histogram', segments = segment_id)
 
 # Filter with 5%/95% values
-example_object = example_object %>% filter_outliers(lower_quantile = .05, .95)
-
-# Show the difference
-plot_data(example_object, what = 'histogram', segments = segment_id) %>% print
+example_object %>% 
+  filter_outliers(lower_quantile = .05, upper_quantile = .95) %>% 
+  plot_data(what = 'histogram', segments = segment_id)
 ```
 
 

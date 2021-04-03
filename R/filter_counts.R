@@ -14,6 +14,12 @@
 #' filter_known_genes(example_input$rna)
 filter_known_genes = function(x, what = 'rm', specials = 'MALAT1')
 {
+  if(!('gene' %in% names(x)))
+  {
+    cli::cli_alert_danger("The {.field {'gene'}} coulumn is missing from input, returning input data.")
+    return(x)
+  }
+    
   all_genes = x$gene %>% unique
   codes = strsplit(what, split = '')[[1]]
   

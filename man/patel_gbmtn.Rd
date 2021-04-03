@@ -3,10 +3,7 @@
 \docType{data}
 \name{patel_gbmtn}
 \alias{patel_gbmtn}
-\title{(R)CONGAS+ object for the glioblastoma dataset,
-first used in the original CONGAS paper. The paper providing these data
-is Patel, Anoop P., et al. "Single-cell RNA-seq highlights intratumoral
-heterogeneity in primary glioblastoma." Science 344.6190 (2014): 1396-1401.}
+\title{Glioblastoma tumour and normal (SmartSeq RNA, z-score)}
 \format{
 (R)CONGAS+ object.
 }
@@ -14,7 +11,10 @@ heterogeneity in primary glioblastoma." Science 344.6190 (2014): 1396-1401.}
 data(patel_gbmtn)
 }
 \description{
-Example object from (R)Congas+
+@description (R)CONGAS+ object for the glioblastoma dataset,
+first used in the original CONGAS paper. The paper providing these data
+is Patel, Anoop P., et al. "Single-cell RNA-seq highlights intratumoral
+heterogeneity in primary glioblastoma." Science 344.6190 (2014): 1396-1401.
 }
 \examples{
 data(patel_gbmtn)
