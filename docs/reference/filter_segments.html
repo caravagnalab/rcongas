@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Filter per-segment outliers by quantiles. — filter_outliers • Rcongas</title>
+<title>Filter segments. — filter_segments • Rcongas</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,16 +46,10 @@
 
 
 
-<meta property="og:title" content="Filter per-segment outliers by quantiles. — filter_outliers" />
-<meta property="og:description" content="After mapping counts data to segments, this function
-can be used to determine quantiles of mapped data, and identify
-outliers in each segment and modality.
-An outliers is an entry for a cell/segment pair; with this function
-we compute how often a certain cell is marked as an outlier. Then
-the function removes cells that are flagged as containing outliers
-more then a certain input cutoff. This helps picking up which cells
-are often showing counts that seem deviating from the main signal
-in the data.
+<meta property="og:title" content="Filter segments. — filter_segments" />
+<meta property="og:description" content="After mapping data to segments, this function
+can be used to remove segments that are too short, or that have too
+few mapped RNA genes or ATAC peaks.
 The function requires and returns an (R)CONGAS+ object." />
 <meta property="og:image" content="caravagnalab.github.io/Rcongas/logo.png" />
 
@@ -149,30 +143,19 @@ The function requires and returns an (R)CONGAS+ object." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Filter per-segment outliers by quantiles.</h1>
+    <h1>Filter segments.</h1>
     <small class="dont-index">Source: <a href='https://github.com/caravagnalab/RcongasR/filter_mapped.R'><code>R/filter_mapped.R</code></a></small>
-    <div class="hidden name"><code>filter_outliers.Rd</code></div>
+    <div class="hidden name"><code>filter_segments.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>After mapping counts data to segments, this function
-can be used to determine quantiles of mapped data, and identify
-outliers in each segment and modality.</p>
-<p>An outliers is an entry for a cell/segment pair; with this function
-we compute how often a certain cell is marked as an outlier. Then
-the function removes cells that are flagged as containing outliers
-more then a certain input cutoff. This helps picking up which cells
-are often showing counts that seem deviating from the main signal
-in the data.</p>
+    <p>After mapping data to segments, this function
+can be used to remove segments that are too short, or that have too
+few mapped RNA genes or ATAC peaks.</p>
 <p>The function requires and returns an (R)CONGAS+ object.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>filter_outliers</span><span class='op'>(</span>
-  <span class='va'>x</span>,
-  frequency_cutoff <span class='op'>=</span> <span class='fl'>0.2</span> <span class='op'>*</span> <span class='fu'><a href='stat.html'>stat</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span><span class='op'>$</span><span class='va'>nsegments</span>,
-  lower_quantile <span class='op'>=</span> <span class='fl'>0.03</span>,
-  upper_quantile <span class='op'>=</span> <span class='fl'>0.97</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>filter_segments</span><span class='op'>(</span><span class='va'>x</span>, length <span class='op'>=</span> <span class='fl'>0</span>, RNA_genes <span class='op'>=</span> <span class='fl'>50</span>, ATAC_peaks <span class='op'>=</span> <span class='fl'>50</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -182,24 +165,25 @@ in the data.</p>
       <td><p>An <code>rcongasplus</code> object.</p></td>
     </tr>
     <tr>
-      <th>frequency_cutoff</th>
-      <td><p>The cutoff to determine if a cell should be removed
-or not from the data because it has too many outliers. By default, this cut
-is 20% of the input number of segments.</p></td>
+      <th>length</th>
+      <td><p>Mimium size in number of bases for each segment. This is <code>0</code>
+by default, and therefore non effective.</p></td>
     </tr>
     <tr>
-      <th>lower_quantile</th>
-      <td><p>The lower quantile, default 3%.</p></td>
+      <th>RNA_genes</th>
+      <td><p>Required number of RNA genes, if RNA is available. This is
+<code>50</code> by default.</p></td>
     </tr>
     <tr>
-      <th>upper_quantile</th>
-      <td><p>The upper quantile, default 97%.</p></td>
+      <th>ATAC_peaks</th>
+      <td><p>Required number of ATAC peaks, if ATAC is available. This is
+<code>50</code> by default.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>The object <code>x</code> where outlier cells have been identified and
+    <p>The object <code>x</code> where segments have been identified and
 removed.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -213,18 +197,24 @@ removed.</p>
 #&gt; 	 </span><span style='text-decoration: underline;'>Ploidy:</span><span>  </span><span style='background-color: #00BBBB;'> </span><span> 0   </span><span style='background-color: #0000BB;'> </span><span> 1   </span><span style='background-color: #00BB00;'> </span><span> 2   </span><span style='background-color: #BBBB00;'> </span><span> 3   </span><span style='background-color: #BB0000;'> </span><span> 4   </span><span style='background-color: #BB00BB;'> </span><span> 5   </span><span style='background-color: #BBBBBB;'> </span><span> *   </div><div class='output co'>#&gt; </div><div class='output co'>#&gt; <span class='message'>── Modalities </span></div><div class='output co'>#&gt; <span class='message'>→ RNA: </span><span style='color: #00BB00;'>714</span><span> cells with </span><span style='color: #00BB00;'>8613</span><span> mapped genes, </span><span style='color: #00BB00;'>1401728</span><span> non-zero values. Likelihood: </span><span style='color: #00BB00;'>Negative Binomial</span><span>.</span></div><div class='output co'>#&gt; <span class='message'>→ ATAC: </span><span style='color: #00BB00;'>259</span><span> cells with </span><span style='color: #00BB00;'>284316</span><span> mapped peaks, </span><span style='color: #00BB00;'>3083691</span><span> non-zero values. Likelihood: </span><span style='color: #00BB00;'>Negative Binomial</span><span>.</span></div><div class='output co'>#&gt; <span class='message'></span><span style='color: #BBBB00;'>!</span><span> Clusters: </span><span style='color: #BB0000;'>not available</span><span>.</span></div><div class='output co'>#&gt; </div><div class='output co'>#&gt; <span class='message'>── </span><span style='color: #BBBBBB;background-color: #BB00BB;font-weight: bold;'> LOG </span><span> ──</span></div><div class='output co'>#&gt; </div><div class='output co'>#&gt; - 2021-03-30 17:58:41 Created input object.
 #&gt; - 2021-03-30 17:58:43 Filtered outliers: [6|0.05|0.95]</div><div class='output co'>#&gt; [1] 0</div><div class='input'>
 <span class='va'>example_object</span> <span class='op'>%&gt;%</span> 
-  <span class='fu'>filter_outliers</span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>filter_segments</span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
   <span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>── </span><span style='color: #00BB00;'>RNA</span><span> outliers detection via quantiles: lower </span><span style='color: #00BB00;'>0.03</span><span>, upper </span><span style='color: #00BB00;'>0.97</span><span>. </span></div><div class='output co'>#&gt; <span class='message'>→ Normalising </span><span style='color: #00BB00;'>RNA</span><span> counts using input normalisation factors.</span></div><div class='output co'>#&gt; <span class='message'>→ </span><span style='color: #00BB00;'>18</span><span> out of </span><span style='color: #00BB00;'>714</span><span> will be removed (</span><span style='color: #00BB00;'>3%</span><span>)</span></div><div class='output co'>#&gt; </div><div class='output co'>#&gt; <span class='message'>── </span><span style='color: #00BB00;'>ATAC</span><span> outliers detection via quantiles: lower </span><span style='color: #00BB00;'>0.03</span><span>, upper </span><span style='color: #00BB00;'>0.97</span><span>. </span></div><div class='output co'>#&gt; <span class='message'>→ Normalising </span><span style='color: #00BB00;'>ATAC</span><span> counts using input normalisation factors.</span></div><div class='output co'>#&gt; <span class='message'>→ </span><span style='color: #00BB00;'>10</span><span> out of </span><span style='color: #00BB00;'>259</span><span> will be removed (</span><span style='color: #00BB00;'>4%</span><span>)</span></div><div class='output co'>#&gt; <span class='message'>── </span><span style='color: #000000;background-color: #BBBB00;'>[ (R)CONGAS+ ]</span><span style='color: #0000BB;'> SU008 TUMOR 30 segments (73.66% genome)</span><span> ──────────────────────</span></div><div class='output co'>#&gt; </div><div class='output co'>#&gt; <span class='message'>── CNA segments (reference: </span><span style='color: #00BB00;'>GRCh38</span><span>) </span></div><div class='output co'>#&gt; <span class='message'>→ Input </span><span style='color: #00BB00;'>30</span><span> CNA segments, mean ploidy </span><span style='color: #00BB00;'>3.2</span><span>.</span></div><div class='output co'>#&gt; 
+</div><div class='output co'>#&gt; <span class='message'>── Segments filter </span></div><div class='output co'>#&gt; <span class='message'>→ </span><span style='color: #00BB00;'>30</span><span> retained segments out of </span><span style='color: #00BB00;'>30</span><span>.</span></div><div class='output co'>#&gt; <span class='message'>── </span><span style='color: #000000;background-color: #BBBB00;'>[ (R)CONGAS+ ]</span><span style='color: #0000BB;'> SU008 TUMOR 30 segments (73.66% genome)</span><span> ──────────────────────</span></div><div class='output co'>#&gt; </div><div class='output co'>#&gt; <span class='message'>── CNA segments (reference: </span><span style='color: #00BB00;'>GRCh38</span><span>) </span></div><div class='output co'>#&gt; <span class='message'>→ Input </span><span style='color: #00BB00;'>30</span><span> CNA segments, mean ploidy </span><span style='color: #00BB00;'>3.2</span><span>.</span></div><div class='output co'>#&gt; 
 #&gt; 	</span><span style='background-color: #BB0000;'> </span><span>|</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #BBBB00;'> </span><span>|</span><span style='background-color: #BBBB00;'>  </span><span>|</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #BBBB00;'> </span><span>|</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #00BB00;'>  </span><span>|</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #BB0000;'> </span><span>|</span><span style='background-color: #BBBB00;'> </span><span>|</span><span style='background-color: #BBBB00;'>  </span><span>|</span><span style='background-color: #BB0000;'> </span><span>|</span><span style='background-color: #BBBB00;'> </span><span>|</span><span style='background-color: #BBBB00;'> </span><span style='background-color: #BB0000;'> </span><span>|</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #BBBB00;'>  </span><span>|</span><span style='background-color: #00BB00;'> </span><span style='background-color: #BBBBBB;'>  </span><span>|</span><span style='background-color: #BB0000;'>  </span><span>|</span><span style='background-color: #BB0000;'> </span><span style='background-color: #BBBBBB;'> </span><span>|</span><span style='background-color: #BB0000;'> </span><span>
 #&gt; 
-#&gt; 	 </span><span style='text-decoration: underline;'>Ploidy:</span><span>  </span><span style='background-color: #00BBBB;'> </span><span> 0   </span><span style='background-color: #0000BB;'> </span><span> 1   </span><span style='background-color: #00BB00;'> </span><span> 2   </span><span style='background-color: #BBBB00;'> </span><span> 3   </span><span style='background-color: #BB0000;'> </span><span> 4   </span><span style='background-color: #BB00BB;'> </span><span> 5   </span><span style='background-color: #BBBBBB;'> </span><span> *   </div><div class='output co'>#&gt; </div><div class='output co'>#&gt; <span class='message'>── Modalities </span></div><div class='output co'>#&gt; <span class='message'>→ RNA: </span><span style='color: #00BB00;'>696</span><span> cells with </span><span style='color: #00BB00;'>8613</span><span> mapped genes, </span><span style='color: #00BB00;'>1401728</span><span> non-zero values. Likelihood: </span><span style='color: #00BB00;'>Negative Binomial</span><span>.</span></div><div class='output co'>#&gt; <span class='message'>→ ATAC: </span><span style='color: #00BB00;'>249</span><span> cells with </span><span style='color: #00BB00;'>284316</span><span> mapped peaks, </span><span style='color: #00BB00;'>3083691</span><span> non-zero values. Likelihood: </span><span style='color: #00BB00;'>Negative Binomial</span><span>.</span></div><div class='output co'>#&gt; <span class='message'></span><span style='color: #BBBB00;'>!</span><span> Clusters: </span><span style='color: #BB0000;'>not available</span><span>.</span></div><div class='output co'>#&gt; </div><div class='output co'>#&gt; <span class='message'>── </span><span style='color: #BBBBBB;background-color: #BB00BB;font-weight: bold;'> LOG </span><span> ──</span></div><div class='output co'>#&gt; </div><div class='output co'>#&gt; - 2021-03-30 17:58:41 Created input object.
+#&gt; 	 </span><span style='text-decoration: underline;'>Ploidy:</span><span>  </span><span style='background-color: #00BBBB;'> </span><span> 0   </span><span style='background-color: #0000BB;'> </span><span> 1   </span><span style='background-color: #00BB00;'> </span><span> 2   </span><span style='background-color: #BBBB00;'> </span><span> 3   </span><span style='background-color: #BB0000;'> </span><span> 4   </span><span style='background-color: #BB00BB;'> </span><span> 5   </span><span style='background-color: #BBBBBB;'> </span><span> *   </div><div class='output co'>#&gt; </div><div class='output co'>#&gt; <span class='message'>── Modalities </span></div><div class='output co'>#&gt; <span class='message'>→ RNA: </span><span style='color: #00BB00;'>714</span><span> cells with </span><span style='color: #00BB00;'>8613</span><span> mapped genes, </span><span style='color: #00BB00;'>1401728</span><span> non-zero values. Likelihood: </span><span style='color: #00BB00;'>Negative Binomial</span><span>.</span></div><div class='output co'>#&gt; <span class='message'>→ ATAC: </span><span style='color: #00BB00;'>259</span><span> cells with </span><span style='color: #00BB00;'>284316</span><span> mapped peaks, </span><span style='color: #00BB00;'>3083691</span><span> non-zero values. Likelihood: </span><span style='color: #00BB00;'>Negative Binomial</span><span>.</span></div><div class='output co'>#&gt; <span class='message'></span><span style='color: #BBBB00;'>!</span><span> Clusters: </span><span style='color: #BB0000;'>not available</span><span>.</span></div><div class='output co'>#&gt; </div><div class='output co'>#&gt; <span class='message'>── </span><span style='color: #BBBBBB;background-color: #BB00BB;font-weight: bold;'> LOG </span><span> ──</span></div><div class='output co'>#&gt; </div><div class='output co'>#&gt; - 2021-03-30 17:58:41 Created input object.
 #&gt; - 2021-03-30 17:58:43 Filtered outliers: [6|0.05|0.95]
-#&gt; - 2021-04-03 16:09:31 Filtered outliers: [6|0.03|0.97]</div><div class='output co'>#&gt; [1] 0</div><div class='input'>
+#&gt; - 2021-04-03 16:09:31 Filtered segments: [0|50|50]</div><div class='output co'>#&gt; [1] 0</div><div class='input'>
+<span class='co'># Minimum size</span>
 <span class='va'>example_object</span> <span class='op'>%&gt;%</span> 
-  <span class='fu'>filter_outliers</span><span class='op'>(</span>, action <span class='op'>=</span> <span class='st'>'remove'</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>filter_segments</span><span class='op'>(</span>length <span class='op'>=</span> <span class='fl'>1e7</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
   <span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in filter_outliers(., , action = "remove"): unused argument (action = "remove")</span></div></span></pre>
+</div><div class='output co'>#&gt; <span class='message'>── Segments filter </span></div><div class='output co'>#&gt; <span class='message'>→ </span><span style='color: #00BB00;'>30</span><span> retained segments out of </span><span style='color: #00BB00;'>30</span><span>.</span></div><div class='output co'>#&gt; <span class='message'>── </span><span style='color: #000000;background-color: #BBBB00;'>[ (R)CONGAS+ ]</span><span style='color: #0000BB;'> SU008 TUMOR 30 segments (73.66% genome)</span><span> ──────────────────────</span></div><div class='output co'>#&gt; </div><div class='output co'>#&gt; <span class='message'>── CNA segments (reference: </span><span style='color: #00BB00;'>GRCh38</span><span>) </span></div><div class='output co'>#&gt; <span class='message'>→ Input </span><span style='color: #00BB00;'>30</span><span> CNA segments, mean ploidy </span><span style='color: #00BB00;'>3.2</span><span>.</span></div><div class='output co'>#&gt; 
+#&gt; 	</span><span style='background-color: #BB0000;'> </span><span>|</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #BBBB00;'> </span><span>|</span><span style='background-color: #BBBB00;'>  </span><span>|</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #BBBB00;'> </span><span>|</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #00BB00;'>  </span><span>|</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #BB0000;'> </span><span>|</span><span style='background-color: #BBBB00;'> </span><span>|</span><span style='background-color: #BBBB00;'>  </span><span>|</span><span style='background-color: #BB0000;'> </span><span>|</span><span style='background-color: #BBBB00;'> </span><span>|</span><span style='background-color: #BBBB00;'> </span><span style='background-color: #BB0000;'> </span><span>|</span><span style='background-color: #00BB00;'> </span><span>|</span><span style='background-color: #BBBB00;'>  </span><span>|</span><span style='background-color: #00BB00;'> </span><span style='background-color: #BBBBBB;'>  </span><span>|</span><span style='background-color: #BB0000;'>  </span><span>|</span><span style='background-color: #BB0000;'> </span><span style='background-color: #BBBBBB;'> </span><span>|</span><span style='background-color: #BB0000;'> </span><span>
+#&gt; 
+#&gt; 	 </span><span style='text-decoration: underline;'>Ploidy:</span><span>  </span><span style='background-color: #00BBBB;'> </span><span> 0   </span><span style='background-color: #0000BB;'> </span><span> 1   </span><span style='background-color: #00BB00;'> </span><span> 2   </span><span style='background-color: #BBBB00;'> </span><span> 3   </span><span style='background-color: #BB0000;'> </span><span> 4   </span><span style='background-color: #BB00BB;'> </span><span> 5   </span><span style='background-color: #BBBBBB;'> </span><span> *   </div><div class='output co'>#&gt; </div><div class='output co'>#&gt; <span class='message'>── Modalities </span></div><div class='output co'>#&gt; <span class='message'>→ RNA: </span><span style='color: #00BB00;'>714</span><span> cells with </span><span style='color: #00BB00;'>8613</span><span> mapped genes, </span><span style='color: #00BB00;'>1401728</span><span> non-zero values. Likelihood: </span><span style='color: #00BB00;'>Negative Binomial</span><span>.</span></div><div class='output co'>#&gt; <span class='message'>→ ATAC: </span><span style='color: #00BB00;'>259</span><span> cells with </span><span style='color: #00BB00;'>284316</span><span> mapped peaks, </span><span style='color: #00BB00;'>3083691</span><span> non-zero values. Likelihood: </span><span style='color: #00BB00;'>Negative Binomial</span><span>.</span></div><div class='output co'>#&gt; <span class='message'></span><span style='color: #BBBB00;'>!</span><span> Clusters: </span><span style='color: #BB0000;'>not available</span><span>.</span></div><div class='output co'>#&gt; </div><div class='output co'>#&gt; <span class='message'>── </span><span style='color: #BBBBBB;background-color: #BB00BB;font-weight: bold;'> LOG </span><span> ──</span></div><div class='output co'>#&gt; </div><div class='output co'>#&gt; - 2021-03-30 17:58:41 Created input object.
+#&gt; - 2021-03-30 17:58:43 Filtered outliers: [6|0.05|0.95]
+#&gt; - 2021-04-03 16:09:31 Filtered segments: [1e+07|50|50]</div><div class='output co'>#&gt; [1] 0</div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

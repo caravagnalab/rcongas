@@ -135,6 +135,9 @@ what = &quot;normalisation&quot;: just modality.
       <a href="../articles/Filtering.html">Filtering functions</a>
     </li>
     <li>
+      <a href="../articles/Fitting.html">Fitting a model</a>
+    </li>
+    <li>
       <a href="../articles/Plotting.html">Plotting functions</a>
     </li>
   </ul>
@@ -223,69 +226,69 @@ in a gene mapping within the segment.</p></li>
 
 <span class='co'># Extract the input data, after mapping to segments</span>
 <span class='fu'>get_input</span><span class='op'>(</span><span class='va'>example_object</span>, what <span class='op'>=</span> <span class='st'>'data'</span><span class='op'>)</span> 
-</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 343,494 x 5</span><span>
-#&gt;    segment_id               cell              value modality value_type
-#&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>                    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>             </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>     
-#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> chr1:143264541:193212282 AAACCCAAGTCTGGTT  32.0  RNA      G         
-#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> chr1:143264541:193212282 AAACCCACAACTGCCG -</span><span style='color: #BB0000;'>10.7</span><span>  RNA      G         
-#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> chr1:143264541:193212282 AAACCCAGTAAGCGGT -</span><span style='color: #BB0000;'>72.9</span><span>  RNA      G         
-#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> chr1:143264541:193212282 AAACCCATCTCTTGCG  62.8  RNA      G         
-#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> chr1:143264541:193212282 AAACGAAAGCTAAATG  19.1  RNA      G         
-#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> chr1:143264541:193212282 AAACGAAGTATCTTCT  54.2  RNA      G         
-#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> chr1:143264541:193212282 AAACGAAGTTTACCAG   9.37 RNA      G         
-#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> chr1:143264541:193212282 AAACGAATCAAACGAA -</span><span style='color: #BB0000;'>11.6</span><span>  RNA      G         
-#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> chr1:143264541:193212282 AAACGAATCAAGTGGG   8.12 RNA      G         
-#&gt; </span><span style='color: #BCBCBC;'>10</span><span> chr1:143264541:193212282 AAACGCTAGCATCAGG -</span><span style='color: #BB0000;'>25.5</span><span>  RNA      G         
-#&gt; </span><span style='color: #949494;'># … with 343,484 more rows</span><span></div><div class='input'>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 29,190 x 5</span><span>
+#&gt;    segment_id            cell                          value modality value_type
+#&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>                 </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>                         </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>     
+#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> chr1:57781319:108512… bcc.su008.pre.cd45_AAAGATGCA…   274 RNA      NB        
+#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> chr1:57781319:108512… bcc.su008.pre.cd45_GCAATCATC…   227 RNA      NB        
+#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> chr1:57781319:108512… bcc.su008.pre.cd45_GCAGCCATC…   209 RNA      NB        
+#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> chr1:57781319:108512… bcc.su008.pre.cd45_TCCACACCA…   258 RNA      NB        
+#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> chr1:57781319:108512… bcc.su008.pre.tcell_AGCATACC…   284 RNA      NB        
+#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> chr1:57781319:108512… bcc.su008.pre.tcell_AGCTCCTA…    56 RNA      NB        
+#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> chr1:57781319:108512… bcc.su008.pre.tcell_GGAAAGCG…   130 RNA      NB        
+#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> chr1:57781319:108512… bcc.su008.pre.tcell_GGTGCGTC…   195 RNA      NB        
+#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> chr1:57781319:108512… bcc.su008.pre.tumor_AAACCTGT…   251 RNA      NB        
+#&gt; </span><span style='color: #BCBCBC;'>10</span><span> chr1:57781319:108512… bcc.su008.pre.tumor_AAAGCAAG…   256 RNA      NB        
+#&gt; </span><span style='color: #949494;'># … with 29,180 more rows</span><span></div><div class='input'>
 <span class='co'># e.g., in this way you can get input ATAC values</span>
 <span class='fu'>get_input</span><span class='op'>(</span><span class='va'>example_object</span>, what <span class='op'>=</span> <span class='st'>'data'</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>modality</span> <span class='op'>==</span> <span class='st'>'ATAC'</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 179,766 x 5</span><span>
-#&gt;    segment_id               cell                    value modality value_type
-#&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>                    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>                   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>     
-#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> chr1:143264541:193212282 AAACGAACACGGCCAT-CRC_17    28 ATAC     NB        
-#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> chr1:143264541:193212282 AAACGAACATGGAGGT-CRC_17    42 ATAC     NB        
-#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> chr1:143264541:193212282 AAACGAAGTCAGTGTT-CRC_17    28 ATAC     NB        
-#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> chr1:143264541:193212282 AAACGAAGTCCACCAG-CRC_17    20 ATAC     NB        
-#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> chr1:143264541:193212282 AAACGAAGTGGACCAA-CRC_17    24 ATAC     NB        
-#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> chr1:143264541:193212282 AAACGAATCACCACAA-CRC_17    50 ATAC     NB        
-#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> chr1:143264541:193212282 AAACGAATCACGGGTC-CRC_17    29 ATAC     NB        
-#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> chr1:143264541:193212282 AAACGAATCACGTGTA-CRC_17    17 ATAC     NB        
-#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> chr1:143264541:193212282 AAACTCGAGCAAGGTC-CRC_17    54 ATAC     NB        
-#&gt; </span><span style='color: #BCBCBC;'>10</span><span> chr1:143264541:193212282 AAACTCGAGTAATCAG-CRC_17    10 ATAC     NB        
-#&gt; </span><span style='color: #949494;'># … with 179,756 more rows</span><span></div><div class='input'> 
+</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 7,770 x 5</span><span>
+#&gt;    segment_id              cell                value modality value_type
+#&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>                   </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>               </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>     
+#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> chr1:57781319:108512982 SU008_Tumor_Pre_10   </span><span style='text-decoration: underline;'>1</span><span>961 ATAC     NB        
+#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> chr1:57781319:108512982 SU008_Tumor_Pre_100   342 ATAC     NB        
+#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> chr1:57781319:108512982 SU008_Tumor_Pre_104   602 ATAC     NB        
+#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> chr1:57781319:108512982 SU008_Tumor_Pre_106   511 ATAC     NB        
+#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> chr1:57781319:108512982 SU008_Tumor_Pre_110   335 ATAC     NB        
+#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> chr1:57781319:108512982 SU008_Tumor_Pre_112   593 ATAC     NB        
+#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> chr1:57781319:108512982 SU008_Tumor_Pre_114   794 ATAC     NB        
+#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> chr1:57781319:108512982 SU008_Tumor_Pre_115   273 ATAC     NB        
+#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> chr1:57781319:108512982 SU008_Tumor_Pre_116  </span><span style='text-decoration: underline;'>1</span><span>076 ATAC     NB        
+#&gt; </span><span style='color: #BCBCBC;'>10</span><span> chr1:57781319:108512982 SU008_Tumor_Pre_118   910 ATAC     NB        
+#&gt; </span><span style='color: #949494;'># … with 7,760 more rows</span><span></div><div class='input'> 
 <span class='co'># Extract the input segmentation. </span>
 <span class='fu'>get_input</span><span class='op'>(</span><span class='va'>example_object</span>, what <span class='op'>=</span> <span class='st'>'segmentation'</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 36 x 9</span><span>
+</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 30 x 12</span><span>
 #&gt;    chr       from       to copies segment_id         ATAC_nonzerovals ATAC_peaks
 #&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>  </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>                         </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>      </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> chr1    1.69</span><span style='color: #949494;'>e</span><span>4   1.22</span><span style='color: #949494;'>e</span><span>8      3 chr1:16949:121596…            </span><span style='text-decoration: underline;'>54</span><span>609         11
-#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> chr1    1.43</span><span style='color: #949494;'>e</span><span>8   1.93</span><span style='color: #949494;'>e</span><span>8      3 chr1:143264541:19…            </span><span style='text-decoration: underline;'>19</span><span>882          4
-#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> chr1    2.14</span><span style='color: #949494;'>e</span><span>8   2.32</span><span style='color: #949494;'>e</span><span>8      4 chr1:214483397:23…             </span><span style='text-decoration: underline;'>4</span><span>998          1
-#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> chr2    1.73</span><span style='color: #949494;'>e</span><span>5   2.42</span><span style='color: #949494;'>e</span><span>8      4 chr2:173150:24176…           </span><span style='text-decoration: underline;'>114</span><span>664         23
-#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> chr3    3.20</span><span style='color: #949494;'>e</span><span>5   9.02</span><span style='color: #949494;'>e</span><span>7      3 chr3:319825:90229…            </span><span style='text-decoration: underline;'>39</span><span>621          8
-#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> chr3    9.39</span><span style='color: #949494;'>e</span><span>7   1.98</span><span style='color: #949494;'>e</span><span>8      3 chr3:93874275:198…            </span><span style='text-decoration: underline;'>44</span><span>565          9
-#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> chr4    3.73</span><span style='color: #949494;'>e</span><span>5   4.89</span><span style='color: #949494;'>e</span><span>7      3 chr4:372924:48892…            </span><span style='text-decoration: underline;'>14</span><span>762          3
-#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> chr4    5.25</span><span style='color: #949494;'>e</span><span>7   1.90</span><span style='color: #949494;'>e</span><span>8      3 chr4:52466188:190…            </span><span style='text-decoration: underline;'>63</span><span>740         13
-#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> chr5    1.69</span><span style='color: #949494;'>e</span><span>5   4.59</span><span style='color: #949494;'>e</span><span>7      4 chr5:169186:45891…            </span><span style='text-decoration: underline;'>14</span><span>847          3
-#&gt; </span><span style='color: #BCBCBC;'>10</span><span> chr5    5.04</span><span style='color: #949494;'>e</span><span>7   7.39</span><span style='color: #949494;'>e</span><span>7      4 chr5:50402346:739…             </span><span style='text-decoration: underline;'>4</span><span>945          1
-#&gt; </span><span style='color: #949494;'># … with 26 more rows, and 2 more variables: RNA_nonzerovals &lt;dbl&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   RNA_genes &lt;dbl&gt;</span><span></div><div class='input'> 
+#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> chr10   2.85</span><span style='color: #949494;'>e</span><span>5   1.35</span><span style='color: #949494;'>e</span><span>8      2 chr10:285200:1354…           </span><span style='text-decoration: underline;'>176</span><span>459      </span><span style='text-decoration: underline;'>18</span><span>251
+#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> chr4    4.03</span><span style='color: #949494;'>e</span><span>4   1.91</span><span style='color: #949494;'>e</span><span>8      2 chr4:40332:190986…           </span><span style='text-decoration: underline;'>153</span><span>390      </span><span style='text-decoration: underline;'>16</span><span>652
+#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> chr11   1.75</span><span style='color: #949494;'>e</span><span>7   1.35</span><span style='color: #949494;'>e</span><span>8      3 chr11:17515668:13…           </span><span style='text-decoration: underline;'>180</span><span>071      </span><span style='text-decoration: underline;'>17</span><span>098
+#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> chr2    1.33</span><span style='color: #949494;'>e</span><span>8   2.42</span><span style='color: #949494;'>e</span><span>8      3 chr2:133074851:24…           </span><span style='text-decoration: underline;'>122</span><span>575      </span><span style='text-decoration: underline;'>13</span><span>415
+#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> chr2    3.93</span><span style='color: #949494;'>e</span><span>4   8.93</span><span style='color: #949494;'>e</span><span>7      3 chr2:39340:893198…           </span><span style='text-decoration: underline;'>130</span><span>226      </span><span style='text-decoration: underline;'>12</span><span>956
+#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> chr14   2.03</span><span style='color: #949494;'>e</span><span>7   1.05</span><span style='color: #949494;'>e</span><span>8      3 chr14:20323479:10…           </span><span style='text-decoration: underline;'>125</span><span>378      </span><span style='text-decoration: underline;'>12</span><span>371
+#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> chr15   2.89</span><span style='color: #949494;'>e</span><span>7   1.03</span><span style='color: #949494;'>e</span><span>8      2 chr15:28947721:10…           </span><span style='text-decoration: underline;'>132</span><span>411      </span><span style='text-decoration: underline;'>12</span><span>616
+#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> chr6    6.73</span><span style='color: #949494;'>e</span><span>7   1.71</span><span style='color: #949494;'>e</span><span>8      2 chr6:67340783:171…           </span><span style='text-decoration: underline;'>105</span><span>050      </span><span style='text-decoration: underline;'>11</span><span>560
+#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> chr12   5.33</span><span style='color: #949494;'>e</span><span>7   1.34</span><span style='color: #949494;'>e</span><span>8      3 chr12:53343461:13…           </span><span style='text-decoration: underline;'>120</span><span>836      </span><span style='text-decoration: underline;'>11</span><span>634
+#&gt; </span><span style='color: #BCBCBC;'>10</span><span> chr5    1.10</span><span style='color: #949494;'>e</span><span>8   1.81</span><span style='color: #949494;'>e</span><span>8      3 chr5:110286431:18…           </span><span style='text-decoration: underline;'>105</span><span>659      </span><span style='text-decoration: underline;'>10</span><span>740
+#&gt; </span><span style='color: #949494;'># … with 20 more rows, and 5 more variables: RNA_nonzerovals &lt;dbl&gt;,</span><span>
+#&gt; </span><span style='color: #949494;'>#   RNA_genes &lt;dbl&gt;, E &lt;dbl&gt;, L &lt;int&gt;, row_number() &lt;= 30 &lt;lgl&gt;</span><span></div><div class='input'> 
 <span class='co'># Extract the input normalisation factors</span>
 <span class='fu'>get_input</span><span class='op'>(</span><span class='va'>example_object</span>, what <span class='op'>=</span> <span class='st'>'normalisation'</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 9,547 x 3</span><span>
-#&gt;    cell             normalisation_factor modality
-#&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>                           </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>   
-#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> AAACCCAAGTCTGGTT                </span><span style='text-decoration: underline;'>15</span><span>619 RNA     
-#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> AAACCCACAACTGCCG                </span><span style='text-decoration: underline;'>28</span><span>531 RNA     
-#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> AAACCCAGTAAGCGGT                </span><span style='text-decoration: underline;'>42</span><span>057 RNA     
-#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> AAACCCATCTCTTGCG                </span><span style='text-decoration: underline;'>16</span><span>651 RNA     
-#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> AAACGAAAGCTAAATG                </span><span style='text-decoration: underline;'>21</span><span>235 RNA     
-#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> AAACGAAGTATCTTCT                </span><span style='text-decoration: underline;'>16</span><span>750 RNA     
-#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> AAACGAAGTTTACCAG                </span><span style='text-decoration: underline;'>17</span><span>389 RNA     
-#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> AAACGAATCAAACGAA                </span><span style='text-decoration: underline;'>24</span><span>646 RNA     
-#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> AAACGAATCAAGTGGG                </span><span style='text-decoration: underline;'>21</span><span>820 RNA     
-#&gt; </span><span style='color: #BCBCBC;'>10</span><span> AAACGCTAGCATCAGG                </span><span style='text-decoration: underline;'>29</span><span>114 RNA     
-#&gt; </span><span style='color: #949494;'># … with 9,537 more rows</span><span></div></span></pre>
+</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 973 x 3</span><span>
+#&gt;    cell                                 normalisation_factor modality
+#&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>                                               </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>   
+#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> bcc.su008.pre.cd45_AAAGATGCAAAGGAAG                 2.70  RNA     
+#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> bcc.su008.pre.cd45_GCAATCATCAAACAAG                 1.89  RNA     
+#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> bcc.su008.pre.cd45_GCAGCCATCTTTAGTC                 1.66  RNA     
+#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> bcc.su008.pre.cd45_TCCACACCACATCTTT                 2.49  RNA     
+#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> bcc.su008.pre.tcell_AGCATACCAGCATGAG                1.59  RNA     
+#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> bcc.su008.pre.tcell_AGCTCCTAGGACAGAA                0.614 RNA     
+#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> bcc.su008.pre.tcell_GGAAAGCGTATTAGCC                1.15  RNA     
+#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> bcc.su008.pre.tcell_GGTGCGTCAGAGTGTG                1.74  RNA     
+#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> bcc.su008.pre.tumor_AAACCTGTCCGAGCCA                1.17  RNA     
+#&gt; </span><span style='color: #BCBCBC;'>10</span><span> bcc.su008.pre.tumor_AAAGCAAGTGTCTGAT                0.762 RNA     
+#&gt; </span><span style='color: #949494;'># … with 963 more rows</span><span></div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

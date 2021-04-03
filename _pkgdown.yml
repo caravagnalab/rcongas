@@ -51,9 +51,11 @@ reference:
   desc:  Functions to pre-process inputs and post-process models.
   contents:
   - filter_known_genes
+  - filter_counts_by_quantile
+  - filter_segments
   - filter_outliers
   - filter_missing_data
-  
+
 # * cap_values_by_quantile
 # * filter_cells_by_quantile
 # * filter_values_by_quantile

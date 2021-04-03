@@ -55,12 +55,12 @@ segment_selector = function(x, K = 1:3, samples = 10, epsilon = 1e-4, score="ICL
     loglik = function(x) { -sum(x$assignments$likelihood) }
     
     # initialize assignments
-    km=kmeans(x$value, centers=k, nstart = 100,  trace=FALSE)
+    km = kmeans(x$value, centers=k, nstart = 100,  trace=FALSE)
     
-    index=1:k
-    labels=sample(index,round(length(km$cluster)*0.3),replace = T)
-    km$cluster[1:round(length(km$cluster)*0.3)]=labels
-    x$cluster=km$cluster
+    index = 1:k
+    labels = sample(index, round(length(km$cluster) * 0.3), replace = T)
+    km$cluster[1:round(length(km$cluster) * 0.3)] = labels
+    x$cluster = km$cluster
     
     
     #Starting point random

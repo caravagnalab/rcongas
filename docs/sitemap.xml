@@ -13,9 +13,6 @@
     <loc>caravagnalab.github.io/Rcongas/reference/campbell_bcpdx.html</loc>
   </url>
   <url>
-    <loc>caravagnalab.github.io/Rcongas/reference/cap_values_by_quantile.html</loc>
-  </url>
-  <url>
     <loc>caravagnalab.github.io/Rcongas/reference/example_input.html</loc>
   </url>
   <url>
@@ -23,6 +20,9 @@
   </url>
   <url>
     <loc>caravagnalab.github.io/Rcongas/reference/filter_cells_by_quantile.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/Rcongas/reference/filter_counts_by_quantile.html</loc>
   </url>
   <url>
     <loc>caravagnalab.github.io/Rcongas/reference/filter_known_genes.html</loc>
@@ -34,7 +34,7 @@
     <loc>caravagnalab.github.io/Rcongas/reference/filter_outliers.html</loc>
   </url>
   <url>
-    <loc>caravagnalab.github.io/Rcongas/reference/filter_values_by_quantile.html</loc>
+    <loc>caravagnalab.github.io/Rcongas/reference/filter_segments.html</loc>
   </url>
   <url>
     <loc>caravagnalab.github.io/Rcongas/reference/fit_congas.html</loc>
@@ -47,6 +47,9 @@
   </url>
   <url>
     <loc>caravagnalab.github.io/Rcongas/reference/init.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/Rcongas/reference/patel_gbmtn.html</loc>
   </url>
   <url>
     <loc>caravagnalab.github.io/Rcongas/reference/pipe.html</loc>
@@ -64,10 +67,19 @@
     <loc>caravagnalab.github.io/Rcongas/reference/print.rcongasplus.html</loc>
   </url>
   <url>
+    <loc>caravagnalab.github.io/Rcongas/reference/satpathy_bcc.html</loc>
+  </url>
+  <url>
     <loc>caravagnalab.github.io/Rcongas/reference/stat.html</loc>
   </url>
   <url>
+    <loc>caravagnalab.github.io/Rcongas/reference/zaho_hemato.html</loc>
+  </url>
+  <url>
     <loc>caravagnalab.github.io/Rcongas/articles/Filtering.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/Rcongas/articles/Fitting.html</loc>
   </url>
   <url>
     <loc>caravagnalab.github.io/Rcongas/articles/Plotting.html</loc>

@@ -1,6 +1,8 @@
-#' Fit a list of CONGAS model
+#' Fit an (R)CONGAS+ model
+#' 
+#' @description 
 #'
-#' This function is general interface for fitting a \href{https://github.com/Militeee/congas}{congas} model in R. The model briefly consist in a joint
+#' This function is a general interface for fitting a \href{https://github.com/Militeee/congas}{congas} Python model in R. The model briefly consist in a joint
 #' mixture model over two modalities, currently scATAC and scRNA-seq. For more information about the theoretical fundations of the approach refer
 #' to the vignette. This function performs modele selection over a specified number of clusters, using a specific information criterium (IC). ICs
 #' and results for all the runs are, however, reported in the object.
@@ -17,6 +19,7 @@
 #' @param latent_variables specify the nature of the latent variable modelling the copy number profile. Currently only "D" (discrete) is available
 #' @param compile use JIT compiler for the Pyro ba
 #' @param steps number of steps of optimization
+#' @param samples Number of times a model is fit for each value of \code{K}.
 #' @param model_selection information criteria to which perform the model selection (one of ICL, NLL, BIC, AIC)
 #'
 #' @return An object ot class \code{rcongasplus} with a slot \code{bset_fit} with the learned parameters for the selected model in tiblle format. A slot \code{runs}
@@ -39,6 +42,8 @@ fit_congas <-
            latent_variables = "D",
            compile = FALSE,
            steps = 500,
+           samples = 1,
+           parallel = FALSE,
            model_selection = "ICL",
            temperature = 10
            ) {
@@ -51,8 +56,14 @@ fit_congas <-
     x %>% sanitize_obj()
     x %>% sanitize_zeroes()
 
-    runs <-
-      lapply(K, function(k)
+    cli::cli_h1("{crayon::bgYellow(' (R)CONGAS+ ')} Variational Inference")
+    
+    # Multi-run fit
+    one_k = function(k)
+    {
+      cli::cli_h3("Fit with k = {.field {k}}.")
+      
+      lapply(1:samples, function(w)
         fit_congas_single_run(
           x,
           model_parameters,
@@ -63,7 +74,42 @@ fit_congas <-
           steps,
           temperature
         ))
-    names(runs) <-  paste(K)
+    }
+    
+    TIME = as.POSIXct(Sys.time(), format = "%H:%M:%S")
+    
+    runs <- easypar::run(
+      FUN = one_k,
+      PARAMS = lapply(K, list),
+      parallel = parallel,
+      progress_bar = FALSE
+    )
+    
+    # Unroll everything
+    runs = Reduce(append, runs)
+    
+    # Report timing to screen
+    TIME = difftime(as.POSIXct(Sys.time(), format = "%H:%M:%S"), TIME, units = "mins")
+    
+    cat('\n\n')
+    cli::cli_h2("{crayon::bold('(R)CONGAS+ fits')} completed in {.field {prettyunits::pretty_dt(TIME)}}.")
+    cat('\n')
+    
+    # names(runs) <-  paste(K)
+    
+    # runs <-
+    #   lapply(K, function(k)
+    #     fit_congas_single_run(
+    #       x,
+    #       model_parameters,
+    #       k,
+    #       learning_rate,
+    #       latent_variables,
+    #       compile,
+    #       steps,
+    #       temperature
+    #     ))
+    # names(runs) <-  paste(K)
 
     cli::cli_h3("Inference completed, choosing best model.")
 
@@ -71,6 +117,8 @@ fit_congas <-
       y$ICs)
     model_selection_df <-
       do.call(rbind, model_selection_df) %>%  as_tibble()
+    
+    model_selection_df$K = sapply(runs, function(w) w$hyperparameters$K)
 
     if(model_selection_df %>% is.na %>% any)
     {
@@ -78,8 +126,6 @@ fit_congas <-
       model_selection_df[!complete.cases(model_selection_df), ] %>% print
       stop("Cannot select best model!")
     }
-
-    model_selection_df$K <- K
 
     bms_idx <- order(model_selection_df %>%  pull(!!model_selection))
 
@@ -107,7 +153,7 @@ fit_congas_single_run <-
            steps,
            temperature) {
 
-    cli::cli_h3("Fit with k = {.field {K}}.")
+    # cli::cli_h3("Fit with k = {.field {K}}.")
 
     cg <- reticulate::import("congas")
     cg_mod <- reticulate::import("congas.models")
