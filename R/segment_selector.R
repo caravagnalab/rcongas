@@ -1,13 +1,65 @@
-# x <- readRDS("3.rcongas_tumour.rds")
-# x = model_selection(x)
-# 
 
-segment_selector = function(x, K = 1:3, samples = 10, epsilon = 1e-4, score="ICL", mod="ATAC")
+
+
+segment_selector <- function(x, what="congas", K=1:3, score="ICL", mod="ATAC"){
+  
+  
+  if(what=="congas"){
+    
+       obj=segments_selector_congas(x,K=K,score=score,mod=mod)
+       
+  }else if(what=="nbmix"){
+    
+       obj=segments_selector_nbmix(x,K=K,score=score,mod=mod)
+      
+  }else{
+    
+      stop("Unknown method")
+  }
+  
+     return(obj)
+}
+
+
+
+segments_selector_nbmix <- function(obj, K = 1:3, score = "ICL", modality="ATAC") {
+  
+  fit_mixture = fit_nbmix(obj, K = K, score = score, mod=modality) %>% filter(rank == 1)
+  
+  plot = fit_mixture$plot
+  
+  x_red = fit_mixture %>% filter(status == "Polyclonal")
+  
+  polyclonal_segments = x_red$segment_id %>% unique()
+  
+  filt_cyto <- obj %>% get_input(what = "segmentation") %>%
+    filter(segment_id %in% polyclonal_segments)
+  
+  filt_dataset <- obj %>% get_input(what = "data") %>%
+    filter(segment_id %in% polyclonal_segments)
+  
+  if (!(length(rownames(filt_cyto)) == 0)) {
+    obj$input$dataset = filt_dataset
+    
+    obj$input$segmentation = filt_cyto
+    
+  }
+  
+  obj$polyclonal_segments_plot <- plot
+  
+  obj$polyclonal_segments <- polyclonal_segments
+  
+  return(obj)
+  
+}
+
+
+fit_nbmix = function(x, K = 1:3, score="ICL", mod="ATAC")
 {
   library(purrr)
   
   # EM
-  fit_em = function(x, k, segment_id, epsilon = 1e-4)
+  fit_em = function(x, k, segment_id)
   {
     # dnbinom(x, size, prob, mu, log = FALSE) is the likelihood function for a NB using size, mu as parameters
     fit_nb_mle <- function(x) {
@@ -84,7 +136,7 @@ segment_selector = function(x, K = 1:3, samples = 10, epsilon = 1e-4, score="ICL
       # cat(delta_ll < epsilon, '\n')
       # cat(delta_ll, '\n \n')
       
-      if (delta_ll < epsilon)
+      if (delta_ll < 1e-4)
         break
       
        x = iterations[[5]]$assignments
@@ -160,7 +212,7 @@ segment_selector = function(x, K = 1:3, samples = 10, epsilon = 1e-4, score="ICL
   # Fit for k
   runner_k = function(x,segment_id)
   {
-    trials = expand.grid(k = K, r = 1:samples)
+    trials = expand.grid(k = K, r = 1:10)
     
     # Model selection 
     # trials_fit = lapply(1:nrow(trials), function(i){
@@ -170,7 +222,7 @@ segment_selector = function(x, K = 1:3, samples = 10, epsilon = 1e-4, score="ICL
     # Model selection 
     trials_fit = easypar::run(
       FUN = function(i){
-        fit_em(x = x, k = trials$k[i], segment_id=segment_id, epsilon)
+        fit_em(x = x, k = trials$k[i], segment_id=segment_id)
       },
       PARAMS = lapply(1:nrow(trials), list),
       parallel = FALSE
@@ -239,13 +291,119 @@ segment_selector = function(x, K = 1:3, samples = 10, epsilon = 1e-4, score="ICL
 
 
 
+segments_selector_congas <- function(obj, K=1:3, score="ICL", mod="ATAC"){
+  
+  
+  congas_single_segment <- function(obj,
+                                    seg_id,
+                                    K = K,
+                                    score=score,
+                                    lambda=lambda){
+    
+    filt_cyto <- obj %>% Rcongas:::get_input(what = "segmentation") %>%
+      filter(segment_id == seg_id)
+    
+    filt_dataset <- obj %>% Rcongas:::get_input(what = "data") %>%   
+      filter(segment_id == seg_id)
+    
+    obj$input$dataset = filt_dataset
+    
+    obj$input$segmentation = filt_cyto
+    
+    params = Rcongas:::auto_config_run(obj, K = K)
+    
+    params$lambda=lambda
+    
+    fit_obj = Rcongas:::fit_congas(
+      obj,
+      K = K,
+      model_parameters = params,
+      learning_rate = 0.05,
+      steps = 500,
+      model_selection = score
+    )
+    
+    
+    p=Rcongas:::plot_fit(fit_obj,what = "density",highlight=F)
+    
+    model = tibble(
+      k = Rcongas:::stat(fit_obj, "fit")$fit_k,
+      segment_id = seg_id,
+      counts= filt_dataset %>% dplyr::select("value"),
+      assignments = Rcongas:::get_fit(fit_obj, what = "cluster_assignments") %>% dplyr::select("cluster"),
+      plot=p
+    )
+    
+    return(model)
+    
+  }
+  
+  
+  segment_ids = unique(Rcongas:::get_data(obj)$segment_id)
+  
+  if(mod=="ATAC"){
+    
+    lambda=0
+    
+  }else if(mod=="RNA"){
+    
+    lambda=1
+    
+  }else{
+    
+       stop("Unknown modality")
+    
+  }
+  
+  report = lapply(segment_ids,
+                  function(seg_id)
+                  {
+                    runs = congas_single_segment(obj, seg_id, K=K, score=score,lambda=lambda)
+                    
+                    return(runs)
+                    
+                  }
+  )
+  
+  report = Reduce(bind_rows, report)
+  
+  segments_plot <- report$plot %>% unique()
+  
+  polyclonal_segments <-
+    filter(report, k > 1) %>% dplyr::select(segment_id) %>% unique()
+  
+  filt_cyto <- obj %>% Rcongas:::get_input(what = "segmentation") %>%
+    filter(segment_id %in% polyclonal_segments$segment_id)
+  
+  filt_dataset <- obj %>% Rcongas:::get_input(what = "data") %>%
+    filter(segment_id %in% polyclonal_segments$segment_id)
+  
+  if (!(length(rownames(filt_cyto)) == 0)) {
+    
+    obj$input$dataset = filt_dataset
+    
+    obj$input$segmentation = filt_cyto
+    
+  }
+  
+  obj$segments_plot <- segments_plot
+  
+  obj$polyclonal_segments <- polyclonal_segments
+  
+  return(obj)
+  
+}
 
 
-
-
-
-
-
+select_segments <- function(x, segment_ids) {
+  x_filt = x %>% get_input(what = "data") %>% filter(segment_id %in% segment_ids)
+  cyto = x %>% get_input(what = "segmentation") %>% filter(segment_id %in% segment_ids)
+  x$input$dataset = x_filt
+  x$input$segmentation = cyto
+  
+  return(x)
+  
+}
 
 
 
