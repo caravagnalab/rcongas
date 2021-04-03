@@ -39,7 +39,7 @@ fit_congas <-
            K,
            model_parameters,
            learning_rate = 0.05,
-           latent_variables = "D",
+           latent_variables = "C",
            compile = FALSE,
            steps = 500,
            samples = 1,
@@ -111,7 +111,8 @@ fit_congas <-
     #     ))
     # names(runs) <-  paste(K)
 
-    cli::cli_h3("Inference completed, choosing best model.")
+    cat("\n")
+    # cli::cli_h3("Inference completed, choosing best model.")
 
     model_selection_df <-  lapply(runs, function(y)
       y$ICs)
@@ -137,6 +138,8 @@ fit_congas <-
     x$best_fit <-  best_fit
     x$model_selection <-  model_selection_df
     x$used_IC <- model_selection
+    
+    x %>%  print
 
     return(x)
 

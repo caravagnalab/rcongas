@@ -2,7 +2,8 @@
 #' 
 #' @description After mapping data to segments, this function
 #' can be used to remove segments that are too short, or that have too
-#' few mapped RNA genes or ATAC peaks.
+#' few mapped RNA genes or ATAC peaks. A parameters allows to input a list
+#' of segments that will be retained no matter what.
 #' 
 #' The function requires and returns an (R)CONGAS+ object.
 #'
@@ -13,6 +14,7 @@
 #' \code{50} by default.
 #' @param ATAC_peaks Required number of ATAC peaks, if ATAC is available. This is
 #' \code{50} by default.
+#' @param segments A list of segment ids to retain regardless of the filters.
 #' 
 #' @return The object \code{x} where segments have been identified and 
 #' removed.
@@ -36,24 +38,25 @@
 filter_segments = function(x, 
                            length = 0,
                            RNA_genes = 50,
-                           ATAC_peaks = 50
+                           ATAC_peaks = 50,
+                           segments = list()
                            )
 {
   x %>% sanitize_obj()
   
   retained_segments = get_input(x, 'segmentation') %>%
     mutate(
+      force = segment_id %in% segments,
       RNA = ifelse(has_rna((x)),
                    RNA_genes > !!RNA_genes,
                    TRUE),
       ATAC = ifelse(has_atac((x)),
                     ATAC_peaks > !!ATAC_peaks,
-                    TRUE)
+                    TRUE),
+      L = (as.double(to) - as.double(from)) > !!length
     ) %>%
     filter(
-        (as.double(to) - as.double(from)) > !!length,
-           RNA,
-           ATAC)
+      (force) | (RNA & L & ATAC))
   
   cli::cli_h3("Segments filter")
   cli::cli_alert("{.field {nrow(retained_segments)}} retained segments out of {.field {stat(x)$nsegments}}.")

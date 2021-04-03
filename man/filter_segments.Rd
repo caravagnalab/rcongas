@@ -4,7 +4,13 @@
 \alias{filter_segments}
 \title{Filter segments.}
 \usage{
-filter_segments(x, length = 0, RNA_genes = 50, ATAC_peaks = 50)
+filter_segments(
+  x,
+  length = 0,
+  RNA_genes = 50,
+  ATAC_peaks = 50,
+  segments = list()
+)
 }
 \arguments{
 \item{x}{An \code{rcongasplus} object.}
@@ -17,6 +23,8 @@ by default, and therefore non effective.}
 
 \item{ATAC_peaks}{Required number of ATAC peaks, if ATAC is available. This is
 \code{50} by default.}
+
+\item{segments}{A list of segment ids to retain regardless of the filters.}
 }
 \value{
 The object \code{x} where segments have been identified and
@@ -25,7 +33,8 @@ removed.
 \description{
 After mapping data to segments, this function
 can be used to remove segments that are too short, or that have too
-few mapped RNA genes or ATAC peaks.
+few mapped RNA genes or ATAC peaks. A parameters allows to input a list
+of segments that will be retained no matter what.
 
 The function requires and returns an (R)CONGAS+ object.
 }
