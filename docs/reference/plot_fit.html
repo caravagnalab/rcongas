@@ -57,6 +57,7 @@ only for segments that differ for a segment CNA value among one of the inferred 
 (what = &quot;heatmap&quot;) The same heatmap plot from plot_data with
 what = &quot;heatmap&quot;, where rows are sorted by cluster and cluster annotations reported;
 (what = &quot;scores&quot;) The scores used for model selection;
+(what = &quot;posterior_CNA&quot;) The posterior probability for CNA values;
 
 
 This function has the same logic of plot_data with respect to the ellipsis and
@@ -119,6 +120,9 @@ input parameters." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
+      <a href="../articles/Filtering.html">Filtering functions</a>
+    </li>
+    <li>
       <a href="../articles/Plotting.html">Plotting functions</a>
     </li>
   </ul>
@@ -163,6 +167,7 @@ only for segments that differ for a segment CNA value among one of the inferred 
 <li><p>(<code>what = "heatmap"</code>) The same heatmap plot from <code><a href='plot_data.html'>plot_data</a></code> with
 <code>what = "heatmap"</code>, where rows are sorted by cluster and cluster annotations reported;</p></li>
 <li><p>(<code>what = "scores"</code>) The scores used for model selection;</p></li>
+<li><p>(<code>what = "posterior_CNA"</code>) The posterior probability for CNA values;</p></li>
 </ul>
 
 <p>This function has the same logic of <code><a href='plot_data.html'>plot_data</a></code> with respect to the ellipsis and
@@ -210,7 +215,10 @@ or <code>"scores"</code>.</p></td>
 </div><div class='output co'>#&gt; <span class='message'></span><span style='color: #BB0000;'>x</span><span> No fits available, returning empty plot.</span></div><div class='img'><img src='plot_fit-4.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># Scores for model selection</span>
 <span class='fu'>plot_fit</span><span class='op'>(</span><span class='va'>example_object</span>, what <span class='op'>=</span> <span class='st'>'scores'</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'></span><span style='color: #BB0000;'>x</span><span> No fits available, returning empty plot.</span></div><div class='img'><img src='plot_fit-5.png' alt='' width='700' height='433' /></div></span></pre>
+</div><div class='output co'>#&gt; <span class='message'></span><span style='color: #BB0000;'>x</span><span> No fits available, returning empty plot.</span></div><div class='img'><img src='plot_fit-5.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='co'># Posterior for CNAs</span>
+<span class='fu'>plot_fit</span><span class='op'>(</span><span class='va'>example_object</span>, what <span class='op'>=</span> <span class='st'>'posterior_CNA'</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'></span><span style='color: #BB0000;'>x</span><span> No fits available, returning empty plot.</span></div><div class='img'><img src='plot_fit-6.png' alt='' width='700' height='433' /></div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -108,358 +108,303 @@
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">Rcongas</span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">'example_object'</span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">example_object</span><span class="op">)</span>
-<span class="co">#&gt; x Warning ATAC 0-counts cells. 195 cells have no data in any of 36 segments, top 5 with missing data are:</span>
-<span class="co">#&gt; x Cell CACAACAGTGGCATAG-CRC_17 with 2 0-segments (6%)</span>
-<span class="co">#&gt; x Cell GAACCGCAGGTTACAA-CRC_17 with 2 0-segments (6%)</span>
-<span class="co">#&gt; x Cell GGAACCCGTTGTGACT-CRC_17 with 2 0-segments (6%)</span>
-<span class="co">#&gt; x Cell AAACGAATCACGTGTA-CRC_17 with 1 0-segments (3%)</span>
-<span class="co">#&gt; x Cell AAACTCGAGTCTGCTA-CRC_17 with 1 0-segments (3%)</span>
-<span class="co">#&gt; ── [ (R)CONGAS+ ] Example object for (R)CONGAS+ ────────────────────────────────</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ── CNA segments (reference: GRCh38)</span>
-<span class="co">#&gt; → Input 36 CNA segments, mean ploidy 3.67.</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;     |  | | | | |  |  | | | | | | |  |  |   | |    | |  |  </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;   Ploidy:    0     1     2     3     4     5     *</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ── Modalities</span>
-<span class="co">#&gt; → RNA: 4548 cells with 16005 mapped genes, 16748279 non-zero values. Likelihood: Gaussian.</span>
-<span class="co">#&gt; → ATAC: 4999 cells with 210 mapped peaks, 1040663 non-zero values. Likelihood: Negative Binomial.</span>
-<span class="co">#&gt; ! Clusters: not available.</span>
-<span class="co">#&gt; [1] 0</span></code></pre></div>
-<div id="filtering-functions" class="section level1">
-<h1 class="hasAnchor">
-<a href="#filtering-functions" class="anchor"></a>Filtering functions</h1>
-<p>Filtering functions are available for data <em>before</em> it is loaded into the package, or <em>after</em>.</p>
-<div id="before-loading" class="section level2">
+<!-- ```{r, eval=T} -->
+<!-- data('example_object') -->
+<!-- print(example_object) -->
+<!-- ``` -->
+<p>Filtering functions are available to process data before or after it is loaded into the package.</p>
+<ul>
+<li><p>pre-process data that is ready for usage in the tool, returning an equivalent tibble with fewer rows;</p></li>
+<li><p>process data that has already being inputed to the tool, returning a new <code>rcongasplus</code> object.</p></li>
+</ul>
+<div id="filtering-count-data" class="section level2">
 <h2 class="hasAnchor">
-<a href="#before-loading" class="anchor"></a>Before loading</h2>
-<p>Functions that pre-process data before being inputed to the tool work requiring data in a format ready for usage in the tool; the output is the very same tibble with filtered entries (rows).</p>
-</div>
-<div id="after-loading" class="section level2">
-<h2 class="hasAnchor">
-<a href="#after-loading" class="anchor"></a>After loading</h2>
-<p>Functions that process data that has already being inputed to the tool work and return an  object.</p>
-<div id="removing-outliers-from-segments" class="section level3">
+<a href="#filtering-count-data" class="anchor"></a>Filtering count data</h2>
+<pre class="data"><code><a href="https://rdrr.io/r/utils/data.html">data("example_input")</a></code></pre>
+<div id="known-genes" class="section level3">
 <h3 class="hasAnchor">
-<a href="#removing-outliers-from-segments" class="anchor"></a>Removing outliers from segments</h3>
-<p>After mapping counts data to segments, a function can be used to determine quantiles of mapped data, and identify outliers in each segment and modality.</p>
-<p>An outlier can then be removed or capped to the median cell value. The former option introduced 0-counts in the data, which we suggest to check with the <code>stat</code> function, and possibly remove by using the <code>filter_missing_data</code> function. Removal can be important as an excess of 0-counts cells (<em>missing data</em>) will drive the fit to use 0-mean components.</p>
-<p>Outliers are identified by using a quantile range <span class="math inline">\(q = (q_l, q_r)\)</span> with <span class="math inline">\(q_r,q_l\in [0,1]\)</span> reporting lower and upper quantiles. The quantiles are computed and applied per segment.</p>
+<a href="#known-genes" class="anchor"></a>Known genes</h3>
+<p>Ribosomal (<code>r</code>) and mitochondrial (<code>m</code>) genes can be removed with function <code>filter_known_genes</code>. This function takes in input a <code>what</code> parameter (default <code>mr</code>) which determines what genes should be removed, plus an extra <code>specials</code> list of gene names to remove.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># 1 segment from the object</span>
-<span class="va">segment_id</span> <span class="op">=</span> <span class="va">example_object</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="../reference/get_input.html">get_input</a></span><span class="op">(</span><span class="st">'segmentation'</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/ranking.html">row_number</a></span><span class="op">(</span><span class="op">)</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">segment_id</span><span class="op">)</span>
-  
-<span class="co"># Original segment plot</span>
-<span class="va">segment_plot</span> <span class="op">=</span> <span class="fu"><a href="../reference/plot_data.html">plot_data</a></span><span class="op">(</span><span class="va">example_object</span>, what <span class="op">=</span> <span class="st">'histogram'</span>, segments <span class="op">=</span> <span class="va">segment_id</span><span class="op">)</span>
-<span class="co">#&gt; → Normalising ATAC counts using input normalisation factors.</span>
-
-<span class="co"># Filter with default values, capping</span>
-<span class="va">f_example_object</span> <span class="op">=</span> <span class="va">example_object</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/filter_outliers.html">filter_outliers</a></span><span class="op">(</span>action <span class="op">=</span> <span class="st">'cap'</span><span class="op">)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ── RNA quantiles: lower 0.01, upper 0.99.</span>
-<span class="co">#&gt; ℹ n = 3312 entries capped at median cell value</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ── RNA recomputing normalisation factors.</span>
-<span class="co">#&gt; → Gaussia likelihood, normalisation factors are already coherced to 1.</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ── ATAC quantiles: lower 0.01, upper 0.99.</span>
-<span class="co">#&gt; → Normalising ATAC counts using input normalisation factors.</span>
-<span class="co">#&gt; ℹ n = 3598 entries capped at median cell value</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ── ATAC recomputing normalisation factors.</span>
-<span class="co">#&gt; → Computing library size factors as total counts.</span>
-<span class="co">#&gt; → Median digits per factor 4, scaling by 10000.</span>
-<span class="co">#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </span>
-<span class="co">#&gt;  0.0535  0.1146  0.1463  0.2060  0.2152 41.1764</span>
-
-<span class="co"># Capped segment plot</span>
-<span class="va">segment_plot_2</span> <span class="op">=</span> <span class="fu"><a href="../reference/plot_data.html">plot_data</a></span><span class="op">(</span><span class="va">f_example_object</span>, what <span class="op">=</span> <span class="st">'histogram'</span>, segments <span class="op">=</span> <span class="va">segment_id</span><span class="op">)</span>
-<span class="co">#&gt; → Normalising ATAC counts using input normalisation factors.</span>
-
-<span class="co"># Filter with default values, remove entries</span>
-<span class="va">f2_example_object</span> <span class="op">=</span> <span class="va">example_object</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/filter_outliers.html">filter_outliers</a></span><span class="op">(</span>action <span class="op">=</span> <span class="st">'remove'</span><span class="op">)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ── RNA quantiles: lower 0.01, upper 0.99.</span>
-<span class="co">#&gt; ℹ n = 3312 entries to remove</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; # A tibble: 3,312 x 9</span>
-<span class="co">#&gt;    segment_id  cell   value modality value_type original_value q_min q_max del  </span>
-<span class="co">#&gt;    &lt;chr&gt;       &lt;chr&gt;  &lt;dbl&gt; &lt;chr&gt;    &lt;chr&gt;               &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;lgl&gt;</span>
-<span class="co">#&gt;  1 chr1:14326… AACC…  -90.9 RNA      G                   -90.9 -89.1  71.6 TRUE </span>
-<span class="co">#&gt;  2 chr1:14326… AAGA…  115.  RNA      G                   115.  -89.1  71.6 TRUE </span>
-<span class="co">#&gt;  3 chr1:14326… ACAC…   90.2 RNA      G                    90.2 -89.1  71.6 TRUE </span>
-<span class="co">#&gt;  4 chr1:14326… ACCA…  -97.3 RNA      G                   -97.3 -89.1  71.6 TRUE </span>
-<span class="co">#&gt;  5 chr1:14326… ACCC… -101.  RNA      G                  -101.  -89.1  71.6 TRUE </span>
-<span class="co">#&gt;  6 chr1:14326… ACCC… -105.  RNA      G                  -105.  -89.1  71.6 TRUE </span>
-<span class="co">#&gt;  7 chr1:14326… ACGT…  -89.5 RNA      G                   -89.5 -89.1  71.6 TRUE </span>
-<span class="co">#&gt;  8 chr1:14326… ACGT…   82.7 RNA      G                    82.7 -89.1  71.6 TRUE </span>
-<span class="co">#&gt;  9 chr1:14326… ACTA…  115.  RNA      G                   115.  -89.1  71.6 TRUE </span>
-<span class="co">#&gt; 10 chr1:14326… ACTA…   79.8 RNA      G                    79.8 -89.1  71.6 TRUE </span>
-<span class="co">#&gt; # … with 3,302 more rows</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ── RNA recomputing normalisation factors.</span>
-<span class="co">#&gt; → Gaussia likelihood, normalisation factors are already coherced to 1.</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ── ATAC quantiles: lower 0.01, upper 0.99.</span>
-<span class="co">#&gt; → Normalising ATAC counts using input normalisation factors.</span>
-<span class="co">#&gt; ℹ n = 3598 entries to remove</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; # A tibble: 3,598 x 9</span>
-<span class="co">#&gt;    segment_id   cell     value modality value_type original_value   q_min  q_max</span>
-<span class="co">#&gt;    &lt;chr&gt;        &lt;chr&gt;    &lt;dbl&gt; &lt;chr&gt;    &lt;chr&gt;               &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;</span>
-<span class="co">#&gt;  1 chr1:143264… AAACT… 0.00407 ATAC     NB                     34 0.00600 0.0226</span>
-<span class="co">#&gt;  2 chr1:143264… AAAGA… 0.00419 ATAC     NB                     12 0.00600 0.0226</span>
-<span class="co">#&gt;  3 chr1:143264… AACGG… 0.0726  ATAC     NB                    123 0.00600 0.0226</span>
-<span class="co">#&gt;  4 chr1:143264… AATAC… 0.0293  ATAC     NB                     53 0.00600 0.0226</span>
-<span class="co">#&gt;  5 chr1:143264… AATAC… 0.00560 ATAC     NB                     11 0.00600 0.0226</span>
-<span class="co">#&gt;  6 chr1:143264… AATGG… 0.00390 ATAC     NB                     24 0.00600 0.0226</span>
-<span class="co">#&gt;  7 chr1:143264… AATGT… 0.0241  ATAC     NB                     56 0.00600 0.0226</span>
-<span class="co">#&gt;  8 chr1:143264… ACAAA… 0.0278  ATAC     NB                     98 0.00600 0.0226</span>
-<span class="co">#&gt;  9 chr1:143264… ACAGA… 0.00421 ATAC     NB                     45 0.00600 0.0226</span>
-<span class="co">#&gt; 10 chr1:143264… ACCAA… 0.00589 ATAC     NB                     12 0.00600 0.0226</span>
-<span class="co">#&gt; # … with 3,588 more rows, and 1 more variable: del &lt;lgl&gt;</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ── ATAC recomputing normalisation factors.</span>
-<span class="co">#&gt; → Computing library size factors as total counts.</span>
-<span class="co">#&gt; → Median digits per factor 4, scaling by 10000.</span>
-<span class="co">#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </span>
-<span class="co">#&gt;  0.0109  0.1131  0.1447  0.2026  0.2125 41.1764</span>
-<span class="co">#&gt; ! With remove this filter will introduce 0-counts for outliers, consider removing them with filter_missing_data.</span>
-
-<span class="co"># Removed segment plot</span>
-<span class="va">segment_plot_3</span> <span class="op">=</span> <span class="fu"><a href="../reference/plot_data.html">plot_data</a></span><span class="op">(</span><span class="va">f2_example_object</span>, what <span class="op">=</span> <span class="st">'histogram'</span>, segments <span class="op">=</span> <span class="va">segment_id</span><span class="op">)</span>
-<span class="co">#&gt; → Normalising ATAC counts using input normalisation factors.</span>
-
-<span class="co"># Show the difference</span>
-<span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html">plot_grid</a></span><span class="op">(</span>
-  <span class="va">segment_plot</span>,
-  <span class="va">segment_plot_2</span>, <span class="co"># capped</span>
-  <span class="va">segment_plot_3</span>, <span class="co"># removed</span>
-  nrow <span class="op">=</span> <span class="fl">3</span>,
-  ncol <span class="op">=</span> <span class="fl">1</span>
-<span class="op">)</span></code></pre></div>
-<p><img src="Filtering_files/figure-html/unnamed-chunk-4-1.png" width="768"></p>
+<code class="sourceCode R"><span class="co"># The default value for `specials`</span>
+<span class="fu"><a href="https://rdrr.io/r/base/formals.html">formals</a></span><span class="op">(</span><span class="va">filter_known_genes</span><span class="op">)</span><span class="op">$</span><span class="va">specials</span>
+<span class="co">#&gt; [1] "MALAT1"</span></code></pre></div>
+<p>Mitochondrial and ribosomal genes are identified by name using regular expression <code>"MT"</code> or <code>"RP[SL]"</code>, respectively.</p>
 <blockquote>
-<p>If you used  The returned object will contain fewer entries; it should be checked for an excess of zeros after filtering. We show an example below</p>
+<p>To use this filter tf the input RNA data must contain a <code>gene</code> column.</p>
 </blockquote>
-<p>Compare 0-count cells before and after the filter</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># RNA 0-counts difference</span>
-<span class="fu"><a href="../reference/stat.html">stat</a></span><span class="op">(</span><span class="va">example_object</span><span class="op">)</span><span class="op">$</span><span class="va">zero_counts_cells_RNA</span> <span class="op">%&gt;%</span> <span class="va">print</span>
-<span class="co">#&gt; NULL</span>
-<span class="fu"><a href="../reference/stat.html">stat</a></span><span class="op">(</span><span class="va">f_example_object</span><span class="op">)</span><span class="op">$</span><span class="va">zero_counts_cells_RNA</span> <span class="op">%&gt;%</span> <span class="va">print</span>  <span class="co"># capped</span>
-<span class="co">#&gt; NULL</span>
-<span class="fu"><a href="../reference/stat.html">stat</a></span><span class="op">(</span><span class="va">f2_example_object</span><span class="op">)</span><span class="op">$</span><span class="va">zero_counts_cells_RNA</span> <span class="op">%&gt;%</span> <span class="va">print</span> <span class="co"># removed</span>
-<span class="co">#&gt; # A tibble: 877 x 4</span>
-<span class="co">#&gt;    cell                 n   `%` modality</span>
-<span class="co">#&gt;    &lt;chr&gt;            &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;   </span>
-<span class="co">#&gt;  1 ACTGTCCAGACCAGAC    33    92 RNA     </span>
-<span class="co">#&gt;  2 TGGATCACAATCAGCT    32    89 RNA     </span>
-<span class="co">#&gt;  3 GTGGAGATCCACAGGC    31    86 RNA     </span>
-<span class="co">#&gt;  4 TACACCCGTACGAAAT    31    86 RNA     </span>
-<span class="co">#&gt;  5 TACCTGCCATGGCCCA    31    86 RNA     </span>
-<span class="co">#&gt;  6 AGCGATTCAATTTCTC    30    83 RNA     </span>
-<span class="co">#&gt;  7 TGCATCCAGCTCGAAG    30    83 RNA     </span>
-<span class="co">#&gt;  8 AGTACTGAGGGCCAAT    29    81 RNA     </span>
-<span class="co">#&gt;  9 CTGAGGCCAGGTCAGA    29    81 RNA     </span>
-<span class="co">#&gt; 10 AGTTCCCCACGGCCAT    28    78 RNA     </span>
-<span class="co">#&gt; # … with 867 more rows</span></code></pre></div>
+<code class="sourceCode R"><span class="va">example_input</span><span class="op">$</span><span class="va">rna</span> <span class="op">%&gt;%</span> <span class="va">print</span>
+<span class="co">#&gt; # A tibble: 201,459 x 6</span>
+<span class="co">#&gt;    gene     chr      from      to cell                                 value</span>
+<span class="co">#&gt;    &lt;chr&gt;    &lt;chr&gt;   &lt;int&gt;   &lt;int&gt; &lt;chr&gt;                                &lt;int&gt;</span>
+<span class="co">#&gt;  1 NOC2L    chr1   944203  959309 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     2</span>
+<span class="co">#&gt;  2 AGRN     chr1  1020120 1056118 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     1</span>
+<span class="co">#&gt;  3 SDF4     chr1  1216909 1232067 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     1</span>
+<span class="co">#&gt;  4 ACAP3    chr1  1292390 1309609 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     2</span>
+<span class="co">#&gt;  5 CPTP     chr1  1324756 1328896 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     1</span>
+<span class="co">#&gt;  6 AURKAIP1 chr1  1373730 1375495 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     1</span>
+<span class="co">#&gt;  7 CCNL2    chr1  1385711 1399335 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     2</span>
+<span class="co">#&gt;  8 MRPL20   chr1  1401909 1407293 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     1</span>
+<span class="co">#&gt;  9 CDK11B   chr1  1635225 1659012 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     1</span>
+<span class="co">#&gt; 10 CDK11A   chr1  1702379 1724357 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     1</span>
+<span class="co">#&gt; # … with 201,449 more rows</span>
+
+<span class="co"># Remove default </span>
+<span class="va">example_input</span><span class="op">$</span><span class="va">rna</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/filter_known_genes.html">filter_known_genes</a></span><span class="op">(</span><span class="op">)</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; ── Ribosomal</span>
+<span class="co">#&gt; ℹ n = 166 genes found.</span>
+<span class="co">#&gt; MRPL20, RPL22, RPL11, MRPS15, RPS8, RPL5 , ...</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; ── Mitochondrial</span>
+<span class="co">#&gt; ℹ 180 genes found.</span>
+<span class="co">#&gt; ICMT, CAMTA1, MTF2, HENMT1, LAMTOR5, MTMR11 , ...</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; ── Specials</span>
+<span class="co">#&gt; ℹ n = 1 genes found.</span>
+<span class="co">#&gt; # A tibble: 190,566 x 6</span>
+<span class="co">#&gt;    gene     chr      from      to cell                                 value</span>
+<span class="co">#&gt;    &lt;chr&gt;    &lt;chr&gt;   &lt;int&gt;   &lt;int&gt; &lt;chr&gt;                                &lt;int&gt;</span>
+<span class="co">#&gt;  1 NOC2L    chr1   944203  959309 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     2</span>
+<span class="co">#&gt;  2 AGRN     chr1  1020120 1056118 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     1</span>
+<span class="co">#&gt;  3 SDF4     chr1  1216909 1232067 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     1</span>
+<span class="co">#&gt;  4 ACAP3    chr1  1292390 1309609 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     2</span>
+<span class="co">#&gt;  5 CPTP     chr1  1324756 1328896 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     1</span>
+<span class="co">#&gt;  6 AURKAIP1 chr1  1373730 1375495 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     1</span>
+<span class="co">#&gt;  7 CCNL2    chr1  1385711 1399335 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     2</span>
+<span class="co">#&gt;  8 CDK11B   chr1  1635225 1659012 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     1</span>
+<span class="co">#&gt;  9 CDK11A   chr1  1702379 1724357 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     1</span>
+<span class="co">#&gt; 10 WRAP73   chr1  3630767 3652761 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     2</span>
+<span class="co">#&gt; # … with 190,556 more rows</span></code></pre></div>
+<p>Remove only ribosomal genes.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># ATAC 0-counts difference</span>
-<span class="fu"><a href="../reference/stat.html">stat</a></span><span class="op">(</span><span class="va">example_object</span><span class="op">)</span><span class="op">$</span><span class="va">zero_counts_cells_ATAC</span> <span class="op">%&gt;%</span> <span class="va">print</span>
-<span class="co">#&gt; # A tibble: 195 x 4</span>
-<span class="co">#&gt;    cell                        n   `%` modality</span>
-<span class="co">#&gt;    &lt;chr&gt;                   &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;   </span>
-<span class="co">#&gt;  1 CACAACAGTGGCATAG-CRC_17     2     6 ATAC    </span>
-<span class="co">#&gt;  2 GAACCGCAGGTTACAA-CRC_17     2     6 ATAC    </span>
-<span class="co">#&gt;  3 GGAACCCGTTGTGACT-CRC_17     2     6 ATAC    </span>
-<span class="co">#&gt;  4 AAACGAATCACGTGTA-CRC_17     1     3 ATAC    </span>
-<span class="co">#&gt;  5 AAACTCGAGTCTGCTA-CRC_17     1     3 ATAC    </span>
-<span class="co">#&gt;  6 AAACTCGCAAGACTTC-CRC_17     1     3 ATAC    </span>
-<span class="co">#&gt;  7 AACAAAGCAAGACTAA-CRC_17     1     3 ATAC    </span>
-<span class="co">#&gt;  8 AACCAACTCGCTGATA-CRC_17     1     3 ATAC    </span>
-<span class="co">#&gt;  9 AACGGGAAGAGCACTG-CRC_17     1     3 ATAC    </span>
-<span class="co">#&gt; 10 AACGTACCAGCAACCC-CRC_17     1     3 ATAC    </span>
-<span class="co">#&gt; # … with 185 more rows</span>
-<span class="fu"><a href="../reference/stat.html">stat</a></span><span class="op">(</span><span class="va">f_example_object</span><span class="op">)</span><span class="op">$</span><span class="va">zero_counts_cells_ATAC</span> <span class="op">%&gt;%</span> <span class="va">print</span>  <span class="co"># capped</span>
-<span class="co">#&gt; # A tibble: 195 x 4</span>
-<span class="co">#&gt;    cell                        n   `%` modality</span>
-<span class="co">#&gt;    &lt;chr&gt;                   &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;   </span>
-<span class="co">#&gt;  1 CACAACAGTGGCATAG-CRC_17     2     6 ATAC    </span>
-<span class="co">#&gt;  2 GAACCGCAGGTTACAA-CRC_17     2     6 ATAC    </span>
-<span class="co">#&gt;  3 GGAACCCGTTGTGACT-CRC_17     2     6 ATAC    </span>
-<span class="co">#&gt;  4 AAACGAATCACGTGTA-CRC_17     1     3 ATAC    </span>
-<span class="co">#&gt;  5 AAACTCGAGTCTGCTA-CRC_17     1     3 ATAC    </span>
-<span class="co">#&gt;  6 AAACTCGCAAGACTTC-CRC_17     1     3 ATAC    </span>
-<span class="co">#&gt;  7 AACAAAGCAAGACTAA-CRC_17     1     3 ATAC    </span>
-<span class="co">#&gt;  8 AACCAACTCGCTGATA-CRC_17     1     3 ATAC    </span>
-<span class="co">#&gt;  9 AACGGGAAGAGCACTG-CRC_17     1     3 ATAC    </span>
-<span class="co">#&gt; 10 AACGTACCAGCAACCC-CRC_17     1     3 ATAC    </span>
-<span class="co">#&gt; # … with 185 more rows</span>
-<span class="fu"><a href="../reference/stat.html">stat</a></span><span class="op">(</span><span class="va">f2_example_object</span><span class="op">)</span><span class="op">$</span><span class="va">zero_counts_cells_ATAC</span> <span class="op">%&gt;%</span> <span class="va">print</span> <span class="co"># removed</span>
-<span class="co">#&gt; # A tibble: 1,571 x 4</span>
-<span class="co">#&gt;    cell                        n   `%` modality</span>
-<span class="co">#&gt;    &lt;chr&gt;                   &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;   </span>
-<span class="co">#&gt;  1 TATCGAGGTTCTTTCA-CRC_17    29    81 ATAC    </span>
-<span class="co">#&gt;  2 TGGAAGGCAGATTTGC-CRC_17    29    81 ATAC    </span>
-<span class="co">#&gt;  3 AGATAGATCTCGCGGA-CRC_17    28    78 ATAC    </span>
-<span class="co">#&gt;  4 GATGATCCAGATTTGC-CRC_17    28    78 ATAC    </span>
-<span class="co">#&gt;  5 TTCATTGCAGATTTGC-CRC_17    27    75 ATAC    </span>
-<span class="co">#&gt;  6 AATGGCTCAGTGCGTC-CRC_17    26    72 ATAC    </span>
-<span class="co">#&gt;  7 TATGTGGGTAACCGAG-CRC_17    26    72 ATAC    </span>
-<span class="co">#&gt;  8 CATAACGAGTTATGAG-CRC_17    24    67 ATAC    </span>
-<span class="co">#&gt;  9 ACAGGCCCAACTGCGC-CRC_17    22    61 ATAC    </span>
-<span class="co">#&gt; 10 CCCACATGTCCCGAGT-CRC_17    22    61 ATAC    </span>
-<span class="co">#&gt; # … with 1,561 more rows</span></code></pre></div>
-<p>The extent of the new 0-counts cells can be summarised printing the filtered object to console.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">f_example_object</span> <span class="op">%&gt;%</span> <span class="va">print</span>
-<span class="co">#&gt; x Warning ATAC 0-counts cells. 195 cells have no data in any of 36 segments, top 5 with missing data are:</span>
-<span class="co">#&gt; x Cell CACAACAGTGGCATAG-CRC_17 with 2 0-segments (6%)</span>
-<span class="co">#&gt; x Cell GAACCGCAGGTTACAA-CRC_17 with 2 0-segments (6%)</span>
-<span class="co">#&gt; x Cell GGAACCCGTTGTGACT-CRC_17 with 2 0-segments (6%)</span>
-<span class="co">#&gt; x Cell AAACGAATCACGTGTA-CRC_17 with 1 0-segments (3%)</span>
-<span class="co">#&gt; x Cell AAACTCGAGTCTGCTA-CRC_17 with 1 0-segments (3%)</span>
-<span class="co">#&gt; ── [ (R)CONGAS+ ] Example object for (R)CONGAS+; post-map q[0.01, 0.99] cap ────</span>
+<code class="sourceCode R"><span class="va">example_input</span><span class="op">$</span><span class="va">rna</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/filter_known_genes.html">filter_known_genes</a></span><span class="op">(</span>what <span class="op">=</span> <span class="st">'r'</span>, specials <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── CNA segments (reference: GRCh38)</span>
-<span class="co">#&gt; → Input 36 CNA segments, mean ploidy 3.67.</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;     |  | | | | |  |  | | | | | | |  |  |   | |    | |  |  </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;   Ploidy:    0     1     2     3     4     5     *</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ── Modalities</span>
-<span class="co">#&gt; → RNA: 4548 cells with 16005 mapped genes, 16748279 non-zero values. Likelihood: Gaussian.</span>
-<span class="co">#&gt; → ATAC: 4999 cells with 210 mapped peaks, 1040663 non-zero values. Likelihood: Negative Binomial.</span>
-<span class="co">#&gt; ! Clusters: not available.</span>
-<span class="co">#&gt; [1] 0</span>
-<span class="va">f2_example_object</span> <span class="op">%&gt;%</span> <span class="va">print</span>
-<span class="co">#&gt; x Warning RNA 0-counts cells. 877 cells have no data in any of 36 segments, top 5 with missing data are:</span>
-<span class="co">#&gt; x Cell ACTGTCCAGACCAGAC with 33 0-segments (92%)</span>
-<span class="co">#&gt; x Cell TGGATCACAATCAGCT with 32 0-segments (89%)</span>
-<span class="co">#&gt; x Cell GTGGAGATCCACAGGC with 31 0-segments (86%)</span>
-<span class="co">#&gt; x Cell TACACCCGTACGAAAT with 31 0-segments (86%)</span>
-<span class="co">#&gt; x Cell TACCTGCCATGGCCCA with 31 0-segments (86%)</span>
-<span class="co">#&gt; x Warning ATAC 0-counts cells. 1571 cells have no data in any of 36 segments, top 5 with missing data are:</span>
-<span class="co">#&gt; x Cell TATCGAGGTTCTTTCA-CRC_17 with 29 0-segments (81%)</span>
-<span class="co">#&gt; x Cell TGGAAGGCAGATTTGC-CRC_17 with 29 0-segments (81%)</span>
-<span class="co">#&gt; x Cell AGATAGATCTCGCGGA-CRC_17 with 28 0-segments (78%)</span>
-<span class="co">#&gt; x Cell GATGATCCAGATTTGC-CRC_17 with 28 0-segments (78%)</span>
-<span class="co">#&gt; x Cell TTCATTGCAGATTTGC-CRC_17 with 27 0-segments (75%)</span>
-<span class="co">#&gt; ── [ (R)CONGAS+ ] Example object for (R)CONGAS+; post-map q[0.01, 0.99] remove ─</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ── CNA segments (reference: GRCh38)</span>
-<span class="co">#&gt; → Input 36 CNA segments, mean ploidy 3.67.</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;     |  | | | | |  |  | | | | | | |  |  |   | |    | |  |  </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;   Ploidy:    0     1     2     3     4     5     *</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ── Modalities</span>
-<span class="co">#&gt; → RNA: 4548 cells with 16005 mapped genes, 16748279 non-zero values. Likelihood: Gaussian.</span>
-<span class="co">#&gt; → ATAC: 4999 cells with 210 mapped peaks, 1040663 non-zero values. Likelihood: Negative Binomial.</span>
-<span class="co">#&gt; ! Clusters: not available.</span>
-<span class="co">#&gt; [1] 0</span></code></pre></div>
+<span class="co">#&gt; ── Ribosomal</span>
+<span class="co">#&gt; ℹ n = 166 genes found.</span>
+<span class="co">#&gt; MRPL20, RPL22, RPL11, MRPS15, RPS8, RPL5 , ...</span>
+<span class="co">#&gt; # A tibble: 194,236 x 6</span>
+<span class="co">#&gt;    gene     chr      from      to cell                                 value</span>
+<span class="co">#&gt;    &lt;chr&gt;    &lt;chr&gt;   &lt;int&gt;   &lt;int&gt; &lt;chr&gt;                                &lt;int&gt;</span>
+<span class="co">#&gt;  1 NOC2L    chr1   944203  959309 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     2</span>
+<span class="co">#&gt;  2 AGRN     chr1  1020120 1056118 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     1</span>
+<span class="co">#&gt;  3 SDF4     chr1  1216909 1232067 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     1</span>
+<span class="co">#&gt;  4 ACAP3    chr1  1292390 1309609 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     2</span>
+<span class="co">#&gt;  5 CPTP     chr1  1324756 1328896 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     1</span>
+<span class="co">#&gt;  6 AURKAIP1 chr1  1373730 1375495 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     1</span>
+<span class="co">#&gt;  7 CCNL2    chr1  1385711 1399335 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     2</span>
+<span class="co">#&gt;  8 CDK11B   chr1  1635225 1659012 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     1</span>
+<span class="co">#&gt;  9 CDK11A   chr1  1702379 1724357 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     1</span>
+<span class="co">#&gt; 10 WRAP73   chr1  3630767 3652761 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     2</span>
+<span class="co">#&gt; # … with 194,226 more rows</span></code></pre></div>
 </div>
-<div id="removing-0-count-cells" class="section level3">
+<div id="outliers" class="section level3">
 <h3 class="hasAnchor">
-<a href="#removing-0-count-cells" class="anchor"></a>Removing 0-count cells</h3>
-<p>Some cells can have have 0-counts because they have no events mapping to a certain segment, or because other filtering functions have removed entries, an inflated the number of 0-count cells.</p>
-<p>A filter is available to remove cells that have 0-counts in a proportion <span class="math inline">\(p\in[0,1]\)</span> of</p>
-<blockquote>
-<p>0-count entries will be imputed to have value 0 by the fit algorithm. In case of an excess of 0-counts the model will try to explain 0-values with mixture components peaked at 0, which can make the inference more instable. We suggest therefore to remove such entries with this filtering function.</p>
-</blockquote>
-<p>We make a concrete example working with the <code>f2_example_object</code> object creted by the previous filter. As shown above, after filtering segment’s outliers</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Observe the number of cells</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">f2_example_object</span><span class="op">)</span>
-<span class="co">#&gt; x Warning RNA 0-counts cells. 877 cells have no data in any of 36 segments, top 5 with missing data are:</span>
-<span class="co">#&gt; x Cell ACTGTCCAGACCAGAC with 33 0-segments (92%)</span>
-<span class="co">#&gt; x Cell TGGATCACAATCAGCT with 32 0-segments (89%)</span>
-<span class="co">#&gt; x Cell GTGGAGATCCACAGGC with 31 0-segments (86%)</span>
-<span class="co">#&gt; x Cell TACACCCGTACGAAAT with 31 0-segments (86%)</span>
-<span class="co">#&gt; x Cell TACCTGCCATGGCCCA with 31 0-segments (86%)</span>
-<span class="co">#&gt; x Warning ATAC 0-counts cells. 1571 cells have no data in any of 36 segments, top 5 with missing data are:</span>
-<span class="co">#&gt; x Cell TATCGAGGTTCTTTCA-CRC_17 with 29 0-segments (81%)</span>
-<span class="co">#&gt; x Cell TGGAAGGCAGATTTGC-CRC_17 with 29 0-segments (81%)</span>
-<span class="co">#&gt; x Cell AGATAGATCTCGCGGA-CRC_17 with 28 0-segments (78%)</span>
-<span class="co">#&gt; x Cell GATGATCCAGATTTGC-CRC_17 with 28 0-segments (78%)</span>
-<span class="co">#&gt; x Cell TTCATTGCAGATTTGC-CRC_17 with 27 0-segments (75%)</span>
-<span class="co">#&gt; ── [ (R)CONGAS+ ] Example object for (R)CONGAS+; post-map q[0.01, 0.99] remove ─</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ── CNA segments (reference: GRCh38)</span>
-<span class="co">#&gt; → Input 36 CNA segments, mean ploidy 3.67.</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;     |  | | | | |  |  | | | | | | |  |  |   | |    | |  |  </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;   Ploidy:    0     1     2     3     4     5     *</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ── Modalities</span>
-<span class="co">#&gt; → RNA: 4548 cells with 16005 mapped genes, 16748279 non-zero values. Likelihood: Gaussian.</span>
-<span class="co">#&gt; → ATAC: 4999 cells with 210 mapped peaks, 1040663 non-zero values. Likelihood: Negative Binomial.</span>
-<span class="co">#&gt; ! Clusters: not available.</span>
-<span class="co">#&gt; [1] 0</span>
+<a href="#outliers" class="anchor"></a>Outliers</h3>
+<p>Certain genes can have very high counts in certain cells.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Plot the distribution of maxima for each gene count (RNA data)</span>
+<span class="va">my_view</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">gene</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">value</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">value</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="co"># max only</span>
+  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span><span class="va">value</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu">geom_histogram</span><span class="op">(</span>bins <span class="op">=</span> <span class="fl">70</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">scale_y_log10</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">theme_linedraw</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.window.html">xlim</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1000</span><span class="op">)</span>
+  
 
-<span class="co"># Apply the filter</span>
-<span class="va">f2_example_object</span> <span class="op">=</span> <span class="va">f2_example_object</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/filter_missing_data.html">filter_missing_data</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; x Warning RNA 0-counts cells. 877 cells have no data in any of 36 segments, top 5 with missing data are:</span>
-<span class="co">#&gt; x Cell ACTGTCCAGACCAGAC with 33 0-segments (92%)</span>
-<span class="co">#&gt; x Cell TGGATCACAATCAGCT with 32 0-segments (89%)</span>
-<span class="co">#&gt; x Cell GTGGAGATCCACAGGC with 31 0-segments (86%)</span>
-<span class="co">#&gt; x Cell TACACCCGTACGAAAT with 31 0-segments (86%)</span>
-<span class="co">#&gt; x Cell TACCTGCCATGGCCCA with 31 0-segments (86%)</span>
-<span class="co">#&gt; x Warning ATAC 0-counts cells. 1571 cells have no data in any of 36 segments, top 5 with missing data are:</span>
-<span class="co">#&gt; x Cell TATCGAGGTTCTTTCA-CRC_17 with 29 0-segments (81%)</span>
-<span class="co">#&gt; x Cell TGGAAGGCAGATTTGC-CRC_17 with 29 0-segments (81%)</span>
-<span class="co">#&gt; x Cell AGATAGATCTCGCGGA-CRC_17 with 28 0-segments (78%)</span>
-<span class="co">#&gt; x Cell GATGATCCAGATTTGC-CRC_17 with 28 0-segments (78%)</span>
-<span class="co">#&gt; x Cell TTCATTGCAGATTTGC-CRC_17 with 27 0-segments (75%)</span>
+<span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html">plot_grid</a></span><span class="op">(</span>
+  <span class="va">example_input</span><span class="op">$</span><span class="va">rna</span> <span class="op">%&gt;%</span> <span class="va">my_view</span>,
+  <span class="va">example_input</span><span class="op">$</span><span class="va">rna</span> <span class="op">%&gt;%</span> 
+    <span class="va">filter_counts_by_quantile</span> <span class="op">%&gt;%</span> <span class="co"># Filter</span>
+    <span class="va">my_view</span>,
+  nrow <span class="op">=</span> <span class="fl">2</span>
+<span class="op">)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── RNA modality, proportions cut 0.05</span>
-<span class="co">#&gt; → Cells with missing data 877, removing 449</span>
+<span class="co">#&gt; ── Upper quantile 0.98</span>
+<span class="co">#&gt; ℹ n = 5961 entries to remove</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── ATAC modality, proportions cut 0.05</span>
-<span class="co">#&gt; → Cells with missing data 1571, removing 653</span>
-
-<span class="co"># Reduced number of cells</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">f2_example_object</span><span class="op">)</span>
-<span class="co">#&gt; x Warning RNA 0-counts cells. 877 cells have no data in any of 36 segments, top 5 with missing data are:</span>
-<span class="co">#&gt; x Cell ACTGTCCAGACCAGAC with 33 0-segments (92%)</span>
-<span class="co">#&gt; x Cell TGGATCACAATCAGCT with 32 0-segments (89%)</span>
-<span class="co">#&gt; x Cell GTGGAGATCCACAGGC with 31 0-segments (86%)</span>
-<span class="co">#&gt; x Cell TACACCCGTACGAAAT with 31 0-segments (86%)</span>
-<span class="co">#&gt; x Cell TACCTGCCATGGCCCA with 31 0-segments (86%)</span>
-<span class="co">#&gt; x Warning ATAC 0-counts cells. 1571 cells have no data in any of 36 segments, top 5 with missing data are:</span>
-<span class="co">#&gt; x Cell TATCGAGGTTCTTTCA-CRC_17 with 29 0-segments (81%)</span>
-<span class="co">#&gt; x Cell TGGAAGGCAGATTTGC-CRC_17 with 29 0-segments (81%)</span>
-<span class="co">#&gt; x Cell AGATAGATCTCGCGGA-CRC_17 with 28 0-segments (78%)</span>
-<span class="co">#&gt; x Cell GATGATCCAGATTTGC-CRC_17 with 28 0-segments (78%)</span>
-<span class="co">#&gt; x Cell TTCATTGCAGATTTGC-CRC_17 with 27 0-segments (75%)</span>
-<span class="co">#&gt; ── [ (R)CONGAS+ ] Example object for (R)CONGAS+; post-map q[0.01, 0.99] remove ─</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ── CNA segments (reference: GRCh38)</span>
-<span class="co">#&gt; → Input 36 CNA segments, mean ploidy 3.67.</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;     |  | | | | |  |  | | | | | | |  |  |   | |    | |  |  </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;   Ploidy:    0     1     2     3     4     5     *</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ── Modalities</span>
-<span class="co">#&gt; → RNA: 4548 cells with 16005 mapped genes, 16748279 non-zero values. Likelihood: Gaussian.</span>
-<span class="co">#&gt; → ATAC: 4999 cells with 210 mapped peaks, 1040663 non-zero values. Likelihood: Negative Binomial.</span>
-<span class="co">#&gt; ! Clusters: not available.</span>
-<span class="co">#&gt; [1] 0</span></code></pre></div>
+<span class="co">#&gt; # A tibble: 5,961 x 8</span>
+<span class="co">#&gt;    gene    chr       from       to cell                        value q_max del  </span>
+<span class="co">#&gt;    &lt;chr&gt;   &lt;chr&gt;    &lt;int&gt;    &lt;int&gt; &lt;chr&gt;                       &lt;int&gt; &lt;dbl&gt; &lt;lgl&gt;</span>
+<span class="co">#&gt;  1 ACAP3   chr1    1.29e6   1.31e6 bcc.su008.pre.tumor_AAGGCA…     2  1.88 TRUE </span>
+<span class="co">#&gt;  2 ZBTB40  chr1    2.24e7   2.25e7 bcc.su008.pre.tumor_AAGGCA…     2  1.8  TRUE </span>
+<span class="co">#&gt;  3 SRRM1   chr1    2.46e7   2.47e7 bcc.su008.pre.tumor_AAGGCA…    12 11.8  TRUE </span>
+<span class="co">#&gt;  4 TXNDC12 chr1    5.20e7   5.21e7 bcc.su008.pre.tumor_AAGGCA…     6  5.42 TRUE </span>
+<span class="co">#&gt;  5 ALG6    chr1    6.34e7   6.34e7 bcc.su008.pre.tumor_AAGGCA…     3  2.66 TRUE </span>
+<span class="co">#&gt;  6 SSX2IP  chr1    8.46e7   8.47e7 bcc.su008.pre.tumor_AAGGCA…     3  2.78 TRUE </span>
+<span class="co">#&gt;  7 MTF2    chr1    9.31e7   9.31e7 bcc.su008.pre.tumor_AAGGCA…     4  3.34 TRUE </span>
+<span class="co">#&gt;  8 GPSM2   chr1    1.09e8   1.09e8 bcc.su008.pre.tumor_AAGGCA…     8  6.5  TRUE </span>
+<span class="co">#&gt;  9 CELSR2  chr1    1.09e8   1.09e8 bcc.su008.pre.tumor_AAGGCA…     4  3.32 TRUE </span>
+<span class="co">#&gt; 10 RBM15   chr1    1.10e8   1.10e8 bcc.su008.pre.tumor_AAGGCA…     5  4.16 TRUE </span>
+<span class="co">#&gt; # … with 5,951 more rows</span>
+<span class="co">#&gt; Warning: Removed 3 rows containing non-finite values (stat_bin).</span>
+<span class="co">#&gt; Warning: Transformation introduced infinite values in continuous y-axis</span>
+<span class="co">#&gt; Warning: Removed 29 rows containing missing values (geom_bar).</span>
+<span class="co">#&gt; Warning: Transformation introduced infinite values in continuous y-axis</span>
+<span class="co">#&gt; Warning: Removed 37 rows containing missing values (geom_bar).</span></code></pre></div>
+<p><img src="Filtering_files/figure-html/unnamed-chunk-7-1.png" width="384"></p>
+<p>These outliers will affect the overall counts per segment used by <code>Rcongas</code> models, and can be removed using function <code>filter_counts_by_quantile</code>, which computes an empirical quantile <span class="math inline">\(q\)</span> per event in the data (gene for RNA and peaks for ATAC).</p>
+<p>The default quantile value for <span class="math inline">\(q\)</span> is 98% (<code>upper_quantile = .98</code>).</p>
 </div>
+</div>
+<div id="filtering-mapped-data" class="section level2">
+<h2 class="hasAnchor">
+<a href="#filtering-mapped-data" class="anchor"></a>Filtering mapped data</h2>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">"example_object"</span><span class="op">)</span>
+
+<span class="va">example_object</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="op">)</span>
+<span class="co">#&gt; ── [ (R)CONGAS+ ] SU008 TUMOR 30 segments (73.66% genome) ──────────────────────</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; ── CNA segments (reference: GRCh38)</span>
+<span class="co">#&gt; → Input 30 CNA segments, mean ploidy 3.2.</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;   | | |  | | | |  | | | |  | | |  | |  |   |  |  | </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;   Ploidy:    0     1     2     3     4     5     *</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; ── Modalities</span>
+<span class="co">#&gt; → RNA: 714 cells with 8613 mapped genes, 1401728 non-zero values. Likelihood: Negative Binomial.</span>
+<span class="co">#&gt; → ATAC: 259 cells with 284316 mapped peaks, 3083691 non-zero values. Likelihood: Negative Binomial.</span>
+<span class="co">#&gt; ! Clusters: not available.</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; ──  LOG  ──</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; - 2021-03-30 17:58:41 Created input object.</span>
+<span class="co">#&gt; - 2021-03-30 17:58:43 Filtered outliers: [6|0.05|0.95]</span>
+<span class="co">#&gt; [1] 0</span></code></pre></div>
+<div id="segments" class="section level3">
+<h3 class="hasAnchor">
+<a href="#segments" class="anchor"></a>Segments</h3>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">example_object</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="../reference/plot_data.html">plot_data</a></span><span class="op">(</span>what <span class="op">=</span> <span class="st">'mapping'</span><span class="op">)</span></code></pre></div>
+<p><img src="Filtering_files/figure-html/unnamed-chunk-10-1.png" width="480"></p>
+<p>Segments that are too short, or have few mapped RNA genes or ATAC peaks can be removed using function <code>filter_segments</code>.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Retain segments longer than 100 Megabases</span>
+<span class="va">example_object</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="../reference/filter_segments.html">filter_segments</a></span><span class="op">(</span>length <span class="op">=</span> <span class="fl">1e8</span>, RNA_genes <span class="op">=</span> <span class="fl">0</span>, ATAC_peaks <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="../reference/plot_data.html">plot_data</a></span><span class="op">(</span>what <span class="op">=</span> <span class="st">'mapping'</span><span class="op">)</span>
+<span class="co">#&gt; ── Segments filter</span>
+<span class="co">#&gt; → 6 retained segments out of 30.</span></code></pre></div>
+<p><img src="Filtering_files/figure-html/unnamed-chunk-11-1.png" width="480"></p>
+</div>
+<div id="outliers-per-segments" class="section level3">
+<h3 class="hasAnchor">
+<a href="#outliers-per-segments" class="anchor"></a>Outliers per segments</h3>
+<p>After mapping counts data to segments, a function can be used to determine quantiles of mapped data, for every cell, and identify outliers in each segment and modality.</p>
+<p>Outliers are identified by using a quantile range <span class="math inline">\(q = (q_l, q_r)\)</span> with <span class="math inline">\(q_r,q_l\in [0,1]\)</span> reporting lower and upper quantiles. The quantiles are computed and applied per segment.</p>
+<p>For every cell we count how often that is an oulier - i.e., in how many of the input segments - and remove it if this frequency si above a certain cutoff.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Some segments from the object</span>
+<span class="va">segment_id</span> <span class="op">=</span> <span class="va">example_object</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="../reference/get_input.html">get_input</a></span><span class="op">(</span><span class="st">'segmentation'</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">segment_id</span><span class="op">)</span>
+
+<span class="va">segment_id</span> <span class="op">=</span> <span class="va">segment_id</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span>
+
+<span class="co"># Original segment plot</span>
+<span class="va">example_object</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="../reference/plot_data.html">plot_data</a></span><span class="op">(</span>what <span class="op">=</span> <span class="st">'histogram'</span>, segments <span class="op">=</span> <span class="va">segment_id</span><span class="op">)</span>
+<span class="co">#&gt; → Normalising RNA counts using input normalisation factors.</span>
+<span class="co">#&gt; → Normalising ATAC counts using input normalisation factors.</span></code></pre></div>
+<p><img src="Filtering_files/figure-html/unnamed-chunk-12-1.png" width="768"></p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R">
+<span class="co"># Filter with 5%/95% values</span>
+<span class="va">example_object</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="../reference/filter_outliers.html">filter_outliers</a></span><span class="op">(</span>lower_quantile <span class="op">=</span> <span class="fl">.05</span>, upper_quantile <span class="op">=</span> <span class="fl">.95</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="../reference/plot_data.html">plot_data</a></span><span class="op">(</span>what <span class="op">=</span> <span class="st">'histogram'</span>, segments <span class="op">=</span> <span class="va">segment_id</span><span class="op">)</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; ── RNA outliers detection via quantiles: lower 0.05, upper 0.95.</span>
+<span class="co">#&gt; → Normalising RNA counts using input normalisation factors.</span>
+<span class="co">#&gt; → 77 out of 714 will be removed (11%)</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; ── ATAC outliers detection via quantiles: lower 0.05, upper 0.95.</span>
+<span class="co">#&gt; → Normalising ATAC counts using input normalisation factors.</span>
+<span class="co">#&gt; → 38 out of 259 will be removed (15%)</span>
+<span class="co">#&gt; → Normalising RNA counts using input normalisation factors.</span>
+<span class="co">#&gt; → Normalising ATAC counts using input normalisation factors.</span></code></pre></div>
+<p><img src="Filtering_files/figure-html/unnamed-chunk-12-2.png" width="768"></p>
+<!-- > If you used \code{action = 'remove'} The returned object will contain fewer entries; it should be checked for an excess of zeros after filtering. We show an example below -->
+<!-- Compare 0-count cells before and after the filter -->
+<!-- ```{r} -->
+<!-- # RNA 0-counts difference -->
+<!-- stat(example_object)$zero_counts_cells_RNA %>% print -->
+<!-- stat(f_example_object)$zero_counts_cells_RNA %>% print  # capped -->
+<!-- stat(f2_example_object)$zero_counts_cells_RNA %>% print # removed -->
+<!-- ``` -->
+<!-- ```{r} -->
+<!-- # ATAC 0-counts difference -->
+<!-- stat(example_object)$zero_counts_cells_ATAC %>% print -->
+<!-- stat(f_example_object)$zero_counts_cells_ATAC %>% print  # capped -->
+<!-- stat(f2_example_object)$zero_counts_cells_ATAC %>% print # removed -->
+<!-- ``` -->
+<!-- The extent of the new 0-counts cells can be summarised printing the filtered object to console. -->
+<!-- ```{r} -->
+<!-- f_example_object %>% print -->
+<!-- f2_example_object %>% print -->
+<!-- ``` -->
+</div>
+<div id="cells-with-missing-data" class="section level3">
+<h3 class="hasAnchor">
+<a href="#cells-with-missing-data" class="anchor"></a>Cells with missing data</h3>
+<p>Some cells can have have 0-counts because they have no events mapping to a certain segment, or because some heavy filtering inflated the number of 0-count cells. These generally count as <em>missing data</em></p>
+<blockquote>
+<p>Missing data will be imputed to have value 0 before fit, and excessive 0s will force the model use mixture components peaked at 0. We suggest therefore to remove these entries or at least try to keep their number to a minimum.</p>
+</blockquote>
+<p>A filter is available to remove cells with missing data above a proportion <span class="math inline">\(p\in[0,1]\)</span> of the number of input segments (e.g., all cells with &gt;20% of segments with missing data).</p>
+<p>The presence of missing data is reported by a print to console of an object.</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">example_object</span> <span class="op">%&gt;%</span> <span class="va">print</span>
+<span class="co">#&gt; ── [ (R)CONGAS+ ] SU008 TUMOR 30 segments (73.66% genome) ──────────────────────</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; ── CNA segments (reference: GRCh38)</span>
+<span class="co">#&gt; → Input 30 CNA segments, mean ploidy 3.2.</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;   | | |  | | | |  | | | |  | | |  | |  |   |  |  | </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;   Ploidy:    0     1     2     3     4     5     *</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; ── Modalities</span>
+<span class="co">#&gt; → RNA: 714 cells with 8613 mapped genes, 1401728 non-zero values. Likelihood: Negative Binomial.</span>
+<span class="co">#&gt; → ATAC: 259 cells with 284316 mapped peaks, 3083691 non-zero values. Likelihood: Negative Binomial.</span>
+<span class="co">#&gt; ! Clusters: not available.</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; ──  LOG  ──</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; - 2021-03-30 17:58:41 Created input object.</span>
+<span class="co">#&gt; - 2021-03-30 17:58:43 Filtered outliers: [6|0.05|0.95]</span>
+<span class="co">#&gt; [1] 0</span></code></pre></div>
+<p>Now we apply the filter (e.g., <code>proportion_RNA = 0</code> means that cells with &gt;0 missing data are removed).</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">example_object</span> <span class="op">=</span> <span class="va">example_object</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/filter_missing_data.html">filter_missing_data</a></span><span class="op">(</span>proportion_RNA <span class="op">=</span> <span class="fl">0</span>, proportion_ATAC <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></code></pre></div>
+<p>Now the object has fewer cells.</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">example_object</span> <span class="op">%&gt;%</span> <span class="va">print</span>
+<span class="co">#&gt; ── [ (R)CONGAS+ ] SU008 TUMOR 30 segments (73.66% genome) ──────────────────────</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; ── CNA segments (reference: GRCh38)</span>
+<span class="co">#&gt; → Input 30 CNA segments, mean ploidy 3.2.</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;   | | |  | | | |  | | | |  | | |  | |  |   |  |  | </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;   Ploidy:    0     1     2     3     4     5     *</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; ── Modalities</span>
+<span class="co">#&gt; → RNA: 714 cells with 8613 mapped genes, 1401728 non-zero values. Likelihood: Negative Binomial.</span>
+<span class="co">#&gt; → ATAC: 259 cells with 284316 mapped peaks, 3083691 non-zero values. Likelihood: Negative Binomial.</span>
+<span class="co">#&gt; ! Clusters: not available.</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; ──  LOG  ──</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; - 2021-03-30 17:58:41 Created input object.</span>
+<span class="co">#&gt; - 2021-03-30 17:58:43 Filtered outliers: [6|0.05|0.95]</span>
+<span class="co">#&gt; [1] 0</span></code></pre></div>
 </div>
 </div>
   </div>

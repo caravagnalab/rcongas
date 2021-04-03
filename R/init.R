@@ -1,3 +1,19 @@
+#' Pipe operator
+#'
+#' See \code{magrittr::\link[magrittr:pipe]{\%>\%}} for details.
+#'
+#' @name %>%
+#' @rdname pipe
+#' @keywords internal
+#' @export
+#' @importFrom magrittr %>%
+#' @usage lhs \%>\% rhs
+#' @param lhs A value or the magrittr placeholder.
+#' @param rhs A function call using the magrittr semantics.
+#' @return The result of calling `rhs(lhs)`.
+NULL
+
+
 #' Create a dataset.
 #'
 #' @description
@@ -35,12 +51,17 @@
 #' @param rna A tibble with single-cell RNA data.
 #' @param atac A tibble with single-cell ATAC data.
 #' @param segmentation A tibble with the input segmentation.
-#' @param normalisation_factors A tibble with the input per-cell normalisation factors.
+#' @param rna_normalisation_factors The RNA tibble with the input per-cell normalisation factors.
+#' By default these are computed by function \code{auto_normalisation_factor}.
+#' @param atac_normalisation_factors The ATAC tibble with the input per-cell normalisation factors.
+#' By default these are computed by function \code{auto_normalisation_factor}.
 #' @param rna_likelihood Type of likelihood used for RNA data (\code{"G"} for Gaussian and
 #' \code{""NB} for Negative Binomial). The RNA default is \code{"G"}.
 #' @param atac_likelihood Type of likelihood used for ATAC data, with default \code{"NB"}.
 #' @param reference_genome Either \code{"GRCh38"} or \code{"hg19"}.
 #' @param description A model in-words description.
+#' @param smooth If yes, input segments are smootheed by joining per chromosome segments that
+#' have the same ploidy.
 #'
 #' @return An object of class \code{rcongasplus}
 #'
@@ -74,17 +95,16 @@
 #' # .. and segmentation
 #' example_input$x_segmentation %>% print
 #'
-#' # .. and x_normalisation factors
-#' example_input$x_normalisation_factors %>% print
+#' # .. and normalisation factors can be computed (default)
+#' example_input$x_rna %>% auto_normalisation_factor()
 #'
 #' x = init(
 #'   rna = example_input$x_rna,
 #'   atac = example_input$x_atac,
 #'   segmentation = example_input$x_segmentation,
-#'   normalisation_factors = example_input$x_normalisation_factors,
 #'   rna_likelihood = "G",
 #'   atac_likelihood = 'NB',
-#'   description = 'My crazy model')
+#'   description = 'My model')
 #'
 #' print(x)
 init = function(
@@ -96,7 +116,8 @@ init = function(
   rna_likelihood = "G",
   atac_likelihood = "NB",
   reference_genome = 'GRCh38',
-  description = "(R)CONGAS+ model"
+  description = "(R)CONGAS+ model",
+  smooth = FALSE
 )
 {
   if(is.null(rna) & is.null(atac))
@@ -188,7 +209,8 @@ init = function(
   }
 
   # Prepare segment
-  segmentation = smoothie(segments = segmentation, reference = reference_genome)
+  if(smooth)
+    segmentation = smoothie(segments = segmentation, reference = reference_genome)
   
   segmentation = segmentation %>% idify()
 
