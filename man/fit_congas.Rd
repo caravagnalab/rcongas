@@ -2,7 +2,7 @@
 % Please edit documentation in R/fit_congas.R
 \name{fit_congas}
 \alias{fit_congas}
-\title{Fit a list of CONGAS model}
+\title{Fit an (R)CONGAS+ model}
 \usage{
 fit_congas(
   x,
@@ -12,6 +12,8 @@ fit_congas(
   latent_variables = "D",
   compile = FALSE,
   steps = 500,
+  samples = 1,
+  parallel = FALSE,
   model_selection = "ICL",
   temperature = 10
 )
@@ -33,6 +35,8 @@ a template and eventually modify it.}
 
 \item{steps}{number of steps of optimization}
 
+\item{samples}{Number of times a model is fit for each value of \code{K}.}
+
 \item{model_selection}{information criteria to which perform the model selection (one of ICL, NLL, BIC, AIC)}
 }
 \value{
@@ -40,12 +44,11 @@ An object ot class \code{rcongasplus} with a slot \code{bset_fit} with the learn
 with all the runs performed ordered by the selectde IC and a slot \code{model_selection} with all the information to perform model selection.
 }
 \description{
-This function is general interface for fitting a \href{https://github.com/Militeee/congas}{congas} model in R. The model briefly consist in a joint
+This function is a general interface for fitting a \href{https://github.com/Militeee/congas}{congas} Python model in R. The model briefly consist in a joint
 mixture model over two modalities, currently scATAC and scRNA-seq. For more information about the theoretical fundations of the approach refer
 to the vignette. This function performs modele selection over a specified number of clusters, using a specific information criterium (IC). ICs
 and results for all the runs are, however, reported in the object.
-}
-\details{
+
 The functions assume a list of model hyperparameters. As the the model formulation isquite complex, and those hyperparameters are extremely difficult to
 set by hand we suggest the usage of the function \code{\link[Rcongas::auto_config_run]{Rcongas::auto_config_run()}}
 }

@@ -238,7 +238,7 @@ plot.rcongasplus = function(x, ...)
 {
   stopifnot(inherits(x, "rcongasplus"))
   
-  if(!('best_fit' %in% (x %>% names))) 
+  if(('best_fit' %in% (x %>% names))) 
     return(x %>% plot_fit(what = 'CNA'))
   else
     return(x %>% plot_data(what = 'histogram'))
