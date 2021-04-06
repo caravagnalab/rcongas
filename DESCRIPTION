@@ -15,7 +15,7 @@ LazyData: true
 Config/reticulate:
   list(
     packages = list(
-      list(package = "congas", pip = TRUE)
+      list(package = "congas==0.0.33", pip = TRUE)
     )
   )
 biocViews:
