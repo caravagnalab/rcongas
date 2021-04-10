@@ -86,7 +86,7 @@ plot_data = function(x,
 
 plot_data_histogram = function(x,
                                segments = get_input(x, what = 'segmentation') %>% pull(segment_id),
-                               whichfacet = ggplot2::facet_wrap
+                               whichfacet = ggplot2::facet_wrap, bins = 60
                                )
 {
   stats_data = stat(x, what = 'data')
@@ -153,7 +153,7 @@ plot_data_histogram = function(x,
     # mutate(segment_id = factor(chr, levels = gtools::mixedsort(chr) %>% unique)) %>%
     mutate(segment_id = factor(segment_id, levels = gtools::mixedsort(segment_id) %>% unique)) %>%
     ggplot(aes(value, fill = modality)) +
-    geom_histogram(bins = 70) +
+    geom_histogram(bins = bins) +
     whichfacet(segment_id ~ modality, scales = 'free') +
     # facet_wrap(chr ~ modality, scales = 'free') +
     labs(title = x$description,

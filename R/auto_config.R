@@ -1,6 +1,6 @@
 #' Determine data-based hyperparameters for the Bayesian priors.
-#' 
-#' @description 
+#'
+#' @description
 #'
 #' @param x
 #' @param K
@@ -21,12 +21,13 @@ auto_config_run <-
            NB_size_atac = 150,
            NB_size_rna = 150,
            lambda = 0.3,
-           a_sd = 1,
+           a_sd = 0.1,
            b_sd = 100,
            prior_cn = c(0.2, 0.6, 0.2, 0.05, 0.025, 0.025),
            hidden_dim = length(prior_cn),
            init_importance = 0.6,
-           NB_size_priors = c(15, 1000))
+           NB_size_priors = c(15, 1000)
+           )
 
     {
     cli::cli_h1("(R)CONGAS+ hyperparameters auto-config")
@@ -55,7 +56,10 @@ auto_config_run <-
           pull(sd)
 
         params_atac$norm_init_sd_atac <- torch$tensor(sds / max(K))
-        params_atac$likelihood_atac <-  "Gaussian"
+        params_atac$likelihood_atac <-  "G"
+        I <-  length(get_segmentation(x) %>%  pull(segment_id) %>%  unique())
+        params_atac$theta_shape_atac <-  torch$tensor(rep(1, I))
+        params_atac$theta_rate_atac <-  torch$tensor(rep(1,I))
 
       } else if (startsWith(which_likelihood(x, "ATAC"), prefix = "NB"))
         {
@@ -86,7 +90,7 @@ auto_config_run <-
         params_atac <- gamma_shape_rate(x, modality = "ATAC", torch = torch)
         names(params_atac) <-
           c("theta_shape_atac", "theta_rate_atac")
-        params_atac$likelihood_atac <-  "Poisson"
+        params_atac$likelihood_atac <-  "P"
       }
 
       param_list <-  c(param_list, params_atac)
@@ -106,7 +110,10 @@ auto_config_run <-
         sds <-
           get_data(x) %>%  filter(modality == "RNA") %>% group_by(segment_id) %>%  summarize(sd = sd(value)) %>%  pull(sd)
         params_rna$norm_init_sd_rna <- torch$tensor(sds / max(K))
-        params_rna$likelihood_rna <-  "Gaussian"
+        params_rna$likelihood_rna <-  "G"
+        I <-  length(get_segmentation(x) %>%  pull(segment_id) %>%  unique())
+        params_rna$theta_shape_rna <-  torch$tensor(rep(1, I))
+        params_rna$theta_rate_rna <-  torch$tensor(rep(1,I))
 
       } else if (startsWith(which_likelihood(x, "RNA"), prefix = "NB"))
       {
@@ -125,12 +132,15 @@ auto_config_run <-
       } else {
         params_rna <- gamma_shape_rate(x, modality = "RNA", torch = torch)
         names(params_rna) <-  c("theta_shape_rna", "theta_rate_rna")
-        params_rna$likelihood_rna <-  "Poisson"
+        params_rna$likelihood_rna <-  "P"
       }
 
       param_list <-  c(param_list, params_rna)
 
     }
+
+    param_list$a <-  a_sd
+    param_list$b <- b_sd
 
     param_list$lambda <- lambda
     param_list$hidden_dim <- as.integer(hidden_dim)

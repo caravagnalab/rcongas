@@ -1,6 +1,6 @@
 #' Fit an (R)CONGAS+ model
-#' 
-#' @description 
+#'
+#' @description
 #'
 #' This function is a general interface for fitting a \href{https://github.com/Militeee/congas}{congas} Python model in R. The model briefly consist in a joint
 #' mixture model over two modalities, currently scATAC and scRNA-seq. For more information about the theoretical fundations of the approach refer
@@ -39,13 +39,14 @@ fit_congas <-
            K,
            model_parameters,
            learning_rate = 0.05,
-           latent_variables = "C",
+           latent_variables = "B",
            compile = FALSE,
            steps = 500,
            samples = 1,
            parallel = FALSE,
            model_selection = "ICL",
-           temperature = 10
+           temperature = 10,
+           equal_variance = TRUE
            ) {
 
     if (!inherits(x, "rcongasplus")) {
@@ -56,13 +57,16 @@ fit_congas <-
     x %>% sanitize_obj()
     x %>% sanitize_zeroes()
 
+    model_parameters$equal_sizes_sd <- equal_variance
+
+
     cli::cli_h1("{crayon::bgYellow(' (R)CONGAS+ ')} Variational Inference")
-    
+
     # Multi-run fit
     one_k = function(k)
     {
       cli::cli_h3("Fit with k = {.field {k}}.")
-      
+
       lapply(1:samples, function(w)
         fit_congas_single_run(
           x,
@@ -75,28 +79,28 @@ fit_congas <-
           temperature
         ))
     }
-    
+
     TIME = as.POSIXct(Sys.time(), format = "%H:%M:%S")
-    
+
     runs <- easypar::run(
       FUN = one_k,
       PARAMS = lapply(K, list),
       parallel = parallel,
       progress_bar = FALSE
     )
-    
+
     # Unroll everything
     runs = Reduce(append, runs)
-    
+
     # Report timing to screen
     TIME = difftime(as.POSIXct(Sys.time(), format = "%H:%M:%S"), TIME, units = "mins")
-    
+
     cat('\n\n')
     cli::cli_h2("{crayon::bold('(R)CONGAS+ fits')} completed in {.field {prettyunits::pretty_dt(TIME)}}.")
     cat('\n')
-    
+
     # names(runs) <-  paste(K)
-    
+
     # runs <-
     #   lapply(K, function(k)
     #     fit_congas_single_run(
@@ -118,7 +122,7 @@ fit_congas <-
       y$ICs)
     model_selection_df <-
       do.call(rbind, model_selection_df) %>%  as_tibble()
-    
+
     model_selection_df$K = sapply(runs, function(w) w$hyperparameters$K)
 
     if(model_selection_df %>% is.na %>% any)
@@ -138,7 +142,7 @@ fit_congas <-
     x$best_fit <-  best_fit
     x$model_selection <-  model_selection_df
     x$used_IC <- model_selection
-    
+
     x %>%  print
 
     return(x)
@@ -169,28 +173,34 @@ fit_congas_single_run <-
     param_optimizer$lr <- learning_rate
 
     ### LOAD MODEL AND GUIDE ###
-    if (latent_variables == "D") {
+    if (latent_variables == "M") {
       model <- cg_mod$LatentCategorical
-      model_string <-  "LatentCategorical"
-      parameters$latent_type <- "D"
-    } else if (latent_variables == "C"){
+      model_string <-  "LatentCategoricalMarginalized"
+      parameters$latent_type <- "M"
+    } else if (latent_variables == "G"){
 
       model <- cg_mod$LatentCategorical
-      model_string <-  "LatentCategorical"
-      parameters$latent_type <- "C"
+      model_string <-  "LatentCategoricalGumble"
+      parameters$latent_type <- "G"
 
-    }else {
-      stop("Continous latent variable model not yet implemented.")
+    } else if (latent_variables == "B"){
+
+      model <- cg_mod$LatentCategorical
+      model_string <-  "LatentCategoricalBaseline"
+      parameters$latent_type <- "B"
+
+   } else {
+      stop("Continous latent variable model of this type not yet implemented. Use one of c('M', 'G', 'B')")
     }
 
     ### LOAD THE ELBO-LOSS ###
 
     elbo_p <- reticulate::import("pyro.infer")
-    if (compile) {
-      elbo <- elbo_p$TraceGraph_ELBO
+    if (!compile) {
+      elbo <- elbo_p$Trace_ELBO
       elbo_string <- "TraceGraph_ELBO"
     } else {
-      elbo <-  elbo_p$JitTraceGraph_ELBO
+      elbo <-  elbo_p$JitTrace_ELBO
       elbo_string <- "JitTraceGraph_ELBO"
     }
     int <- cg$Interface()

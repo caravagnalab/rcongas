@@ -98,7 +98,7 @@ assemble_likelihood_tibble <- function(x, segments){
         group_by(segment_id) %>%  summarize(min = min(value * norm_avg), max = max(value * norm_avg))
     } else {
       what_RNA = what_RNA %>%
-        group_by(segment_id) %>%  summarize(min = min(value * norm_avg), max = max(value * norm_avg))
+        group_by(segment_id) %>%  summarize(min = min(value ), max = max(value))
     }
 
 

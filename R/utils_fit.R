@@ -112,17 +112,35 @@ format_best_model <-  function(x, inf){
     norm_sd_atac <-  c()
     if(which_likelihood(x, modality = "ATAC") == "G"){
       norm_sd_atac <- inf$inferred_params$norm_sd_atac
-      names(norm_sd_atac) <- segment_names
-      norm_sd_atac <-  norm_sd_atac %>% as.data.frame() %>%  tibble::rownames_to_column("segment_id")
-      colnames(norm_sd_atac) <- c("segment_id", "value")
+      if(is.matrix(norm_sd_atac)){
+        colnames(norm_sd_atac) <- segment_names
+        rownames(norm_sd_atac) <-  cluster_names
+        norm_sd_atac <-  norm_sd_atac %>% reshape2::melt()
+        colnames(norm_sd_atac) <- c("cluster","segment_id", "value")
+
+      } else {
+        names(norm_sd_atac) <- segment_names
+        norm_sd_atac <-  norm_sd_atac %>% as.data.frame() %>%  tibble::rownames_to_column("segment_id")
+        colnames(norm_sd_atac) <- c("segment_id", "value")
+        norm_sd_atac$cluster <-  "C*"
+      }
       norm_sd_atac$parameter <- "normal_sd"
     }
     NB_size_atac <- c()
     if(which_likelihood(x, modality = "ATAC") == "NB"){
       NB_size_atac <- inf$inferred_params$NB_size_atac
-      names(NB_size_atac) <- segment_names
-      NB_size_atac <-  NB_size_atac %>% as.data.frame() %>%  tibble::rownames_to_column("segment_id")
-      colnames(NB_size_atac) <- c("segment_id", "value")
+      if(is.matrix(NB_size_atac)){
+        colnames(NB_size_atac) <- segment_names
+        rownames(NB_size_atac) <-  cluster_names
+        NB_size_atac <-  NB_size_atac %>% reshape2::melt()
+        colnames(NB_size_atac) <- c("cluster","segment_id", "value")
+
+      } else {
+        names(NB_size_atac) <- segment_names
+        NB_size_atac <-  NB_size_atac %>% as.data.frame() %>%  tibble::rownames_to_column("segment_id")
+        colnames(NB_size_atac) <- c("segment_id", "value")
+        NB_size_atac$cluster <-  "C*"
+      }
       NB_size_atac$parameter <- "NB_size"
     }
 
@@ -167,22 +185,42 @@ format_best_model <-  function(x, inf){
     segment_factors_rna <-  segment_factors_rna  %>%  as.data.frame() %>%  tibble::rownames_to_column("segment_id")
     colnames(segment_factors_rna) <- c("segment_id", "value")
     segment_factors_rna$parameter <- "segment_factor"
+    segment_factors_rna$cluster <- "C*"
 
     norm_sd_rna <-  c()
     if(which_likelihood(x, modality = "RNA") == "G"){
       norm_sd_rna <- inf$inferred_params$norm_sd_rna
-      names(norm_sd_rna) <- segment_names
-      norm_sd_rna <-  norm_sd_rna %>% as.data.frame() %>%  tibble::rownames_to_column("segment_id")
+      if(is.matrix(norm_sd_rna)){
+        colnames(norm_sd_rna) <- segment_names
+        rownames(norm_sd_rna) <-  cluster_names
+        norm_sd_rna <-  norm_sd_rna %>% reshape2::melt()
+        colnames(norm_sd_rna) <- c("cluster","segment_id", "value")
+
+      } else {
+        names(norm_sd_rna) <- segment_names
+        norm_sd_rna <-  norm_sd_rna %>% as.data.frame() %>%  tibble::rownames_to_column("segment_id")
+      }
       colnames(norm_sd_rna) <- c("segment_id", "value")
       norm_sd_rna$parameter <- "normal_sd"
+      norm_sd_rna$cluster <- "C*"
     }
     NB_size_rna <- c()
     if(which_likelihood(x, modality = "RNA") == "NB"){
       NB_size_rna <- inf$inferred_params$NB_size_rna
-      names(NB_size_rna) <- segment_names
-      NB_size_rna <-  NB_size_rna %>% as.data.frame() %>%  tibble::rownames_to_column("segment_id")
-      colnames(NB_size_rna) <- c("segment_id", "value")
+      if(is.matrix(NB_size_rna)){
+        colnames(NB_size_rna) <- segment_names
+        rownames(NB_size_rna) <-  cluster_names
+        NB_size_rna <-  NB_size_rna %>% reshape2::melt()
+        colnames(NB_size_rna) <- c("cluster","segment_id", "value")
+
+      }else {
+        names(NB_size_rna) <- segment_names
+        NB_size_rna <-  NB_size_rna %>% as.data.frame() %>%  tibble::rownames_to_column("segment_id")
+        colnames(NB_size_rna) <- c("segment_id", "value")
+        NB_size_rna$cluster <- "C*"
+      }
       NB_size_rna$parameter <- "NB_size"
+
     }
 
     segment_parameters_rna <- rbind(segment_factors_rna,norm_sd_rna,NB_size_rna) %>%  as_tibble()
