@@ -66,6 +66,8 @@ input_data_from_rcongas <- function(x){
 
 
 format_best_model <-  function(x, inf){
+
+
   ret <-  list()
 
   hyperpars <- inf$hyperparameters
@@ -108,6 +110,7 @@ format_best_model <-  function(x, inf){
     segment_factors_atac <-  segment_factors_atac  %>%  as.data.frame() %>%  tibble::rownames_to_column("segment_id")
     colnames(segment_factors_atac) <- c("segment_id", "value")
     segment_factors_atac$parameter <- "segment_factor"
+    segment_factors_atac$cluster <- "C*"
 
     norm_sd_atac <-  c()
     if(which_likelihood(x, modality = "ATAC") == "G"){
