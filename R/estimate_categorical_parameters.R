@@ -59,7 +59,7 @@ estimate_segment_factors_aux <- function(data_mle, plot)
 
       MAXT <-  MAXT -1
 
-      if(MAXT == 1){
+      if(MAXT == 0){
         success = TRUE
       }
 
@@ -73,20 +73,20 @@ estimate_segment_factors_aux <- function(data_mle, plot)
           lower = c(1e-16, 1e-16),
           upper = c(Inf, Inf), nobs = length(data_mle),
         )
-
-      ct = ifelse(is.null(coeff),ct,MAXT)
+      if(is.null(coeff))
+        stop()
       coeff <-  coeff@coef
 
       success = TRUE
 
 
 
-    }, error = function(e) {})
+    }, error = function(e) {cli::cli_alert_warning("Iteration not successfull, retrying")})
   }
 
   if(MAXT == 0){
     cli::cli_alert_danger("Max number of iteration reached, returning NULL!")
-    return(NULL)
+    return(c("thetha_shape" = NA, "theta_rate" = NA))
   }
 
   if (plot) {
