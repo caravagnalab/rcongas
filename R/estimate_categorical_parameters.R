@@ -40,18 +40,6 @@ estimate_segment_factors_aux <- function(data_mle, plot)
   data_mle <-  ifelse(data_mle < quants[1], quants[1], data_mle)
   data_mle <-  ifelse(data_mle > quants[2], quants[2], data_mle)
 
-  LL <-  function(theta_shape, theta_rate) {
-    R = dgamma(data_mle,
-               shape = theta_shape,
-               rate = theta_rate,
-               log = TRUE)
-    return(-sum(R))
-  }
-
-  # library(MASS)
-  # fitdistr(data_mle, "gamma", start=list(shape=1, rate=1))$estimate
-
-
   MAXT = 10
   success = FALSE
   while (!success) {
@@ -64,18 +52,19 @@ estimate_segment_factors_aux <- function(data_mle, plot)
       }
 
       coeff <-
-        stats4::mle(
-          minuslogl = LL,
-          start = list(
-            theta_shape = mean(data_mle) / sd(data_mle)*10 ,
-            theta_rate =  1 / sd(data_mle)*10
-          ),
-          lower = c(1e-16, 1e-16),
-          upper = c(Inf, Inf), nobs = length(data_mle),
+        fitdistrplus::fitdist(data_mle
+          ,distr = "gamma", method = "mle"
         )
+
+      summary(coeff)
+
+
       if(is.null(coeff))
         stop()
-      coeff <-  coeff@coef
+
+      coeff <- coeff$estimate
+
+      names(coeff) <-  c("theta_shape", "theta_rate")
 
       success = TRUE
 
