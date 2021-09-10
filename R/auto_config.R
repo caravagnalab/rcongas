@@ -10,6 +10,7 @@
 #' @param a_sd
 #' @param b_sd
 #' @param prior_cn
+#' @param purity
 #'
 #' @return
 #' @export
@@ -26,7 +27,8 @@ auto_config_run <-
            prior_cn = c(0.2, 0.6, 0.2, 0.05, 0.025, 0.025),
            hidden_dim = length(prior_cn),
            init_importance = 0.6,
-           NB_size_priors = c(15, 1000)
+           NB_size_priors = c(15, 1000),
+           purity = 1
            )
 
     {
@@ -37,6 +39,7 @@ auto_config_run <-
 
     param_list$probs <-  torch$tensor(prior_cn)
     param_list$init_probs <- init_importance
+    param_list$purity <- purity
 
     if (has_atac(x)) {
 
