@@ -246,7 +246,7 @@ segment_genome <-  function(MAF , optim = "Adam", elbo = "TraceEnum_ELBO", inf_t
   model <-  "HmmSegmenter"
 
 
-
+  torch <- reticulate::import("torch")
   res <- list()
 
   MAF_L <- MAF  %>% group_by(chr)
