@@ -226,8 +226,12 @@ run_complete <- function(x, steps = 300, lr = 0.01, seed = 3) {
 
   bm <-  get_best_model(x)
 
-  param_list <- list(K = as.integer(length(bm$parameters$mixture_weights)), cnv_var = bm$run_information$input_hyper_params$cnv_var,
-                     norm_factor = bm$parameters$norm_factor, assignments = as.integer(gsub("c", "", bm$parameters$assignement, ignore.case = T)) - 1L, cnv_locs = torch$tensor(as.matrix(bm$parameters$cnv_probs)))
+  param_list <- list(K = as.integer(length(bm$parameters$mixture_weights)), cnv_var = torch$tensor(bm$run_information$input_hyper_params$cnv_var),
+                     norm_factor = torch$tensor(bm$parameters$norm_factor), assignments = torch$tensor(as.integer(gsub("c", "", bm$parameters$assignement, ignore.case = T)) - 1L), 
+                     cnv_locs = torch$tensor(as.matrix(bm$parameters$cnv_probs)),
+                     mixture_weights = torch$tensor(bm$parameters$mixture_weights))
+  
+  print(param_list)
 
   ret <- Rcongas::run_inference(x, model = bm$run_information$model, optim = bm$run_information$optim ,elbo = bm$run_information$elbo,inf_type = bm$run_information$inf_type, steps = steps
 ,lr = lr, MAP = F, seed = seed,  param_list = param_list, rerun = TRUE)
