@@ -117,7 +117,11 @@ set_names <-  function(an){
   return(an)
 }
 
-#' Title
+#' Run CONGAS inference
+#' 
+#' This function acts as the main interface with the Python package. It allows to tweak
+#' most of the parameters of the Python model. Most of default is good for most of the applications
+#' 
 #'
 #' @param data_list
 #' @param model
@@ -223,7 +227,7 @@ run_complete <- function(x, steps = 300, lr = 0.01, seed = 3) {
   bm <-  get_best_model(x)
 
   param_list <- list(K = as.integer(length(bm$parameters$mixture_weights)), cnv_var = bm$run_information$input_hyper_params$cnv_var,
-                     norm_factor = bm$parameters$norm_factor, assignments = as.integer(bm$parameters$assignement - 1), cnv_locs = torch$tensor(as.matrix(bm$parameters$cnv_probs)))
+                     norm_factor = bm$parameters$norm_factor, assignments = as.integer(gsub("c", "", bm$parameters$assignement, ignore.case = T)) - 1L, cnv_locs = torch$tensor(as.matrix(bm$parameters$cnv_probs)))
 
   ret <- Rcongas::run_inference(x, model = bm$run_information$model, optim = bm$run_information$optim ,elbo = bm$run_information$elbo,inf_type = bm$run_information$inf_type, steps = steps
 ,lr = lr, MAP = F, seed = seed,  param_list = param_list, rerun = TRUE)
