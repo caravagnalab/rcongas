@@ -153,7 +153,7 @@ gauss_lik_old <-  function(data,mu,par) {
   log_lk <- apply(log_lk,c(1,2), sum) + log(mixture_weights)
   log_lk <- log_sum_exp(log_lk)
   
-  log_lk <-  sum(log_lk) / ncol(data)
+  log_lk <-  sum(log_lk) 
 
   return(log_lk)
 }
@@ -187,7 +187,7 @@ gauss_lik <-  function(data,mu,par) {
   if(length(mixture_weights) > 1 )
    log_lk <- apply(log_lk, 2, function(x) log_sum_exp(x))
   
-  log_lk <-  sum(log_lk) / ncol(data)
+  log_lk <-  sum(log_lk) 
 
   return(log_lk)
 }
