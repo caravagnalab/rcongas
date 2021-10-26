@@ -290,7 +290,7 @@ segment_genome <-  function(MAF , optim = "Adam", elbo = "TraceEnum_ELBO", inf_t
 
 
     loss <- int$run(steps=steps, seed = seed, param_optimizer=list('lr'= lr), MAP = TRUE)
-    parameters <- int$learned_parameters(posterior=FALSE)
+    parameters <- int$learned_parameters()
 
     res <- c(res, list(parameters))
 
