@@ -259,7 +259,7 @@ segment_genome <-  function(MAF , optim = "Adam", elbo = "TraceEnum_ELBO", inf_t
 
   MAF_L <- MAF  %>% group_by(chr)
 
-  MAF_splitted <-  split(MAF_L, f = MAF_l$chr)
+  MAF_splitted <-  split(MAF_L, f = MAF_L$chr)
 
   if(median_filtering) {
 
