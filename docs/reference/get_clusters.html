@@ -179,57 +179,60 @@ for every clustering id, and <code>p_assignment</code> the hard-clustering assig
 probability for the cells (max among the latent variables).</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='va'>x</span> <span class='op'>=</span> <span class='fu'>Rcongas</span><span class='fu'>::</span><span class='va'><a href='congas_example.html'>congas_example</a></span>
-
-<span class='co'># Default view</span>
-<span class='fu'>get_clusters</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 504 x 5</span><span>
-#&gt;    cell               cluster    c1    c2 p_assignment
-#&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>              </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>        </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> AAACCTGTCGACAGCC-1 c2          1     0            1
-#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> AAAGATGGTAATAGCA-1 c1          0     1            1
-#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> AACACGTAGCTATGCT-1 c1          0     1            1
-#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> AACTCCCAGACAGGCT-1 c2          1     0            1
-#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> AACTCCCGTACACCGC-1 c1          0     1            1
-#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> AACTGGTCAAAGAATC-1 c2          1     0            1
-#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> AACTGGTCAAAGTGCG-1 c1          0     1            1
-#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> AACTTTCGTGGCTCCA-1 c1          0     1            1
-#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> AACTTTCTCGGTTAAC-1 c2          1     0            1
-#&gt; </span><span style='color: #BCBCBC;'>10</span><span> AAGACCTAGCCAGTAG-1 c2          1     0            1
-#&gt; </span><span style='color: #949494;'># … with 494 more rows</span><span></div><div class='input'>
-<span class='co'># Assignments to specific cluster</span>
-<span class='fu'>get_clusters</span><span class='op'>(</span><span class='va'>x</span>, clusters <span class='op'>=</span> <span class='st'>"c1"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 379 x 5</span><span>
-#&gt;    cell               cluster    c1    c2 p_assignment
-#&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>              </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>        </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> AAAGATGGTAATAGCA-1 c1          0     1            1
-#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> AACACGTAGCTATGCT-1 c1          0     1            1
-#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> AACTCCCGTACACCGC-1 c1          0     1            1
-#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> AACTGGTCAAAGTGCG-1 c1          0     1            1
-#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> AACTTTCGTGGCTCCA-1 c1          0     1            1
-#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> AAGCCGCGTTGTACAC-1 c1          0     1            1
-#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> AATCCAGCATTTCAGG-1 c1          0     1            1
-#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> AATCCAGTCCGAACGC-1 c1          0     1            1
-#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> AATCGGTAGTGTTGAA-1 c1          0     1            1
-#&gt; </span><span style='color: #BCBCBC;'>10</span><span> AATCGGTTCTGTCTAT-1 c1          0     1            1
-#&gt; </span><span style='color: #949494;'># … with 369 more rows</span><span></div><div class='input'>
-<span class='co'># Set to NA all clustering assignments with p_assignment below a 99%</span>
-<span class='fu'>get_clusters</span><span class='op'>(</span><span class='va'>x</span>, cut_znk <span class='op'>=</span> <span class='fl'>.99</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 504 x 5</span><span>
-#&gt;    cell               cluster    c1    c2 p_assignment
-#&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>              </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>        </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> AAACCTGTCGACAGCC-1 c2          1     0            1
-#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> AAAGATGGTAATAGCA-1 c1          0     1            1
-#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> AACACGTAGCTATGCT-1 c1          0     1            1
-#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> AACTCCCAGACAGGCT-1 c2          1     0            1
-#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> AACTCCCGTACACCGC-1 c1          0     1            1
-#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> AACTGGTCAAAGAATC-1 c2          1     0            1
-#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> AACTGGTCAAAGTGCG-1 c1          0     1            1
-#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> AACTTTCGTGGCTCCA-1 c1          0     1            1
-#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> AACTTTCTCGGTTAAC-1 c2          1     0            1
-#&gt; </span><span style='color: #BCBCBC;'>10</span><span> AAGACCTAGCCAGTAG-1 c2          1     0            1
-#&gt; </span><span style='color: #949494;'># … with 494 more rows</span><span></div></span></pre>
+    <pre class="examples"><span class='r-in'></span>
+<span class='r-in'><span class='va'>x</span> <span class='op'>=</span> <span class='fu'>Rcongas</span><span class='fu'>::</span><span class='va'><a href='congas_example.html'>congas_example</a></span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Default view</span></span>
+<span class='r-in'><span class='fu'>get_clusters</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># A tibble: 504 × 5</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    cell               cluster    c1    c2 p_assignment</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>              <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>        <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 1</span> AAACCTGTCGACAGCC-1 c2          1     0            1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 2</span> AAAGATGGTAATAGCA-1 c1          0     1            1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 3</span> AACACGTAGCTATGCT-1 c1          0     1            1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 4</span> AACTCCCAGACAGGCT-1 c2          1     0            1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 5</span> AACTCCCGTACACCGC-1 c1          0     1            1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 6</span> AACTGGTCAAAGAATC-1 c2          1     0            1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 7</span> AACTGGTCAAAGTGCG-1 c1          0     1            1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 8</span> AACTTTCGTGGCTCCA-1 c1          0     1            1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 9</span> AACTTTCTCGGTTAAC-1 c2          1     0            1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>10</span> AAGACCTAGCCAGTAG-1 c2          1     0            1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># … with 494 more rows</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Assignments to specific cluster</span></span>
+<span class='r-in'><span class='fu'>get_clusters</span><span class='op'>(</span><span class='va'>x</span>, clusters <span class='op'>=</span> <span class='st'>"c1"</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># A tibble: 379 × 5</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    cell               cluster    c1    c2 p_assignment</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>              <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>        <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 1</span> AAAGATGGTAATAGCA-1 c1          0     1            1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 2</span> AACACGTAGCTATGCT-1 c1          0     1            1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 3</span> AACTCCCGTACACCGC-1 c1          0     1            1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 4</span> AACTGGTCAAAGTGCG-1 c1          0     1            1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 5</span> AACTTTCGTGGCTCCA-1 c1          0     1            1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 6</span> AAGCCGCGTTGTACAC-1 c1          0     1            1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 7</span> AATCCAGCATTTCAGG-1 c1          0     1            1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 8</span> AATCCAGTCCGAACGC-1 c1          0     1            1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 9</span> AATCGGTAGTGTTGAA-1 c1          0     1            1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>10</span> AATCGGTTCTGTCTAT-1 c1          0     1            1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># … with 369 more rows</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Set to NA all clustering assignments with p_assignment below a 99%</span></span>
+<span class='r-in'><span class='fu'>get_clusters</span><span class='op'>(</span><span class='va'>x</span>, cut_znk <span class='op'>=</span> <span class='fl'>.99</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># A tibble: 504 × 5</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    cell               cluster    c1    c2 p_assignment</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>              <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>        <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 1</span> AAACCTGTCGACAGCC-1 c2          1     0            1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 2</span> AAAGATGGTAATAGCA-1 c1          0     1            1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 3</span> AACACGTAGCTATGCT-1 c1          0     1            1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 4</span> AACTCCCAGACAGGCT-1 c2          1     0            1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 5</span> AACTCCCGTACACCGC-1 c1          0     1            1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 6</span> AACTGGTCAAAGAATC-1 c2          1     0            1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 7</span> AACTGGTCAAAGTGCG-1 c1          0     1            1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 8</span> AACTTTCGTGGCTCCA-1 c1          0     1            1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 9</span> AACTTTCTCGGTTAAC-1 c2          1     0            1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>10</span> AAGACCTAGCCAGTAG-1 c2          1     0            1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># … with 494 more rows</span></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

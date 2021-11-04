@@ -184,15 +184,17 @@ Rate (FWER) via Bonferroni correction.</p>
 for the significance of the test.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='va'>x</span> <span class='op'>=</span> <span class='fu'>Rcongas</span><span class='fu'>::</span><span class='va'><a href='congas_example.html'>congas_example</a></span>
-
-<span class='co'># Compare groups</span>
-<span class='fu'>get_segment_test_counts</span><span class='op'>(</span><span class='va'>x</span>, <span class='st'>"c1"</span>, <span class='st'>"c2"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in get_segment_test_counts(x, "c1", "c2"): Cluster labels in group1 are not correct.</span></div><div class='input'>
-<span class='co'># More stringent test</span>
-<span class='fu'>get_segment_test_counts</span><span class='op'>(</span><span class='va'>x</span>, <span class='st'>"c1"</span>, <span class='st'>"c2"</span>, cutoff_p <span class='op'>=</span> <span class='fl'>1e-4</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in get_segment_test_counts(x, "c1", "c2", cutoff_p = 1e-04): Cluster labels in group1 are not correct.</span></div></pre>
+    <pre class="examples"><span class='r-in'></span>
+<span class='r-in'><span class='va'>x</span> <span class='op'>=</span> <span class='fu'>Rcongas</span><span class='fu'>::</span><span class='va'><a href='congas_example.html'>congas_example</a></span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Compare groups</span></span>
+<span class='r-in'><span class='fu'>get_segment_test_counts</span><span class='op'>(</span><span class='va'>x</span>, <span class='st'>"c1"</span>, <span class='st'>"c2"</span><span class='op'>)</span></span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in loadNamespace(x):</span> there is no package called ‘fitdistrplus’</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># More stringent test</span></span>
+<span class='r-in'><span class='fu'>get_segment_test_counts</span><span class='op'>(</span><span class='va'>x</span>, <span class='st'>"c1"</span>, <span class='st'>"c2"</span>, cutoff_p <span class='op'>=</span> <span class='fl'>1e-4</span><span class='op'>)</span></span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in loadNamespace(x):</span> there is no package called ‘fitdistrplus’</span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -34,6 +34,9 @@
     <loc>militeee.github.io/Rcongas/reference/filter_quantiles_per_segments.html</loc>
   </url>
   <url>
+    <loc>militeee.github.io/Rcongas/reference/filter_segments_and_return_cnv_table.html</loc>
+  </url>
+  <url>
     <loc>militeee.github.io/Rcongas/reference/generate_ploidy.html</loc>
   </url>
   <url>
@@ -79,12 +82,6 @@
     <loc>militeee.github.io/Rcongas/reference/get_k.html</loc>
   </url>
   <url>
-    <loc>militeee.github.io/Rcongas/reference/get_mapped_genes.html</loc>
-  </url>
-  <url>
-    <loc>militeee.github.io/Rcongas/reference/get_model_description.html</loc>
-  </url>
-  <url>
     <loc>militeee.github.io/Rcongas/reference/get_reference_genome.html</loc>
   </url>
   <url>
@@ -92,6 +89,12 @@
   </url>
   <url>
     <loc>militeee.github.io/Rcongas/reference/get_segment_test_counts.html</loc>
+  </url>
+  <url>
+    <loc>militeee.github.io/Rcongas/reference/highlights.html</loc>
+  </url>
+  <url>
+    <loc>militeee.github.io/Rcongas/reference/init.html</loc>
   </url>
   <url>
     <loc>militeee.github.io/Rcongas/reference/list_models.html</loc>
@@ -106,16 +109,28 @@
     <loc>militeee.github.io/Rcongas/reference/plot_DE_volcano.html</loc>
   </url>
   <url>
-    <loc>militeee.github.io/Rcongas/reference/plot_cell_statistics.html</loc>
+    <loc>militeee.github.io/Rcongas/reference/plot_chromosome.html</loc>
   </url>
   <url>
-    <loc>militeee.github.io/Rcongas/reference/plot_chromosome.html</loc>
+    <loc>militeee.github.io/Rcongas/reference/plot_chromosome_inspection.html</loc>
+  </url>
+  <url>
+    <loc>militeee.github.io/Rcongas/reference/plot_cohort_statistics.html</loc>
   </url>
   <url>
     <loc>militeee.github.io/Rcongas/reference/plot_counts_per_segment.html</loc>
   </url>
   <url>
     <loc>militeee.github.io/Rcongas/reference/plot_counts_rna_segments.html</loc>
+  </url>
+  <url>
+    <loc>militeee.github.io/Rcongas/reference/plot_dna_pld_vs_rna.html</loc>
+  </url>
+  <url>
+    <loc>militeee.github.io/Rcongas/reference/plot_gene_counts_on_genome.html</loc>
+  </url>
+  <url>
+    <loc>militeee.github.io/Rcongas/reference/plot_gene_rank.html</loc>
   </url>
   <url>
     <loc>militeee.github.io/Rcongas/reference/plot_gw_cna_profiles.html</loc>
@@ -155,6 +170,15 @@
   </url>
   <url>
     <loc>militeee.github.io/Rcongas/reference/report_analysis.html</loc>
+  </url>
+  <url>
+    <loc>militeee.github.io/Rcongas/reference/report_analysis_chromosome.html</loc>
+  </url>
+  <url>
+    <loc>militeee.github.io/Rcongas/reference/report_analysis_de.html</loc>
+  </url>
+  <url>
+    <loc>militeee.github.io/Rcongas/reference/report_data.html</loc>
   </url>
   <url>
     <loc>militeee.github.io/Rcongas/reference/run_inference.html</loc>

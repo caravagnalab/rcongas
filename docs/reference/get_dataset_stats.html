@@ -167,33 +167,37 @@ numnber of cells, semgents, clusters (if any), score used etc.</p>
     <p>A list of named values that contain the required statistics.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='va'>x</span> <span class='op'>=</span> <span class='fu'>Rcongas</span><span class='fu'>::</span><span class='va'><a href='congas_example.html'>congas_example</a></span>
-
-<span class='fu'>get_dataset_stats</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; $ncells
-#&gt; [1] 504
-#&gt; 
-#&gt; $nsegments
-#&gt; [1] 70
-#&gt; 
-#&gt; $clusters_k
-#&gt; [1] 2
-#&gt; 
-#&gt; $clusters_n
-#&gt;  c1  c2 
-#&gt; 379 125 
-#&gt; 
-#&gt; $clusters_pi
-#&gt;        c1        c2 
-#&gt; 0.7519841 0.2480159 
-#&gt; 
-#&gt; $score_type
-#&gt; [1] "AIC"
-#&gt; 
-#&gt; $score
-#&gt; [1] 269370.7
-#&gt; </div></pre>
+    <pre class="examples"><span class='r-in'></span>
+<span class='r-in'><span class='va'>x</span> <span class='op'>=</span> <span class='fu'>Rcongas</span><span class='fu'>::</span><span class='va'><a href='congas_example.html'>congas_example</a></span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='fu'>get_dataset_stats</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $ncells</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 504</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $ngenes</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 8564</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $nsegments</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 70</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $clusters_k</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 2</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $clusters_n</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  c1  c2 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 379 125 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $clusters_pi</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>        c1        c2 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 0.7519841 0.2480159 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $score_type</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "AIC"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $score</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 269370.7</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

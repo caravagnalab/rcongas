@@ -153,6 +153,8 @@
   <span class='va'>x</span>,
   cutoff_quantile_sd <span class='op'>=</span> <span class='fl'>0.95</span>,
   normalise <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"ls"</span>, <span class='st'>"cn"</span><span class='op'>)</span>,
+  chromosomes <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"chr"</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>22</span>, <span class='st'>"X"</span>, <span class='st'>"Y"</span><span class='op'>)</span><span class='op'>)</span>,
+  assembly <span class='op'>=</span> <span class='cn'>TRUE</span>,
   <span class='va'>...</span>
 <span class='op'>)</span></pre>
 
@@ -183,9 +185,11 @@ it should avoid plotting a number of low-frequency data points.</p></td>
     <p>A ggplot figure with multiple plots.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='fu'>plot_gene_counts_on_genome</span><span class='op'>(</span><span class='fu'>Rcongas</span><span class='fu'>::</span><span class='va'><a href='congas_example.html'>congas_example</a></span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: get_gene_annotations() is missing annotations for some input genes ...</span></div><div class='output co'>#&gt; |===============================                       | 59% ~1 s remaining     |=================================                     | 61% ~1 s remaining     |==================================                    | 64% ~1 s remaining     |====================================                  | 67% ~1 s remaining     |=====================================                 | 70% ~1 s remaining     |=======================================               | 73% ~1 s remaining     |========================================              | 76% ~1 s remaining     |==========================================            | 79% ~1 s remaining     |===========================================           | 81% ~1 s remaining     |=============================================         | 84% ~1 s remaining     |===============================================       | 87% ~0 s remaining     |================================================      | 90% ~0 s remaining     |==================================================    | 93% ~0 s remaining     |===================================================   | 96% ~0 s remaining     |===================================================== | 99% ~0 s remaining     </div><div class='output co'>#&gt; <span class='error'>Error: id variables not found in data: cell</span></div></pre>
+    <pre class="examples"><span class='r-in'></span>
+<span class='r-in'><span class='fu'>plot_gene_counts_on_genome</span><span class='op'>(</span><span class='fu'>Rcongas</span><span class='fu'>::</span><span class='va'><a href='congas_example.html'>congas_example</a></span><span class='op'>)</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #BBBB00;'>!</span> Input counts are missing, check the init function to see how you created the data</span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in UseMethod("group_by"):</span> no applicable method for 'group_by' applied to an object of class "NULL"</span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

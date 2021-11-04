@@ -184,54 +184,55 @@ ids.</p></td>
     <p>A vector of strings.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='va'>x</span> <span class='op'>=</span> <span class='fu'>Rcongas</span><span class='fu'>::</span><span class='va'><a href='congas_example.html'>congas_example</a></span>
-
-<span class='co'># All segments</span>
-<span class='fu'>get_segment_ids</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;  [1] "chr1:1:12600000"           "chr1:12600001:60150000"   
-#&gt;  [3] "chr1:61200001:77100000"    "chr1:78750001:156000000"  
-#&gt;  [5] "chr1:156000001:249300000"  "chr2:1:26250000"          
-#&gt;  [7] "chr2:26250001:38100000"    "chr2:64050001:87150000"   
-#&gt;  [9] "chr2:88350001:159900000"   "chr2:159900001:176850000" 
-#&gt; [11] "chr2:176850001:195450000"  "chr2:201750001:243300000" 
-#&gt; [13] "chr3:1:13800000"           "chr3:34350001:86850000"   
-#&gt; [15] "chr3:89100001:114000000"   "chr3:114000001:134100000" 
-#&gt; [17] "chr3:134700001:152100000"  "chr3:152100001:180450000" 
-#&gt; [19] "chr3:180450001:198150000"  "chr4:1:70500000"          
-#&gt; [21] "chr4:70500001:115350000"   "chr4:135300001:151650000" 
-#&gt; [23] "chr4:151650001:191250000"  "chr5:18000001:54150000"   
-#&gt; [25] "chr5:54150001:127050000"   "chr5:129150001:150600000" 
-#&gt; [27] "chr5:166500001:181050000"  "chr6:1:14850000"          
-#&gt; [29] "chr6:14850001:32400000"    "chr6:32700001:76950000"   
-#&gt; [31] "chr6:93450001:114450000"   "chr6:145500001:156600000" 
-#&gt; [33] "chr7:4950001:132450000"    "chr7:135300001:156900000" 
-#&gt; [35] "chr8:1:67500000"           "chr8:100800001:146400000" 
-#&gt; [37] "chr9:1:78900000"           "chr9:85350001:141300000"  
-#&gt; [39] "chr10:1500001:76200000"    "chr10:76950001:118350000" 
-#&gt; [41] "chr10:118350001:135600000" "chr11:1:33750000"         
-#&gt; [43] "chr11:43500001:100200000"  "chr11:100200001:135150000"
-#&gt; [45] "chr12:1:14400000"          "chr12:16200001:46800000"  
-#&gt; [47] "chr12:46800001:68850000"   "chr12:68850001:133950000" 
-#&gt; [49] "chr13:21150001:38850000"   "chr13:38850001:83400000"  
-#&gt; [51] "chr14:1:93300000"          "chr14:93300001:105450000" 
-#&gt; [53] "chr15:1:58950000"          "chr15:67050001:102600000" 
-#&gt; [55] "chr16:1:3750000"           "chr16:8550001:15600000"   
-#&gt; [57] "chr16:16950001:90450000"   "chr17:1:40650000"         
-#&gt; [59] "chr17:40650001:47250000"   "chr17:47250001:79650000"  
-#&gt; [61] "chr17:79650001:81300000"   "chr18:7950001:20400000"   
-#&gt; [63] "chr18:32400001:55950000"   "chr18:55950001:78150000"  
-#&gt; [65] "chr19:1:59250000"          "chr20:1:13650000"         
-#&gt; [67] "chr20:26100001:42750000"   "chr20:50550001:63150000"  
-#&gt; [69] "chr21:1:38850000"          "chr22:1:51450000"         </div><div class='input'>
-<span class='co'># All segments that are highlighted with default value</span>
-<span class='fu'>get_segment_ids</span><span class='op'>(</span><span class='va'>x</span>, highlight <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "chr14:93300001:105450000" "chr15:67050001:102600000"
-#&gt; [3] "chr16:1:3750000"          "chr18:32400001:55950000" </div><div class='input'>
-<span class='co'># All segments that are highlighted with stricter value than default</span>
-<span class='fu'>get_segment_ids</span><span class='op'>(</span><span class='va'>x</span>, highlight <span class='op'>=</span> <span class='cn'>TRUE</span>, alpha <span class='op'>=</span> <span class='fl'>0.01</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "chr15:67050001:102600000" "chr16:1:3750000"         
-#&gt; [3] "chr18:32400001:55950000" </div></pre>
+    <pre class="examples"><span class='r-in'></span>
+<span class='r-in'><span class='va'>x</span> <span class='op'>=</span> <span class='fu'>Rcongas</span><span class='fu'>::</span><span class='va'><a href='congas_example.html'>congas_example</a></span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># All segments</span></span>
+<span class='r-in'><span class='fu'>get_segment_ids</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [1] "chr1:1:12600000"           "chr1:12600001:60150000"   </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [3] "chr1:61200001:77100000"    "chr1:78750001:156000000"  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [5] "chr1:156000001:249300000"  "chr2:1:26250000"          </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [7] "chr2:26250001:38100000"    "chr2:64050001:87150000"   </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [9] "chr2:88350001:159900000"   "chr2:159900001:176850000" </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [11] "chr2:176850001:195450000"  "chr2:201750001:243300000" </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [13] "chr3:1:13800000"           "chr3:34350001:86850000"   </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [15] "chr3:89100001:114000000"   "chr3:114000001:134100000" </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [17] "chr3:134700001:152100000"  "chr3:152100001:180450000" </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [19] "chr3:180450001:198150000"  "chr4:1:70500000"          </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [21] "chr4:70500001:115350000"   "chr4:135300001:151650000" </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [23] "chr4:151650001:191250000"  "chr5:18000001:54150000"   </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [25] "chr5:54150001:127050000"   "chr5:129150001:150600000" </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [27] "chr5:166500001:181050000"  "chr6:1:14850000"          </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [29] "chr6:14850001:32400000"    "chr6:32700001:76950000"   </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [31] "chr6:93450001:114450000"   "chr6:145500001:156600000" </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [33] "chr7:4950001:132450000"    "chr7:135300001:156900000" </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [35] "chr8:1:67500000"           "chr8:100800001:146400000" </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [37] "chr9:1:78900000"           "chr9:85350001:141300000"  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [39] "chr10:1500001:76200000"    "chr10:76950001:118350000" </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [41] "chr10:118350001:135600000" "chr11:1:33750000"         </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [43] "chr11:43500001:100200000"  "chr11:100200001:135150000"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [45] "chr12:1:14400000"          "chr12:16200001:46800000"  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [47] "chr12:46800001:68850000"   "chr12:68850001:133950000" </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [49] "chr13:21150001:38850000"   "chr13:38850001:83400000"  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [51] "chr14:1:93300000"          "chr14:93300001:105450000" </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [53] "chr15:1:58950000"          "chr15:67050001:102600000" </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [55] "chr16:1:3750000"           "chr16:8550001:15600000"   </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [57] "chr16:16950001:90450000"   "chr17:1:40650000"         </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [59] "chr17:40650001:47250000"   "chr17:47250001:79650000"  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [61] "chr17:79650001:81300000"   "chr18:7950001:20400000"   </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [63] "chr18:32400001:55950000"   "chr18:55950001:78150000"  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [65] "chr19:1:59250000"          "chr20:1:13650000"         </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [67] "chr20:26100001:42750000"   "chr20:50550001:63150000"  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [69] "chr21:1:38850000"          "chr22:1:51450000"         </span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># All segments that are highlighted with default value</span></span>
+<span class='r-in'><span class='fu'>get_segment_ids</span><span class='op'>(</span><span class='va'>x</span>, highlight <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in loadNamespace(x):</span> there is no package called ‘fitdistrplus’</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># All segments that are highlighted with stricter value than default</span></span>
+<span class='r-in'><span class='fu'>get_segment_ids</span><span class='op'>(</span><span class='va'>x</span>, highlight <span class='op'>=</span> <span class='cn'>TRUE</span>, alpha <span class='op'>=</span> <span class='fl'>0.01</span><span class='op'>)</span></span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in loadNamespace(x):</span> there is no package called ‘fitdistrplus’</span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -184,25 +184,32 @@ By default all are used via function <code>get_segment_ids</code>.</p></td>
     <p>A list of ggplot objects.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='va'>x</span> <span class='op'>=</span> <span class='fu'>Rcongas</span><span class='fu'>::</span><span class='va'><a href='congas_example.html'>congas_example</a></span>
-
-<span class='co'># Plot the first segment</span>
-<span class='fu'>plot_segment_density</span><span class='op'>(</span><span class='va'>x</span>, segments_ids <span class='op'>=</span> <span class='fu'><a href='get_segment_ids.html'>get_segment_ids</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; $`chr1:1:12600000`</div><div class='img'><img src='plot_segment_density-1.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; </div><div class='input'>
-<span class='co'># Plot the first one that is highlighted</span>
-<span class='fu'>plot_segment_density</span><span class='op'>(</span><span class='va'>x</span>, segments_ids <span class='op'>=</span> <span class='fu'><a href='get_segment_ids.html'>get_segment_ids</a></span><span class='op'>(</span><span class='va'>x</span>, highlight <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; $`chr14:93300001:105450000`</div><div class='img'><img src='plot_segment_density-2.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; </div><div class='input'>
-<span class='co'># Plot the top 4 highlighted, in 2x2 format, specifying alpha value</span>
-
-<span class='va'>what_to_plot</span> <span class='op'>=</span> <span class='fu'><a href='get_segment_ids.html'>get_segment_ids</a></span><span class='op'>(</span><span class='va'>x</span>, highlight <span class='op'>=</span> <span class='cn'>TRUE</span>, alpha <span class='op'>=</span> <span class='fl'>0.05</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>4</span><span class='op'>]</span>
-
-<span class='fu'>ggpubr</span><span class='fu'>::</span><span class='fu'><a href='https://rpkgs.datanovia.com/ggpubr/reference/ggarrange.html'>ggarrange</a></span><span class='op'>(</span>
- plotlist <span class='op'>=</span> <span class='fu'>plot_segment_density</span><span class='op'>(</span><span class='va'>x</span>, segments_ids <span class='op'>=</span> <span class='va'>what_to_plot</span><span class='op'>)</span>,
- nrow <span class='op'>=</span> <span class='fl'>2</span>,
- ncol <span class='op'>=</span> <span class='fl'>2</span>
-<span class='op'>)</span>
-</div><div class='img'><img src='plot_segment_density-3.png' alt='' width='700' height='433' /></div></pre>
+    <pre class="examples"><span class='r-in'></span>
+<span class='r-in'><span class='va'>x</span> <span class='op'>=</span> <span class='fu'>Rcongas</span><span class='fu'>::</span><span class='va'><a href='congas_example.html'>congas_example</a></span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Plot the first segment</span></span>
+<span class='r-in'><span class='fu'>plot_segment_density</span><span class='op'>(</span><span class='va'>x</span>, segments_ids <span class='op'>=</span> <span class='fu'><a href='get_segment_ids.html'>get_segment_ids</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>)</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #BBBB00;'>!</span> Required density forcluster <span style='color: #00BB00;'>c1</span>, with no Poisson parameters associated!</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #BBBB00;'>!</span> Required density forcluster <span style='color: #00BB00;'>c2</span>, with no Poisson parameters associated!</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>`guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; = "none")` instead.</span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in paste0(segment_id, " (Poisson)"):</span> object 'segment_id' not found</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Plot the first one that is highlighted</span></span>
+<span class='r-in'><span class='fu'>plot_segment_density</span><span class='op'>(</span><span class='va'>x</span>, segments_ids <span class='op'>=</span> <span class='fu'><a href='get_segment_ids.html'>get_segment_ids</a></span><span class='op'>(</span><span class='va'>x</span>, highlight <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>)</span></span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in loadNamespace(x):</span> there is no package called ‘fitdistrplus’</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Plot the top 4 highlighted, in 2x2 format, specifying alpha value</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>what_to_plot</span> <span class='op'>=</span> <span class='fu'><a href='get_segment_ids.html'>get_segment_ids</a></span><span class='op'>(</span><span class='va'>x</span>, highlight <span class='op'>=</span> <span class='cn'>TRUE</span>, alpha <span class='op'>=</span> <span class='fl'>0.05</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>4</span><span class='op'>]</span></span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in loadNamespace(x):</span> there is no package called ‘fitdistrplus’</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='fu'>ggpubr</span><span class='fu'>::</span><span class='fu'><a href='https://rpkgs.datanovia.com/ggpubr/reference/ggarrange.html'>ggarrange</a></span><span class='op'>(</span></span>
+<span class='r-in'> plotlist <span class='op'>=</span> <span class='fu'>plot_segment_density</span><span class='op'>(</span><span class='va'>x</span>, segments_ids <span class='op'>=</span> <span class='va'>what_to_plot</span><span class='op'>)</span>,</span>
+<span class='r-in'> nrow <span class='op'>=</span> <span class='fl'>2</span>,</span>
+<span class='r-in'> ncol <span class='op'>=</span> <span class='fl'>2</span></span>
+<span class='r-in'><span class='op'>)</span></span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in plot_segment_density(x, segments_ids = what_to_plot):</span> object 'what_to_plot' not found</span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

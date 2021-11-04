@@ -174,21 +174,28 @@ set to <code>NA</code></p></td>
     <p>A ggplot object</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>x</span> <span class='op'>=</span> <span class='fu'>Rcongas</span><span class='fu'>::</span><span class='va'><a href='congas_example.html'>congas_example</a></span>
-
-<span class='co'># Default (cutoff 0)</span>
-<span class='fu'>plot_latent_variables</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span> 
-</div><div class='output co'>#&gt; <span class='message'><span style='color: #00BB00;'>✓</span><span> Loading </span><span style='color: #00BB00;'>ctree</span><span>, </span><span style='font-style: italic;'>'Clone trees in cancer'</span><span>. Support : </span><span style='color: #0000BB;font-style: italic;'>&lt;https://caravagn.github.io/ctree/&gt;</span><span></span></div><div class='output co'>#&gt; <span class='warning'>Warning: replacing previous import ‘Biostrings::translate’ by ‘seqinr::translate’ when loading ‘dndscv’</span></div><div class='output co'>#&gt; <span class='message'></span><span style='color: #00BB00;'>✔</span><span> Loading </span><span style='color: #00BB00;'>mobster</span><span>, </span><span style='font-style: italic;'>'Model-based clustering in cancer'</span><span>. Support :</span>
-#&gt; <span class='message'></span><span style='color: #0000BB;font-style: italic;'>&lt;https://caravagn.github.io/mobster/&gt;</span><span>.</span></div><div class='img'><img src='plot_latent_variables-1.png' alt='' width='700' height='433' /></div><div class='input'>
-<span class='co'># &gt;50% assignment probability</span>
-<span class='fu'>plot_latent_variables</span><span class='op'>(</span><span class='va'>x</span>, cutoff_assignment <span class='op'>=</span> <span class='fl'>.5</span><span class='op'>)</span> 
-</div><div class='img'><img src='plot_latent_variables-2.png' alt='' width='700' height='433' /></div><div class='input'>
-<span class='co'># &gt;90% assignment probability</span>
-<span class='fu'>plot_latent_variables</span><span class='op'>(</span><span class='va'>x</span>, cutoff_assignment <span class='op'>=</span> <span class='fl'>.9</span><span class='op'>)</span> 
-</div><div class='img'><img src='plot_latent_variables-3.png' alt='' width='700' height='433' /></div><div class='input'>
-<span class='co'># &gt;97.5% assignment probability</span>
-<span class='fu'>plot_latent_variables</span><span class='op'>(</span><span class='va'>x</span>, cutoff_assignment <span class='op'>=</span> <span class='fl'>.975</span><span class='op'>)</span> 
-</div><div class='img'><img src='plot_latent_variables-4.png' alt='' width='700' height='433' /></div></span></pre>
+    <pre class="examples"><span class='r-in'><span class='va'>x</span> <span class='op'>=</span> <span class='fu'>Rcongas</span><span class='fu'>::</span><span class='va'><a href='congas_example.html'>congas_example</a></span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Default (cutoff 0)</span></span>
+<span class='r-in'><span class='fu'>plot_latent_variables</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #00BB00;'>✓</span> Loading <span style='color: #00BB00;'>ctree</span>, <span style='font-style: italic;'>'Clone trees in cancer'</span>. Support : <span style='color: #0000BB; font-style: italic;'>&lt;https://caravagn.github.io/ctree/&gt;</span></span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>replacing previous import ‘Biostrings::translate’ by ‘seqinr::translate’ when loading ‘dndscv’</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #00BB00;'>✔</span> Loading <span style='color: #00BB00;'>mobster</span>, <span style='font-style: italic;'>'Model-based clustering in cancer'</span>. Support :</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #0000BB; font-style: italic;'>&lt;https://caravagn.github.io/mobster/&gt;</span>.</span>
+<span class='r-plt img'><img src='plot_latent_variables-1.png' alt='' width='700' height='433' /></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># &gt;50% assignment probability</span></span>
+<span class='r-in'><span class='fu'>plot_latent_variables</span><span class='op'>(</span><span class='va'>x</span>, cutoff_assignment <span class='op'>=</span> <span class='fl'>.5</span><span class='op'>)</span> </span>
+<span class='r-plt img'><img src='plot_latent_variables-2.png' alt='' width='700' height='433' /></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># &gt;90% assignment probability</span></span>
+<span class='r-in'><span class='fu'>plot_latent_variables</span><span class='op'>(</span><span class='va'>x</span>, cutoff_assignment <span class='op'>=</span> <span class='fl'>.9</span><span class='op'>)</span> </span>
+<span class='r-plt img'><img src='plot_latent_variables-3.png' alt='' width='700' height='433' /></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># &gt;97.5% assignment probability</span></span>
+<span class='r-in'><span class='fu'>plot_latent_variables</span><span class='op'>(</span><span class='va'>x</span>, cutoff_assignment <span class='op'>=</span> <span class='fl'>.975</span><span class='op'>)</span> </span>
+<span class='r-plt img'><img src='plot_latent_variables-4.png' alt='' width='700' height='433' /></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
