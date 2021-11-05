@@ -42,7 +42,7 @@ As the package is undergoing a massive restyling and features improving (stay tu
 
 #### Help and support
 
-[![](https://img.shields.io/badge/GitHub%20Pages-https://militeee.github.io/rcongas/-steelblue.svg)](https://militeee.github.io/rcongas)
+[![](https://img.shields.io/badge/GitHub%20Pages-https://caravagnalab.github.io/rcongas/-steelblue.svg)](https://caravagnalab.github.io/rcongas/)
 
 ### Installation
 
