@@ -1,14 +1,15 @@
-#' Title
+#' Initialize a CONGAS object
 #'
 #' @param data 
 #' @param cnv_data 
-#' @param chromosomes 
-#' @param fun 
-#' @param online 
-#' @param reference_genome 
-#' @param correct_bins 
-#' @param gene_format 
-#' @param description 
+#' @param chromosomes which chromosome to include in the analysis
+#' @param fun a valid R function to aggregate the data: should be defined as R^n -> R
+#' @param online get gene position information directly from ENSEMBL 
+#' @param reference_genome reference assembly of human or mouse genome
+#' @param correct_bins filter small segments, and then defragment them by merging
+#' those with the same CNV
+#' @param gene_format gene format from those available on biomaRt
+#' @param description a description for the object
 #'
 #' @return
 #' @export

@@ -9,20 +9,26 @@
 #' @param X 
 #' @param model Any of the model keywords available via \code{list_models()}.
 #' @param clusters A vector of values for \code{k}.
-#' @param optim 
-#' @param elbo 
-#' @param inf_type 
-#' @param steps 
-#' @param lr 
-#' @param param_list 
-#' @param MAP 
-#' @param posteriors 
-#' @param seed 
-#' @param step_post 
-#' @param mixture 
-#' @param method 
+#' @param optim a pyro.optim object, in string format
+#' @param elbo  a pyro.inference object, in string format
+#' @param inf_type currently just "SVI" is supported
+#' @param steps number of step of the gradient-based VI algorithm
+#' @param lr learning rate of the gradient-based VI algorithm
+#' @param param_list named list of parameters for the specific model
+#' @param MAP perform MAP or full bayesian inference (MAP is suggested as it converges better)
+#' @param seed seed for torch random number generator
+#' @param mixture initial mixture weights, if NULL then they are equal to 1/K
+#' @param method informtion criteria to score the best solution (currently supports "AIC", "BIC" and "ICL)
 #'
-#' @return
+#' @return A congas (described in [\fun{init}]) object with following elements:
+#' - *inference* :
+#'   - *models* with all the runs performed
+#'   - *model_selection* with information about the IC and run statistics 
+#' 
+#' @details  While this function has a lot of personalizable arguments, the default
+#' ones are usually good for most of the applications. It is better to be confident with Pyro
+#' before changing them
+#' 
 #' @export
 #'
 #' @examples
