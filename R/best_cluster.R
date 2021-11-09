@@ -45,7 +45,8 @@ best_cluster <-
            MAP = TRUE,
            seed = 3,
            mixture = NULL,
-           method = "AIC") {
+           method = "AIC",
+           normalize_by_segs = FALSE) {
     if (is.null(mixture)) {
       mixture <- rep(NULL, length(clusters))
     }
@@ -65,7 +66,7 @@ best_cluster <-
           seed = seed,
         ))
 
-    IC <- calculate_information_criteria(res,X,method)
+    IC <- calculate_information_criteria(res,X,method, normalize_by_segs)
     ind <-  which.min(IC)
     print(paste0("Best number of cluster is " , ind))
     ret <-

@@ -9,15 +9,15 @@
 #'
 #' @examples
 #' 
-recalculate_information_criteria <-  function(x, method){
+recalculate_information_criteria <-  function(x, method, normalize_by_segs){
   #if(!has_inference(x)) stop("Cannot calculate ICs prior to inference")
-  x$inference$model_selection$IC <- calculate_information_criteria(x$inference$models, x, method)
+  x$inference$model_selection$IC <- calculate_information_criteria(x$inference$models, x, method, normalize_by_segs)
   x$inference$model_selection$IC_type <- method
   return(x)  
 }
 
 
-calculate_information_criteria <- function(res, x, method){
+calculate_information_criteria <- function(res, x, method, normalize_by_segs){
   
   model <-  res[[1]]$run_information$model
   lik_fun <- choose_likelihood(model)
@@ -25,19 +25,19 @@ calculate_information_criteria <- function(res, x, method){
   if (method == "BIC"){
     IC <-
       sapply(res, function(y)
-        calculate_BIC(y, x$data$counts, x$data$cnv$mu, llikelihood = lik_fun))
+        calculate_BIC(y, x$data$counts, x$data$cnv$mu, llikelihood = lik_fun, normalize_by_segs = normalize_by_segs))
   } else if (method == "AIC") {
     IC <-
       sapply(res, function(y)
-        calculate_AIC(y, x$data$counts, x$data$cnv$mu, llikelihood = lik_fun))
+        calculate_AIC(y, x$data$counts, x$data$cnv$mu, llikelihood = lik_fun, normalize_by_segs = normalize_by_segs))
   } else if (method == "ICL") {
     IC <-
       sapply(res, function(y)
-        calculate_ICL(y, x$data$counts, x$data$cnv$mu, llikelihood = lik_fun))
+        calculate_ICL(y, x$data$counts, x$data$cnv$mu, llikelihood = lik_fun, normalize_by_segs = normalize_by_segs))
   } else if (method == "lk") {
     IC <-
       sapply(res, function(y)
-        lik_fun(x$data$counts, x$data$cnv$mu, y$parameters) * -1)
+        lik_fun(x$data$counts, x$data$cnv$mu, y$parameters, normalize_by_segs) * -1)
   } else {
     stop("Information criterium not present in the package")
   }

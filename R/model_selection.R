@@ -29,18 +29,18 @@ calculate_entropy <- function(x) {
 }
 
 
-calculate_ICL <- function(inf, data, mu,llikelihood = gauss_lik) {
+calculate_ICL <- function(inf, data, mu,llikelihood = gauss_lik, normalize_by_segs = F) {
 
-  BIC <- calculate_BIC(inf, data, mu,llikelihood)
+  BIC <- calculate_BIC(inf, data, mu,llikelihood, normalize_by_segs)
   H <- calculate_entropy(inf$parameters$assignment_probs)
   return(BIC + H)
 }
 
 
-calculate_AIC <-  function(inf, data, mu,llikelihood = gauss_lik) {
+calculate_AIC <-  function(inf, data, mu,llikelihood = gauss_lik, normalize_by_segs = F) {
 
   n_param <- param_total(inf$parameters)
-  log_lik <- llikelihood(data,mu,inf$parameters)
+  log_lik <- llikelihood(data,mu,inf$parameters, normalize_by_segs)
 
 
 
@@ -50,10 +50,10 @@ calculate_AIC <-  function(inf, data, mu,llikelihood = gauss_lik) {
 }
 
 
-calculate_BIC <-  function(inf, data, mu,llikelihood = gauss_lik) {
+calculate_BIC <-  function(inf, data, mu,llikelihood = gauss_lik, normalize_by_segs = F) {
 
   n_param <- param_total(inf$parameters)
-  log_lik <- llikelihood(data,mu,inf$parameters)
+  log_lik <- llikelihood(data,mu,inf$parameters, normalize_by_segs)
 
 
   return(n_param * log(nrow(data)) - 2 * log_lik)
@@ -61,7 +61,7 @@ calculate_BIC <-  function(inf, data, mu,llikelihood = gauss_lik) {
 
 }
 
-gauss_lik_norm <-  function(data,mu,par) {
+gauss_lik_norm <-  function(data,mu,par,normalize_by_segs) {
 
 
 
@@ -87,12 +87,17 @@ gauss_lik_norm <-  function(data,mu,par) {
 
 
   }
-
-  return(sum(log_lk))
+  
+  log_lk <- sum(log_lk)
+  
+  if(normalize_by_segs)
+    return(log_lk / ncol(data))
+  else
+    return(log_lk)
 }
 
 
-gauss_lik_with_means <-  function(data,mu,par) {
+gauss_lik_with_means <-  function(data,mu,par,normalize_by_segs) {
 
   mixture_weights <- par$mixture_weights
 
@@ -119,6 +124,11 @@ gauss_lik_with_means <-  function(data,mu,par) {
 
 
   log_lk <-  sum(log_lk)
+  
+  if(normalize_by_segs)
+    return(log_lk / ncol(data))
+  else
+    return(log_lk)
 }
 
 param_total <-  function(param_list) {
@@ -155,11 +165,14 @@ gauss_lik_old <-  function(data,mu,par) {
   
   log_lk <-  sum(log_lk) 
 
-  return(log_lk)
+  if(normalize_by_segs)
+    return(log_lk / ncol(data))
+  else
+    return(log_lk)
 }
 
 
-gauss_lik <-  function(data,mu,par) {
+gauss_lik <-  function(data,mu,par, normalize_by_segs) {
 
   mixture_weights <- par$mixture_weights
 
@@ -189,5 +202,8 @@ gauss_lik <-  function(data,mu,par) {
   
   log_lk <-  sum(log_lk) 
 
-  return(log_lk)
+  if(normalize_by_segs)
+    return(log_lk / ncol(data))
+  else
+    return(log_lk)
 }
