@@ -14,7 +14,28 @@ repo:
     issue: https://github.com/militeee/Rcongas/issues
     user: https://github.com/militeee
 
-
+navbar:
+ components:
+   articles:
+    text: Articles
+    menu:
+    - text: 
+    - text: Models
+      href: articles/1_Models.html
+    - text: Getters
+      href: articles/2_Getters.html
+    - text: Plotting functions
+      href: articles/3_Plotting_functions.html
+    - text: Preprocessing
+      href: articles/4_Preprocessing.html
+    - text: -------
+    - text: Old version 
+    - text: Breast PDX analysis 
+      href: old_vignettes/kieran_vignette.html
+    - text: Glioblastoma GBM analysis 
+      href: old_vignettes/Glioblastoma_smart_seq_analysis.html
+    - text: Glioblastoma GBM analysis 
+      href: old_vignettes/Glioblastoma_smart_seq_analysis.html
 
 authors:
   Salvatore Milite:

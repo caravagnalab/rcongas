@@ -31,15 +31,15 @@ list_models()
 
 ## MixtureGaussian
 
-## MixtureGaussianDMP
+Model with LogNormal prior for CNV and Poisson likelihood
 
-## MixtureDirichlet
+## MixtureGaussianNorm
+
+Model with LogNormal prior for CNV and Gaussian likelihood
+
 
 # Models for segmentation
 
-##  HmmSimple                                              
-
-##  HmmMixtureRNA                                              
-
 ##  HmmSegmenter        
 
+Hmm with Beta emission probabilities for MAF segmentation (experimental, use it just for a rough initial segmentation)

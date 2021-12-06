@@ -15,20 +15,15 @@ list_models <-  function() {
   
   n = data.frame(
       model = c(
-        "HmmSimple",
         "MixtureGaussian", # Shoule it have Poisson in the name?
-        "MixtureGaussianDMP",
-        "MixtureDirichlet",
-        "HmmMixtureRNA",
+        "MixtureGaussianNorm",
         "HmmSegmenter"
       ),
       synopsis = c(
-        NA,
         "Poisson-based mixture with Lognormal copy-numbers",
-        NA,
-        "Dirichlet-process version of XXXXXXXXXXXXX",
-        NA,
-        NA
+        "Gaussina-based mixture with Lognormal copy-numbers",
+        "HMM with Beta emission probabilities for MAF segmentation"
+
         )
       ) 
   
