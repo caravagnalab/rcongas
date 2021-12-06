@@ -31,11 +31,11 @@ navbar:
     - text: -------
     - text: Old version 
     - text: Breast PDX analysis 
-      href: ../old_vignettes/kieran_vignette.html
+      href: articles/kieran_vignette.html
     - text: Glioblastoma GBM analysis 
-      href: ../old_vignettes/Glioblastoma_smart_seq_analysis.html
+      href: articles/Glioblastoma_smart_seq_analysis.html
     - text: Monosomy 7 analysis 
-      href: ../old_vignettes/monosomy_vignette.html
+      href: articles/monosomy_vignette.html
 
 authors:
   Salvatore Milite:
