@@ -33,7 +33,7 @@ navbar:
     - text: Breast PDX analysis 
       href: articles/kieran_vignette.html
     - text: Glioblastoma GBM analysis 
-      href: articles/Glioblastoma_smart_seq_analysis.html
+      href: articles/gbm_vignette.html
     - text: Monosomy 7 analysis 
       href: articles/monosomy_vignette.html
 
