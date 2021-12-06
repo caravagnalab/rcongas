@@ -36,9 +36,6 @@ If you use `Rcongas`, please cite:
     preprint](https://www.biorxiv.org/content/10.1101/2021.02.02.429335v1),
     2021
 
-#### Old documentation
-
-As the package is undergoing a massive restyling and features improving (stay tuned for news) we have collected the vignettes for the Rcongas version discussed in the paper [here](https://vibrant-lichterman-25f3e8.netlify.app/)
 
 #### Help and support
 
