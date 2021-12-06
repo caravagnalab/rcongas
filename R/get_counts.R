@@ -69,6 +69,7 @@ get_counts <-
     
     if (has_inference(x))
     {
+      best_model <- Rcongas:::get_best_model(x)
       clts <- as.data.frame(best_model$parameters$assignement)
       colnames(clts) <- "cluster"
       clts$cell <- rownames(clts)
