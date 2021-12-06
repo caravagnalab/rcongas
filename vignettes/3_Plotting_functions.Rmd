@@ -186,22 +186,10 @@ The combined plot shows, on top of the segments, the total number of deferential
 plot_DE_gw(congas_example)
 ```
 
-## Plot data statistics
-
-You can plot a 3-panels figure showing:
-
-- the segments barplot with segment size and number of mapped genes;
-- the `max` and `min` counts per segment, for every cluster;
-- the counts distribution per segment, split in bins of `(max-min)/10` size, for every cluster.
-
-```{r, fig.width=10, fig.height=10}
-plot_report_segments(congas_example, transpose = TRUE)
-```
-
 The counts distribution per segment, with annotated quantiles.
 
 ```{r, fig.width=12, fig.height=15}
-plot_counts_per_segment(congas_example, transpose = TRUE)
+plot_counts_per_segment(congas_example)
 ```
 
 The cohort statistics (three plots):
@@ -212,30 +200,9 @@ The cohort statistics (three plots):
 
 ```{r, fig.width=4, fig.height=3, warning=FALSE}
 # Returns a number of plots with different statistics
-plot_cohort_statistics(congas_example, transpose = TRUE, assembly = FALSE)
+plot_cohort_statistics(congas_example, assembly = FALSE)
 ```
 
-## Plot genes mapped on segments
-
-Plots counts (raw data) for genes mapped across the genome. By default, it normalises by library size and input copy number for the segment to which each gene maps to.
-
-```{r, fig.width=12, fig.height=16}
-plot_gene_counts_on_genome(congas_example, transpose = TRUE)
-```
-
-You can also see the standard deviation of the genes mapping to the genome, which helps detecting clusters of high variations in count numbers in specific clusters.
-
-```{r, fig.width=12, fig.height=12, warning=FALSE, message=FALSE}
-# All chromosomes at once
-plot_gene_stdev(congas_example, transpose = TRUE)
-```
-
-```{r, fig.width = 6, fig.height=3, warning=FALSE, message=FALSE}
-# Chromosome 7, split by segment
-plot_gene_stdev(congas_example, transpose = TRUE, 
-                chromosomes = 'chr7', 
-                by_segment = TRUE)
-```
 
 ## Analysis report(s)
 
@@ -244,7 +211,7 @@ A full report assembles some of these visualisations.
 This is a standard analysis report.
 
 ```{r, fig.width=16, fig.height=16}
-report_analysis(congas_example, transpose = TRUE)
+report_analysis(congas_example)
 ```
 
 This is to focus on Differential Expressions.

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Title — run_inference • Rcongas</title>
+<title>Run CONGAS inference — run_inference • Rcongas</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,8 +46,9 @@
 
 
 
-<meta property="og:title" content="Title — run_inference" />
-<meta property="og:description" content="Title" />
+<meta property="og:title" content="Run CONGAS inference — run_inference" />
+<meta property="og:description" content="This function acts as the main interface with the Python package. It allows to tweak
+most of the parameters of the Python model. Most of default is good for most of the applications" />
 <meta property="og:image" content="militeee.github.io/Rcongas/logo.png" />
 
 
@@ -106,16 +107,30 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/1_Models.html">Models available in this package</a>
+      <a></a>
     </li>
     <li>
-      <a href="../articles/2_Getters.html">Getter functions</a>
+      <a href="../articles/1_Models.html">Models</a>
+    </li>
+    <li>
+      <a href="../articles/2_Getters.html">Getters</a>
     </li>
     <li>
       <a href="../articles/3_Plotting_functions.html">Plotting functions</a>
     </li>
     <li>
-      <a href="../articles/4_Propreocessing.html">Preprocessing</a>
+      <a href="../articles/4_Preprocessing.html">Preprocessing</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Old version</li>
+    <li>
+      <a href="../old_vignettes/kieran_vignette.html">Breast PDX analysis</a>
+    </li>
+    <li>
+      <a href="../old_vignettes/Glioblastoma_smart_seq_analysis.html">Glioblastoma GBM analysis</a>
+    </li>
+    <li>
+      <a href="../old_vignettes/Glioblastoma_smart_seq_analysis.html">Glioblastoma GBM analysis</a>
     </li>
   </ul>
 </li>
@@ -140,13 +155,14 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Title</h1>
+    <h1>Run CONGAS inference</h1>
     <small class="dont-index">Source: <a href='https://github.com/militeee/RcongasR/interface.R'><code>R/interface.R</code></a></small>
     <div class="hidden name"><code>run_inference.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Title</p>
+    <p>This function acts as the main interface with the Python package. It allows to tweak
+most of the parameters of the Python model. Most of default is good for most of the applications</p>
     </div>
 
     <pre class="usage"><span class='fu'>run_inference</span><span class='op'>(</span>
@@ -159,9 +175,7 @@
   lr <span class='op'>=</span> <span class='fl'>0.05</span>,
   param_list <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>,
   MAP <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  posteriors <span class='op'>=</span> <span class='cn'>FALSE</span>,
   seed <span class='op'>=</span> <span class='fl'>3</span>,
-  step_post <span class='op'>=</span> <span class='fl'>300</span>,
   rerun <span class='op'>=</span> <span class='cn'>F</span>
 <span class='op'>)</span></pre>
 

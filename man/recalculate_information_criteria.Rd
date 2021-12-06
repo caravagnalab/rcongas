@@ -4,7 +4,7 @@
 \alias{recalculate_information_criteria}
 \title{Title}
 \usage{
-recalculate_information_criteria(x, method)
+recalculate_information_criteria(x, method, normalize_by_segs)
 }
 \arguments{
 \item{x}{}

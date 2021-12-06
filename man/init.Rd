@@ -2,7 +2,7 @@
 % Please edit documentation in R/init.R
 \name{init}
 \alias{init}
-\title{Title}
+\title{Initialize a CONGAS object}
 \usage{
 init(
   data,
@@ -21,23 +21,24 @@ init(
 
 \item{cnv_data}{}
 
-\item{chromosomes}{}
+\item{chromosomes}{which chromosome to include in the analysis}
 
-\item{fun}{}
+\item{fun}{a valid R function to aggregate the data: should be defined as R^n -> R}
 
-\item{online}{}
+\item{online}{get gene position information directly from ENSEMBL}
 
-\item{reference_genome}{}
+\item{reference_genome}{reference assembly of human or mouse genome}
 
-\item{correct_bins}{}
+\item{correct_bins}{filter small segments, and then defragment them by merging
+those with the same CNV}
 
-\item{gene_format}{}
+\item{gene_format}{gene format from those available on biomaRt}
 
-\item{description}{}
+\item{description}{a description for the object}
 }
 \value{
 
 }
 \description{
-Title
+Initialize a CONGAS object
 }

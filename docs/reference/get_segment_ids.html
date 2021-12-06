@@ -110,16 +110,30 @@ are highlighted in the plots; this requires clustering to be computed" />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/1_Models.html">Models available in this package</a>
+      <a></a>
     </li>
     <li>
-      <a href="../articles/2_Getters.html">Getter functions</a>
+      <a href="../articles/1_Models.html">Models</a>
+    </li>
+    <li>
+      <a href="../articles/2_Getters.html">Getters</a>
     </li>
     <li>
       <a href="../articles/3_Plotting_functions.html">Plotting functions</a>
     </li>
     <li>
-      <a href="../articles/4_Propreocessing.html">Preprocessing</a>
+      <a href="../articles/4_Preprocessing.html">Preprocessing</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Old version</li>
+    <li>
+      <a href="../old_vignettes/kieran_vignette.html">Breast PDX analysis</a>
+    </li>
+    <li>
+      <a href="../old_vignettes/Glioblastoma_smart_seq_analysis.html">Glioblastoma GBM analysis</a>
+    </li>
+    <li>
+      <a href="../old_vignettes/Glioblastoma_smart_seq_analysis.html">Glioblastoma GBM analysis</a>
     </li>
   </ul>
 </li>
@@ -227,11 +241,13 @@ ids.</p></td>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'># All segments that are highlighted with default value</span></span>
 <span class='r-in'><span class='fu'>get_segment_ids</span><span class='op'>(</span><span class='va'>x</span>, highlight <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></span>
-<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in loadNamespace(x):</span> there is no package called ‘fitdistrplus’</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "chr14:93300001:105450000" "chr15:67050001:102600000"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [3] "chr16:1:3750000"          "chr18:32400001:55950000" </span>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'># All segments that are highlighted with stricter value than default</span></span>
 <span class='r-in'><span class='fu'>get_segment_ids</span><span class='op'>(</span><span class='va'>x</span>, highlight <span class='op'>=</span> <span class='cn'>TRUE</span>, alpha <span class='op'>=</span> <span class='fl'>0.01</span><span class='op'>)</span></span>
-<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in loadNamespace(x):</span> there is no package called ‘fitdistrplus’</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "chr15:67050001:102600000" "chr16:1:3750000"         </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [3] "chr18:32400001:55950000" </span>
 </pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

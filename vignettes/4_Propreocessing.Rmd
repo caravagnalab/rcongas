@@ -2,7 +2,7 @@
 title: "Preprocessing"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Getter functions}
+  %\VignetteIndexEntry{Preprocessing}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -17,7 +17,7 @@ library(dplyr)
 
 x <- Rcongas::congas_example
 
-counts <- get_input_raw_data(x)
+counts <- get_input_raw_data(x, as_matrix = TRUE)
 
 counts_stab <- FindVariableFeatures(counts %>%  t)
 

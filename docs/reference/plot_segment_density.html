@@ -109,16 +109,30 @@ used to assess the quality of the data and fits." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/1_Models.html">Models available in this package</a>
+      <a></a>
     </li>
     <li>
-      <a href="../articles/2_Getters.html">Getter functions</a>
+      <a href="../articles/1_Models.html">Models</a>
+    </li>
+    <li>
+      <a href="../articles/2_Getters.html">Getters</a>
     </li>
     <li>
       <a href="../articles/3_Plotting_functions.html">Plotting functions</a>
     </li>
     <li>
-      <a href="../articles/4_Propreocessing.html">Preprocessing</a>
+      <a href="../articles/4_Preprocessing.html">Preprocessing</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Old version</li>
+    <li>
+      <a href="../old_vignettes/kieran_vignette.html">Breast PDX analysis</a>
+    </li>
+    <li>
+      <a href="../old_vignettes/Glioblastoma_smart_seq_analysis.html">Glioblastoma GBM analysis</a>
+    </li>
+    <li>
+      <a href="../old_vignettes/Glioblastoma_smart_seq_analysis.html">Glioblastoma GBM analysis</a>
     </li>
   </ul>
 </li>
@@ -189,26 +203,32 @@ By default all are used via function <code>get_segment_ids</code>.</p></td>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'># Plot the first segment</span></span>
 <span class='r-in'><span class='fu'>plot_segment_density</span><span class='op'>(</span><span class='va'>x</span>, segments_ids <span class='op'>=</span> <span class='fu'><a href='get_segment_ids.html'>get_segment_ids</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>)</span></span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #BBBB00;'>!</span> Required density forcluster <span style='color: #00BB00;'>c1</span>, with no Poisson parameters associated!</span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #BBBB00;'>!</span> Required density forcluster <span style='color: #00BB00;'>c2</span>, with no Poisson parameters associated!</span>
 <span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>`guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; = "none")` instead.</span>
-<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in paste0(segment_id, " (Poisson)"):</span> object 'segment_id' not found</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $`chr1:1:12600000`</span>
+<span class='r-plt img'><img src='plot_segment_density-1.png' alt='' width='700' height='433' /></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'># Plot the first one that is highlighted</span></span>
 <span class='r-in'><span class='fu'>plot_segment_density</span><span class='op'>(</span><span class='va'>x</span>, segments_ids <span class='op'>=</span> <span class='fu'><a href='get_segment_ids.html'>get_segment_ids</a></span><span class='op'>(</span><span class='va'>x</span>, highlight <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>)</span></span>
-<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in loadNamespace(x):</span> there is no package called ‘fitdistrplus’</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>`guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; = "none")` instead.</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $`chr14:93300001:105450000`</span>
+<span class='r-plt img'><img src='plot_segment_density-2.png' alt='' width='700' height='433' /></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'># Plot the top 4 highlighted, in 2x2 format, specifying alpha value</span></span>
 <span class='r-in'></span>
 <span class='r-in'><span class='va'>what_to_plot</span> <span class='op'>=</span> <span class='fu'><a href='get_segment_ids.html'>get_segment_ids</a></span><span class='op'>(</span><span class='va'>x</span>, highlight <span class='op'>=</span> <span class='cn'>TRUE</span>, alpha <span class='op'>=</span> <span class='fl'>0.05</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>4</span><span class='op'>]</span></span>
-<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in loadNamespace(x):</span> there is no package called ‘fitdistrplus’</span>
 <span class='r-in'></span>
 <span class='r-in'><span class='fu'>ggpubr</span><span class='fu'>::</span><span class='fu'><a href='https://rpkgs.datanovia.com/ggpubr/reference/ggarrange.html'>ggarrange</a></span><span class='op'>(</span></span>
 <span class='r-in'> plotlist <span class='op'>=</span> <span class='fu'>plot_segment_density</span><span class='op'>(</span><span class='va'>x</span>, segments_ids <span class='op'>=</span> <span class='va'>what_to_plot</span><span class='op'>)</span>,</span>
 <span class='r-in'> nrow <span class='op'>=</span> <span class='fl'>2</span>,</span>
 <span class='r-in'> ncol <span class='op'>=</span> <span class='fl'>2</span></span>
 <span class='r-in'><span class='op'>)</span></span>
-<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in plot_segment_density(x, segments_ids = what_to_plot):</span> object 'what_to_plot' not found</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>`guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; = "none")` instead.</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>`guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; = "none")` instead.</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>`guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; = "none")` instead.</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>`guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; = "none")` instead.</span>
+<span class='r-plt img'><img src='plot_segment_density-3.png' alt='' width='700' height='433' /></span>
 </pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

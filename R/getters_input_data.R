@@ -1,5 +1,14 @@
 
 
+#' Title
+#'
+#' @param x 
+#' @param chromosomes 
+#'
+#' @return
+#' @export
+#'
+#' @examples
 get_mapped_genes = function(x,
                             chromosomes = paste0("chr", c(1:22, "X", "Y")))
 {

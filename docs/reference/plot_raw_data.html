@@ -106,16 +106,30 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/1_Models.html">Models available in this package</a>
+      <a></a>
     </li>
     <li>
-      <a href="../articles/2_Getters.html">Getter functions</a>
+      <a href="../articles/1_Models.html">Models</a>
+    </li>
+    <li>
+      <a href="../articles/2_Getters.html">Getters</a>
     </li>
     <li>
       <a href="../articles/3_Plotting_functions.html">Plotting functions</a>
     </li>
     <li>
-      <a href="../articles/4_Propreocessing.html">Preprocessing</a>
+      <a href="../articles/4_Preprocessing.html">Preprocessing</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Old version</li>
+    <li>
+      <a href="../old_vignettes/kieran_vignette.html">Breast PDX analysis</a>
+    </li>
+    <li>
+      <a href="../old_vignettes/Glioblastoma_smart_seq_analysis.html">Glioblastoma GBM analysis</a>
+    </li>
+    <li>
+      <a href="../old_vignettes/Glioblastoma_smart_seq_analysis.html">Glioblastoma GBM analysis</a>
     </li>
   </ul>
 </li>
@@ -205,20 +219,23 @@
 <span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span></span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> ── <span style='color: #000000; background-color: #BBBB00;'>[ Rcongas ]</span><span style='color: #0000BB;'> </span> ────────────────────────────────────────────────────────────────</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> → Data: <span style='color: #00BB00;'>504</span> cells with <span style='color: #00BB00;'>8564</span> genes, aggregated in <span style='color: #00BB00;'>70</span> segments.</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> → Data: <span style='color: #00BB00;'>503</span> cells with <span style='color: #00BB00;'>8564</span> genes, aggregated in <span style='color: #00BB00;'>70</span> segments.</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #00BBBB;'>ℹ</span> Clusters: <span style='color: #00BB00;'>k = 2</span>, model with <span style='color: #00BB00;'>AIC</span> = 269370.73.</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #00BBBB;'>ℹ</span> Clusters: <span style='color: #00BB00;'>k = 2</span>, model with <span style='color: #00BB00;'>AIC</span> = 577427.35.</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> ● Cluster <span style='color: #00BB00;'>c1</span>, n = 379 [75.2% of total cells].</span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> ● Cluster <span style='color: #00BB00;'>c2</span>, n = 125 [24.8% of total cells].</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> ● Cluster <span style='color: #00BB00;'>c1</span>, n = 379 [75.35% of total cells].</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> ● Cluster <span style='color: #00BB00;'>c2</span>, n = 124 [24.65% of total cells].</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> ── CNA highlights (alpha = 0.05) </span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
-<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in loadNamespace(x):</span> there is no package called ‘fitdistrplus’</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #00BB00;'>✓</span>  <span style='color: #00BB00;'>c1</span> CNA(s):  <span style='color: #00BB00;'>[chr14:93300001:105450000] vs c2</span>, <span style='color: #00BB00;'>[chr15:67050001:102600000] vs c2</span>, <span style='color: #00BB00;'>[chr16:1:3750000] vs c2</span>, and <span style='color: #00BB00;'>[chr18:32400001:55950000] vs c2</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> ── Differential Expression <span style='color: #00BB00;'>DESeq2</span>  (<span style='color: #00BB00;'>1</span> vs <span style='color: #00BB00;'>2</span>) </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #00BB00;'>✓</span> <span style='color: #00BB00;'>212</span> DE genes (alpha = 0.01, |lfc| &gt; 0.25).</span>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'># Extract raw data</span></span>
 <span class='r-in'><span class='va'>raw_x</span> <span class='op'>=</span> <span class='fu'><a href='get_input_raw_data.html'>get_input_raw_data</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span></span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #BBBB00;'>!</span> Input counts are missing, check the init function to see how you created the data</span>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'># Get some genes to plot from those with DE</span></span>
 <span class='r-in'><span class='va'>genes</span> <span class='op'>=</span> <span class='fu'><a href='get_DE_table.html'>get_DE_table</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'>pull</span><span class='op'>(</span><span class='va'>gene</span><span class='op'>)</span></span>
@@ -228,7 +245,7 @@
 <span class='r-in'></span>
 <span class='r-in'><span class='co'># Default plot (without prompt for automatic documentation generation)</span></span>
 <span class='r-in'><span class='fu'>plot_raw_data</span><span class='op'>(</span><span class='va'>raw_x</span>, <span class='va'>genes</span>, prompt <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #BBBB00;'>!</span> No genes in the input list, returning empty plot...</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #BBBB00;'>!</span> 0 rows or column in the input data, returning empty plot...</span>
 <span class='r-plt img'><img src='plot_raw_data-1.png' alt='' width='700' height='433' /></span>
 </pre>
   </div>

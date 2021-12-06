@@ -15,11 +15,10 @@ best_cluster(
   lr = 0.05,
   param_list = list(),
   MAP = TRUE,
-  posteriors = FALSE,
   seed = 3,
-  step_post = 300,
   mixture = NULL,
-  method = "AIC"
+  method = "AIC",
+  normalize_by_segs = FALSE
 )
 }
 \arguments{
@@ -29,36 +28,40 @@ best_cluster(
 
 \item{clusters}{A vector of values for \code{k}.}
 
-\item{optim}{}
+\item{optim}{a pyro.optim object, in string format}
 
-\item{elbo}{}
+\item{elbo}{a pyro.inference object, in string format}
 
-\item{inf_type}{}
+\item{inf_type}{currently just "SVI" is supported}
 
-\item{steps}{}
+\item{steps}{number of step of the gradient-based VI algorithm}
 
-\item{lr}{}
+\item{lr}{learning rate of the gradient-based VI algorithm}
 
-\item{param_list}{}
+\item{param_list}{named list of parameters for the specific model}
 
-\item{MAP}{}
+\item{MAP}{perform MAP or full bayesian inference (MAP is suggested as it converges better)}
 
-\item{posteriors}{}
+\item{seed}{seed for torch random number generator}
 
-\item{seed}{}
+\item{mixture}{initial mixture weights, if NULL then they are equal to 1/K}
 
-\item{step_post}{}
-
-\item{mixture}{}
-
-\item{method}{}
+\item{method}{informtion criteria to score the best solution (currently supports "AIC", "BIC" and "ICL)}
 }
 \value{
-
+A congas (described in [\fun{init}]) object with following elements:
+- *inference* :
+  - *models* with all the runs performed
+  - *model_selection* with information about the IC and run statistics
 }
 \description{
 Selects the best number of clusters \code{k} to fit a dataset.
 Options allow to select the type of model available in the package, parameters
 for the Pyro optimizer and a number of different configurations to learn
 Bayesian posteriors or MAP estimates.
+}
+\details{
+While this function has a lot of personalizable arguments, the default
+ones are usually good for most of the applications. It is better to be confident with Pyro
+before changing them
 }

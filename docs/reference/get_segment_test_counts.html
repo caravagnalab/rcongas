@@ -109,16 +109,30 @@ Rate (FWER) via Bonferroni correction." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/1_Models.html">Models available in this package</a>
+      <a></a>
     </li>
     <li>
-      <a href="../articles/2_Getters.html">Getter functions</a>
+      <a href="../articles/1_Models.html">Models</a>
+    </li>
+    <li>
+      <a href="../articles/2_Getters.html">Getters</a>
     </li>
     <li>
       <a href="../articles/3_Plotting_functions.html">Plotting functions</a>
     </li>
     <li>
-      <a href="../articles/4_Propreocessing.html">Preprocessing</a>
+      <a href="../articles/4_Preprocessing.html">Preprocessing</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Old version</li>
+    <li>
+      <a href="../old_vignettes/kieran_vignette.html">Breast PDX analysis</a>
+    </li>
+    <li>
+      <a href="../old_vignettes/Glioblastoma_smart_seq_analysis.html">Glioblastoma GBM analysis</a>
+    </li>
+    <li>
+      <a href="../old_vignettes/Glioblastoma_smart_seq_analysis.html">Glioblastoma GBM analysis</a>
     </li>
   </ul>
 </li>
@@ -189,11 +203,37 @@ for the significance of the test.</p>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'># Compare groups</span></span>
 <span class='r-in'><span class='fu'>get_segment_test_counts</span><span class='op'>(</span><span class='va'>x</span>, <span class='st'>"c1"</span>, <span class='st'>"c2"</span><span class='op'>)</span></span>
-<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in loadNamespace(x):</span> there is no package called ‘fitdistrplus’</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># A tibble: 70 × 5</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    chr       from        to        p sign </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span>     <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;lgl&gt;</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 1</span> chr15 67<span style='text-decoration: underline;'>050</span>001 102<span style='text-decoration: underline;'>600</span>000 4.11<span style='color: #949494;'>e</span><span style='color: #BB0000;'>-59</span> TRUE </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 2</span> chr18 32<span style='text-decoration: underline;'>400</span>001  55<span style='text-decoration: underline;'>950</span>000 1.11<span style='color: #949494;'>e</span><span style='color: #BB0000;'>-57</span> TRUE </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 3</span> chr16        1   3<span style='text-decoration: underline;'>750</span>000 1.26<span style='color: #949494;'>e</span><span style='color: #BB0000;'>-57</span> TRUE </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 4</span> chr14 93<span style='text-decoration: underline;'>300</span>001 105<span style='text-decoration: underline;'>450</span>000 5.32<span style='color: #949494;'>e</span><span style='color: #BB0000;'>-50</span> TRUE </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 5</span> chr16 16<span style='text-decoration: underline;'>950</span>001  90<span style='text-decoration: underline;'>450</span>000 3.82<span style='color: #949494;'>e</span><span style='color: #BB0000;'>-49</span> TRUE </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 6</span> chr19        1  59<span style='text-decoration: underline;'>250</span>000 6.20<span style='color: #949494;'>e</span><span style='color: #BB0000;'>-49</span> TRUE </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 7</span> chr11 43<span style='text-decoration: underline;'>500</span>001 100<span style='text-decoration: underline;'>200</span>000 2.38<span style='color: #949494;'>e</span><span style='color: #BB0000;'>-48</span> TRUE </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 8</span> chr1  12<span style='text-decoration: underline;'>600</span>001  60<span style='text-decoration: underline;'>150</span>000 2.67<span style='color: #949494;'>e</span><span style='color: #BB0000;'>-47</span> TRUE </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 9</span> chr6  93<span style='text-decoration: underline;'>450</span>001 114<span style='text-decoration: underline;'>450</span>000 1.82<span style='color: #949494;'>e</span><span style='color: #BB0000;'>-45</span> TRUE </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>10</span> chr7   4<span style='text-decoration: underline;'>950</span>001 132<span style='text-decoration: underline;'>450</span>000 5.27<span style='color: #949494;'>e</span><span style='color: #BB0000;'>-45</span> TRUE </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># … with 60 more rows</span></span>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'># More stringent test</span></span>
 <span class='r-in'><span class='fu'>get_segment_test_counts</span><span class='op'>(</span><span class='va'>x</span>, <span class='st'>"c1"</span>, <span class='st'>"c2"</span>, cutoff_p <span class='op'>=</span> <span class='fl'>1e-4</span><span class='op'>)</span></span>
-<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in loadNamespace(x):</span> there is no package called ‘fitdistrplus’</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># A tibble: 70 × 5</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    chr       from        to        p sign </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span>     <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;lgl&gt;</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 1</span> chr15 67<span style='text-decoration: underline;'>050</span>001 102<span style='text-decoration: underline;'>600</span>000 4.11<span style='color: #949494;'>e</span><span style='color: #BB0000;'>-59</span> TRUE </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 2</span> chr18 32<span style='text-decoration: underline;'>400</span>001  55<span style='text-decoration: underline;'>950</span>000 1.11<span style='color: #949494;'>e</span><span style='color: #BB0000;'>-57</span> TRUE </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 3</span> chr16        1   3<span style='text-decoration: underline;'>750</span>000 1.26<span style='color: #949494;'>e</span><span style='color: #BB0000;'>-57</span> TRUE </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 4</span> chr14 93<span style='text-decoration: underline;'>300</span>001 105<span style='text-decoration: underline;'>450</span>000 5.32<span style='color: #949494;'>e</span><span style='color: #BB0000;'>-50</span> TRUE </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 5</span> chr16 16<span style='text-decoration: underline;'>950</span>001  90<span style='text-decoration: underline;'>450</span>000 3.82<span style='color: #949494;'>e</span><span style='color: #BB0000;'>-49</span> TRUE </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 6</span> chr19        1  59<span style='text-decoration: underline;'>250</span>000 6.20<span style='color: #949494;'>e</span><span style='color: #BB0000;'>-49</span> TRUE </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 7</span> chr11 43<span style='text-decoration: underline;'>500</span>001 100<span style='text-decoration: underline;'>200</span>000 2.38<span style='color: #949494;'>e</span><span style='color: #BB0000;'>-48</span> TRUE </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 8</span> chr1  12<span style='text-decoration: underline;'>600</span>001  60<span style='text-decoration: underline;'>150</span>000 2.67<span style='color: #949494;'>e</span><span style='color: #BB0000;'>-47</span> TRUE </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 9</span> chr6  93<span style='text-decoration: underline;'>450</span>001 114<span style='text-decoration: underline;'>450</span>000 1.82<span style='color: #949494;'>e</span><span style='color: #BB0000;'>-45</span> TRUE </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>10</span> chr7   4<span style='text-decoration: underline;'>950</span>001 132<span style='text-decoration: underline;'>450</span>000 5.27<span style='color: #949494;'>e</span><span style='color: #BB0000;'>-45</span> TRUE </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># … with 60 more rows</span></span>
 </pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

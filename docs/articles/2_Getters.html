@@ -64,16 +64,30 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/1_Models.html">Models available in this package</a>
+      <a></a>
     </li>
     <li>
-      <a href="../articles/2_Getters.html">Getter functions</a>
+      <a href="../articles/1_Models.html">Models</a>
+    </li>
+    <li>
+      <a href="../articles/2_Getters.html">Getters</a>
     </li>
     <li>
       <a href="../articles/3_Plotting_functions.html">Plotting functions</a>
     </li>
     <li>
-      <a href="../articles/4_Propreocessing.html">Preprocessing</a>
+      <a href="../articles/4_Preprocessing.html">Preprocessing</a>
+    </li>
+    <li class="divider">
+    <li class="dropdown-header">Old version</li>
+    <li>
+      <a href="../old_vignettes/kieran_vignette.html">Breast PDX analysis</a>
+    </li>
+    <li>
+      <a href="../old_vignettes/Glioblastoma_smart_seq_analysis.html">Glioblastoma GBM analysis</a>
+    </li>
+    <li>
+      <a href="../old_vignettes/Glioblastoma_smart_seq_analysis.html">Glioblastoma GBM analysis</a>
     </li>
   </ul>
 </li>
@@ -95,7 +109,7 @@
 
       
 
-      </header><script src="2_Getters_files/header-attrs-2.6/header-attrs.js"></script><div class="row">
+      </header><script src="2_Getters_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Getter functions</h1>
@@ -111,6 +125,19 @@
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">require</a></span><span class="op">(</span><span class="va">Rcongas</span><span class="op">)</span>
 <span class="co">#&gt; Loading required package: Rcongas</span>
+<span class="co">#&gt; Warning: replacing previous import 'cli::num_ansi_colors' by</span>
+<span class="co">#&gt; 'crayon::num_ansi_colors' when loading 'BMix'</span>
+<span class="co">#&gt; Warning: replacing previous import 'crayon::%+%' by 'ggplot2::%+%' when loading</span>
+<span class="co">#&gt; 'BMix'</span>
+<span class="co">#&gt; ✓ Loading BMix, 'Binomial and Beta-Binomial univariate mixtures'. Support : &lt;https://caravagnalab.github.io/BMix/&gt;</span>
+<span class="co">#&gt; Warning: package 'ggplot2' was built under R version 4.1.1</span>
+<span class="co">#&gt; Warning: package 'tibble' was built under R version 4.1.1</span>
+<span class="co">#&gt; Warning: package 'tidyr' was built under R version 4.1.1</span>
+<span class="co">#&gt; Warning: package 'readr' was built under R version 4.1.1</span>
+<span class="co">#&gt; Warning: package 'stringr' was built under R version 4.1.1</span>
+<span class="co">#&gt; Warning: package 'forcats' was built under R version 4.1.1</span>
+<span class="co">#&gt; Warning: package 'crayon' was built under R version 4.1.1</span>
+<span class="co">#&gt; ✓ Loading CNAqc, 'Copy Number Alteration quality check'. Support : &lt;https://caravagn.github.io/CNAqc/&gt;</span>
 <span class="co">#&gt; ✓ Loading Rcongas, 'Copy-Number genotyping from single cells'. Support : &lt;https://militeee.github.io/Rcongas/&gt;</span></code></pre></div>
 <p>We show how you can access information from a CONGAS computation, using this package. Some functions might be only available for certain model objects, in that case errors are thrown.</p>
 <p>In this vignette we use the default model (<code>MixtureGaussian</code>).</p>
@@ -123,15 +150,17 @@
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">'congas_example'</span>, package <span class="op">=</span> <span class="st">'Rcongas'</span><span class="op">)</span>
 
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">congas_example</span><span class="op">)</span>
-<span class="co">#&gt; ── [ Rcongas ] My CONGAS model n = 504 cells with i = 70 segments, grouped in k</span>
-<span class="co">#&gt; ● Cluster c1, n = 379 [75.2% of total cells].</span>
-<span class="co">#&gt; ● Cluster c2, n = 125 [24.8% of total cells].</span>
+<span class="co">#&gt; ── [ Rcongas ]  ────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; → Data: 503 cells with 8564 genes, aggregated in 70 segments.</span>
+<span class="co">#&gt; ℹ Clusters: k = 2, model with AIC = 577427.35.</span>
+<span class="co">#&gt; ● Cluster c1, n = 379 [75.35% of total cells].</span>
+<span class="co">#&gt; ● Cluster c2, n = 124 [24.65% of total cells].</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── CNA highlights</span>
-<span class="co">#&gt; ✓  4 CNA(s):  chr14:93300001:105450000, chr15:67050001:102600000, chr16:1:3750000, and chr18:32400001:55950000</span>
-<span class="co">#&gt; ℹ Model scored with AIC = 269370.73</span>
-<span class="co">#&gt; ● Differential Expression analysis for 1 vs 2 with the DESeq2 method: 212 DE</span>
-<span class="co">#&gt; genes at level alpha 0.01, with |lfc| &gt; 0.25.</span></code></pre></div>
+<span class="co">#&gt; ── CNA highlights (alpha = 0.05)</span>
+<span class="co">#&gt; ✓  c1 CNA(s):  [chr14:93300001:105450000] vs c2, [chr15:67050001:102600000] vs c2, [chr16:1:3750000] vs c2, and [chr18:32400001:55950000] vs c2</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; ── Differential Expression DESeq2  (1 vs 2)</span>
+<span class="co">#&gt; ✓ 212 DE genes (alpha = 0.01, |lfc| &gt; 0.25).</span></code></pre></div>
 <div id="reference-information" class="section level2">
 <h2 class="hasAnchor">
 <a href="#reference-information" class="anchor"></a>Reference information</h2>
@@ -166,85 +195,68 @@
 <span class="co"># Cluster size</span>
 <span class="fu"><a href="../reference/get_clusters_size.html">get_clusters_size</a></span><span class="op">(</span><span class="va">congas_example</span><span class="op">)</span>
 <span class="co">#&gt;  c1  c2 </span>
-<span class="co">#&gt; 379 125</span>
+<span class="co">#&gt; 379 124</span>
 
 <span class="co"># Cluster size (normalised)</span>
 <span class="fu"><a href="../reference/get_clusters_size.html">get_clusters_size</a></span><span class="op">(</span><span class="va">congas_example</span>, normalise <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="co">#&gt;        c1        c2 </span>
-<span class="co">#&gt; 0.7519841 0.2480159</span></code></pre></div>
+<span class="co">#&gt; 0.7534791 0.2465209</span></code></pre></div>
 <p>Then you can also obtain the CNA profile estimated for each one of the <span class="math inline">\(k\)</span> clones, using <code>get_clusters_ploidy</code>. This reports, for every segment the lognormal CNA value estimated by CONGAS, as well as the segment mean, and the <code>CN</code> value (which is the offset to the mean of the segment). Values from this getter can be automatically filtered for certain chromsome ids, and clusters.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Get all data (all clones, all chromsomes)</span>
 <span class="fu"><a href="../reference/get_clusters_ploidy.html">get_clusters_ploidy</a></span><span class="op">(</span><span class="va">congas_example</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 140 x 8</span>
-<span class="co">#&gt;    chr        from        to cluster       CN segment_mean lognorm_CN highlight</span>
-<span class="co">#&gt;    &lt;chr&gt;     &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;      &lt;dbl&gt;        &lt;dbl&gt;      &lt;dbl&gt; &lt;lgl&gt;    </span>
-<span class="co">#&gt;  1 chr1          1  12600000 1        0.0449          1.56       1.60 FALSE    </span>
-<span class="co">#&gt;  2 chr1   12600001  60150000 1       -0.0338          2.05       2.01 FALSE    </span>
-<span class="co">#&gt;  3 chr1   61200001  77100000 1       -0.0956          1.71       1.61 FALSE    </span>
-<span class="co">#&gt;  4 chr1   78750001 156000000 1       -0.0333          2.07       2.04 FALSE    </span>
-<span class="co">#&gt;  5 chr1  156000001 249300000 1       -0.0313          1.95       1.92 FALSE    </span>
-<span class="co">#&gt;  6 chr2          1  26250000 1        0.0741          2.07       2.14 FALSE    </span>
-<span class="co">#&gt;  7 chr2   26250001  38100000 1       -0.00848         1.71       1.70 FALSE    </span>
-<span class="co">#&gt;  8 chr2   64050001  87150000 1       -0.0243          1.94       1.92 FALSE    </span>
-<span class="co">#&gt;  9 chr2   88350001 159900000 1       -0.0965          1.98       1.89 FALSE    </span>
-<span class="co">#&gt; 10 chr2  159900001 176850000 1        0.0146          1.59       1.60 FALSE    </span>
-<span class="co">#&gt; # … with 130 more rows</span>
+<span class="co">#&gt; # A tibble: 140 × 9</span>
+<span class="co">#&gt;    chr        from        to cluster       CN segment_mean offset_CN segment_id </span>
+<span class="co">#&gt;    &lt;chr&gt;     &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;      &lt;dbl&gt;        &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;      </span>
+<span class="co">#&gt;  1 chr1          1  12600000 c1       0.0436          1.20   0.0436  chr1:1:126…</span>
+<span class="co">#&gt;  2 chr1   12600001  60150000 c1       0.0165          1.58   0.0165  chr1:12600…</span>
+<span class="co">#&gt;  3 chr1   61200001  77100000 c1      -0.0427          1.32  -0.0427  chr1:61200…</span>
+<span class="co">#&gt;  4 chr1   78750001 156000000 c1       0.0184          1.59   0.0184  chr1:78750…</span>
+<span class="co">#&gt;  5 chr1  156000001 249300000 c1       0.00960         1.51   0.00960 chr1:15600…</span>
+<span class="co">#&gt;  6 chr2          1  26250000 c1       0.0797          1.62   0.0797  chr2:1:262…</span>
+<span class="co">#&gt;  7 chr2   26250001  38100000 c1       0.0139          1.31   0.0139  chr2:26250…</span>
+<span class="co">#&gt;  8 chr2   64050001  87150000 c1      -0.00652         1.49  -0.00652 chr2:64050…</span>
+<span class="co">#&gt;  9 chr2   88350001 159900000 c1      -0.0418          1.52  -0.0418  chr2:88350…</span>
+<span class="co">#&gt; 10 chr2  159900001 176850000 c1       0.0247          1.24   0.0247  chr2:15990…</span>
+<span class="co">#&gt; # … with 130 more rows, and 1 more variable: highlight &lt;lgl&gt;</span>
 
 <span class="co"># Zoom in one specific chromosome</span>
 <span class="fu"><a href="../reference/get_clusters_ploidy.html">get_clusters_ploidy</a></span><span class="op">(</span><span class="va">congas_example</span>, chromosomes <span class="op">=</span> <span class="st">'chr2'</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 14 x 8</span>
-<span class="co">#&gt;    chr        from        to cluster       CN segment_mean lognorm_CN highlight</span>
-<span class="co">#&gt;    &lt;chr&gt;     &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;      &lt;dbl&gt;        &lt;dbl&gt;      &lt;dbl&gt; &lt;lgl&gt;    </span>
-<span class="co">#&gt;  1 chr2          1  26250000 1        0.0741          2.07       2.14 FALSE    </span>
-<span class="co">#&gt;  2 chr2   26250001  38100000 1       -0.00848         1.71       1.70 FALSE    </span>
-<span class="co">#&gt;  3 chr2   64050001  87150000 1       -0.0243          1.94       1.92 FALSE    </span>
-<span class="co">#&gt;  4 chr2   88350001 159900000 1       -0.0965          1.98       1.89 FALSE    </span>
-<span class="co">#&gt;  5 chr2  159900001 176850000 1        0.0146          1.59       1.60 FALSE    </span>
-<span class="co">#&gt;  6 chr2  176850001 195450000 1       -0.0577          1.91       1.86 FALSE    </span>
-<span class="co">#&gt;  7 chr2  201750001 243300000 1       -0.0182          1.86       1.84 FALSE    </span>
-<span class="co">#&gt;  8 chr2          1  26250000 2       -0.0741          2.07       1.99 FALSE    </span>
-<span class="co">#&gt;  9 chr2   26250001  38100000 2        0.00848         1.71       1.72 FALSE    </span>
-<span class="co">#&gt; 10 chr2   64050001  87150000 2        0.0243          1.94       1.97 FALSE    </span>
-<span class="co">#&gt; 11 chr2   88350001 159900000 2        0.0965          1.98       2.08 FALSE    </span>
-<span class="co">#&gt; 12 chr2  159900001 176850000 2       -0.0146          1.59       1.58 FALSE    </span>
-<span class="co">#&gt; 13 chr2  176850001 195450000 2        0.0577          1.91       1.97 FALSE    </span>
-<span class="co">#&gt; 14 chr2  201750001 243300000 2        0.0182          1.86       1.88 FALSE</span>
+<span class="co">#&gt; # A tibble: 14 × 9</span>
+<span class="co">#&gt;    chr        from        to cluster       CN segment_mean offset_CN segment_id </span>
+<span class="co">#&gt;    &lt;chr&gt;     &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;      &lt;dbl&gt;        &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;      </span>
+<span class="co">#&gt;  1 chr2          1  26250000 c1       0.0797          1.62   0.0797  chr2:1:262…</span>
+<span class="co">#&gt;  2 chr2   26250001  38100000 c1       0.0139          1.31   0.0139  chr2:26250…</span>
+<span class="co">#&gt;  3 chr2   64050001  87150000 c1      -0.00652         1.49  -0.00652 chr2:64050…</span>
+<span class="co">#&gt;  4 chr2   88350001 159900000 c1      -0.0418          1.52  -0.0418  chr2:88350…</span>
+<span class="co">#&gt;  5 chr2  159900001 176850000 c1       0.0247          1.24   0.0247  chr2:15990…</span>
+<span class="co">#&gt;  6 chr2  176850001 195450000 c1      -0.0168          1.47  -0.0168  chr2:17685…</span>
+<span class="co">#&gt;  7 chr2  201750001 243300000 c1       0.00915         1.42   0.00915 chr2:20175…</span>
+<span class="co">#&gt;  8 chr2          1  26250000 c2      -0.0797          1.62  -0.0797  chr2:1:262…</span>
+<span class="co">#&gt;  9 chr2   26250001  38100000 c2      -0.0139          1.31  -0.0139  chr2:26250…</span>
+<span class="co">#&gt; 10 chr2   64050001  87150000 c2       0.00652         1.49   0.00652 chr2:64050…</span>
+<span class="co">#&gt; 11 chr2   88350001 159900000 c2       0.0418          1.52   0.0418  chr2:88350…</span>
+<span class="co">#&gt; 12 chr2  159900001 176850000 c2      -0.0247          1.24  -0.0247  chr2:15990…</span>
+<span class="co">#&gt; 13 chr2  176850001 195450000 c2       0.0168          1.47   0.0168  chr2:17685…</span>
+<span class="co">#&gt; 14 chr2  201750001 243300000 c2      -0.00915         1.42  -0.00915 chr2:20175…</span>
+<span class="co">#&gt; # … with 1 more variable: highlight &lt;lgl&gt;</span>
 
 <span class="co"># Zoom in one specific cluster, here "1"</span>
 <span class="fu"><a href="../reference/get_clusters_ploidy.html">get_clusters_ploidy</a></span><span class="op">(</span><span class="va">congas_example</span>, clusters <span class="op">=</span> <span class="st">'1'</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 70 x 8</span>
-<span class="co">#&gt;    chr        from        to cluster       CN segment_mean lognorm_CN highlight</span>
-<span class="co">#&gt;    &lt;chr&gt;     &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;      &lt;dbl&gt;        &lt;dbl&gt;      &lt;dbl&gt; &lt;lgl&gt;    </span>
-<span class="co">#&gt;  1 chr1          1  12600000 1        0.0449          1.56       1.60 FALSE    </span>
-<span class="co">#&gt;  2 chr1   12600001  60150000 1       -0.0338          2.05       2.01 FALSE    </span>
-<span class="co">#&gt;  3 chr1   61200001  77100000 1       -0.0956          1.71       1.61 FALSE    </span>
-<span class="co">#&gt;  4 chr1   78750001 156000000 1       -0.0333          2.07       2.04 FALSE    </span>
-<span class="co">#&gt;  5 chr1  156000001 249300000 1       -0.0313          1.95       1.92 FALSE    </span>
-<span class="co">#&gt;  6 chr2          1  26250000 1        0.0741          2.07       2.14 FALSE    </span>
-<span class="co">#&gt;  7 chr2   26250001  38100000 1       -0.00848         1.71       1.70 FALSE    </span>
-<span class="co">#&gt;  8 chr2   64050001  87150000 1       -0.0243          1.94       1.92 FALSE    </span>
-<span class="co">#&gt;  9 chr2   88350001 159900000 1       -0.0965          1.98       1.89 FALSE    </span>
-<span class="co">#&gt; 10 chr2  159900001 176850000 1        0.0146          1.59       1.60 FALSE    </span>
-<span class="co">#&gt; # … with 60 more rows</span>
+<span class="co">#&gt; # A tibble: 0 × 9</span>
+<span class="co">#&gt; # … with 9 variables: chr &lt;chr&gt;, from &lt;dbl&gt;, to &lt;dbl&gt;, cluster &lt;chr&gt;, CN &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   segment_mean &lt;dbl&gt;, offset_CN &lt;dbl&gt;, segment_id &lt;chr&gt;, highlight &lt;lgl&gt;</span>
 
 <span class="co"># Zoom in one specific chromosome and cluster</span>
 <span class="fu"><a href="../reference/get_clusters_ploidy.html">get_clusters_ploidy</a></span><span class="op">(</span><span class="va">congas_example</span>, chromosomes <span class="op">=</span> <span class="st">'chr2'</span>, clusters <span class="op">=</span> <span class="st">"1"</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 7 x 8</span>
-<span class="co">#&gt;   chr        from        to cluster       CN segment_mean lognorm_CN highlight</span>
-<span class="co">#&gt;   &lt;chr&gt;     &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;      &lt;dbl&gt;        &lt;dbl&gt;      &lt;dbl&gt; &lt;lgl&gt;    </span>
-<span class="co">#&gt; 1 chr2          1  26250000 1        0.0741          2.07       2.14 FALSE    </span>
-<span class="co">#&gt; 2 chr2   26250001  38100000 1       -0.00848         1.71       1.70 FALSE    </span>
-<span class="co">#&gt; 3 chr2   64050001  87150000 1       -0.0243          1.94       1.92 FALSE    </span>
-<span class="co">#&gt; 4 chr2   88350001 159900000 1       -0.0965          1.98       1.89 FALSE    </span>
-<span class="co">#&gt; 5 chr2  159900001 176850000 1        0.0146          1.59       1.60 FALSE    </span>
-<span class="co">#&gt; 6 chr2  176850001 195450000 1       -0.0577          1.91       1.86 FALSE    </span>
-<span class="co">#&gt; 7 chr2  201750001 243300000 1       -0.0182          1.86       1.84 FALSE</span></code></pre></div>
+<span class="co">#&gt; # A tibble: 0 × 9</span>
+<span class="co">#&gt; # … with 9 variables: chr &lt;chr&gt;, from &lt;dbl&gt;, to &lt;dbl&gt;, cluster &lt;chr&gt;, CN &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   segment_mean &lt;dbl&gt;, offset_CN &lt;dbl&gt;, segment_id &lt;chr&gt;, highlight &lt;lgl&gt;</span></code></pre></div>
 <p>Then you can also obtain the clustering assignments for each one of the input cells, using function <code>get_clusters</code>. This getter can also subset cells in order to contain only those that belong to a specific set of clusters.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Get all cells at once</span>
 <span class="fu"><a href="../reference/get_clusters.html">get_clusters</a></span><span class="op">(</span><span class="va">congas_example</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 504 x 5</span>
+<span class="co">#&gt; # A tibble: 503 × 5</span>
 <span class="co">#&gt;    cell               cluster    c1    c2 p_assignment</span>
 <span class="co">#&gt;    &lt;chr&gt;              &lt;chr&gt;   &lt;dbl&gt; &lt;dbl&gt;        &lt;dbl&gt;</span>
 <span class="co">#&gt;  1 AAACCTGTCGACAGCC-1 c2          1     0            1</span>
@@ -257,11 +269,11 @@
 <span class="co">#&gt;  8 AACTTTCGTGGCTCCA-1 c1          0     1            1</span>
 <span class="co">#&gt;  9 AACTTTCTCGGTTAAC-1 c2          1     0            1</span>
 <span class="co">#&gt; 10 AAGACCTAGCCAGTAG-1 c2          1     0            1</span>
-<span class="co">#&gt; # … with 494 more rows</span>
+<span class="co">#&gt; # … with 493 more rows</span>
 
 <span class="co"># Subset to cluster "c1"</span>
 <span class="fu"><a href="../reference/get_clusters.html">get_clusters</a></span><span class="op">(</span><span class="va">congas_example</span>, clusters <span class="op">=</span> <span class="st">'c1'</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 379 x 5</span>
+<span class="co">#&gt; # A tibble: 379 × 5</span>
 <span class="co">#&gt;    cell               cluster    c1    c2 p_assignment</span>
 <span class="co">#&gt;    &lt;chr&gt;              &lt;chr&gt;   &lt;dbl&gt; &lt;dbl&gt;        &lt;dbl&gt;</span>
 <span class="co">#&gt;  1 AAAGATGGTAATAGCA-1 c1          0     1            1</span>
@@ -291,46 +303,46 @@
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># All the input segments</span>
 <span class="fu"><a href="../reference/get_input_segmentation.html">get_input_segmentation</a></span><span class="op">(</span><span class="va">congas_example</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 70 x 11</span>
-<span class="co">#&gt;      size  start    end ploidy_real   tot   dist    mu fixed_mu chr     from</span>
-<span class="co">#&gt;     &lt;dbl&gt;  &lt;int&gt;  &lt;int&gt;       &lt;int&gt; &lt;int&gt;  &lt;int&gt; &lt;dbl&gt;    &lt;int&gt; &lt;chr&gt;  &lt;int&gt;</span>
-<span class="co">#&gt;  1 1.26e7 1.00e0 1.26e7           1     1 1.26e7    16       73 chr1  1.00e0</span>
-<span class="co">#&gt;  2 4.75e7 1.26e7 6.02e7           2     2 4.75e7   102      302 chr1  1.26e7</span>
-<span class="co">#&gt;  3 1.59e7 6.12e7 7.71e7           2     2 1.59e7    11       32 chr1  6.12e7</span>
-<span class="co">#&gt;  4 7.72e7 7.88e7 1.56e8           2     2 7.72e7    87      261 chr1  7.88e7</span>
-<span class="co">#&gt;  5 9.33e7 1.56e8 2.49e8           3     3 9.33e7   116      350 chr1  1.56e8</span>
-<span class="co">#&gt;  6 2.62e7 1.00e0 2.62e7           1     1 2.62e7    15       56 chr2  1.00e0</span>
-<span class="co">#&gt;  7 1.18e7 2.63e7 3.81e7           2     2 1.18e7    19       59 chr2  2.63e7</span>
-<span class="co">#&gt;  8 2.31e7 6.41e7 8.72e7           2     2 2.31e7    35       95 chr2  6.41e7</span>
-<span class="co">#&gt;  9 7.15e7 8.84e7 1.60e8           2     2 7.15e7    48      159 chr2  8.84e7</span>
-<span class="co">#&gt; 10 1.69e7 1.60e8 1.77e8           1     1 1.69e7    11       35 chr2  1.60e8</span>
-<span class="co">#&gt; # … with 60 more rows, and 1 more variable: to &lt;int&gt;</span>
+<span class="co">#&gt; # A tibble: 70 × 12</span>
+<span class="co">#&gt;    chr       start     end ploidy_real   tot   from     to   dist    mu fixed_mu</span>
+<span class="co">#&gt;    &lt;chr&gt;     &lt;int&gt;   &lt;int&gt;       &lt;int&gt; &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt; &lt;dbl&gt;    &lt;int&gt;</span>
+<span class="co">#&gt;  1 chr1          1  1.26e7           1     1 1   e0 1.26e7 1.26e7    16       73</span>
+<span class="co">#&gt;  2 chr1   12600001  6.02e7           2     2 1.26e7 6.02e7 4.75e7   102      302</span>
+<span class="co">#&gt;  3 chr1   61200001  7.71e7           2     2 6.12e7 7.71e7 1.59e7    11       32</span>
+<span class="co">#&gt;  4 chr1   78750001  1.56e8           2     2 7.88e7 1.56e8 7.72e7    87      261</span>
+<span class="co">#&gt;  5 chr1  156000001  2.49e8           3     3 1.56e8 2.49e8 9.33e7   116      350</span>
+<span class="co">#&gt;  6 chr2          1  2.62e7           1     1 1   e0 2.62e7 2.62e7    15       56</span>
+<span class="co">#&gt;  7 chr2   26250001  3.81e7           2     2 2.63e7 3.81e7 1.18e7    19       59</span>
+<span class="co">#&gt;  8 chr2   64050001  8.72e7           2     2 6.41e7 8.72e7 2.31e7    35       95</span>
+<span class="co">#&gt;  9 chr2   88350001  1.60e8           2     2 8.84e7 1.60e8 7.15e7    48      159</span>
+<span class="co">#&gt; 10 chr2  159900001  1.77e8           1     1 1.60e8 1.77e8 1.69e7    11       35</span>
+<span class="co">#&gt; # … with 60 more rows, and 2 more variables: segment_id &lt;chr&gt;, size &lt;int&gt;</span>
 
 <span class="co"># Segments in chromosomes 1 to 3 (ids: chr1, chr2, chr3)</span>
 <span class="fu"><a href="../reference/get_input_segmentation.html">get_input_segmentation</a></span><span class="op">(</span><span class="va">congas_example</span>, chromosomes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">'chr'</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 19 x 11</span>
-<span class="co">#&gt;      size  start    end ploidy_real   tot   dist    mu fixed_mu chr     from</span>
-<span class="co">#&gt;     &lt;dbl&gt;  &lt;int&gt;  &lt;int&gt;       &lt;int&gt; &lt;int&gt;  &lt;int&gt; &lt;dbl&gt;    &lt;int&gt; &lt;chr&gt;  &lt;int&gt;</span>
-<span class="co">#&gt;  1 1.26e7 1.00e0 1.26e7           1     1 1.26e7    16       73 chr1  1.00e0</span>
-<span class="co">#&gt;  2 4.75e7 1.26e7 6.02e7           2     2 4.75e7   102      302 chr1  1.26e7</span>
-<span class="co">#&gt;  3 1.59e7 6.12e7 7.71e7           2     2 1.59e7    11       32 chr1  6.12e7</span>
-<span class="co">#&gt;  4 7.72e7 7.88e7 1.56e8           2     2 7.72e7    87      261 chr1  7.88e7</span>
-<span class="co">#&gt;  5 9.33e7 1.56e8 2.49e8           3     3 9.33e7   116      350 chr1  1.56e8</span>
-<span class="co">#&gt;  6 2.62e7 1.00e0 2.62e7           1     1 2.62e7    15       56 chr2  1.00e0</span>
-<span class="co">#&gt;  7 1.18e7 2.63e7 3.81e7           2     2 1.18e7    19       59 chr2  2.63e7</span>
-<span class="co">#&gt;  8 2.31e7 6.41e7 8.72e7           2     2 2.31e7    35       95 chr2  6.41e7</span>
-<span class="co">#&gt;  9 7.15e7 8.84e7 1.60e8           2     2 7.15e7    48      159 chr2  8.84e7</span>
-<span class="co">#&gt; 10 1.69e7 1.60e8 1.77e8           1     1 1.69e7    11       35 chr2  1.60e8</span>
-<span class="co">#&gt; 11 1.86e7 1.77e8 1.95e8           2     2 1.86e7    12       39 chr2  1.77e8</span>
-<span class="co">#&gt; 12 4.15e7 2.02e8 2.43e8           2     2 4.15e7    42      134 chr2  2.02e8</span>
-<span class="co">#&gt; 13 1.38e7 1.00e0 1.38e7           2     2 1.38e7    12       41 chr3  1.00e0</span>
-<span class="co">#&gt; 14 5.25e7 3.44e7 8.68e7           1     1 5.25e7    41      165 chr3  3.44e7</span>
-<span class="co">#&gt; 15 2.49e7 8.91e7 1.14e8           2     2 2.49e7    15       46 chr3  8.91e7</span>
-<span class="co">#&gt; 16 2.01e7 1.14e8 1.34e8           3     3 2.01e7    28       76 chr3  1.14e8</span>
-<span class="co">#&gt; 17 1.74e7 1.35e8 1.52e8           3     3 1.74e7    22       55 chr3  1.35e8</span>
-<span class="co">#&gt; 18 2.83e7 1.52e8 1.80e8           4     4 2.83e7    18       50 chr3  1.52e8</span>
-<span class="co">#&gt; 19 1.77e7 1.80e8 1.98e8           1     1 1.77e7    17       63 chr3  1.80e8</span>
-<span class="co">#&gt; # … with 1 more variable: to &lt;int&gt;</span></code></pre></div>
+<span class="co">#&gt; # A tibble: 19 × 12</span>
+<span class="co">#&gt;    chr       start     end ploidy_real   tot   from     to   dist    mu fixed_mu</span>
+<span class="co">#&gt;    &lt;chr&gt;     &lt;int&gt;   &lt;int&gt;       &lt;int&gt; &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt; &lt;dbl&gt;    &lt;int&gt;</span>
+<span class="co">#&gt;  1 chr1          1  1.26e7           1     1 1   e0 1.26e7 1.26e7    16       73</span>
+<span class="co">#&gt;  2 chr1   12600001  6.02e7           2     2 1.26e7 6.02e7 4.75e7   102      302</span>
+<span class="co">#&gt;  3 chr1   61200001  7.71e7           2     2 6.12e7 7.71e7 1.59e7    11       32</span>
+<span class="co">#&gt;  4 chr1   78750001  1.56e8           2     2 7.88e7 1.56e8 7.72e7    87      261</span>
+<span class="co">#&gt;  5 chr1  156000001  2.49e8           3     3 1.56e8 2.49e8 9.33e7   116      350</span>
+<span class="co">#&gt;  6 chr2          1  2.62e7           1     1 1   e0 2.62e7 2.62e7    15       56</span>
+<span class="co">#&gt;  7 chr2   26250001  3.81e7           2     2 2.63e7 3.81e7 1.18e7    19       59</span>
+<span class="co">#&gt;  8 chr2   64050001  8.72e7           2     2 6.41e7 8.72e7 2.31e7    35       95</span>
+<span class="co">#&gt;  9 chr2   88350001  1.60e8           2     2 8.84e7 1.60e8 7.15e7    48      159</span>
+<span class="co">#&gt; 10 chr2  159900001  1.77e8           1     1 1.60e8 1.77e8 1.69e7    11       35</span>
+<span class="co">#&gt; 11 chr2  176850001  1.95e8           2     2 1.77e8 1.95e8 1.86e7    12       39</span>
+<span class="co">#&gt; 12 chr2  201750001  2.43e8           2     2 2.02e8 2.43e8 4.15e7    42      134</span>
+<span class="co">#&gt; 13 chr3          1  1.38e7           2     2 1   e0 1.38e7 1.38e7    12       41</span>
+<span class="co">#&gt; 14 chr3   34350001  8.68e7           1     1 3.44e7 8.68e7 5.25e7    41      165</span>
+<span class="co">#&gt; 15 chr3   89100001  1.14e8           2     2 8.91e7 1.14e8 2.49e7    15       46</span>
+<span class="co">#&gt; 16 chr3  114000001  1.34e8           3     3 1.14e8 1.34e8 2.01e7    28       76</span>
+<span class="co">#&gt; 17 chr3  134700001  1.52e8           3     3 1.35e8 1.52e8 1.74e7    22       55</span>
+<span class="co">#&gt; 18 chr3  152100001  1.80e8           4     4 1.52e8 1.80e8 2.83e7    18       50</span>
+<span class="co">#&gt; 19 chr3  180450001  1.98e8           1     1 1.80e8 1.98e8 1.77e7    17       63</span>
+<span class="co">#&gt; # … with 2 more variables: segment_id &lt;chr&gt;, size &lt;int&gt;</span></code></pre></div>
 <p>If you have run the main <code>rcongas</code> fit function <code>XXX</code> by using parameters <code>XXXX</code>, the raw input RNA data matrix have also been stored into the fit object (otherwise no, just to save space in the final object).</p>
 <p>You have a getter <code>get_input_raw_data</code> to obtain the input data when this has been stored in a <code>rcongas</code> object, or you need to load yourself the input data that you used to fit the model (in that case <code>get_input_raw_data</code> would return <code>NULL</code> and report a warning to screen). The raw input data are the counts, per gene (rows), per cell (columns), obtained from the scRNAseq experiment.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
@@ -344,42 +356,42 @@
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Normalised data (default)</span>
 <span class="fu"><a href="../reference/get_counts.html">get_counts</a></span><span class="op">(</span><span class="va">congas_example</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 35,280 x 6</span>
+<span class="co">#&gt; # A tibble: 35,210 × 6</span>
 <span class="co">#&gt;    chr    from       to cell                   n cluster</span>
 <span class="co">#&gt;    &lt;chr&gt; &lt;int&gt;    &lt;int&gt; &lt;chr&gt;              &lt;dbl&gt; &lt;chr&gt;  </span>
-<span class="co">#&gt;  1 chr1      1 12600000 AAACCTGTCGACAGCC-1  20.2 c2     </span>
-<span class="co">#&gt;  2 chr1      1 12600000 AAAGATGGTAATAGCA-1  21.2 c1     </span>
-<span class="co">#&gt;  3 chr1      1 12600000 AACACGTAGCTATGCT-1  25.6 c1     </span>
-<span class="co">#&gt;  4 chr1      1 12600000 AACTCCCAGACAGGCT-1  22.3 c2     </span>
-<span class="co">#&gt;  5 chr1      1 12600000 AACTCCCGTACACCGC-1  26.6 c1     </span>
-<span class="co">#&gt;  6 chr1      1 12600000 AACTGGTCAAAGAATC-1  17.1 c2     </span>
-<span class="co">#&gt;  7 chr1      1 12600000 AACTGGTCAAAGTGCG-1  23.4 c1     </span>
-<span class="co">#&gt;  8 chr1      1 12600000 AACTTTCGTGGCTCCA-1  25.3 c1     </span>
-<span class="co">#&gt;  9 chr1      1 12600000 AACTTTCTCGGTTAAC-1  32.2 c2     </span>
-<span class="co">#&gt; 10 chr1      1 12600000 AAGACCTAGCCAGTAG-1  13.3 c2     </span>
-<span class="co">#&gt; # … with 35,270 more rows</span>
+<span class="co">#&gt;  1 chr1      1 12600000 AAACCTGTCGACAGCC-1  22.0 c2     </span>
+<span class="co">#&gt;  2 chr1      1 12600000 AAAGATGGTAATAGCA-1  24.5 c1     </span>
+<span class="co">#&gt;  3 chr1      1 12600000 AACACGTAGCTATGCT-1  30.0 c1     </span>
+<span class="co">#&gt;  4 chr1      1 12600000 AACTCCCAGACAGGCT-1  24.2 c2     </span>
+<span class="co">#&gt;  5 chr1      1 12600000 AACTCCCGTACACCGC-1  30.6 c1     </span>
+<span class="co">#&gt;  6 chr1      1 12600000 AACTGGTCAAAGAATC-1  18.6 c2     </span>
+<span class="co">#&gt;  7 chr1      1 12600000 AACTGGTCAAAGTGCG-1  27.1 c1     </span>
+<span class="co">#&gt;  8 chr1      1 12600000 AACTTTCGTGGCTCCA-1  29.1 c1     </span>
+<span class="co">#&gt;  9 chr1      1 12600000 AACTTTCTCGGTTAAC-1  35.1 c2     </span>
+<span class="co">#&gt; 10 chr1      1 12600000 AAGACCTAGCCAGTAG-1  14.5 c2     </span>
+<span class="co">#&gt; # … with 35,200 more rows</span>
 
 <span class="co"># A view on a certain chromosome </span>
 <span class="fu"><a href="../reference/get_counts.html">get_counts</a></span><span class="op">(</span><span class="va">congas_example</span>,
            chromosomes <span class="op">=</span> <span class="st">'chr3'</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 3,528 x 6</span>
+<span class="co">#&gt; # A tibble: 3,521 × 6</span>
 <span class="co">#&gt;    chr    from       to cell                   n cluster</span>
 <span class="co">#&gt;    &lt;chr&gt; &lt;int&gt;    &lt;int&gt; &lt;chr&gt;              &lt;dbl&gt; &lt;chr&gt;  </span>
-<span class="co">#&gt;  1 chr3      1 13800000 AAACCTGTCGACAGCC-1 22.5  c2     </span>
-<span class="co">#&gt;  2 chr3      1 13800000 AAAGATGGTAATAGCA-1 24.6  c1     </span>
-<span class="co">#&gt;  3 chr3      1 13800000 AACACGTAGCTATGCT-1 24.2  c1     </span>
-<span class="co">#&gt;  4 chr3      1 13800000 AACTCCCAGACAGGCT-1 13.4  c2     </span>
-<span class="co">#&gt;  5 chr3      1 13800000 AACTCCCGTACACCGC-1 25.2  c1     </span>
-<span class="co">#&gt;  6 chr3      1 13800000 AACTGGTCAAAGAATC-1 15.1  c2     </span>
-<span class="co">#&gt;  7 chr3      1 13800000 AACTGGTCAAAGTGCG-1  4.69 c1     </span>
-<span class="co">#&gt;  8 chr3      1 13800000 AACTTTCGTGGCTCCA-1 22.1  c1     </span>
-<span class="co">#&gt;  9 chr3      1 13800000 AACTTTCTCGGTTAAC-1 21.1  c2     </span>
-<span class="co">#&gt; 10 chr3      1 13800000 AAGACCTAGCCAGTAG-1 15.7  c2     </span>
-<span class="co">#&gt; # … with 3,518 more rows</span>
+<span class="co">#&gt;  1 chr3      1 13800000 AAACCTGTCGACAGCC-1 24.6  c2     </span>
+<span class="co">#&gt;  2 chr3      1 13800000 AAAGATGGTAATAGCA-1 28.4  c1     </span>
+<span class="co">#&gt;  3 chr3      1 13800000 AACACGTAGCTATGCT-1 28.4  c1     </span>
+<span class="co">#&gt;  4 chr3      1 13800000 AACTCCCAGACAGGCT-1 14.5  c2     </span>
+<span class="co">#&gt;  5 chr3      1 13800000 AACTCCCGTACACCGC-1 29.0  c1     </span>
+<span class="co">#&gt;  6 chr3      1 13800000 AACTGGTCAAAGAATC-1 16.4  c2     </span>
+<span class="co">#&gt;  7 chr3      1 13800000 AACTGGTCAAAGTGCG-1  5.41 c1     </span>
+<span class="co">#&gt;  8 chr3      1 13800000 AACTTTCGTGGCTCCA-1 25.5  c1     </span>
+<span class="co">#&gt;  9 chr3      1 13800000 AACTTTCTCGGTTAAC-1 23.0  c2     </span>
+<span class="co">#&gt; 10 chr3      1 13800000 AAGACCTAGCCAGTAG-1 17.1  c2     </span>
+<span class="co">#&gt; # … with 3,511 more rows</span>
 
 <span class="co"># Un-normalised data</span>
 <span class="fu"><a href="../reference/get_counts.html">get_counts</a></span><span class="op">(</span><span class="va">congas_example</span>, normalise <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 35,280 x 6</span>
+<span class="co">#&gt; # A tibble: 35,210 × 6</span>
 <span class="co">#&gt;    chr    from       to cell                   n cluster</span>
 <span class="co">#&gt;    &lt;chr&gt; &lt;int&gt;    &lt;int&gt; &lt;chr&gt;              &lt;dbl&gt; &lt;chr&gt;  </span>
 <span class="co">#&gt;  1 chr1      1 12600000 AAACCTGTCGACAGCC-1    17 c2     </span>
@@ -392,41 +404,41 @@
 <span class="co">#&gt;  8 chr1      1 12600000 AACTTTCGTGGCTCCA-1    24 c1     </span>
 <span class="co">#&gt;  9 chr1      1 12600000 AACTTTCTCGGTTAAC-1    32 c2     </span>
 <span class="co">#&gt; 10 chr1      1 12600000 AAGACCTAGCCAGTAG-1    11 c2     </span>
-<span class="co">#&gt; # … with 35,270 more rows</span></code></pre></div>
+<span class="co">#&gt; # … with 35,200 more rows</span></code></pre></div>
 <p>If you want to know what genes have been used by CONGAS and to which segments these have been mapped you can use function</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># All mapped genes</span>
 <span class="fu"><a href="../reference/get_mapped_genes.html">get_mapped_genes</a></span><span class="op">(</span><span class="va">congas_example</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 8,564 x 4</span>
-<span class="co">#&gt;    gene          chr   from  to      </span>
-<span class="co">#&gt;    &lt;chr&gt;         &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;   </span>
-<span class="co">#&gt;  1 AP006222.2    chr1  1     12600000</span>
-<span class="co">#&gt;  2 RP11.206L10.9 chr1  1     12600000</span>
-<span class="co">#&gt;  3 FAM41C        chr1  1     12600000</span>
-<span class="co">#&gt;  4 NOC2L         chr1  1     12600000</span>
-<span class="co">#&gt;  5 ISG15         chr1  1     12600000</span>
-<span class="co">#&gt;  6 AGRN          chr1  1     12600000</span>
-<span class="co">#&gt;  7 C1orf159      chr1  1     12600000</span>
-<span class="co">#&gt;  8 TTLL10        chr1  1     12600000</span>
-<span class="co">#&gt;  9 PUSL1         chr1  1     12600000</span>
-<span class="co">#&gt; 10 CPSF3L        chr1  1     12600000</span>
+<span class="co">#&gt; # A tibble: 8,564 × 5</span>
+<span class="co">#&gt;    gene          chr   from  to       segment_id     </span>
+<span class="co">#&gt;    &lt;chr&gt;         &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt;          </span>
+<span class="co">#&gt;  1 AP006222.2    chr1  1     12600000 chr1:1:12600000</span>
+<span class="co">#&gt;  2 RP11.206L10.9 chr1  1     12600000 chr1:1:12600000</span>
+<span class="co">#&gt;  3 FAM41C        chr1  1     12600000 chr1:1:12600000</span>
+<span class="co">#&gt;  4 NOC2L         chr1  1     12600000 chr1:1:12600000</span>
+<span class="co">#&gt;  5 ISG15         chr1  1     12600000 chr1:1:12600000</span>
+<span class="co">#&gt;  6 AGRN          chr1  1     12600000 chr1:1:12600000</span>
+<span class="co">#&gt;  7 C1orf159      chr1  1     12600000 chr1:1:12600000</span>
+<span class="co">#&gt;  8 TTLL10        chr1  1     12600000 chr1:1:12600000</span>
+<span class="co">#&gt;  9 PUSL1         chr1  1     12600000 chr1:1:12600000</span>
+<span class="co">#&gt; 10 CPSF3L        chr1  1     12600000 chr1:1:12600000</span>
 <span class="co">#&gt; # … with 8,554 more rows</span>
 
 <span class="co"># Genes mapped in chromosomes '1' and '5'</span>
 <span class="fu"><a href="../reference/get_mapped_genes.html">get_mapped_genes</a></span><span class="op">(</span><span class="va">congas_example</span>, chromosomes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'chr1'</span>, <span class="st">'chr5'</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 1,377 x 4</span>
-<span class="co">#&gt;    gene          chr   from  to      </span>
-<span class="co">#&gt;    &lt;chr&gt;         &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;   </span>
-<span class="co">#&gt;  1 AP006222.2    chr1  1     12600000</span>
-<span class="co">#&gt;  2 RP11.206L10.9 chr1  1     12600000</span>
-<span class="co">#&gt;  3 FAM41C        chr1  1     12600000</span>
-<span class="co">#&gt;  4 NOC2L         chr1  1     12600000</span>
-<span class="co">#&gt;  5 ISG15         chr1  1     12600000</span>
-<span class="co">#&gt;  6 AGRN          chr1  1     12600000</span>
-<span class="co">#&gt;  7 C1orf159      chr1  1     12600000</span>
-<span class="co">#&gt;  8 TTLL10        chr1  1     12600000</span>
-<span class="co">#&gt;  9 PUSL1         chr1  1     12600000</span>
-<span class="co">#&gt; 10 CPSF3L        chr1  1     12600000</span>
+<span class="co">#&gt; # A tibble: 1,377 × 5</span>
+<span class="co">#&gt;    gene          chr   from  to       segment_id     </span>
+<span class="co">#&gt;    &lt;chr&gt;         &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt;          </span>
+<span class="co">#&gt;  1 AP006222.2    chr1  1     12600000 chr1:1:12600000</span>
+<span class="co">#&gt;  2 RP11.206L10.9 chr1  1     12600000 chr1:1:12600000</span>
+<span class="co">#&gt;  3 FAM41C        chr1  1     12600000 chr1:1:12600000</span>
+<span class="co">#&gt;  4 NOC2L         chr1  1     12600000 chr1:1:12600000</span>
+<span class="co">#&gt;  5 ISG15         chr1  1     12600000 chr1:1:12600000</span>
+<span class="co">#&gt;  6 AGRN          chr1  1     12600000 chr1:1:12600000</span>
+<span class="co">#&gt;  7 C1orf159      chr1  1     12600000 chr1:1:12600000</span>
+<span class="co">#&gt;  8 TTLL10        chr1  1     12600000 chr1:1:12600000</span>
+<span class="co">#&gt;  9 PUSL1         chr1  1     12600000 chr1:1:12600000</span>
+<span class="co">#&gt; 10 CPSF3L        chr1  1     12600000 chr1:1:12600000</span>
 <span class="co">#&gt; # … with 1,367 more rows</span></code></pre></div>
 </div>
 <div id="post-clustering-analysis" class="section level2">
@@ -441,75 +453,75 @@
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Default results (sorted by adjusted p-value, default filters)</span>
 <span class="fu"><a href="../reference/get_DE_table.html">get_DE_table</a></span><span class="op">(</span><span class="va">congas_example</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 162 x 8</span>
-<span class="co">#&gt;    chr        from       to gene    pct_detec_1 ptc_detec_2 p_val_adj avg_log2FC</span>
-<span class="co">#&gt;    &lt;chr&gt;     &lt;int&gt;    &lt;int&gt; &lt;chr&gt;         &lt;dbl&gt;       &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;</span>
-<span class="co">#&gt;  1 chrX   71475529   7.15e7 RPS4X         1           1      2.34e-82     -0.570</span>
-<span class="co">#&gt;  2 chrX    1505045   1.51e6 SLC25A6       0.997       1      1.18e-81     -0.823</span>
-<span class="co">#&gt;  3 chrX   73040486   7.31e7 XIST          0.045       0.879  5.10e-54     -2.10 </span>
-<span class="co">#&gt;  4 chr15  66790355   6.68e7 RPL4          1           1      8.87e-44      0.607</span>
-<span class="co">#&gt;  5 chr16   2012053   2.01e6 RPS2          1           1      9.04e-36      0.757</span>
-<span class="co">#&gt;  6 chr14 102547075   1.03e8 HSP90A…       1           1      1.10e-35      0.952</span>
-<span class="co">#&gt;  7 chr1   39491990   3.95e7 NDUFS5        0.937       0.992  1.47e-31     -0.734</span>
-<span class="co">#&gt;  8 chr6  133135580   1.33e8 RPS12         1           1      7.85e-30      0.363</span>
-<span class="co">#&gt;  9 chr18  43664110   4.37e7 ATP5A1        0.995       0.927  1.06e-28      0.948</span>
-<span class="co">#&gt; 10 chr6   29909037   2.99e7 HLA-A         1           1      2.13e-23     -0.869</span>
+<span class="co">#&gt; # A tibble: 162 × 8</span>
+<span class="co">#&gt;    chr        from        to gene   pct_detec_1 ptc_detec_2 p_val_adj avg_log2FC</span>
+<span class="co">#&gt;    &lt;chr&gt;     &lt;int&gt;     &lt;int&gt; &lt;chr&gt;        &lt;dbl&gt;       &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;</span>
+<span class="co">#&gt;  1 chrX   71475529  71497150 RPS4X        1           1      2.34e-82     -0.570</span>
+<span class="co">#&gt;  2 chrX    1505045   1511617 SLC25…       0.997       1      1.18e-81     -0.823</span>
+<span class="co">#&gt;  3 chrX   73040486  73072588 XIST         0.045       0.879  5.10e-54     -2.10 </span>
+<span class="co">#&gt;  4 chr15  66790355  66816870 RPL4         1           1      8.87e-44      0.607</span>
+<span class="co">#&gt;  5 chr16   2012053   2014861 RPS2         1           1      9.04e-36      0.757</span>
+<span class="co">#&gt;  6 chr14 102547075 102606036 HSP90…       1           1      1.10e-35      0.952</span>
+<span class="co">#&gt;  7 chr1   39491990  39500308 NDUFS5       0.937       0.992  1.47e-31     -0.734</span>
+<span class="co">#&gt;  8 chr6  133135580 133138703 RPS12        1           1      7.85e-30      0.363</span>
+<span class="co">#&gt;  9 chr18  43664110  43684300 ATP5A1       0.995       0.927  1.06e-28      0.948</span>
+<span class="co">#&gt; 10 chr6   29909037  29913661 HLA-A        1           1      2.13e-23     -0.869</span>
 <span class="co">#&gt; # … with 152 more rows</span>
 
 <span class="co"># DE filtered by p-value cut at alpha-level 5%</span>
 <span class="fu"><a href="../reference/get_DE_table.html">get_DE_table</a></span><span class="op">(</span><span class="va">congas_example</span>, cut_pvalue <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 257 x 8</span>
-<span class="co">#&gt;    chr        from       to gene    pct_detec_1 ptc_detec_2 p_val_adj avg_log2FC</span>
-<span class="co">#&gt;    &lt;chr&gt;     &lt;int&gt;    &lt;int&gt; &lt;chr&gt;         &lt;dbl&gt;       &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;</span>
-<span class="co">#&gt;  1 chrX   71475529   7.15e7 RPS4X         1           1      2.34e-82     -0.570</span>
-<span class="co">#&gt;  2 chrX    1505045   1.51e6 SLC25A6       0.997       1      1.18e-81     -0.823</span>
-<span class="co">#&gt;  3 chrX   73040486   7.31e7 XIST          0.045       0.879  5.10e-54     -2.10 </span>
-<span class="co">#&gt;  4 chr15  66790355   6.68e7 RPL4          1           1      8.87e-44      0.607</span>
-<span class="co">#&gt;  5 chr16   2012053   2.01e6 RPS2          1           1      9.04e-36      0.757</span>
-<span class="co">#&gt;  6 chr14 102547075   1.03e8 HSP90A…       1           1      1.10e-35      0.952</span>
-<span class="co">#&gt;  7 chr1   39491990   3.95e7 NDUFS5        0.937       0.992  1.47e-31     -0.734</span>
-<span class="co">#&gt;  8 chr6  133135580   1.33e8 RPS12         1           1      7.85e-30      0.363</span>
-<span class="co">#&gt;  9 chr18  43664110   4.37e7 ATP5A1        0.995       0.927  1.06e-28      0.948</span>
-<span class="co">#&gt; 10 chr6   29909037   2.99e7 HLA-A         1           1      2.13e-23     -0.869</span>
+<span class="co">#&gt; # A tibble: 257 × 8</span>
+<span class="co">#&gt;    chr        from        to gene   pct_detec_1 ptc_detec_2 p_val_adj avg_log2FC</span>
+<span class="co">#&gt;    &lt;chr&gt;     &lt;int&gt;     &lt;int&gt; &lt;chr&gt;        &lt;dbl&gt;       &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;</span>
+<span class="co">#&gt;  1 chrX   71475529  71497150 RPS4X        1           1      2.34e-82     -0.570</span>
+<span class="co">#&gt;  2 chrX    1505045   1511617 SLC25…       0.997       1      1.18e-81     -0.823</span>
+<span class="co">#&gt;  3 chrX   73040486  73072588 XIST         0.045       0.879  5.10e-54     -2.10 </span>
+<span class="co">#&gt;  4 chr15  66790355  66816870 RPL4         1           1      8.87e-44      0.607</span>
+<span class="co">#&gt;  5 chr16   2012053   2014861 RPS2         1           1      9.04e-36      0.757</span>
+<span class="co">#&gt;  6 chr14 102547075 102606036 HSP90…       1           1      1.10e-35      0.952</span>
+<span class="co">#&gt;  7 chr1   39491990  39500308 NDUFS5       0.937       0.992  1.47e-31     -0.734</span>
+<span class="co">#&gt;  8 chr6  133135580 133138703 RPS12        1           1      7.85e-30      0.363</span>
+<span class="co">#&gt;  9 chr18  43664110  43684300 ATP5A1       0.995       0.927  1.06e-28      0.948</span>
+<span class="co">#&gt; 10 chr6   29909037  29913661 HLA-A        1           1      2.13e-23     -0.869</span>
 <span class="co">#&gt; # … with 247 more rows</span>
 
 <span class="co"># DE filtered to retain all values, regardless the LFC</span>
 <span class="fu"><a href="../reference/get_DE_table.html">get_DE_table</a></span><span class="op">(</span><span class="va">congas_example</span>, cut_lfc <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 165 x 8</span>
-<span class="co">#&gt;    chr        from       to gene    pct_detec_1 ptc_detec_2 p_val_adj avg_log2FC</span>
-<span class="co">#&gt;    &lt;chr&gt;     &lt;int&gt;    &lt;int&gt; &lt;chr&gt;         &lt;dbl&gt;       &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;</span>
-<span class="co">#&gt;  1 chrX   71475529   7.15e7 RPS4X         1           1      2.34e-82     -0.570</span>
-<span class="co">#&gt;  2 chrX    1505045   1.51e6 SLC25A6       0.997       1      1.18e-81     -0.823</span>
-<span class="co">#&gt;  3 chrX   73040486   7.31e7 XIST          0.045       0.879  5.10e-54     -2.10 </span>
-<span class="co">#&gt;  4 chr15  66790355   6.68e7 RPL4          1           1      8.87e-44      0.607</span>
-<span class="co">#&gt;  5 chr16   2012053   2.01e6 RPS2          1           1      9.04e-36      0.757</span>
-<span class="co">#&gt;  6 chr14 102547075   1.03e8 HSP90A…       1           1      1.10e-35      0.952</span>
-<span class="co">#&gt;  7 chr1   39491990   3.95e7 NDUFS5        0.937       0.992  1.47e-31     -0.734</span>
-<span class="co">#&gt;  8 chr6  133135580   1.33e8 RPS12         1           1      7.85e-30      0.363</span>
-<span class="co">#&gt;  9 chr18  43664110   4.37e7 ATP5A1        0.995       0.927  1.06e-28      0.948</span>
-<span class="co">#&gt; 10 chr6   29909037   2.99e7 HLA-A         1           1      2.13e-23     -0.869</span>
+<span class="co">#&gt; # A tibble: 165 × 8</span>
+<span class="co">#&gt;    chr        from        to gene   pct_detec_1 ptc_detec_2 p_val_adj avg_log2FC</span>
+<span class="co">#&gt;    &lt;chr&gt;     &lt;int&gt;     &lt;int&gt; &lt;chr&gt;        &lt;dbl&gt;       &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;</span>
+<span class="co">#&gt;  1 chrX   71475529  71497150 RPS4X        1           1      2.34e-82     -0.570</span>
+<span class="co">#&gt;  2 chrX    1505045   1511617 SLC25…       0.997       1      1.18e-81     -0.823</span>
+<span class="co">#&gt;  3 chrX   73040486  73072588 XIST         0.045       0.879  5.10e-54     -2.10 </span>
+<span class="co">#&gt;  4 chr15  66790355  66816870 RPL4         1           1      8.87e-44      0.607</span>
+<span class="co">#&gt;  5 chr16   2012053   2014861 RPS2         1           1      9.04e-36      0.757</span>
+<span class="co">#&gt;  6 chr14 102547075 102606036 HSP90…       1           1      1.10e-35      0.952</span>
+<span class="co">#&gt;  7 chr1   39491990  39500308 NDUFS5       0.937       0.992  1.47e-31     -0.734</span>
+<span class="co">#&gt;  8 chr6  133135580 133138703 RPS12        1           1      7.85e-30      0.363</span>
+<span class="co">#&gt;  9 chr18  43664110  43684300 ATP5A1       0.995       0.927  1.06e-28      0.948</span>
+<span class="co">#&gt; 10 chr6   29909037  29913661 HLA-A        1           1      2.13e-23     -0.869</span>
 <span class="co">#&gt; # … with 155 more rows</span>
 
 <span class="co"># A view on a certain chromosome </span>
 <span class="fu"><a href="../reference/get_DE_table.html">get_DE_table</a></span><span class="op">(</span><span class="va">congas_example</span>, chromosomes <span class="op">=</span> <span class="st">'chr15'</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 15 x 8</span>
-<span class="co">#&gt;    chr        from       to gene    pct_detec_1 ptc_detec_2 p_val_adj avg_log2FC</span>
-<span class="co">#&gt;    &lt;chr&gt;     &lt;int&gt;    &lt;int&gt; &lt;chr&gt;         &lt;dbl&gt;       &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;</span>
-<span class="co">#&gt;  1 chr15  66790355   6.68e7 RPL4          1           1      8.87e-44      0.607</span>
-<span class="co">#&gt;  2 chr15  45003675   4.50e7 B2M           1           1      2.01e-21     -0.722</span>
-<span class="co">#&gt;  3 chr15  79102829   7.92e7 MORF4L1       0.984       0.952  2.88e-19      0.796</span>
-<span class="co">#&gt;  4 chr15  78832747   7.88e7 PSMA4         0.997       0.935  6.35e-15      0.805</span>
-<span class="co">#&gt;  5 chr15 101821715   1.02e8 SNRPA1        0.939       0.79   1.06e-12      0.804</span>
-<span class="co">#&gt;  6 chr15  85212775   8.53e7 SEC11A        0.966       0.79   5.71e-12      0.696</span>
-<span class="co">#&gt;  7 chr15  78632666   7.86e7 CRABP1        0.782       0.419  1.98e-11      0.888</span>
-<span class="co">#&gt;  8 chr15  65822756   6.59e7 PTPLAD1       0.974       0.895  5.29e- 9      0.679</span>
-<span class="co">#&gt;  9 chr15  75212132   7.52e7 COX5A         0.855       0.548  2.33e- 6      0.604</span>
-<span class="co">#&gt; 10 chr15  90626277   9.06e7 IDH2          0.747       0.452  3.10e- 6      0.659</span>
-<span class="co">#&gt; 11 chr15  81239667   8.13e7 MESDC2        0.695       0.339  3.98e- 6      0.609</span>
-<span class="co">#&gt; 12 chr15  78570177   7.86e7 WDR61         0.734       0.452  9.71e- 6      0.596</span>
-<span class="co">#&gt; 13 chr15  64979772   6.50e7 OAZ2          0.892       0.71   1.65e- 4      0.538</span>
-<span class="co">#&gt; 14 chr15  64448011   6.45e7 PPIB          0.984       0.935  2.20e- 4      0.575</span>
-<span class="co">#&gt; 15 chr15  64657193   6.47e7 KIAA01…       0.726       0.452  5.60e- 4      1.09</span></code></pre></div>
+<span class="co">#&gt; # A tibble: 15 × 8</span>
+<span class="co">#&gt;    chr        from        to gene   pct_detec_1 ptc_detec_2 p_val_adj avg_log2FC</span>
+<span class="co">#&gt;    &lt;chr&gt;     &lt;int&gt;     &lt;int&gt; &lt;chr&gt;        &lt;dbl&gt;       &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;</span>
+<span class="co">#&gt;  1 chr15  66790355  66816870 RPL4         1           1      8.87e-44      0.607</span>
+<span class="co">#&gt;  2 chr15  45003675  45011075 B2M          1           1      2.01e-21     -0.722</span>
+<span class="co">#&gt;  3 chr15  79102829  79190475 MORF4…       0.984       0.952  2.88e-19      0.796</span>
+<span class="co">#&gt;  4 chr15  78832747  78841604 PSMA4        0.997       0.935  6.35e-15      0.805</span>
+<span class="co">#&gt;  5 chr15 101821715 101835487 SNRPA1       0.939       0.79   1.06e-12      0.804</span>
+<span class="co">#&gt;  6 chr15  85212775  85259947 SEC11A       0.966       0.79   5.71e-12      0.696</span>
+<span class="co">#&gt;  7 chr15  78632666  78640572 CRABP1       0.782       0.419  1.98e-11      0.888</span>
+<span class="co">#&gt;  8 chr15  65822756  65870687 PTPLA…       0.974       0.895  5.29e- 9      0.679</span>
+<span class="co">#&gt;  9 chr15  75212132  75230509 COX5A        0.855       0.548  2.33e- 6      0.604</span>
+<span class="co">#&gt; 10 chr15  90626277  90645736 IDH2         0.747       0.452  3.10e- 6      0.659</span>
+<span class="co">#&gt; 11 chr15  81239667  81282219 MESDC2       0.695       0.339  3.98e- 6      0.609</span>
+<span class="co">#&gt; 12 chr15  78570177  78592136 WDR61        0.734       0.452  9.71e- 6      0.596</span>
+<span class="co">#&gt; 13 chr15  64979772  64995480 OAZ2         0.892       0.71   1.65e- 4      0.538</span>
+<span class="co">#&gt; 14 chr15  64448011  64455404 PPIB         0.984       0.935  2.20e- 4      0.575</span>
+<span class="co">#&gt; 15 chr15  64657193  64679886 KIAA0…       0.726       0.452  5.60e- 4      1.09</span></code></pre></div>
 </div>
 </div>
   </div>

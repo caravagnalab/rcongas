@@ -106,16 +106,30 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/1_Models.html">Models available in this package</a>
+      <a></a>
     </li>
     <li>
-      <a href="../articles/2_Getters.html">Getter functions</a>
+      <a href="../articles/1_Models.html">Models</a>
+    </li>
+    <li>
+      <a href="../articles/2_Getters.html">Getters</a>
     </li>
     <li>
       <a href="../articles/3_Plotting_functions.html">Plotting functions</a>
     </li>
     <li>
-      <a href="../articles/4_Propreocessing.html">Preprocessing</a>
+      <a href="../articles/4_Preprocessing.html">Preprocessing</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Old version</li>
+    <li>
+      <a href="../old_vignettes/kieran_vignette.html">Breast PDX analysis</a>
+    </li>
+    <li>
+      <a href="../old_vignettes/Glioblastoma_smart_seq_analysis.html">Glioblastoma GBM analysis</a>
+    </li>
+    <li>
+      <a href="../old_vignettes/Glioblastoma_smart_seq_analysis.html">Glioblastoma GBM analysis</a>
     </li>
   </ul>
 </li>
@@ -173,16 +187,20 @@
 <span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span></span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> ── <span style='color: #000000; background-color: #BBBB00;'>[ Rcongas ]</span><span style='color: #0000BB;'> </span> ────────────────────────────────────────────────────────────────</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> → Data: <span style='color: #00BB00;'>504</span> cells with <span style='color: #00BB00;'>8564</span> genes, aggregated in <span style='color: #00BB00;'>70</span> segments.</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> → Data: <span style='color: #00BB00;'>503</span> cells with <span style='color: #00BB00;'>8564</span> genes, aggregated in <span style='color: #00BB00;'>70</span> segments.</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #00BBBB;'>ℹ</span> Clusters: <span style='color: #00BB00;'>k = 2</span>, model with <span style='color: #00BB00;'>AIC</span> = 269370.73.</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #00BBBB;'>ℹ</span> Clusters: <span style='color: #00BB00;'>k = 2</span>, model with <span style='color: #00BB00;'>AIC</span> = 577427.35.</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> ● Cluster <span style='color: #00BB00;'>c1</span>, n = 379 [75.2% of total cells].</span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> ● Cluster <span style='color: #00BB00;'>c2</span>, n = 125 [24.8% of total cells].</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> ● Cluster <span style='color: #00BB00;'>c1</span>, n = 379 [75.35% of total cells].</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> ● Cluster <span style='color: #00BB00;'>c2</span>, n = 124 [24.65% of total cells].</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> ── CNA highlights (alpha = 0.05) </span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
-<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in loadNamespace(x):</span> there is no package called ‘fitdistrplus’</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #00BB00;'>✓</span>  <span style='color: #00BB00;'>c1</span> CNA(s):  <span style='color: #00BB00;'>[chr14:93300001:105450000] vs c2</span>, <span style='color: #00BB00;'>[chr15:67050001:102600000] vs c2</span>, <span style='color: #00BB00;'>[chr16:1:3750000] vs c2</span>, and <span style='color: #00BB00;'>[chr18:32400001:55950000] vs c2</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> ── Differential Expression <span style='color: #00BB00;'>DESeq2</span>  (<span style='color: #00BB00;'>1</span> vs <span style='color: #00BB00;'>2</span>) </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #00BB00;'>✓</span> <span style='color: #00BB00;'>212</span> DE genes (alpha = 0.01, |lfc| &gt; 0.25).</span>
 <span class='r-in'></span>
 </pre>
   </div>

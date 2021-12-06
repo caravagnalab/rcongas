@@ -64,16 +64,30 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/1_Models.html">Models available in this package</a>
+      <a></a>
     </li>
     <li>
-      <a href="../articles/2_Getters.html">Getter functions</a>
+      <a href="../articles/1_Models.html">Models</a>
+    </li>
+    <li>
+      <a href="../articles/2_Getters.html">Getters</a>
     </li>
     <li>
       <a href="../articles/3_Plotting_functions.html">Plotting functions</a>
     </li>
     <li>
-      <a href="../articles/4_Propreocessing.html">Preprocessing</a>
+      <a href="../articles/4_Preprocessing.html">Preprocessing</a>
+    </li>
+    <li class="divider">
+    <li class="dropdown-header">Old version</li>
+    <li>
+      <a href="../old_vignettes/kieran_vignette.html">Breast PDX analysis</a>
+    </li>
+    <li>
+      <a href="../old_vignettes/Glioblastoma_smart_seq_analysis.html">Glioblastoma GBM analysis</a>
+    </li>
+    <li>
+      <a href="../old_vignettes/Glioblastoma_smart_seq_analysis.html">Glioblastoma GBM analysis</a>
     </li>
   </ul>
 </li>
@@ -95,7 +109,7 @@
 
       
 
-      </header><script src="3_Plotting_functions_files/header-attrs-2.6/header-attrs.js"></script><div class="row">
+      </header><script src="3_Plotting_functions_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Plotting functions</h1>
@@ -111,6 +125,18 @@
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">require</a></span><span class="op">(</span><span class="va">Rcongas</span><span class="op">)</span>
 <span class="co">#&gt; Loading required package: Rcongas</span>
+<span class="co">#&gt; Warning: replacing previous import 'cli::num_ansi_colors' by</span>
+<span class="co">#&gt; 'crayon::num_ansi_colors' when loading 'BMix'</span>
+<span class="co">#&gt; Warning: replacing previous import 'crayon::%+%' by 'ggplot2::%+%' when loading</span>
+<span class="co">#&gt; 'BMix'</span>
+<span class="co">#&gt; ✓ Loading BMix, 'Binomial and Beta-Binomial univariate mixtures'. Support : &lt;https://caravagnalab.github.io/BMix/&gt;</span>
+<span class="co">#&gt; Warning: package 'ggplot2' was built under R version 4.1.1</span>
+<span class="co">#&gt; Warning: package 'tibble' was built under R version 4.1.1</span>
+<span class="co">#&gt; Warning: package 'tidyr' was built under R version 4.1.1</span>
+<span class="co">#&gt; Warning: package 'readr' was built under R version 4.1.1</span>
+<span class="co">#&gt; Warning: package 'stringr' was built under R version 4.1.1</span>
+<span class="co">#&gt; Warning: package 'forcats' was built under R version 4.1.1</span>
+<span class="co">#&gt; Warning: package 'crayon' was built under R version 4.1.1</span>
 <span class="co">#&gt; ✓ Loading CNAqc, 'Copy Number Alteration quality check'. Support : &lt;https://caravagn.github.io/CNAqc/&gt;</span>
 <span class="co">#&gt; ✓ Loading Rcongas, 'Copy-Number genotyping from single cells'. Support : &lt;https://militeee.github.io/Rcongas/&gt;</span></code></pre></div>
 <p>We show how you can plot information from a CONGAS object. We work with an example object released with the tool.</p>
@@ -118,15 +144,17 @@
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">'congas_example'</span>, package <span class="op">=</span> <span class="st">'Rcongas'</span><span class="op">)</span>
 
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">congas_example</span><span class="op">)</span>
-<span class="co">#&gt; ── [ Rcongas ] My CONGAS model n = 504 cells with i = 70 segments, grouped in k</span>
-<span class="co">#&gt; ● Cluster c1, n = 379 [75.2% of total cells].</span>
-<span class="co">#&gt; ● Cluster c2, n = 125 [24.8% of total cells].</span>
+<span class="co">#&gt; ── [ Rcongas ]  ────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; → Data: 503 cells with 8564 genes, aggregated in 70 segments.</span>
+<span class="co">#&gt; ℹ Clusters: k = 2, model with AIC = 577427.35.</span>
+<span class="co">#&gt; ● Cluster c1, n = 379 [75.35% of total cells].</span>
+<span class="co">#&gt; ● Cluster c2, n = 124 [24.65% of total cells].</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; ── CNA highlights (alpha = 0.05)</span>
 <span class="co">#&gt; ✓  c1 CNA(s):  [chr14:93300001:105450000] vs c2, [chr15:67050001:102600000] vs c2, [chr16:1:3750000] vs c2, and [chr18:32400001:55950000] vs c2</span>
-<span class="co">#&gt; ℹ Model scored with AIC = 269370.73</span>
-<span class="co">#&gt; ● Differential Expression analysis for 1 vs 2 with the DESeq2 method: 212 DE</span>
-<span class="co">#&gt; genes at level alpha 0.01, with |lfc| &gt; 0.25.</span></code></pre></div>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; ── Differential Expression DESeq2  (1 vs 2)</span>
+<span class="co">#&gt; ✓ 212 DE genes (alpha = 0.01, |lfc| &gt; 0.25).</span></code></pre></div>
 <div id="genome-wide-clone-profiles" class="section level2">
 <h2 class="hasAnchor">
 <a href="#genome-wide-clone-profiles" class="anchor"></a>Genome-wide clone profiles</h2>
@@ -266,104 +294,68 @@
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Default plot</span>
 <span class="fu"><a href="../reference/plot_DE_gw.html">plot_DE_gw</a></span><span class="op">(</span><span class="va">congas_example</span><span class="op">)</span>
+<span class="co">#&gt; Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; =</span>
+<span class="co">#&gt; "none")` instead.</span>
 <span class="co">#&gt; Warning: Removed 16 rows containing missing values (geom_rect).</span>
 
 <span class="co">#&gt; Warning: Removed 16 rows containing missing values (geom_rect).</span>
 <span class="co">#&gt; Warning: Removed 16 rows containing missing values (geom_point).</span></code></pre></div>
 <p><img src="3_Plotting_functions_files/figure-html/unnamed-chunk-12-1.png" width="768"></p>
-</div>
-<div id="plot-data-statistics" class="section level2">
-<h2 class="hasAnchor">
-<a href="#plot-data-statistics" class="anchor"></a>Plot data statistics</h2>
-<p>You can plot a 3-panels figure showing:</p>
-<ul>
-<li>the segments barplot with segment size and number of mapped genes;</li>
-<li>the <code>max</code> and <code>min</code> counts per segment, for every cluster;</li>
-<li>the counts distribution per segment, split in bins of <code>(max-min)/10</code> size, for every cluster.</li>
-</ul>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plot_report_segments.html">plot_report_segments</a></span><span class="op">(</span><span class="va">congas_example</span>, transpose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="co">#&gt; ℹ Working with n = 8247 genes, and 505 cells</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ── Mapping data for cluster c1</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ── Mapping data for cluster c2</span></code></pre></div>
-<p><img src="3_Plotting_functions_files/figure-html/unnamed-chunk-13-1.png" width="960"></p>
 <p>The counts distribution per segment, with annotated quantiles.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plot_counts_per_segment.html">plot_counts_per_segment</a></span><span class="op">(</span><span class="va">congas_example</span>, transpose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="co">#&gt; ℹ Working with n = 8247 genes, and 505 cells; computing cutoffs per segment</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ── Mapping data for cluster c1</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ── Mapping data for cluster c2</span></code></pre></div>
-<p><img src="3_Plotting_functions_files/figure-html/unnamed-chunk-14-1.png" width="1152"></p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/plot_counts_per_segment.html">plot_counts_per_segment</a></span><span class="op">(</span><span class="va">congas_example</span><span class="op">)</span></code></pre></div>
+<p><img src="3_Plotting_functions_files/figure-html/unnamed-chunk-13-1.png" width="1152"></p>
 <p>The cohort statistics (three plots):</p>
 <ul>
 <li>percentage of 0s in cell counts (to find cells with little count information)</li>
 <li>counts distribution across all cohort (to find outliers in count data)</li>
 <li>percentage of 0s in gene counts (to find genes expressed in a little portion of the population)</li>
 </ul>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Returns a number of plots with different statistics</span>
-<span class="fu"><a href="../reference/plot_cohort_statistics.html">plot_cohort_statistics</a></span><span class="op">(</span><span class="va">congas_example</span>, transpose <span class="op">=</span> <span class="cn">TRUE</span>, assembly <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="fu"><a href="../reference/plot_cohort_statistics.html">plot_cohort_statistics</a></span><span class="op">(</span><span class="va">congas_example</span>, assembly <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="co">#&gt; $zeroes</span></code></pre></div>
-<p><img src="3_Plotting_functions_files/figure-html/unnamed-chunk-15-1.png" width="384"></p>
+<p><img src="3_Plotting_functions_files/figure-html/unnamed-chunk-14-1.png" width="384"></p>
 <pre><code>#&gt; 
 #&gt; $counts</code></pre>
-<p><img src="3_Plotting_functions_files/figure-html/unnamed-chunk-15-2.png" width="384"></p>
+<p><img src="3_Plotting_functions_files/figure-html/unnamed-chunk-14-2.png" width="384"></p>
 <pre><code>#&gt; 
 #&gt; $genes</code></pre>
-<p><img src="3_Plotting_functions_files/figure-html/unnamed-chunk-15-3.png" width="384"></p>
-</div>
-<div id="plot-genes-mapped-on-segments" class="section level2">
-<h2 class="hasAnchor">
-<a href="#plot-genes-mapped-on-segments" class="anchor"></a>Plot genes mapped on segments</h2>
-<p>Plots counts (raw data) for genes mapped across the genome. By default, it normalises by library size and input copy number for the segment to which each gene maps to.</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plot_gene_counts_on_genome.html">plot_gene_counts_on_genome</a></span><span class="op">(</span><span class="va">congas_example</span>, transpose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="co">#&gt; Warning in get_genes_mapped_to_segments(x, ...): get_gene_annotations() is</span>
-<span class="co">#&gt; missing annotations for some input genes ...</span>
-<span class="co">#&gt; Warning: The `x` argument of `as_tibble.matrix()` must have unique column names if `.name_repair` is omitted as of tibble 2.0.0.</span>
-<span class="co">#&gt; Using compatibility `.name_repair`.</span>
-<span class="co">#&gt; This warning is displayed once every 8 hours.</span>
-<span class="co">#&gt; Call `lifecycle::last_warnings()` to see where this warning was generated.</span>
-<span class="co">#&gt; Warning in plot_gene_counts_on_genome(congas_example, transpose = TRUE): Some</span>
-<span class="co">#&gt; genes are not mapped to the, check raw data.</span></code></pre></div>
-<p><img src="3_Plotting_functions_files/figure-html/unnamed-chunk-16-1.png" width="1152"></p>
-<p>You can also see the standard deviation of the genes mapping to the genome, which helps detecting clusters of high variations in count numbers in specific clusters.</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># All chromosomes at once</span>
-<span class="fu"><a href="../reference/plot_gene_stdev.html">plot_gene_stdev</a></span><span class="op">(</span><span class="va">congas_example</span>, transpose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<p><img src="3_Plotting_functions_files/figure-html/unnamed-chunk-17-1.png" width="1152"></p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Chromosome 7, split by segment</span>
-<span class="fu"><a href="../reference/plot_gene_stdev.html">plot_gene_stdev</a></span><span class="op">(</span><span class="va">congas_example</span>, transpose <span class="op">=</span> <span class="cn">TRUE</span>, 
-                chromosomes <span class="op">=</span> <span class="st">'chr7'</span>, 
-                by_segment <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<p><img src="3_Plotting_functions_files/figure-html/unnamed-chunk-18-1.png" width="576"></p>
+<p><img src="3_Plotting_functions_files/figure-html/unnamed-chunk-14-3.png" width="384"></p>
 </div>
 <div id="analysis-reports" class="section level2">
 <h2 class="hasAnchor">
 <a href="#analysis-reports" class="anchor"></a>Analysis report(s)</h2>
 <p>A full report assembles some of these visualisations.</p>
 <p>This is a standard analysis report.</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/report_analysis.html">report_analysis</a></span><span class="op">(</span><span class="va">congas_example</span>, transpose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/report_analysis.html">report_analysis</a></span><span class="op">(</span><span class="va">congas_example</span><span class="op">)</span>
 <span class="co">#&gt; ✓ Loading ctree, 'Clone trees in cancer'. Support : &lt;https://caravagn.github.io/ctree/&gt;</span>
 <span class="co">#&gt; Warning: replacing previous import 'Biostrings::translate' by</span>
 <span class="co">#&gt; 'seqinr::translate' when loading 'dndscv'</span>
 <span class="co">#&gt; ✔ Loading mobster, 'Model-based clustering in cancer'. Support :</span>
-<span class="co">#&gt; &lt;https://caravagn.github.io/mobster/&gt;.</span></code></pre></div>
-<p><img src="3_Plotting_functions_files/figure-html/unnamed-chunk-19-1.png" width="1536"></p>
+<span class="co">#&gt; &lt;https://caravagn.github.io/mobster/&gt;.</span>
+<span class="co">#&gt; Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; =</span>
+<span class="co">#&gt; "none")` instead.</span>
+<span class="co">#&gt; Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; =</span>
+<span class="co">#&gt; "none")` instead.</span>
+
+<span class="co">#&gt; Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; =</span>
+<span class="co">#&gt; "none")` instead.</span>
+
+<span class="co">#&gt; Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; =</span>
+<span class="co">#&gt; "none")` instead.</span></code></pre></div>
+<p><img src="3_Plotting_functions_files/figure-html/unnamed-chunk-15-1.png" width="1536"></p>
 <p>This is to focus on Differential Expressions.</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/report_analysis_de.html">report_analysis_de</a></span><span class="op">(</span><span class="va">congas_example</span><span class="op">)</span>
+<span class="co">#&gt; Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; =</span>
+<span class="co">#&gt; "none")` instead.</span>
 <span class="co">#&gt; Warning: Removed 16 rows containing missing values (geom_rect).</span>
 
 <span class="co">#&gt; Warning: Removed 16 rows containing missing values (geom_rect).</span>
 <span class="co">#&gt; Warning: Removed 16 rows containing missing values (geom_point).</span></code></pre></div>
-<p><img src="3_Plotting_functions_files/figure-html/unnamed-chunk-20-1.png" width="1536"></p>
+<p><img src="3_Plotting_functions_files/figure-html/unnamed-chunk-16-1.png" width="1536"></p>
 </div>
   </div>
 

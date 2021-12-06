@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Title — init • Rcongas</title>
+<title>Initialize a CONGAS object — init • Rcongas</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,8 +46,8 @@
 
 
 
-<meta property="og:title" content="Title — init" />
-<meta property="og:description" content="Title" />
+<meta property="og:title" content="Initialize a CONGAS object — init" />
+<meta property="og:description" content="Initialize a CONGAS object" />
 <meta property="og:image" content="militeee.github.io/Rcongas/logo.png" />
 
 
@@ -106,16 +106,30 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/1_Models.html">Models available in this package</a>
+      <a></a>
     </li>
     <li>
-      <a href="../articles/2_Getters.html">Getter functions</a>
+      <a href="../articles/1_Models.html">Models</a>
+    </li>
+    <li>
+      <a href="../articles/2_Getters.html">Getters</a>
     </li>
     <li>
       <a href="../articles/3_Plotting_functions.html">Plotting functions</a>
     </li>
     <li>
-      <a href="../articles/4_Propreocessing.html">Preprocessing</a>
+      <a href="../articles/4_Preprocessing.html">Preprocessing</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Old version</li>
+    <li>
+      <a href="../old_vignettes/kieran_vignette.html">Breast PDX analysis</a>
+    </li>
+    <li>
+      <a href="../old_vignettes/Glioblastoma_smart_seq_analysis.html">Glioblastoma GBM analysis</a>
+    </li>
+    <li>
+      <a href="../old_vignettes/Glioblastoma_smart_seq_analysis.html">Glioblastoma GBM analysis</a>
     </li>
   </ul>
 </li>
@@ -140,13 +154,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Title</h1>
+    <h1>Initialize a CONGAS object</h1>
     <small class="dont-index">Source: <a href='https://github.com/militeee/RcongasR/init.R'><code>R/init.R</code></a></small>
     <div class="hidden name"><code>init.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Title</p>
+    <p>Initialize a CONGAS object</p>
     </div>
 
     <pre class="usage"><span class='fu'>init</span><span class='op'>(</span>
@@ -174,31 +188,32 @@
     </tr>
     <tr>
       <th>chromosomes</th>
-      <td></td>
+      <td><p>which chromosome to include in the analysis</p></td>
     </tr>
     <tr>
       <th>fun</th>
-      <td></td>
+      <td><p>a valid R function to aggregate the data: should be defined as R^n -&gt; R</p></td>
     </tr>
     <tr>
       <th>online</th>
-      <td></td>
+      <td><p>get gene position information directly from ENSEMBL</p></td>
     </tr>
     <tr>
       <th>reference_genome</th>
-      <td></td>
+      <td><p>reference assembly of human or mouse genome</p></td>
     </tr>
     <tr>
       <th>correct_bins</th>
-      <td></td>
+      <td><p>filter small segments, and then defragment them by merging
+those with the same CNV</p></td>
     </tr>
     <tr>
       <th>gene_format</th>
-      <td></td>
+      <td><p>gene format from those available on biomaRt</p></td>
     </tr>
     <tr>
       <th>description</th>
-      <td></td>
+      <td><p>a description for the object</p></td>
     </tr>
     </table>
 

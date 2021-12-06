@@ -64,16 +64,30 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/1_Models.html">Models available in this package</a>
+      <a></a>
     </li>
     <li>
-      <a href="../articles/2_Getters.html">Getter functions</a>
+      <a href="../articles/1_Models.html">Models</a>
+    </li>
+    <li>
+      <a href="../articles/2_Getters.html">Getters</a>
     </li>
     <li>
       <a href="../articles/3_Plotting_functions.html">Plotting functions</a>
     </li>
     <li>
-      <a href="../articles/4_Propreocessing.html">Preprocessing</a>
+      <a href="../articles/4_Preprocessing.html">Preprocessing</a>
+    </li>
+    <li class="divider">
+    <li class="dropdown-header">Old version</li>
+    <li>
+      <a href="../old_vignettes/kieran_vignette.html">Breast PDX analysis</a>
+    </li>
+    <li>
+      <a href="../old_vignettes/Glioblastoma_smart_seq_analysis.html">Glioblastoma GBM analysis</a>
+    </li>
+    <li>
+      <a href="../old_vignettes/Glioblastoma_smart_seq_analysis.html">Glioblastoma GBM analysis</a>
     </li>
   </ul>
 </li>
@@ -115,6 +129,13 @@
 <span class="co">#&gt; Warning: replacing previous import 'crayon::%+%' by 'ggplot2::%+%' when loading</span>
 <span class="co">#&gt; 'BMix'</span>
 <span class="co">#&gt; ✓ Loading BMix, 'Binomial and Beta-Binomial univariate mixtures'. Support : &lt;https://caravagnalab.github.io/BMix/&gt;</span>
+<span class="co">#&gt; Warning: package 'ggplot2' was built under R version 4.1.1</span>
+<span class="co">#&gt; Warning: package 'tibble' was built under R version 4.1.1</span>
+<span class="co">#&gt; Warning: package 'tidyr' was built under R version 4.1.1</span>
+<span class="co">#&gt; Warning: package 'readr' was built under R version 4.1.1</span>
+<span class="co">#&gt; Warning: package 'stringr' was built under R version 4.1.1</span>
+<span class="co">#&gt; Warning: package 'forcats' was built under R version 4.1.1</span>
+<span class="co">#&gt; Warning: package 'crayon' was built under R version 4.1.1</span>
 <span class="co">#&gt; ✓ Loading CNAqc, 'Copy Number Alteration quality check'. Support : &lt;https://caravagn.github.io/CNAqc/&gt;</span>
 <span class="co">#&gt; ✓ Loading Rcongas, 'Copy-Number genotyping from single cells'. Support : &lt;https://militeee.github.io/Rcongas/&gt;</span></code></pre></div>
 <p>Models for clustering and segmentation available in this package are listed via <code><a href="../reference/list_models.html">list_models()</a></code>.</p>
@@ -123,12 +144,9 @@
 <code class="sourceCode R"><span class="fu"><a href="../reference/list_models.html">list_models</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; ── Models available in version: 0.1.0</span>
-<span class="co">#&gt; →            HmmSimple NA</span>
 <span class="co">#&gt; →      MixtureGaussian Poisson-based mixture with Lognormal copy-numbers</span>
-<span class="co">#&gt; →   MixtureGaussianDMP NA</span>
-<span class="co">#&gt; →     MixtureDirichlet Dirichlet-process version of XXXXXXXXXXXXX</span>
-<span class="co">#&gt; →        HmmMixtureRNA NA</span>
-<span class="co">#&gt; →         HmmSegmenter NA</span>
+<span class="co">#&gt; →  MixtureGaussianNorm Gaussina-based mixture with Lognormal copy-numbers</span>
+<span class="co">#&gt; →         HmmSegmenter HMM with Beta emission probabilities for MAF segmentation</span>
 <span class="co">#&gt; ℹ See the vignette 'Models available in this package' for details and examples.</span></code></pre></div>
 <div id="models-for-clustering" class="section level1">
 <h1 class="hasAnchor">
@@ -136,30 +154,21 @@
 <div id="mixturegaussian" class="section level2">
 <h2 class="hasAnchor">
 <a href="#mixturegaussian" class="anchor"></a>MixtureGaussian</h2>
+<p>Model with LogNormal prior for CNV and Poisson likelihood</p>
 </div>
-<div id="mixturegaussiandmp" class="section level2">
+<div id="mixturegaussiannorm" class="section level2">
 <h2 class="hasAnchor">
-<a href="#mixturegaussiandmp" class="anchor"></a>MixtureGaussianDMP</h2>
-</div>
-<div id="mixturedirichlet" class="section level2">
-<h2 class="hasAnchor">
-<a href="#mixturedirichlet" class="anchor"></a>MixtureDirichlet</h2>
+<a href="#mixturegaussiannorm" class="anchor"></a>MixtureGaussianNorm</h2>
+<p>Model with LogNormal prior for CNV and Gaussian likelihood</p>
 </div>
 </div>
 <div id="models-for-segmentation" class="section level1">
 <h1 class="hasAnchor">
 <a href="#models-for-segmentation" class="anchor"></a>Models for segmentation</h1>
-<div id="hmmsimple" class="section level2">
-<h2 class="hasAnchor">
-<a href="#hmmsimple" class="anchor"></a>HmmSimple</h2>
-</div>
-<div id="hmmmixturerna" class="section level2">
-<h2 class="hasAnchor">
-<a href="#hmmmixturerna" class="anchor"></a>HmmMixtureRNA</h2>
-</div>
 <div id="hmmsegmenter" class="section level2">
 <h2 class="hasAnchor">
 <a href="#hmmsegmenter" class="anchor"></a>HmmSegmenter</h2>
+<p>Hmm with Beta emission probabilities for MAF segmentation (experimental, use it just for a rough initial segmentation)</p>
 </div>
 </div>
   </div>

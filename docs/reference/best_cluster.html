@@ -109,16 +109,30 @@ Bayesian posteriors or MAP estimates." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/1_Models.html">Models available in this package</a>
+      <a></a>
     </li>
     <li>
-      <a href="../articles/2_Getters.html">Getter functions</a>
+      <a href="../articles/1_Models.html">Models</a>
+    </li>
+    <li>
+      <a href="../articles/2_Getters.html">Getters</a>
     </li>
     <li>
       <a href="../articles/3_Plotting_functions.html">Plotting functions</a>
     </li>
     <li>
-      <a href="../articles/4_Propreocessing.html">Preprocessing</a>
+      <a href="../articles/4_Preprocessing.html">Preprocessing</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Old version</li>
+    <li>
+      <a href="../old_vignettes/kieran_vignette.html">Breast PDX analysis</a>
+    </li>
+    <li>
+      <a href="../old_vignettes/Glioblastoma_smart_seq_analysis.html">Glioblastoma GBM analysis</a>
+    </li>
+    <li>
+      <a href="../old_vignettes/Glioblastoma_smart_seq_analysis.html">Glioblastoma GBM analysis</a>
     </li>
   </ul>
 </li>
@@ -166,11 +180,10 @@ Bayesian posteriors or MAP estimates.</p>
   lr <span class='op'>=</span> <span class='fl'>0.05</span>,
   param_list <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>,
   MAP <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  posteriors <span class='op'>=</span> <span class='cn'>FALSE</span>,
   seed <span class='op'>=</span> <span class='fl'>3</span>,
-  step_post <span class='op'>=</span> <span class='fl'>300</span>,
   mixture <span class='op'>=</span> <span class='cn'>NULL</span>,
-  method <span class='op'>=</span> <span class='st'>"AIC"</span>
+  method <span class='op'>=</span> <span class='st'>"AIC"</span>,
+  normalize_by_segs <span class='op'>=</span> <span class='cn'>FALSE</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -190,59 +203,57 @@ Bayesian posteriors or MAP estimates.</p>
     </tr>
     <tr>
       <th>optim</th>
-      <td></td>
+      <td><p>a pyro.optim object, in string format</p></td>
     </tr>
     <tr>
       <th>elbo</th>
-      <td></td>
+      <td><p>a pyro.inference object, in string format</p></td>
     </tr>
     <tr>
       <th>inf_type</th>
-      <td></td>
+      <td><p>currently just "SVI" is supported</p></td>
     </tr>
     <tr>
       <th>steps</th>
-      <td></td>
+      <td><p>number of step of the gradient-based VI algorithm</p></td>
     </tr>
     <tr>
       <th>lr</th>
-      <td></td>
+      <td><p>learning rate of the gradient-based VI algorithm</p></td>
     </tr>
     <tr>
       <th>param_list</th>
-      <td></td>
+      <td><p>named list of parameters for the specific model</p></td>
     </tr>
     <tr>
       <th>MAP</th>
-      <td></td>
-    </tr>
-    <tr>
-      <th>posteriors</th>
-      <td></td>
+      <td><p>perform MAP or full bayesian inference (MAP is suggested as it converges better)</p></td>
     </tr>
     <tr>
       <th>seed</th>
-      <td></td>
-    </tr>
-    <tr>
-      <th>step_post</th>
-      <td></td>
+      <td><p>seed for torch random number generator</p></td>
     </tr>
     <tr>
       <th>mixture</th>
-      <td></td>
+      <td><p>initial mixture weights, if NULL then they are equal to 1/K</p></td>
     </tr>
     <tr>
       <th>method</th>
-      <td></td>
+      <td><p>informtion criteria to score the best solution (currently supports "AIC", "BIC" and "ICL)</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    
+    <p>A congas (described in [init]) object with following elements:
+- *inference* :
+  - *models* with all the runs performed
+  - *model_selection* with information about the IC and run statistics</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-
+    <p>While this function has a lot of personalizable arguments, the default
+ones are usually good for most of the applications. It is better to be confident with Pyro
+before changing them</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

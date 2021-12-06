@@ -64,16 +64,30 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/1_Models.html">Models available in this package</a>
+      <a></a>
     </li>
     <li>
-      <a href="../articles/2_Getters.html">Getter functions</a>
+      <a href="../articles/1_Models.html">Models</a>
+    </li>
+    <li>
+      <a href="../articles/2_Getters.html">Getters</a>
     </li>
     <li>
       <a href="../articles/3_Plotting_functions.html">Plotting functions</a>
     </li>
     <li>
-      <a href="../articles/4_Propreocessing.html">Preprocessing</a>
+      <a href="../articles/4_Preprocessing.html">Preprocessing</a>
+    </li>
+    <li class="divider">
+    <li class="dropdown-header">Old version</li>
+    <li>
+      <a href="../old_vignettes/kieran_vignette.html">Breast PDX analysis</a>
+    </li>
+    <li>
+      <a href="../old_vignettes/Glioblastoma_smart_seq_analysis.html">Glioblastoma GBM analysis</a>
+    </li>
+    <li>
+      <a href="../old_vignettes/Glioblastoma_smart_seq_analysis.html">Glioblastoma GBM analysis</a>
     </li>
   </ul>
 </li>
@@ -95,7 +109,7 @@
 
       
 
-      </header><script src="Rcongas_files/header-attrs-2.6/header-attrs.js"></script><div class="row">
+      </header><script src="Rcongas_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Rcongas</h1>
@@ -110,6 +124,19 @@
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">Rcongas</span><span class="op">)</span>
+<span class="co">#&gt; Warning: replacing previous import 'cli::num_ansi_colors' by</span>
+<span class="co">#&gt; 'crayon::num_ansi_colors' when loading 'BMix'</span>
+<span class="co">#&gt; Warning: replacing previous import 'crayon::%+%' by 'ggplot2::%+%' when loading</span>
+<span class="co">#&gt; 'BMix'</span>
+<span class="co">#&gt; ✓ Loading BMix, 'Binomial and Beta-Binomial univariate mixtures'. Support : &lt;https://caravagnalab.github.io/BMix/&gt;</span>
+<span class="co">#&gt; Warning: package 'ggplot2' was built under R version 4.1.1</span>
+<span class="co">#&gt; Warning: package 'tibble' was built under R version 4.1.1</span>
+<span class="co">#&gt; Warning: package 'tidyr' was built under R version 4.1.1</span>
+<span class="co">#&gt; Warning: package 'readr' was built under R version 4.1.1</span>
+<span class="co">#&gt; Warning: package 'stringr' was built under R version 4.1.1</span>
+<span class="co">#&gt; Warning: package 'forcats' was built under R version 4.1.1</span>
+<span class="co">#&gt; Warning: package 'crayon' was built under R version 4.1.1</span>
+<span class="co">#&gt; ✓ Loading CNAqc, 'Copy Number Alteration quality check'. Support : &lt;https://caravagn.github.io/CNAqc/&gt;</span>
 <span class="co">#&gt; ✓ Loading Rcongas, 'Copy-Number genotyping from single cells'. Support : &lt;https://militeee.github.io/Rcongas/&gt;</span></code></pre></div>
 <p>High-level overview pf the package + lists of available vignettes</p>
   </div>

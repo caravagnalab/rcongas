@@ -70,7 +70,7 @@ plot_single_segment_poisson = function(x, segment, sum_denominator)
 {
   # Counts data
   counts_data = get_counts(x, normalise = TRUE,  sum_denominator = sum_denominator) %>%
-    idify() %>%
+    Rcongas:::idify() %>%
     dplyr::filter(segment_id == segment)
   
   # Coloring
@@ -84,7 +84,7 @@ plot_single_segment_poisson = function(x, segment, sum_denominator)
                                  segment_id = segment,
                                  cluster = cluster)
     },
-    lapply(clusters, list),
+    lapply(clusters, list),filter_errors = F,
     parallel = FALSE
   )
   
@@ -215,7 +215,8 @@ get_poisson_density_values = function(x,
                                       cluster)
 {
   # Poisson parameters - for the density
-  poisson_params = get_poisson_parameters(x) %>%
+  poisson_params = Rcongas:::get_poisson_parameters(x) %>% 
+    mutate(cluster = if_else(grepl(cluster, pattern = "c"), as.character(cluster), paste0("c", cluster))) %>% 
     Rcongas:::idify() %>%
     dplyr::filter(segment_id == !!segment_id, cluster == !!cluster)
   
@@ -260,6 +261,7 @@ get_gaussian_density_values = function(x,
 {
   # Gaussian parameters - for the density
   gaussian_params = Rcongas:::get_gaussian_parameters(x) %>%
+    mutate(cluster = if_else(grepl(cluster, pattern = "c"), as.character(cluster), paste0("c", cluster))) %>% 
     Rcongas:::idify() %>%
     dplyr::filter(segment_id == !!segment_id, cluster == !!cluster)
   

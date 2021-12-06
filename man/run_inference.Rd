@@ -2,7 +2,7 @@
 % Please edit documentation in R/interface.R
 \name{run_inference}
 \alias{run_inference}
-\title{Title}
+\title{Run CONGAS inference}
 \usage{
 run_inference(
   X,
@@ -14,9 +14,7 @@ run_inference(
   lr = 0.05,
   param_list = list(),
   MAP = TRUE,
-  posteriors = FALSE,
   seed = 3,
-  step_post = 300,
   rerun = F
 )
 }
@@ -27,5 +25,6 @@ run_inference(
 
 }
 \description{
-Title
+This function acts as the main interface with the Python package. It allows to tweak
+most of the parameters of the Python model. Most of default is good for most of the applications
 }
