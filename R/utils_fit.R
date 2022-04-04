@@ -79,9 +79,13 @@ format_best_model <-  function(x, inf){
 
 
   mixing_proportions_atac <-  c()
+  mixing_proportions_rna <- c()
   segment_parameters_atac <-  c()
+  segment_parameters_rna <-  c()
   z_nk_atac <- c()
   cluster_assignments_atac <-  c()
+  z_nk_rna <- c()
+  cluster_assignments_rna <-  c()
 
 
 
