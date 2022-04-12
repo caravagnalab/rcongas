@@ -6,9 +6,9 @@ articles:
   2_Tutorial: 2_Tutorial.html
   3_Getters: 3_Getters.html
   4_Plotting_functions: 4_Plotting_functions.html
-  5_Propreocessing: 5_Propreocessing.html
+  5_Preprocessing: 5_Preprocessing.html
   Rcongas: Rcongas.html
-last_built: 2022-04-12T15:00Z
+last_built: 2022-04-12T15:52Z
 urls:
   reference: militeee.github.io/Rcongas/reference
   article: militeee.github.io/Rcongas/articles

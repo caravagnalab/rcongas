@@ -48,9 +48,9 @@ and in the variational framework latent variables are approximated as variationa
 
 - $p(\pi) \sim \operatorname{Dirichlet}(r)$, a prior over cluster distributions, by default all assumed to have equal proportions (i.e. $r=1 / k$ ).
 
-#### Achtung!
+### Achtung!
 
-##### The model has the following statistical assumptions:
+The model has the following statistical assumptions:
 
 -   There is linear correlation between the number of copies of a segment of DNA and the average expression of the genes mapping in that segment.
 
@@ -58,6 +58,6 @@ and in the variational framework latent variables are approximated as variationa
 
 -   Copy number variation is the main biological driver of expression variance in a segment when considering all the gene mapping on it.
 
-##### They may not be valid in all the possible biological and technical conditions and can be the main reason of false positive calls. Most of them can be solved through pre-processing others require specific attention.
+*They may not be valid in all the possible biological and technical conditions and can be the main reason of false positive calls. Most of them can be solved through pre-processing others require specific attention.*
 
-### We know this assumptions are super strong and we are actually working on a new version of the tool the relaxes some constraints, provides support for new datatypes and uses some better statistics. Endure with us a little longer.
+We know this assumptions are super strong and we are actually working on a new version of the tool the relaxes some constraints, provides support for new datatypes and uses some better statistics. Endure with us a little longer.
