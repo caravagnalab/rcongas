@@ -2,7 +2,7 @@
 % Please edit documentation in R/DE.R
 \name{calculate_DE}
 \alias{calculate_DE}
-\title{Title}
+\title{Calculate DGE between clones}
 \usage{
 calculate_DE(
   x,
@@ -15,11 +15,32 @@ calculate_DE(
 )
 }
 \arguments{
-\item{logfc.threshold}{}
+\item{x}{Rcongas object with fits}
+
+\item{input}{a genes by cell couunts matrix. Cell name should match the names used in the Rcongas object}
+
+\item{clone1}{first clone id as saved in the Rcongas object (ec c1,c2)}
+
+\item{clone2}{second clone id. If null it performs DE against all the other clones together}
+
+\item{method}{DE expression method. Supports all the method implemented in \link[Seurat]{FindMarkers}}
+
+\item{normalize}{Normalize gene counts?}
+
+\item{logfc.threshold}{log fold change threshold for DE}
 }
 \value{
-
+an Rcongas object with a DE field
 }
 \description{
-Title
+The function performs DE for specific subclones using the function \link[Seurat]{FindMarkers} from
+Seurat.
+}
+\examples{
+
+x = Rcongas::congas_example
+
+count_mat <- x$data$raw \%>\% reshape2::acast(gene ~ cell, fill = 0, value.var = "n")
+calculate_DE(x,count_mat, "c1", "c2" )
+
 }

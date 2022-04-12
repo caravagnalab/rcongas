@@ -1,23 +1,27 @@
-#
-# X= calculate_DE(get_best_model(X), mat_pre2 %>% t, 1, 2, method = 'wilcox')
-
-# input = get_input_raw_data(x)
-# xx = calculate_DE(x, input, 1, 2)
-
-#' Title
+#'  Calculate DGE between clones
 #'
-#' @param X
-#' @param input
-#' @param clone1
-#' @param clone2
-#' @param method
-#' @param normalize
-#' @param logfc.threshold
 #'
-#' @return
+#' The function performs DE for specific subclones using the function \link[Seurat]{FindMarkers} from
+#' Seurat. 
+#'
+#' @param x Rcongas object with fits
+#' @param input a genes by cell couunts matrix. Cell name should match the names used in the Rcongas object
+#' @param clone1 first clone id as saved in the Rcongas object (ec c1,c2)
+#' @param clone2 second clone id. If null it performs DE against all the other clones together
+#' @param method DE expression method. Supports all the method implemented in \link[Seurat]{FindMarkers}
+#' @param normalize Normalize gene counts?
+#' @param logfc.threshold log fold change threshold for DE
+#'
+#' @return an Rcongas object with a DE field
 #' @export
 #'
 #' @examples
+#' 
+#' x = Rcongas::congas_example
+#' 
+#' count_mat <- x$data$raw %>% reshape2::acast(gene ~ cell, fill = 0, value.var = "n")
+#' calculate_DE(x,count_mat, "c1", "c2" )
+#' 
 calculate_DE <-
   function(x,
            input,

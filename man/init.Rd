@@ -19,13 +19,14 @@ init(
 \arguments{
 \item{data}{}
 
-\item{cnv_data}{}
+\item{cnv_data}{cnv table, a data.frame with columns c("chr", "from", "to", "tot"). 
+Where tot is the estimated bulk copy number value}
 
 \item{chromosomes}{which chromosome to include in the analysis}
 
 \item{fun}{a valid R function to aggregate the data: should be defined as R^n -> R}
 
-\item{online}{get gene position information directly from ENSEMBL}
+\item{online}{get gene position information by querying BioMart}
 
 \item{reference_genome}{reference assembly of human or mouse genome}
 
@@ -37,8 +38,9 @@ those with the same CNV}
 \item{description}{a description for the object}
 }
 \value{
-
+Rcongas object
 }
 \description{
-Initialize a CONGAS object
+Generates an Rcongas object. Automatically maps genes to given CNV segments and calculate 
+the sum of gene counts. It retrieves gene positions from BioMartR, if the packages is not installed we suggest to use `online=FALSE`
 }

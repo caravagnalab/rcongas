@@ -2,20 +2,22 @@
 % Please edit documentation in R/filter_segments_and_return_cnv_table.R
 \name{filter_segments_and_return_cnv_table}
 \alias{filter_segments_and_return_cnv_table}
-\title{Title}
+\title{Filter a cnv table}
 \usage{
-filter_segments_and_return_cnv_table(x, mu = 15, length = 2e+07)
+filter_segments_and_return_cnv_table(x, mu = 15, length = 2e+07, merge = TRUE)
 }
 \arguments{
-\item{x}{}
+\item{x}{rcongas object}
 
-\item{mu}{}
+\item{mu}{number of genes to filter}
 
-\item{length}{}
+\item{length}{length of the segment to filter}
+
+\item{merge}{merge continous segments with the same CNV value}
 }
 \value{
-
+a cnv_table with only the filtered segments
 }
 \description{
-Title
+The function takes and rcongas object as input and returns a cnv table with the filtered segments.
 }

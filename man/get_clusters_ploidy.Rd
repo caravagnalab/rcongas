@@ -24,7 +24,7 @@ get_clusters_ploidy(
 \item{alpha}{The parameter to select what to highlight.}
 }
 \value{
-
+A tibble with CN values for each segment, cluster membership and if a segment is highlighted
 }
 \description{
 Extract the clone ploidy profiles from a fit object.

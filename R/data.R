@@ -1,6 +1,7 @@
 #' Example Rcongas fit.
 #'
-#' @description Data from ....
+#' @description Data from triple negative breast cancer PDX. 
+#' Provides an example of fitted Rcongas object
 #'
 #' @docType data
 #'
@@ -16,21 +17,3 @@
 #' plot(congas_example)
 "congas_example"
 
-
-#' #' Example Rcongas fit.
-#' #'
-#' #' @description Data from ....
-#' #'
-#' #' @docType data
-#' #'
-#' #' @usage data(breast_xeno_10x)
-#' #'
-#' #' @format Output from `run_inference`.
-#' #'
-#' #' @keywords datasets
-#' #'
-#' #' @examples
-#' #' data(breast_xeno_10x)
-#' #' print(breast_xeno_10x)
-#' #' plot(breast_xeno_10x)
-#' "breast_xeno_10x"

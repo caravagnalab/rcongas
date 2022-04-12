@@ -1,16 +1,25 @@
 
 
-#' Title
+#' Return expression level per segment
 #'
-#' @param inf_obj
-#' @param segments_input
-#' @param chromosomes
-#' @param normalise
+#' @param inf_obj an Rcongas object
+#' @param chromosomes Chromosome to filter 
+#' @param normalise should the counts be divided by the library size?
+#' @param z_score returns the Z score for each segment instead of the actual expression value
+#' @param should the the denominator of the likelihood be included? (usually TRUE unless you are using very old versions)
 #'
-#' @return
+#' @return A tibble with expression values for each segment and cluster
 #' @export
 #'
 #' @examples
+#' 
+#' library(Rcongas)
+#' 
+#' data('congas_example', package = 'Rcongas')
+#' 
+#' get_counts(congas_example)
+#' 
+#' 
 get_counts <-
   function(x,
            chromosomes = paste0("chr", c(1:22, "X", "Y")),

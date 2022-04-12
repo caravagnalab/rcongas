@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r, include = T}
+```{r, include = T, results='hide', warning=FALSE, message=FALSE}
 require(Rcongas)
 ```
 

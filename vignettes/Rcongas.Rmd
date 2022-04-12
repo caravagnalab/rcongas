@@ -7,15 +7,57 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
-```
+# Overview
 
-```{r setup}
-library(Rcongas)
-```
+Rcongas is a package to cluster cells according to their copy-number profile and infer the corresponding CNV value w.r.t. a baseline bulk sequencing reference.
 
-High-level overview pf the package + lists of available vignettes
+The tool requires as input:
+
+-   A gene by cells count matrix with Hugo Symbols as row names and cell names as column names
+
+-   A copy number table obtained from bulk sequencing or direct RNA-seq segmentation. The table needs to have to following mandatory column: chr, from, to and tot (a numeric value indicating the bulk or average copy number value for that segment)
+
+Rcongas performs a joint clustering and CNV value inference procedure using a Poisson or Gaussian Mixture Model with prior distributions informed by the copy number table obtained in input.
+
+Rcongas can be used to genotype subclonal population characterized by prototypical diversity.
+
+#### The model
+
+$Y$ is the $𝑁 × 𝐼$ input data matrix of RNA counts, which describe $𝑁$ sequenced cells and $I$ input segments (mapped anywhere on the genome). Counts on a segment are summed up by pooling all genes $y_{n,i}$ that map to the segment. The final likelihood can be written as:
+
+$$
+p(\mathbf{Y} \mid \boldsymbol{\theta}, \boldsymbol{\mu}, \mathbf{C}, \mathbf{Z}, \boldsymbol{\pi})=\prod_{n=1}^{N} \prod_{i=1}^{I} p\left(y_{n i} \mid \boldsymbol{\theta}, \boldsymbol{\mu}, \mathbf{C}, \mathbf{Z}, \boldsymbol{\pi}\right)
+$$
+
+And the segment likelihood is:
+
+$$
+p\left(y_{n i} \mid \boldsymbol{\theta}, \boldsymbol{\mu}, \mathbf{C}, \mathbf{Z}\right)=\operatorname{Pois}\left(\frac{\theta_{n} \cdot \mu_{i} \cdot \prod_{k=1}^{K} C_{i k}^{z_{n k}}}{\sum_{i=1}^{I} \prod_{k=1}^{K} C_{i k}^{z_{n k}}}\right)
+$$
+
+where the model uses a Gamma-distributed latent variable $\theta_n$ which models the library size for cell $n$, and $\mu_i$ for the number of genes in $i$ segment (a constant determined from data). In CONGAS $\mathbf{C}$ is the CNA profile for clones, where each clone $k$ is defined by segments and 𝐼 associated CNAs; the prior for $\mathbf{C}$ is a log-transform of a normal distribution, consistently with the fact that ploidies are positive values. In this formulation $\mathbf{Z}$ are the $N \times K$ latent variables that assign cells to clusters, and $\pi$ the $K$-dimensional mixing proportions.
+
+The model joint distribution can be factored as $$
+p(Y, Z, C, \theta, \pi)=p(Y \mid C, \theta, \pi) p(Z \mid \pi) p(\pi) \prod_{i k} p\left(c_{i k}\right) \prod_{n} p\left(\theta_{n}\right)
+$$ 
+and in the variational framework latent variables are approximated as variational distributions $q(Z, C, \theta, \pi)$, supposed to be independent and factorizable. The prior distributions for our latent variables are:
+
+-  $p\left(c_{i k}\right) \sim \log \operatorname{Norm}\left(m_{i k}, v\right)$, where $m_{i k}$ is the input CNA value from bulk DNA, and the variance $v$ governs how far the actual CNAs can be compared to input (default $v=0.5$ );
+
+-   $p\left(\theta_{n}\right) \sim \operatorname{Gamma}\left(e_{s^{\prime}} e_{r}\right)$, a scarcely informative prior that works well in most cases (default $e_{s}=3, e_{r}=1$ );
+
+- $p(\pi) \sim \operatorname{Dirichlet}(r)$, a prior over cluster distributions, by default all assumed to have equal proportions (i.e. $r=1 / k$ ).
+
+#### Achtung!
+
+##### The model has the following statistical assumptions:
+
+-   There is linear correlation between the number of copies of a segment of DNA and the average expression of the genes mapping in that segment.
+
+-   Library size factors are assumed to be unimodal, if it is not the case we suggest to split the dataset and run independent analysis for each unimodal subgroup.
+
+-   Copy number variation is the main biological driver of expression variance in a segment when considering all the gene mapping on it.
+
+##### They may not be valid in all the possible biological and technical conditions and can be the main reason of false positive calls. Most of them can be solved through pre-processing others require specific attention.
+
+### We know this assumptions are super strong and we are actually working on a new version of the tool the relaxes some constraints, provides support for new datatypes and uses some better statistics. Endure with us a little longer.

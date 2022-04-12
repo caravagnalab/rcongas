@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_counts.R
 \name{get_counts}
 \alias{get_counts}
-\title{Title}
+\title{Return expression level per segment}
 \usage{
 get_counts(
   x,
@@ -13,11 +13,29 @@ get_counts(
 )
 }
 \arguments{
-\item{normalise}{}
+\item{chromosomes}{Chromosome to filter}
+
+\item{normalise}{should the counts be divided by the library size?}
+
+\item{z_score}{returns the Z score for each segment instead of the actual expression value}
+
+\item{inf_obj}{an Rcongas object}
+
+\item{should}{the the denominator of the likelihood be included? (usually TRUE unless you are using very old versions)}
 }
 \value{
-
+A tibble with expression values for each segment and cluster
 }
 \description{
-Title
+Return expression level per segment
+}
+\examples{
+
+library(Rcongas)
+
+data('congas_example', package = 'Rcongas')
+
+get_counts(congas_example)
+
+
 }

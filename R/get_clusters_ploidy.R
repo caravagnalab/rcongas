@@ -10,7 +10,7 @@
 #' @param offset_amplitude If TRUE, normalise CNA values for comparisons (z-score alike)
 #' @param alpha The parameter to select what to highlight.
 #'
-#' @return
+#' @return A tibble with CN values for each segment, cluster membership and if a segment is highlighted
 #' @export
 #'
 #' @examples

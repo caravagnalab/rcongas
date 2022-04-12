@@ -7,11 +7,22 @@
 approx_theta_prior_params(x, plot = FALSE, mult_factor = 1, bins = 30)
 }
 \arguments{
-\item{x}{}
+\item{x}{an Rcongas object}
+
+\item{mult_factor}{a constant to multiply both rate and scale of the gamma. Controls the final variance of the distribution}
+
+\item{bins}{number of bins for the plotted histogram (ignored if `plot=FALSE`)}
 }
 \value{
-
+The MLE inferred shape and rate of the gamma
 }
 \description{
-This function fit a theta
+This function fit a gamma distribution to the empirical library size
+}
+\examples{
+
+x = Rcongas::congas_example
+
+approx_theta_prior_params(x)
+
 }

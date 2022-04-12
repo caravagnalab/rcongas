@@ -11,7 +11,8 @@ Output from `run_inference`.
 data(congas_example)
 }
 \description{
-Data from ....
+Data from triple negative breast cancer PDX. 
+Provides an example of fitted Rcongas object
 }
 \examples{
 data(congas_example)

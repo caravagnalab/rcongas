@@ -1,17 +1,21 @@
 #' Initialize a CONGAS object
+#' 
+#' Generates an Rcongas object. Automatically maps genes to given CNV segments and calculate 
+#' the sum of gene counts. It retrieves gene positions from BioMartR, if the packages is not installed we suggest to use `online=FALSE`
 #'
 #' @param data 
-#' @param cnv_data 
+#' @param cnv_data cnv table, a data.frame with columns c("chr", "from", "to", "tot"). 
+#' Where tot is the estimated bulk copy number value
 #' @param chromosomes which chromosome to include in the analysis
 #' @param fun a valid R function to aggregate the data: should be defined as R^n -> R
-#' @param online get gene position information directly from ENSEMBL 
+#' @param online get gene position information by querying BioMart 
 #' @param reference_genome reference assembly of human or mouse genome
 #' @param correct_bins filter small segments, and then defragment them by merging
 #' those with the same CNV
 #' @param gene_format gene format from those available on biomaRt
 #' @param description a description for the object
 #'
-#' @return
+#' @return Rcongas object
 #' @export
 #'
 #' @examples
@@ -121,7 +125,7 @@ init <-
     
     gene_locations = gene_locations %>%
       left_join(locations, by = 'gene') %>%
-      select(gene, chr, from, to, segment_id)
+      dplyr::select(gene, chr, from, to, segment_id)
     
     # Retain only what is mappable for sure
     nr = gene_locations %>% nrow

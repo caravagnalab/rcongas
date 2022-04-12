@@ -2,7 +2,7 @@
 % Please edit documentation in R/getters_extra_analysis.R
 \name{get_DE_table}
 \alias{get_DE_table}
-\title{Title}
+\title{Get a table of DE genes}
 \usage{
 get_DE_table(
   x,
@@ -12,11 +12,18 @@ get_DE_table(
 )
 }
 \arguments{
-\item{cut_lfc}{}
+\item{x}{an Rcongas object after DE analysis}
+
+\item{chromosomes}{filter for specific chromosomes}
+
+\item{cut_pvalue}{corrected (BH) p-value filter}
+
+\item{cut_lfc}{log fold change filter}
 }
 \value{
-
+a table with differentially expressed genes
 }
 \description{
-Title
+The actual function for DE is implemented following 
+the Seurat `FindMarkers` method and as such conserves the same output structure
 }

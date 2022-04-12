@@ -19,23 +19,17 @@ navbar:
    articles:
     text: Articles
     menu:
-    - text: 
     - text: Models
       href: articles/1_Models.html
+    - text: Tutorial
+      href: articles/2_Tutorial.html
     - text: Getters
-      href: articles/2_Getters.html
+      href: articles/3_Getters.html
     - text: Plotting functions
-      href: articles/3_Plotting_functions.html
+      href: articles/4_Plotting_functions.html
     - text: Preprocessing
-      href: articles/4_Preprocessing.html
-    - text: -------
-    - text: Old version 
-    - text: Breast PDX analysis 
-      href: articles/kieran_vignette.html
-    - text: Glioblastoma GBM analysis 
-      href: articles/gbm_vignette.html
-    - text: Monosomy 7 analysis 
-      href: articles/monosomy_vignette.html
+      href: articles/5_Preprocessing.html
+
 
 authors:
   Salvatore Milite:

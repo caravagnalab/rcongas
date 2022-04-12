@@ -26,6 +26,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -38,18 +40,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Rcongas</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="../articles/Rcongas.html">Get started</a>
 </li>
@@ -57,44 +53,33 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a></a>
-    </li>
-    <li>
       <a href="../articles/1_Models.html">Models</a>
     </li>
     <li>
-      <a href="../articles/2_Getters.html">Getters</a>
+      <a href="../articles/2_Tutorial.html">Tutorial</a>
     </li>
     <li>
-      <a href="../articles/3_Plotting_functions.html">Plotting functions</a>
+      <a href="../articles/3_Getters.html">Getters</a>
     </li>
     <li>
-      <a href="../articles/4_Preprocessing.html">Preprocessing</a>
-    </li>
-    <li class="divider">
-    <li class="dropdown-header">Old version</li>
-    <li>
-      <a href="../../old_vignettes/kieran_vignette.html">Breast PDX analysis</a>
+      <a href="../articles/4_Plotting_functions.html">Plotting functions</a>
     </li>
     <li>
-      <a href="../../old_vignettes/Glioblastoma_smart_seq_analysis.html">Glioblastoma GBM analysis</a>
-    </li>
-    <li>
-      <a href="../../old_vignettes/monosomy_vignette.html">Monosomy 7 analysis</a>
+      <a href="../articles/5_Preprocessing.html">Preprocessing</a>
     </li>
   </ul>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/militeee/Rcongas/">
+  <a href="https://github.com/militeee/Rcongas/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -109,13 +94,13 @@
 
       
 
-      </header><script src="1_Models_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Models available in this package</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/militeee/Rcongasvignettes/1_Models.Rmd"><code>vignettes/1_Models.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/militeee/Rcongasvignettes/1_Models.Rmd" class="external-link"><code>vignettes/1_Models.Rmd</code></a></small>
       <div class="hidden name"><code>1_Models.Rmd</code></div>
 
     </div>
@@ -123,52 +108,42 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">Rcongas</span><span class="op">)</span>
-<span class="co">#&gt; Warning: replacing previous import 'cli::num_ansi_colors' by</span>
-<span class="co">#&gt; 'crayon::num_ansi_colors' when loading 'BMix'</span>
-<span class="co">#&gt; Warning: replacing previous import 'crayon::%+%' by 'ggplot2::%+%' when loading</span>
-<span class="co">#&gt; 'BMix'</span>
-<span class="co">#&gt; ✓ Loading BMix, 'Binomial and Beta-Binomial univariate mixtures'. Support : &lt;https://caravagnalab.github.io/BMix/&gt;</span>
-<span class="co">#&gt; Warning: package 'ggplot2' was built under R version 4.1.1</span>
-<span class="co">#&gt; Warning: package 'tibble' was built under R version 4.1.1</span>
-<span class="co">#&gt; Warning: package 'tidyr' was built under R version 4.1.1</span>
-<span class="co">#&gt; Warning: package 'readr' was built under R version 4.1.1</span>
-<span class="co">#&gt; Warning: package 'stringr' was built under R version 4.1.1</span>
-<span class="co">#&gt; Warning: package 'forcats' was built under R version 4.1.1</span>
-<span class="co">#&gt; Warning: package 'crayon' was built under R version 4.1.1</span>
-<span class="co">#&gt; ✓ Loading CNAqc, 'Copy Number Alteration quality check'. Support : &lt;https://caravagn.github.io/CNAqc/&gt;</span>
-<span class="co">#&gt; ✓ Loading Rcongas, 'Copy-Number genotyping from single cells'. Support : &lt;https://militeee.github.io/Rcongas/&gt;</span></code></pre></div>
-<p>Models for clustering and segmentation available in this package are listed via <code><a href="../reference/list_models.html">list_models()</a></code>.</p>
-<p>Each model has one code associated to it, which should be used as parameter for fitting functions requiring a <code>model</code> argument.</p>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">Rcongas</span><span class="op">)</span></code></pre></div>
+<p>Models for clustering and segmentation available in this package are
+listed via <code><a href="../reference/list_models.html">list_models()</a></code>.</p>
+<p>Each model has one code associated to it, which should be used as
+parameter for fitting functions requiring a <code>model</code>
+argument.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/list_models.html">list_models</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; ── Models available in version: 0.1.0</span>
-<span class="co">#&gt; →      MixtureGaussian Poisson-based mixture with Lognormal copy-numbers</span>
-<span class="co">#&gt; →  MixtureGaussianNorm Gaussina-based mixture with Lognormal copy-numbers</span>
-<span class="co">#&gt; →         HmmSegmenter HMM with Beta emission probabilities for MAF segmentation</span>
-<span class="co">#&gt; ℹ See the vignette 'Models available in this package' for details and examples.</span></code></pre></div>
-<div id="models-for-clustering" class="section level1">
-<h1 class="hasAnchor">
-<a href="#models-for-clustering" class="anchor"></a>Models for clustering</h1>
-<div id="mixturegaussian" class="section level2">
-<h2 class="hasAnchor">
-<a href="#mixturegaussian" class="anchor"></a>MixtureGaussian</h2>
+<span class="co">#&gt; → <span style="color: #00BB00;">     MixtureGaussian</span> Poisson-based mixture with Lognormal copy-numbers</span>
+<span class="co">#&gt; → <span style="color: #00BB00;"> MixtureGaussianNorm</span> Gaussina-based mixture with Lognormal copy-numbers</span>
+<span class="co">#&gt; → <span style="color: #00BB00;">        HmmSegmenter</span> HMM with Beta emission probabilities for MAF segmentation</span>
+<span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See the vignette 'Models available in this package' for details and examples.</span></code></pre></div>
+<div class="section level2">
+<h2 id="models-for-clustering">Models for clustering<a class="anchor" aria-label="anchor" href="#models-for-clustering"></a>
+</h2>
+<div class="section level3">
+<h3 id="mixturegaussian">MixtureGaussian<a class="anchor" aria-label="anchor" href="#mixturegaussian"></a>
+</h3>
 <p>Model with LogNormal prior for CNV and Poisson likelihood</p>
 </div>
-<div id="mixturegaussiannorm" class="section level2">
-<h2 class="hasAnchor">
-<a href="#mixturegaussiannorm" class="anchor"></a>MixtureGaussianNorm</h2>
+<div class="section level3">
+<h3 id="mixturegaussiannorm">MixtureGaussianNorm<a class="anchor" aria-label="anchor" href="#mixturegaussiannorm"></a>
+</h3>
 <p>Model with LogNormal prior for CNV and Gaussian likelihood</p>
 </div>
 </div>
-<div id="models-for-segmentation" class="section level1">
-<h1 class="hasAnchor">
-<a href="#models-for-segmentation" class="anchor"></a>Models for segmentation</h1>
-<div id="hmmsegmenter" class="section level2">
-<h2 class="hasAnchor">
-<a href="#hmmsegmenter" class="anchor"></a>HmmSegmenter</h2>
-<p>Hmm with Beta emission probabilities for MAF segmentation (experimental, use it just for a rough initial segmentation)</p>
+<div class="section level2">
+<h2 id="models-for-segmentation">Models for segmentation<a class="anchor" aria-label="anchor" href="#models-for-segmentation"></a>
+</h2>
+<div class="section level3">
+<h3 id="hmmsegmenter">HmmSegmenter<a class="anchor" aria-label="anchor" href="#hmmsegmenter"></a>
+</h3>
+<p>Hmm with Beta emission probabilities for MAF segmentation
+(experimental, use it just for a rough initial segmentation)</p>
 </div>
 </div>
   </div>
@@ -184,11 +159,16 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by <a href="https://sites.google.com/view/cdslab">Salvatore Milite</a>, <a href="https://sites.google.com/view/cdslab">Giulio Caravagna</a>.</p>
+  <p></p>
+<p>Developed by <a href="https://sites.google.com/view/cdslab" class="external-link">Salvatore
+Milite</a>, <a href="https://sites.google.com/view/cdslab" class="external-link">Giulio
+Caravagna</a>.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
+2.0.2.</p>
 </div>
 
       </footer>
@@ -196,6 +176,8 @@
 
   
 
+
+  
 
   </body>
 </html>

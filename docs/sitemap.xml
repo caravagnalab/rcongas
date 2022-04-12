@@ -1,6 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>militeee.github.io/Rcongas/404.html</loc>
+  </url>
+  <url>
+    <loc>militeee.github.io/Rcongas/articles/1_Models.html</loc>
+  </url>
+  <url>
+    <loc>militeee.github.io/Rcongas/articles/2_Tutorial.html</loc>
+  </url>
+  <url>
+    <loc>militeee.github.io/Rcongas/articles/3_Getters.html</loc>
+  </url>
+  <url>
+    <loc>militeee.github.io/Rcongas/articles/4_Plotting_functions.html</loc>
+  </url>
+  <url>
+    <loc>militeee.github.io/Rcongas/articles/5_Propreocessing.html</loc>
+  </url>
+  <url>
+    <loc>militeee.github.io/Rcongas/articles/Rcongas.html</loc>
+  </url>
+  <url>
+    <loc>militeee.github.io/Rcongas/articles/index.html</loc>
+  </url>
+  <url>
+    <loc>militeee.github.io/Rcongas/authors.html</loc>
+  </url>
+  <url>
     <loc>militeee.github.io/Rcongas/index.html</loc>
   </url>
   <url>
@@ -97,6 +124,9 @@
     <loc>militeee.github.io/Rcongas/reference/highlights.html</loc>
   </url>
   <url>
+    <loc>militeee.github.io/Rcongas/reference/index.html</loc>
+  </url>
+  <url>
     <loc>militeee.github.io/Rcongas/reference/init.html</loc>
   </url>
   <url>
@@ -191,20 +221,5 @@
   </url>
   <url>
     <loc>militeee.github.io/Rcongas/reference/summary.rcongas.html</loc>
-  </url>
-  <url>
-    <loc>militeee.github.io/Rcongas/articles/1_Models.html</loc>
-  </url>
-  <url>
-    <loc>militeee.github.io/Rcongas/articles/2_Getters.html</loc>
-  </url>
-  <url>
-    <loc>militeee.github.io/Rcongas/articles/3_Plotting_functions.html</loc>
-  </url>
-  <url>
-    <loc>militeee.github.io/Rcongas/articles/4_Propreocessing.html</loc>
-  </url>
-  <url>
-    <loc>militeee.github.io/Rcongas/articles/Rcongas.html</loc>
   </url>
 </urlset>

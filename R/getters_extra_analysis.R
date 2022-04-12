@@ -1,12 +1,15 @@
 
-#' Title
+#' Get a table of DE genes
+#' 
+#' The actual function for DE is implemented following 
+#' the Seurat `FindMarkers` method and as such conserves the same output structure
 #'
-#' @param x
-#' @param chromosomes
-#' @param cut_pvalue
-#' @param cut_lfc
+#' @param x an Rcongas object after DE analysis
+#' @param chromosomes filter for specific chromosomes
+#' @param cut_pvalue corrected (BH) p-value filter
+#' @param cut_lfc log fold change filter
 #'
-#' @return
+#' @return a table with differentially expressed genes 
 #' @export
 #'
 #' @examples

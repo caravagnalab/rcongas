@@ -2,88 +2,7 @@
 % Please edit documentation in R/plot_highlight.R
 \name{plot_highlights}
 \alias{plot_highlights}
-\title{plot_highlights = function(x, alpha = 0.05)
-{
-  # Best model
-  best_model <- Rcongas:::get_best_model(x)
-  
-  res <-
-    data.frame(
-      t(best_model$parameters$cnv_probs),
-      stringsAsFactors = FALSE,
-      check.names = FALSE
-    ) %>%
-    dplyr::mutate(segment_id = rownames(.)) %>%
-    deidify() %>%
-    reshape2::melt(
-      id.vars = c("chr", "from", "to"),
-      variable.name = "cluster",
-      value.name = "CN"
-    ) %>%
-    dplyr::mutate(cluster = as.character(cluster)) %>% mutate(cluster = ifelse(
-      str_starts(cluster, pattern = "c|C"),
-      cluster,
-      paste0("c", cluster)
-    )) %>%
-    dplyr::as_tibble() %>%
-    dplyr::mutate(lognorm_CN = CN)
-  
-  res$highlights = create_highlights(res, alpha)
-  
-  # Normalise CNA values for comparisons
-  # means = res %>%
-  #   dplyr::group_by(chr, from, to) %>%
-  #   dplyr::summarise(segment_mean = mean(CN), .groups = 'keep') %>%
-  #   dplyr::ungroup()
-  #
-  # # Bind everything
-  # res = res %>%
-  #   dplyr::full_join(means, by = c('chr', 'from', 'to')) %>%
-  #   dplyr::mutate(lognorm_CN = CN,
-  #                 CN = CN - segment_mean)
-  
-  res$highlight = create_highlights(res, alpha)
-  
-  # Clones
-  clones = Rcongas::get_clusters(x)$cluster %>% unique %>% sort
-  
-  
-  res_split = res %>% group_split(cluster)
-  names(res_split) = sapply(res_split, function(x)
-    x$cluster[1])
-  
-  df_density = NULL
-  
-  for (i in clones)
-    for (j in clones)
-    {
-      if (i != j)
-      {
-        f  = get_density_gamma_highlights(res, i, j)
-        x_ij = x %>%
-          filter(cluster %in% c(i, j)) %>%
-          group_by(chr, from, to) %>%
-          summarise(diff_ij = abs(diff(lognorm_CN)))
-        
-        # Fit density function
-        den_ij = data.frame(
-          x = seq(0, max(x_ij$diff_ij) * 1.25, length.out = 30),
-          y = dgamma(
-            seq(0, max(x_ij$diff_ij) * 1.25, length.out = 30),
-            fit_ij$estimate[[1]],
-            fit_ij$estimate[[2]]
-          ),
-          stringsAsFactors = FALSE
-        )
-        
-        df_density = df_density %>%
-          bind_rows(den_ij %>% mutate(pair = paste0(i, ' vs ', j)))
-      }
-    }
-  
-  ggplot(df_density, aes(x=x,y=y, color=pair))+geom_point()
-  
-}}
+\title{Plot highlighted segments}
 \usage{
 plot_highlights(x, alpha = 0.05)
 }
@@ -94,7 +13,7 @@ plot_highlights(x, alpha = 0.05)
 
 }
 \description{
-
+Plot highlighted segments
 }
 \examples{
 

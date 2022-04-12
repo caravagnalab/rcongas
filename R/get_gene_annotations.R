@@ -6,7 +6,7 @@
 #'
 #' @param x An input CONGAS object.
 #'
-#' @return The required tibble.
+#' @return The gene-coordinate tibble.
 #' @export
 #'
 #' @examples

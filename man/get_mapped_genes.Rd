@@ -2,18 +2,24 @@
 % Please edit documentation in R/getters_input_data.R
 \name{get_mapped_genes}
 \alias{get_mapped_genes}
-\title{Title}
+\title{Return gene mapping on segments}
 \usage{
 get_mapped_genes(x, chromosomes = paste0("chr", c(1:22, "X", "Y")))
 }
 \arguments{
-\item{x}{}
+\item{x}{an Rcongas object}
 
-\item{chromosomes}{}
+\item{chromosomes}{filter for specific chromosomes}
 }
 \value{
-
+a table with gene names and segment coordinates
 }
 \description{
-Title
+The function returns a mapping of all the genes associated to the currently used segments
+}
+\examples{
+
+x = Rcongas::congas_example
+get_mapped_genes(x)
+
 }

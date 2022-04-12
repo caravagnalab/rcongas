@@ -10,7 +10,7 @@ get_gene_annotations(x)
 \item{x}{An input CONGAS object.}
 }
 \value{
-The required tibble.
+The gene-coordinate tibble.
 }
 \description{
 From a CONGAS object, it teturns the  

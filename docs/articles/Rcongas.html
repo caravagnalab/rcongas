@@ -26,6 +26,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -38,18 +40,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Rcongas</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="../articles/Rcongas.html">Get started</a>
 </li>
@@ -57,44 +53,33 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a></a>
-    </li>
-    <li>
       <a href="../articles/1_Models.html">Models</a>
     </li>
     <li>
-      <a href="../articles/2_Getters.html">Getters</a>
+      <a href="../articles/2_Tutorial.html">Tutorial</a>
     </li>
     <li>
-      <a href="../articles/3_Plotting_functions.html">Plotting functions</a>
+      <a href="../articles/3_Getters.html">Getters</a>
     </li>
     <li>
-      <a href="../articles/4_Preprocessing.html">Preprocessing</a>
-    </li>
-    <li class="divider">
-    <li class="dropdown-header">Old version</li>
-    <li>
-      <a href="../../old_vignettes/kieran_vignette.html">Breast PDX analysis</a>
+      <a href="../articles/4_Plotting_functions.html">Plotting functions</a>
     </li>
     <li>
-      <a href="../../old_vignettes/Glioblastoma_smart_seq_analysis.html">Glioblastoma GBM analysis</a>
-    </li>
-    <li>
-      <a href="../../old_vignettes/monosomy_vignette.html">Monosomy 7 analysis</a>
+      <a href="../articles/5_Preprocessing.html">Preprocessing</a>
     </li>
   </ul>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/militeee/Rcongas/">
+  <a href="https://github.com/militeee/Rcongas/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -109,52 +94,149 @@
 
       
 
-      </header><script src="Rcongas_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Rcongas</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/militeee/Rcongasvignettes/Rcongas.Rmd"><code>vignettes/Rcongas.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/militeee/Rcongasvignettes/Rcongas.Rmd" class="external-link"><code>vignettes/Rcongas.Rmd</code></a></small>
       <div class="hidden name"><code>Rcongas.Rmd</code></div>
 
     </div>
 
     
     
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">Rcongas</span><span class="op">)</span>
-<span class="co">#&gt; Warning: replacing previous import 'cli::num_ansi_colors' by</span>
-<span class="co">#&gt; 'crayon::num_ansi_colors' when loading 'BMix'</span>
-<span class="co">#&gt; Warning: replacing previous import 'crayon::%+%' by 'ggplot2::%+%' when loading</span>
-<span class="co">#&gt; 'BMix'</span>
-<span class="co">#&gt; ✓ Loading BMix, 'Binomial and Beta-Binomial univariate mixtures'. Support : &lt;https://caravagnalab.github.io/BMix/&gt;</span>
-<span class="co">#&gt; Warning: package 'ggplot2' was built under R version 4.1.1</span>
-<span class="co">#&gt; Warning: package 'tibble' was built under R version 4.1.1</span>
-<span class="co">#&gt; Warning: package 'tidyr' was built under R version 4.1.1</span>
-<span class="co">#&gt; Warning: package 'readr' was built under R version 4.1.1</span>
-<span class="co">#&gt; Warning: package 'stringr' was built under R version 4.1.1</span>
-<span class="co">#&gt; Warning: package 'forcats' was built under R version 4.1.1</span>
-<span class="co">#&gt; Warning: package 'crayon' was built under R version 4.1.1</span>
-<span class="co">#&gt; ✓ Loading CNAqc, 'Copy Number Alteration quality check'. Support : &lt;https://caravagn.github.io/CNAqc/&gt;</span>
-<span class="co">#&gt; ✓ Loading Rcongas, 'Copy-Number genotyping from single cells'. Support : &lt;https://militeee.github.io/Rcongas/&gt;</span></code></pre></div>
-<p>High-level overview pf the package + lists of available vignettes</p>
+<div class="section level2">
+<h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
+</h2>
+<p>Rcongas is a package to cluster cells according to their copy-number
+profile and infer the corresponding CNV value w.r.t. a baseline bulk
+sequencing reference.</p>
+<p>The tool requires as input:</p>
+<ul>
+<li><p>A gene by cells count matrix with Hugo Symbols as row names and
+cell names as column names</p></li>
+<li><p>A copy number table obtained from bulk sequencing or direct
+RNA-seq segmentation. The table needs to have to following mandatory
+column: chr, from, to and tot (a numeric value indicating the bulk or
+average copy number value for that segment)</p></li>
+</ul>
+<p>Rcongas performs a joint clustering and CNV value inference procedure
+using a Poisson or Gaussian Mixture Model with prior distributions
+informed by the copy number table obtained in input.</p>
+<p>Rcongas can be used to genotype subclonal population characterized by
+prototypical diversity.</p>
+<div class="section level5">
+<h5 id="the-model">The model<a class="anchor" aria-label="anchor" href="#the-model"></a>
+</h5>
+<p><span class="math inline">\(Y\)</span> is the <span class="math inline">\(𝑁 × 𝐼\)</span> input data matrix of RNA counts,
+which describe <span class="math inline">\(𝑁\)</span> sequenced cells
+and <span class="math inline">\(I\)</span> input segments (mapped
+anywhere on the genome). Counts on a segment are summed up by pooling
+all genes <span class="math inline">\(y_{n,i}\)</span> that map to the
+segment. The final likelihood can be written as:</p>
+<p><span class="math display">\[
+p(\mathbf{Y} \mid \boldsymbol{\theta}, \boldsymbol{\mu}, \mathbf{C},
+\mathbf{Z}, \boldsymbol{\pi})=\prod_{n=1}^{N} \prod_{i=1}^{I}
+p\left(y_{n i} \mid \boldsymbol{\theta}, \boldsymbol{\mu}, \mathbf{C},
+\mathbf{Z}, \boldsymbol{\pi}\right)
+\]</span></p>
+<p>And the segment likelihood is:</p>
+<p><span class="math display">\[
+p\left(y_{n i} \mid \boldsymbol{\theta}, \boldsymbol{\mu}, \mathbf{C},
+\mathbf{Z}\right)=\operatorname{Pois}\left(\frac{\theta_{n} \cdot
+\mu_{i} \cdot \prod_{k=1}^{K} C_{i k}^{z_{n k}}}{\sum_{i=1}^{I}
+\prod_{k=1}^{K} C_{i k}^{z_{n k}}}\right)
+\]</span></p>
+<p>where the model uses a Gamma-distributed latent variable <span class="math inline">\(\theta_n\)</span> which models the library size
+for cell <span class="math inline">\(n\)</span>, and <span class="math inline">\(\mu_i\)</span> for the number of genes in <span class="math inline">\(i\)</span> segment (a constant determined from
+data). In CONGAS <span class="math inline">\(\mathbf{C}\)</span> is the
+CNA profile for clones, where each clone <span class="math inline">\(k\)</span> is defined by segments and 𝐼 associated
+CNAs; the prior for <span class="math inline">\(\mathbf{C}\)</span> is a
+log-transform of a normal distribution, consistently with the fact that
+ploidies are positive values. In this formulation <span class="math inline">\(\mathbf{Z}\)</span> are the <span class="math inline">\(N \times K\)</span> latent variables that assign
+cells to clusters, and <span class="math inline">\(\pi\)</span> the
+<span class="math inline">\(K\)</span>-dimensional mixing
+proportions.</p>
+<p>The model joint distribution can be factored as <span class="math display">\[
+p(Y, Z, C, \theta, \pi)=p(Y \mid C, \theta, \pi) p(Z \mid \pi) p(\pi)
+\prod_{i k} p\left(c_{i k}\right) \prod_{n} p\left(\theta_{n}\right)
+\]</span> and in the variational framework latent variables are
+approximated as variational distributions <span class="math inline">\(q(Z, C, \theta, \pi)\)</span>, supposed to be
+independent and factorizable. The prior distributions for our latent
+variables are:</p>
+<ul>
+<li><p><span class="math inline">\(p\left(c_{i k}\right) \sim \log
+\operatorname{Norm}\left(m_{i k}, v\right)\)</span>, where <span class="math inline">\(m_{i k}\)</span> is the input CNA value from bulk
+DNA, and the variance <span class="math inline">\(v\)</span> governs how
+far the actual CNAs can be compared to input (default <span class="math inline">\(v=0.5\)</span> );</p></li>
+<li><p><span class="math inline">\(p\left(\theta_{n}\right) \sim
+\operatorname{Gamma}\left(e_{s^{\prime}} e_{r}\right)\)</span>, a
+scarcely informative prior that works well in most cases (default <span class="math inline">\(e_{s}=3, e_{r}=1\)</span> );</p></li>
+<li><p><span class="math inline">\(p(\pi) \sim
+\operatorname{Dirichlet}(r)\)</span>, a prior over cluster
+distributions, by default all assumed to have equal proportions
+(i.e. <span class="math inline">\(r=1 / k\)</span> ).</p></li>
+</ul>
+</div>
+<div class="section level5">
+<h5 id="achtung">Achtung!<a class="anchor" aria-label="anchor" href="#achtung"></a>
+</h5>
+<div class="section level6">
+<h6 id="the-model-has-the-following-statistical-assumptions">The model has the following statistical assumptions:<a class="anchor" aria-label="anchor" href="#the-model-has-the-following-statistical-assumptions"></a>
+</h6>
+<ul>
+<li><p>There is linear correlation between the number of copies of a
+segment of DNA and the average expression of the genes mapping in that
+segment.</p></li>
+<li><p>Library size factors are assumed to be unimodal, if it is not the
+case we suggest to split the dataset and run independent analysis for
+each unimodal subgroup.</p></li>
+<li><p>Copy number variation is the main biological driver of expression
+variance in a segment when considering all the gene mapping on
+it.</p></li>
+</ul>
+</div>
+<div class="section level6">
+<h6 id="they-may-not-be-valid-in-all-the-possible-biological-and-technical-conditions-and-can-be-the-main-reason-of-false-positive-calls--most-of-them-can-be-solved-through-pre-processing-others-require-specific-attention-">They may not be valid in all the possible biological and technical
+conditions and can be the main reason of false positive calls. Most of
+them can be solved through pre-processing others require specific
+attention.<a class="anchor" aria-label="anchor" href="#they-may-not-be-valid-in-all-the-possible-biological-and-technical-conditions-and-can-be-the-main-reason-of-false-positive-calls--most-of-them-can-be-solved-through-pre-processing-others-require-specific-attention-"></a>
+</h6>
+</div>
+</div>
+<div class="section level4">
+<h4 id="we-know-this-assumptions-are-super-strong-and-we-are-actually-working-on-a-new-version-of-the-tool-the-relaxes-some-constraints-provides-support-for-new-datatypes-and-uses-some-better-statistics--endure-with-us-a-little-longer-">We know this assumptions are super strong and we are actually
+working on a new version of the tool the relaxes some constraints,
+provides support for new datatypes and uses some better statistics.
+Endure with us a little longer.<a class="anchor" aria-label="anchor" href="#we-know-this-assumptions-are-super-strong-and-we-are-actually-working-on-a-new-version-of-the-tool-the-relaxes-some-constraints-provides-support-for-new-datatypes-and-uses-some-better-statistics--endure-with-us-a-little-longer-"></a>
+</h4>
+</div>
+</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
-      </div>
+        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
+    </nav>
+</div>
 
 </div>
 
 
 
       <footer><div class="copyright">
-  <p>Developed by <a href="https://sites.google.com/view/cdslab">Salvatore Milite</a>, <a href="https://sites.google.com/view/cdslab">Giulio Caravagna</a>.</p>
+  <p></p>
+<p>Developed by <a href="https://sites.google.com/view/cdslab" class="external-link">Salvatore
+Milite</a>, <a href="https://sites.google.com/view/cdslab" class="external-link">Giulio
+Caravagna</a>.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
+2.0.2.</p>
 </div>
 
       </footer>
@@ -162,6 +244,8 @@
 
   
 
+
+  
 
   </body>
 </html>

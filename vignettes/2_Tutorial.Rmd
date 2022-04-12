@@ -1,0 +1,113 @@
+---
+title: "Full inference tutorial"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getter functions}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+In this vignette we will show a end-to-end example of rcongas on the PDX dataset used in the papers.
+
+```{r, include=FALSE}
+reticulate::use_condaenv("congas_old", required = TRUE)
+
+```
+
+
+# Data loading and visualization
+
+We start with the two main inputs of Rcongas: a CNV data.frame and a count matrix 
+
+```{r input_loading, results='hide', warning=FALSE, message=FALSE}
+require(Rcongas)
+require(rehsape2)
+require(ggplot2)
+require(dplyr)
+
+# required for using as an input sparse matrices
+require(Matrix)
+require(sparseMatrixStats)
+
+data("congas_example")
+```
+
+```{r input_prep}
+
+
+# genes by cells matrix
+count_matrix <- congas_example$data$raw %>% reshape2::acast(gene ~ cell, value.var = "n", fill = 0)
+
+# or do some preprocessing like in Seurat, the functions get the matrix in Seurat format so we have to transpose
+count_matrix <- Rcongas:::preprocess_sc(count_matrix %>% t,filter_upper_quantile = T, perc_cells_gene_expr = 0.05,upper_quantile = 0.95) %>% t
+
+# the cnv_table has 4 mandatory coloumns chr,from,to and tot (bulk CNV value)
+cnv_table <- congas_example$data$cnv %>% dplyr::select(chr,from,to,tot)
+
+
+cnv_table %>% head(5)
+```
+
+Then we use the function `init` to construct a new Rcongas object
+
+```{r}
+# You might try with and without correct_bins which remove some small segments and them merge 
+# fragmented pieces with the same CN, as it sometimes can include some spurois correlations
+
+input_rcongas <- init(data = count_matrix , cnv_data = cnv_table, description = "congas_example", reference_genome = "hg19", online = FALSE, correct_bins = FALSE)
+
+```
+We can have a look at the distribution of the number of genes in the segments and filter accordingly 
+```{r}
+
+input_rcongas$data$cnv %>% ggplot(., aes(mu)) + geom_histogram(bins = 50, alpha = 0.8) + geom_vline(xintercept = 10, linetype = "dashed", color = "indianred", size = 1.5) + theme_bw()
+
+new_cnv_table <- filter_segments_and_return_cnv_table(input_rcongas,mu =  10, length = 0, merge = TRUE)
+
+input_rcongas <- init(data = count_matrix, cnv_data = new_cnv_table, description = "congas_example", reference_genome = "hg19", online = FALSE, correct_bins = FALSE)
+
+
+```
+```{r}
+
+# automatic tuning of library size
+
+theta_vals <- approx_theta_prior_params(input_rcongas, plot = T)
+
+
+# in general it is wise to set normalize_by_segs = TRUE when you have more than 1000/1200 cells to avoid overfitting
+# Try method = BIC for a less conservative clustering
+inference <- best_cluster(input_rcongas, clusters = 1:5, model = "MixtureGaussian", param_list = list(theta_shape = theta_vals[1], theta_rate = 1), 
+                          steps = 500, lr = 0.01, MAP = TRUE, seed = 3, normalize_by_segs = FALSE, method = "ICL")
+```
+```{r}
+plot_counts_rna_segments(inference)
+```
+
+It is especially important to look at the actual distributions as CONGAS my have a slight tendency to overfit, 
+especially when dealing with very heterogeneous datasets or when there is high level of variance in the library size factors.
+
+
+```{r}
+library(gridExtra)
+
+high_segs <- highlights(inference, alpha = 0.01) %>%  filter(highlight) %>%  pull(segment_id)
+
+segs_p <- plot_segment_density(inference, segments_ids = high_segs, sum_denominator = TRUE)
+do.call("grid.arrange", c(segs_p, ncol=2))
+```
+
+We can also automatically calculate the differential expression between cluster 1 and 2. In order to do so we have to pass both the fitted object and the count matrix to the `calculate_DE` function. The underlying implementation is based on `Seurat`.
+
+```{r}
+de_object <- calculate_DE(x = inference, input = count_matrix, clone1 = "c1", clone2 = "c2", method = "wilcox", logfc.threshold = 0.5)
+```
+
+The function returns a Rcongas object with a new field `$DE` which stores the parameters used to perform the DE and the table of differentially expressed genes with adjusted p values (BH) and log2FC.
+
+```{r}
+
+plot_DE_volcano(de_object)
+
+```
+

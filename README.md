@@ -30,11 +30,7 @@ Evolution analyses.
 
 If you use `Rcongas`, please cite:
 
--   *Genotyping Copy Number Alterations from single-cell RNA
-    sequencing.* Salvatore Milite, Riccardo Bergamin, Giulio Caravagna.
-    [biorXiv
-    preprint](https://www.biorxiv.org/content/10.1101/2021.02.02.429335v1),
-    2021
+-   Milite, Salvatore, et al. *"A Bayesian method to cluster single-cell RNA sequencing data using Copy Number Alterations."* Bioinformatics (2022).
 
 
 #### Help and support

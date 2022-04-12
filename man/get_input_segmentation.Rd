@@ -2,16 +2,24 @@
 % Please edit documentation in R/get_input_segmentation.R
 \name{get_input_segmentation}
 \alias{get_input_segmentation}
-\title{Title}
+\title{Retrieve the CN table}
 \usage{
 get_input_segmentation(x, chromosomes = paste0("chr", c(1:22, "X", "Y")))
 }
 \arguments{
-\item{chromosomes}{}
+\item{x}{Rcongas object}
+
+\item{chromosomes}{filter for specific chromosomes}
 }
 \value{
-
+The CN table stored by the Rcongas object
 }
 \description{
-Title
+A function to get the copy-number (CN) table actually stored in the Rcongas object.
+}
+\examples{
+
+x = Rcongas::congas_example
+
+get_input_segmentation(x)
 }

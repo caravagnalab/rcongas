@@ -1,14 +1,23 @@
 #' Approximation of the library size prior
 #'
-#'This function fit a theta
+#' This function fit a gamma distribution to the empirical library size 
 #'
-#' @param x
-#'
-#' @return
+#' @param x an Rcongas object
+#' @pararm plot should the gamma fit be  plotted?
+#' @param mult_factor a constant to multiply both rate and scale of the gamma. Controls the final variance of the distribution 
+#' @param bins number of bins for the plotted histogram (ignored if `plot=FALSE`)
+#' 
+#' @return The MLE inferred shape and rate of the gamma
 #' @export
 #'
 #' @examples
+#' 
+#' x = Rcongas::congas_example
+#' 
+#' approx_theta_prior_params(x)
+#' 
 approx_theta_prior_params <-  function(x, plot = FALSE, mult_factor = 1, bins = 30){
+  
   data_mle = tranform_data_for_theta_inf(x)
 
   LL <-  function(theta_shape, theta_rate){
