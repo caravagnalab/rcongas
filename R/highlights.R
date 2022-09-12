@@ -29,7 +29,7 @@ highlights <- function(x, alpha = 0.05)
       value.name = "CN"
     ) %>%
     dplyr::mutate(cluster = as.character(cluster)) %>% mutate(cluster = ifelse(
-      str_starts(cluster, pattern = "c|C"),
+      stringr::str_starts(cluster, pattern = "c|C"),
       cluster,
       paste0("c", cluster)
     )) %>%
