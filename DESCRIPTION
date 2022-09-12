@@ -33,7 +33,8 @@ Imports:
   cli,
   DESeq2,
   patchwork,
-  ggpubr
+  ggpubr,
+  stringr
 Suggests:
     biomaRt,
     knitr,
