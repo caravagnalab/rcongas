@@ -106,3 +106,7 @@ which_likelihood <-  function(x, modality = "RNA"){
   return(get_data(x) %>% filter(modality == !!modality) %>%  pull(value_type) %>%  unique())
 }
 
+csidx <-  function(cumsm, idx) {
+  return((cumsm[idx] + 1):cumsm[idx + 1])
+}
+

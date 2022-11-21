@@ -449,38 +449,39 @@ plot_fit_heatmap = function(x, segments = get_input(x, what = 'segmentation') %>
 
 plot_fit_scores = function(x)
 {
-  scores = reshape2::melt(
-    x$model_selection %>%
-      select(-n_observations),
-    id = 'K'
-  )
+scores = reshape2::melt(
+  x$model_selection %>%
+    select(-n_observations),
+  id = c('K', 'lambda')
+)
+scores$K = as.factor(scores$K)
+IC_best = scores %>%
+  group_by(variable) %>%
+  filter(value == min(value)) %>%
+  filter(variable != 'entropy')
 
-  IC_best = scores %>%
-    group_by(variable) %>%
-    filter(value == min(value)) %>%
-    filter(variable != 'entropy')
+H_best = scores %>%
+  group_by(variable) %>%
+  filter(value == max(value)) %>%
+  filter(variable == 'entropy')
+scores %>%
+  ggplot(aes(x = lambda, y = value, color = K)) +
+  geom_line() +
+  geom_point() +
+  facet_wrap(~variable, scales = 'free') +
+  geom_point(
+    data = H_best,
+    color = 'red'
+  ) +
+  geom_point(
+    data = IC_best,
+    color = 'red'
+  ) +
+  labs(title = x$description) +
+  theme_linedraw(base_size = 9) +
+  scale_color_brewer(palette="Dark2") +
+  scale_y_continuous(labels = function(x) format(x, scientific = TRUE, digits = 3))
 
-  H_best = scores %>%
-    group_by(variable) %>%
-    filter(value == max(value)) %>%
-    filter(variable == 'entropy')
-
-  scores %>%
-    ggplot(aes(x = K, y = value)) +
-    geom_line() +
-    geom_point() +
-    facet_wrap(~variable, scales = 'free') +
-    geom_point(
-      data = H_best,
-      color = 'red'
-    ) +
-    geom_point(
-      data = IC_best,
-      color = 'red'
-    ) +
-    labs(title = x$description) +
-    theme_linedraw(base_size = 9) +
-    scale_y_continuous(labels = function(x) format(x, scientific = TRUE, digits = 3))
 }
 
 plot_fit_posterior_CNA = function(x)

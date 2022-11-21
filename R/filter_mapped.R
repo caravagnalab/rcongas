@@ -197,7 +197,6 @@ compute_outliers_per_segment = function(x, modality, lower_quantile, upper_quant
   x_mapped %>% return
 }
 
-
 #' Filter per-segment outliers by quantiles.
 #' 
 #' @description After mapping counts data to segments, this function
@@ -289,24 +288,24 @@ compute_outliers_per_segment = function(x, modality, lower_quantile, upper_quant
 #   #     
 #   #   norm_factors %>% return
 #   # }
-# 
+
 #   retained_rna = retained_atac = norm_factors_rna = norm_factors_atac = NULL
-#   
+  
 #   if(x %>% has_rna)
 #   {
 #     retained_rna = compute_outliers_per_segment(data = get_input(x, what = 'data'), modality = "RNA", lower_quantile, upper_quantile)
 #     norm_factors_rna = aux_fun_nf(data = retained_rna, modality = "RNA")
 #   }
-#   
+  
 #   if(x %>% has_atac)
 #   {
 #     retained_atac = compute_outliers_per_segment(data = get_input(x, what = 'data'), modality = "ATAC", lower_quantile, upper_quantile)
 #     norm_factors_atac = aux_fun_nf(data = retained_atac, modality = "ATAC")
 #   }
-#   
+  
 #   retained = bind_rows(retained_rna, retained_atac)
 #   norm_factors = bind_rows(norm_factors_rna, norm_factors_atac)
-#   
+  
 #   # cli::cli_h1("Rebuilding (R)CONGAS+ object")
 #   # 
 #   # # Rebuild object
@@ -328,29 +327,29 @@ compute_outliers_per_segment = function(x, modality, lower_quantile, upper_quant
 #   #   reference_genome = x$reference_genome,
 #   #   description =  paste0(x$description, "; post-map q[", lower_quantile, ', ', upper_quantile, ']')
 #   # )
-#   
+  
 #   # Copy input x object, before making a new one
 #   x_original = x
-#   
+  
 #   # Rebuild loses some info, not super important
 #   x$input$dataset = retained
 #   x$input$normalisation = norm_factors
-# 
+
 #   x$input$normalisation = x %>% 
 #     get_input(what = 'normalisation') %>% 
 #     filter(cell %in% retained$cell %>% unique())
-#   
+  
 #   x$description = paste0(
 #     x$description, 
 #     "; post-map q[", lower_quantile, ', ', upper_quantile, '] ', action)
-#   
+  
 #   if(action == 'remove')
 #   {
 #     cli::cli_alert_warning("With {.field {action}} this filter will \\
 #                            introduce 0-counts for outliers, consider removing them \\
 #                            with {.field {'filter_missing_data'}}.")
 #   }
-#   
+  
 #   # if(action == 'cap')
 #   # {
 #   #   cli::cli_alert_warning("With {.field {action}} we are required to \\
@@ -365,14 +364,14 @@ compute_outliers_per_segment = function(x, modality, lower_quantile, upper_quant
 #   #     x$input$dataset %>% m
 #   #   )
 #   # }
-#   
+  
 #   # auto_normalisation_factor
-#   
+  
 #   x$log = paste0(x$log, '\n- ', 
 #                       Sys.time(), " Filtered outliers: [", action, 
 #                       '|', lower_quantile, '|', upper_quantile, ']')
-#   
-#   
+  
+  
 #   return(x)
 # }
 

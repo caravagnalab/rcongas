@@ -217,7 +217,9 @@ init = function(
   segmentation$RNA_genes =
     segmentation$RNA_nonzerovals =
     segmentation$ATAC_peaks =
-    segmentation$ATAC_nonzerovals = 0
+    segmentation$ATAC_nonzerovals = 
+    segmentation$ATAC_nonzerocells =
+    segmentation$RNA_nonzerocells = 0
   
   # Create RNA modality data
   rna_modality_data = create_modality(
@@ -306,9 +308,11 @@ create_modality = function(modality, data, segmentation, normalisation_factors, 
     paste0(modality, '_genes'),
     paste0(modality, '_peaks')
   )
+  cells_lbs = paste0(modality, '_nonzerocells')
 
   segmentation[[evt_lbs]] = 0
   segmentation[[loc_lbs]] = 0
+  segmentation[[cells_lbs]] = 0
 
   data$segment_id = NA
 
@@ -334,6 +338,9 @@ create_modality = function(modality, data, segmentation, normalisation_factors, 
     segmentation[[loc_lbs]][i] = data[what_maps, ] %>%
       distinct(chr, from, to) %>%
       nrow()
+
+    segmentation[[cells_lbs]][i] = data[what_maps, ] %>%
+      pull(cell) %>% unique %>% length
   }
 
   n_na = is.na(data$segment_id) %>% sum()
@@ -352,34 +359,79 @@ create_modality = function(modality, data, segmentation, normalisation_factors, 
     # Normalise by factor - divide counts by per-cell normalization_factor
     data = normalise_modality(data %>% mutate(modality = !!modality), normalisation_factors)
 
+    if ('gene' %in% colnames(data))
+      data  = data %>% mutate(idFeature = paste0(gene,chr,from,to))
+    else
+      data = data %>% mutate(idFeature = paste0(chr,from,to))
     # Compute z-score
     cli::cli_alert("Computing z-score.")
-    zscore_params = data %>%
-      group_by(chr, from, to) %>%
-      summarise(value_mean = mean(value), value_sd = sd(value), .groups = 'keep')
-    
-    # Set to 1 normalisation factors
+
+    gene_segments = data %>% group_by(idFeature, segment_id) %>% summarise(n_cells = n()) %>%
+    select(-n_cells) %>% column_to_rownames('idFeature')
+
+    inp = reshape2::acast(data,
+                          cell ~ idFeature,
+                          value.var = "value")
+    inp[is.na(inp)] <- 0
+
+    data_scaled = scale(inp)
+    data_scaled[is.na(data_scaled)] <- 0
+    mapped = sapply(segmentation$segment_id, function (x)  {
+      curr_genes = rownames(gene_segments %>% filter(segment_id == x))
+      tmp = data_scaled[,curr_genes,drop=F] 
+      tmp = rowSums(tmp)
+      return(tmp)
+    }, USE.NAMES = T )
+
+    mapped = as.data.frame(mapped) %>% rownames_to_column(var = 'cell') %>%
+      pivot_longer(cols = setdiff(colnames(mapped), 'cell'), names_to = 'segment_id')
+
+    mapped$modality = modality
+
+    # # zscore_params = data %>%
+    # #   group_by(chr, from, to) %>%
+    # #   summarise(value_mean = mean(value), value_sd = sd(value), .groups = 'keep')
+    # # NEW CODE FOR Z-SCORES
+
+    # data_ = data %>% select(cell,value, idFeature) %>% 
+    #   pivot_wider(values_from = value, names_from = idFeature)  %>%
+    #   column_to_rownames('cell') %>% 
+    #   replace(is.na(.), 0)
+
+    # means = colMeans(data_)
+    # sds  = apply(data_, 2, sd)
+
+    # zscore_params = tibble(value_mean = means, value_sd = sds, idFeature = names(means))
+
+    # # Set to 1 normalisation factors
     cli::cli_alert_warning("With Gaussian likelihood normalisation factors are changed to 1.")
     normalisation_factors$normalisation_factor = 1
     
-    data = data %>%
-      left_join(zscore_params, by = c('chr', 'from', 'to')) %>%
-      mutate(
-        value = (value - value_mean)/value_sd # z-score
-      )
+    # # data = data %>%
+    # #   left_join(zscore_params, by = c('chr', 'from', 'to')) %>%
+    # #   mutate(
+    # #     value = (value - value_mean)/value_sd # z-score
+    # #   )
+    # data = data %>%
+    #   left_join(zscore_params) %>%
+    #   mutate(
+    #     value = (value - value_mean)/value_sd # z-score
+    #   )
 
-    n_na = data$value %>% is.na %>% sum
+    # n_na = data$value %>% is.na %>% sum
 
-    if(n_na > 0)
-    {
-      cli::cli_alert_warning("There are {.field {n_na}} z-scores that are NA, will be removed.")
-      data %>% filter(is.na(value)) %>% print
+    # if(n_na > 0)
+    # {
+    #   cli::cli_alert_warning("There are {.field {n_na}} z-scores that are NA, will be removed.")
+    #   data %>% filter(is.na(value)) %>% print
 
-      data = data %>% filter(!is.na(value))
-    }
-
-    data = data %>% select(-value_mean, -value_sd)
-  }
+    #   data = data %>% filter(!is.na(value))
+    # }
+    # min_value = min(data$value)
+    # data = data %>% mutate(value = value + (min_value * -1))
+    # # data = data %>% select(-value_mean, -value_sd, -idFeature)
+    
+  } else {
 
   # Mapped counts
   mapped = data %>%
@@ -387,20 +439,44 @@ create_modality = function(modality, data, segmentation, normalisation_factors, 
     summarise(value = sum(value), .groups = 'keep') %>%
     ungroup() %>%
     mutate(modality = !!modality)
+  }
 
   # Center the new scores to the ploidy value
   if(likelihood %in% c("G")){
     cli::cli_alert("Centering the new scores around input ploidy values.")
 
-    zscore_params = mapped %>%
-      group_by(segment_id) %>%
-      summarise(value_mean = mean(value), value_sd = sd(value), .groups = 'keep')
+    # data_ = mapped %>% select(cell,value, segment_id) %>% 
+    #   pivot_wider(values_from = value, names_from = segment_id)  %>%
+    #   column_to_rownames('cell') %>% 
+    #   replace(is.na(.), 0)
 
-    mapped = mapped %>%
-      left_join(zscore_params, by = c("segment_id")) %>%
-      mutate(
-        value = (value - value_mean)/value_sd # z-score
-      )
+    # means = colMeans(data_)
+    # sds  = apply(data_, 2, sd)
+
+    inp = reshape2::acast(mapped,
+                          cell ~ segment_id,
+                          value.var = "value")
+    inp[is.na(inp)] <- 0
+
+    data_scaled = scale(inp)
+    data_scaled[is.na(data_scaled)] <- 0
+
+    #zscore_params = tibble(value_mean = means, value_sd = sds, segment_id = names(means))
+
+    # zscore_params = mapped %>%
+    #   group_by(segment_id) %>%
+    #   summarise(value_mean = mean(value), value_sd = sd(value), .groups = 'keep')
+
+    # mapped = mapped %>%
+    #   left_join(zscore_params, by = c("segment_id")) %>%
+    #   mutate(
+    #     value = (value - value_mean)/value_sd # z-score
+    #   )
+    mapped = as.data.frame(data_scaled) %>% rownames_to_column(var = 'cell') %>%
+      pivot_longer(cols = setdiff(colnames(data_scaled), 'cell'), names_to = 'segment_id') %>%
+      mutate(modality = !!modality)
+
+    print(colnames(mapped))
 
     mapped =  mapped %>%
       left_join(segmentation, by = c("segment_id")) %>%

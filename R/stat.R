@@ -90,8 +90,9 @@ stat_data = function(x)
     
     if((cell_ids %>% length()) > 1)
     {
-      cell_freq_z = M$cell[cell_ids] %>% table
-      cell_freq_z = sort(cell_freq_z, decreasing = TRUE)
+      cell_freq_z = M$cell[cell_ids, drop=F] %>% table
+      if (nrow(cell_freq_z) > 1)
+        cell_freq_z = sort(cell_freq_z, decreasing = TRUE)
       
       # Stats
       ncells = length(cell_freq_z)

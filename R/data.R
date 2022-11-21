@@ -116,3 +116,20 @@
 #' data(satpathy_bcc)
 #' print(satpathy_bcc)
 "satpathy_bcc"
+
+#' Karyotype hg38
+#'
+#' @description Data about the coordinates of hg38
+#'
+#' @docType data
+#'
+#' @usage data(hg38_karyo)
+#'
+#' @format dataframe
+#'
+#' @keywords datasets
+#'
+#' @examples
+#' data(hg38_karyo)
+#' print(hg38_karyo)
+"hg38_karyo"

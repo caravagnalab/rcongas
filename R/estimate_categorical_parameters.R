@@ -51,10 +51,18 @@ estimate_segment_factors_aux <- function(data_mle, plot)
         success = TRUE
       }
 
-      coeff <-
+      if (MAXT < 9) {
+        coeff <-
         fitdistrplus::fitdist(data_mle
+          ,distr = "gamma", method = "mle", lower = c(0,0)
+        )
+      } else {
+        coeff <-
+          fitdistrplus::fitdist(data_mle
           ,distr = "gamma", method = "mle"
         )
+      }
+
 
       summary(coeff)
 
@@ -70,7 +78,7 @@ estimate_segment_factors_aux <- function(data_mle, plot)
 
 
 
-    }, error = function(e) {cli::cli_alert_warning("Iteration not successfull, retrying")})
+    }, error = function(e) {cli::cli_alert_warning("Iteration not successfull, retrying by setting a lower bound to the parameters")})
   }
 
   if(MAXT == 0){

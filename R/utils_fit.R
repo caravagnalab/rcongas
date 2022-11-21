@@ -65,7 +65,7 @@ input_data_from_rcongas <- function(x){
 
 
 
-format_best_model <-  function(x, inf){
+format_best_model <-  function(x, inf, same_mixing){
 
 
   ret <-  list()
@@ -97,8 +97,12 @@ format_best_model <-  function(x, inf){
 
 
     ### Mixing proportions for ATAC
-
-    mixing_proportions_atac <- inf$inferred_params$mixture_weights_atac
+    if (same_mixing) {
+      mixing_proportions_atac <- inf$inferred_params$mixture_weights
+    } else {
+      mixing_proportions_atac <- inf$inferred_params$mixture_weights_atac
+    }
+    
     names(mixing_proportions_atac) <- cluster_names
 
     z_nk_atac <- detensorize(inf$inferred_params$assignment_probs_atac) %>%  t() %>%  as.data.frame()
@@ -175,8 +179,11 @@ format_best_model <-  function(x, inf){
 
 
     ### Mixing proportions for RNA
-
-    mixing_proportions_rna <- inf$inferred_params$mixture_weights_rna
+    if (same_mixing) {
+      mixing_proportions_rna <- inf$inferred_params$mixture_weights
+    } else {
+      mixing_proportions_rna <- inf$inferred_params$mixture_weights_rna
+    }
     names(mixing_proportions_rna) <- cluster_names
 
     z_nk_rna <- detensorize(inf$inferred_params$assignment_probs_rna) %>%  t() %>%  as.data.frame()

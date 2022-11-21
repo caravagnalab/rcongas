@@ -158,7 +158,7 @@ print.rcongasplus = function(x, ...)
   
   if (!is.null(stats_fit))
     cli::cli_h3(
-      'Clusters: {.field k = {stats_fit$fit_k}}, model with {.field {stats_fit$fit_IC}} = {.value {round(stats_fit$fit_score, 2)}}.'
+      'Clusters: {.field k = {stats_fit$fit_k}}, lambda: {.field l = {stats_fit$fit_lambda}}, model with {.field {stats_fit$fit_IC}} = {.value {round(stats_fit$fit_score, 2)}}.'
     )
   else
     {

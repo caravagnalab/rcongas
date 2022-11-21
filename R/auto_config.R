@@ -21,11 +21,11 @@ auto_config_run <-
            K,
            NB_size_atac = 150,
            NB_size_rna = 150,
-           lambda = 0.3,
+           # lambda = 0.3,
            a_sd = 0.1,
            b_sd = 100,
-           prior_cn = c(0.2, 0.6, 0.2, 0.05, 0.025, 0.025),
-           hidden_dim = length(prior_cn),
+           prior_cn = c(0.2, 0.6, 0.1, 0.05, 0.05), #, 0.025),
+           hidden_dim = 5,#length(prior_cn),
            init_importance = 0.6,
            NB_size_priors = c(15, 1000),
            purity = 1
@@ -37,8 +37,25 @@ auto_config_run <-
 
     torch <-  reticulate::import("torch")
 
-    param_list$probs <-  torch$tensor(prior_cn)
-    param_list$init_probs <- init_importance
+    #param_list$probs <-  torch$tensor(prior_cn)
+    if (is.character(prior_cn)) {
+      param_list$init_probs <- init_importance
+      segs = get_input(x, what = 'segmentation')  %>% arrange(segment_id)
+      dirichlet_prior = lapply(segs$copies, function(x) {
+        dir_conc = rep((1-init_importance) / hidden_dim, hidden_dim)
+        dir_conc[x] = init_importance
+        return(dir_conc)})
+
+      names(dirichlet_prior) = segs$segment_id
+      dirichlet_prior = torch$tensor(matrix(unlist(dirichlet_prior), nrow = length(dirichlet_prior), byrow = T))
+      param_list$probs = dirichlet_prior
+    } else {
+      hidden_dim = length(prior_cn)
+      # Use one vector for all segments.
+      param_list$probs <-  torch$tensor(prior_cn)
+      param_list$init_probs <- init_importance
+    }
+
     param_list$purity <- purity
 
     if (has_atac(x)) {
@@ -145,7 +162,7 @@ auto_config_run <-
     param_list$a <-  a_sd
     param_list$b <- b_sd
 
-    param_list$lambda <- lambda
+    # param_list$lambda <- lambda
     param_list$hidden_dim <- as.integer(hidden_dim)
     param_list$binom_prior_limits <- NB_size_priors
 
@@ -160,28 +177,28 @@ gamma_shape_rate <-
            torch = reticulate::import("torch"))
     {
 
-    inp = reshape2::acast(get_data(x) %>% filter(modality == !!modality),
+    inp = reshape2::acast(Rcongas:::get_data(x) %>% filter(modality == !!modality),
                           cell ~ segment_id,
                           value.var = "value")
     inp[is.na(inp)] <- 0
 
     inp = inp[order(rownames(inp)), order(colnames(inp)), drop = FALSE]
 
-    norm_raw = get_normalisation(x) %>%
+    norm_raw = Rcongas:::get_normalisation(x) %>%
       filter(modality == !!modality) %>%
       select(normalisation_factor, cell)
 
     norm = norm_raw$normalisation_factor
     names(norm) = norm_raw$cell
-    norm = norm[order(rownames(inp))]
+    norm = norm[rownames(inp)]
 
     ploidy <- x$input$segmentation$copies
 
     names(ploidy) <- x$input$segmentation$segment_id
 
-    ploidy <-  ploidy[order(colnames(inp))]
+    ploidy <-  ploidy[colnames(inp)]
 
-    theta_factors = estimate_segment_factors(data = inp, norm_factors = norm, pld = ploidy, plot = F)
+    theta_factors = Rcongas:::estimate_segment_factors(data = inp, norm_factors = norm, pld = ploidy, plot = F)
 
     theta_shape = torch$tensor(sapply(theta_factors, function(x)
       x[1]))
@@ -226,7 +243,7 @@ auto_normalisation_factor = function(x)
     group_by(cell) %>%
     summarise(normalisation_factor = sum(value, na.rm = TRUE))
 
-  ndigits = median(nchar(norm_x$normalisation_factor))
+  ndigits = median(nchar(round(norm_x$normalisation_factor)))
   scaling = `^`(10,ndigits)
 
   cli::cli_alert("Median digits per factor {.field {ndigits}}, scaling by {.field {scaling}}.")
