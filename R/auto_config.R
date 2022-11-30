@@ -28,7 +28,7 @@ auto_config_run <-
            hidden_dim = 5,#length(prior_cn),
            init_importance = 0.6,
            NB_size_priors = c(15, 1000),
-           purity = 1
+           purity = NULL
            )
 
     {
@@ -42,7 +42,7 @@ auto_config_run <-
       param_list$init_probs <- init_importance
       segs = get_input(x, what = 'segmentation')  %>% arrange(segment_id)
       dirichlet_prior = lapply(segs$copies, function(x) {
-        dir_conc = rep((1-init_importance) / hidden_dim, hidden_dim)
+        dir_conc = rep((1-init_importance) / (hidden_dim-1), hidden_dim)
         dir_conc[x] = init_importance
         return(dir_conc)})
 
