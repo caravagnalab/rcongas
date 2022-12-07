@@ -116,7 +116,7 @@ change_spot <- function(parent_ploidy, mutation_spots, changes){
 }
 
 
-#'Generat the ploidy given a parent clone (wih a finer control)
+#'Generate the ploidy given a parent clone (with a finer control)
 #'
 #'It is basically equal to {\link{generate_ploidy_parent}} but provides the direct controll of the segments
 #'in which we want to place the mutation
