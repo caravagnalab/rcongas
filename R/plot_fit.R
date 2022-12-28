@@ -309,7 +309,6 @@ plot_fit_density = function(x, highlights = TRUE)
 
   mixing_props <- get_mixing_proportions(x)
 
-
   densities <- assemble_likelihood_tibble(x, CNAs)
   colnames(densities)[c(3,5)] <-  c("cluster", "segment_id")
   densities <- dplyr::left_join(densities,mixing_props) %>%  mutate(value = value * (mixing + 1e-3))

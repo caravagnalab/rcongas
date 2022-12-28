@@ -140,7 +140,7 @@ filter_counts_by_quantile = function(x, upper_quantile = .98)
 #' @param data Tibble with chr from to value
 #' @param normalisation_factors tibble that for each cell contained in \code{data} contains information about normalization facctors. COmputed with Rcongas function
 #' \code{auto_normalisation_factor}.
-clean_outlers_persegment <- function(segmentation, modality, data, normalisation_factors) {
+clean_outlers_persegment <- function(segmentation, modality, data, normalisation_factors, qmax = 0.99) {
   if (modality == 'ATAC') {
     data = data %>% mutate(peakId = paste(chr, from, to, sep =':'))
     featureVar = 'peakId'
@@ -204,8 +204,8 @@ clean_outlers_persegment <- function(segmentation, modality, data, normalisation
   data_norm = Rcongas:::normalise_modality(data %>% mutate(modality = !!modality), normalisation_factors)
   
   plist = sapply(unique(data_norm$segment_id),  simplify = F, USE.NAMES = T, function(s) {
-    tmp = data_norm %>% filter(segment_id == !!s) %>% group_by(chr, from, to, !!featureVar) %>% mutate(mean_expr = mean(value))
-    qmax = quantile(tmp$value, 0.97)
+    tmp = data_norm %>% filter(segment_id == !!s) %>% group_by(chr, from, to, !!sym(featureVar)) %>% summarise(mean_expr = mean(value))
+    qmax = quantile(tmp$mean_expr, qmax)
     tmp = tmp %>% mutate(isOutlier = mean_expr > !!qmax)
     
     p = ggplot(tmp, 
@@ -213,7 +213,7 @@ clean_outlers_persegment <- function(segmentation, modality, data, normalisation
       geom_point(size = 0.5) +#+ ylim(2,150) +
       scale_color_manual(values = c('#1D1D1D', '#B50717')) 
     if (modality == 'RNA') {
-      p = p + geom_text(aes(label=ifelse(mean_expr>!!qmax,as.character(!!featureVar),'')),
+      p = p + geom_text(aes(label=ifelse(mean_expr>!!qmax,as.character(!!sym(featureVar)),'')),
                 hjust=-0.1,vjust=0, size = 2)+ theme_bw() + guides(color = FALSE, size = FALSE, label = F)    
     }
     return(p)
@@ -222,11 +222,13 @@ clean_outlers_persegment <- function(segmentation, modality, data, normalisation
   outliers = unlist(sapply(plist, function(p) {
     return(unique(p$data[[featureVar]][p$data$isOutlier]))
   }))
+  nout = length(outliers)
+  cli::cli_alert("Found: {.field {nout}} outliers.")
   # View(plist[[1]])
   # outdir = 'figures_congasp/outlier_genes/'
   # p = cowplot::plot_grid(plotlist = plist)
   # ggsave(paste0(outdir, 'segments_ouliers.pdf'), p, width = 15, height = 15)
-  data = data %>% filter(!(!!featureVar %in% outliers))
+  data = data %>% filter(!(!!sym(featureVar) %in% outliers))
   return(list(persegment_plot = plist, data_cleaned = data))
 }
 
