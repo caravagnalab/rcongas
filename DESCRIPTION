@@ -34,7 +34,8 @@ Imports:
     CNAqc,
     reticulate,
     magrittr,
-    gtools
+    gtools,
+    fitdistrplus
 Suggests:
     biomaRt,
     knitr,
