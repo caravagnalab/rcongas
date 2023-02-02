@@ -44,7 +44,7 @@ You can install the released version of `Rcongas` from
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("militeee/Rcongas")
+devtools::install_github("caravagnlab/Rcongas")
 ```
 
 ------------------------------------------------------------------------
