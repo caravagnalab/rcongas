@@ -196,7 +196,7 @@ clean_outlers_persegment <- function(segmentation, modality, data, normalisation
   nn_na = (data %>% nrow) - n_na
   
   cli::cli_alert("Entries mapped: {.field {nn_na}}, with {.field {n_na}} outside input segments that will be discarded.")
-  if(n_na > 0) data = data %>% filter(!is.na(segment_id))
+  #if(n_na > 0) data = data %>% filter(!is.na(segment_id))
   likelihood = 'NB'
   cli::cli_alert("Using likelihood: {.field {likelihood}}.")
   
