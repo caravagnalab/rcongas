@@ -217,7 +217,7 @@ generate_cluster_ploidy_df <- function(K= 2, spots = 5,  probs = c(0.0,1,0.0,0.0
     for(clusters in seq_len(nrow(tree))){
 
       if(tree[clusters,1] == tree[clusters,2]){
-        res[,clusters] <- generate_ploidy(length, probs, karyo)
+        res[,clusters] <- rep(2, length)# generate_ploidy(length, probs, karyo)
       } else {
         if(!fine)
           res[,clusters] <- generate_ploidy_parent(res[,tree[clusters,2]], spots = spots ,random = random, changes = changes, non_random_spots = non_random_spots)
