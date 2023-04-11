@@ -150,7 +150,7 @@ set_names <-  function(an){
 #'
 #' @examples
 run_inference <-  function(X , model, optim = "ClippedAdam", elbo = "TraceEnum_ELBO", inf_type = "SVI", steps = 300, lr = 0.05,
-                            param_list = list(), MAP = TRUE, seed = 3, rerun = F){
+                            param_list = list(), MAP = TRUE, seed = 3, rerun = F, normalize_by_segs = F){
 
   an <- reticulate::import("congas")
 
@@ -212,7 +212,7 @@ run_inference <-  function(X , model, optim = "ClippedAdam", elbo = "TraceEnum_E
 
   an$run_information <-  list(model = model_name,optim = optim_name, elbo = elbo_name, inf_type = inf_type_name,
                               steps = steps, lr = lr, input_hyper_params = param_list, MAP = MAP,
-                              seed = seed)
+                              seed = seed, normalize_by_segs = normalize_by_segs)
   X$inference$models <- list(an)
 
   return(structure(an, class = "congas"))

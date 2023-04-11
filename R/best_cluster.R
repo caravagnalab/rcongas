@@ -63,6 +63,7 @@ best_cluster <-
           param_list = c(param_list, list('K' = x, 'mixture' = mixture[[x]])),
           MAP = MAP,
           seed = seed,
+          normalize_by_segs = normalize_by_segs
         ))
 
     IC <- calculate_information_criteria(res,X,method, normalize_by_segs)

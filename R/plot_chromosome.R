@@ -7,7 +7,7 @@
 #'
 #' @return
 #' @export
-#'
+#' @importFrom dplyr case_when
 
 
 plot_chromosome = function(x, chr = 'chr1', plot = c("segments", "counts", "DE"), ...)
