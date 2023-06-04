@@ -47,6 +47,7 @@ filter_segments = function(x,
   x %>% sanitize_obj()
   
   retained_segments = get_input(x, 'segmentation') %>%
+  rowwise() %>%
     mutate(
       force = segment_id %in% segments,
       RNA = ifelse(has_rna((x)),
