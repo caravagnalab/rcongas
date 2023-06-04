@@ -224,10 +224,7 @@ clean_outlers_persegment <- function(segmentation, modality, data, normalisation
   }))
   nout = length(outliers)
   cli::cli_alert("Found: {.field {nout}} outliers.")
-  # View(plist[[1]])
-  # outdir = 'figures_congasp/outlier_genes/'
-  # p = cowplot::plot_grid(plotlist = plist)
-  # ggsave(paste0(outdir, 'segments_ouliers.pdf'), p, width = 15, height = 15)
+
   data = data %>% filter(!(!!sym(featureVar) %in% outliers))
   return(list(persegment_plot = plist, data_cleaned = data))
 }

@@ -39,7 +39,9 @@ filter_segments = function(x,
                            length = 0,
                            RNA_genes = 50,
                            ATAC_peaks = 50,
-                           segments = list()
+                           segments = list(),
+                           RNA_nonzerocells = 0,
+                           ATAC_nonzerocells = 0
                            )
 {
   x %>% sanitize_obj()
@@ -48,10 +50,10 @@ filter_segments = function(x,
     mutate(
       force = segment_id %in% segments,
       RNA = ifelse(has_rna((x)),
-                   RNA_genes > !!RNA_genes,
+                   (RNA_genes > !!RNA_genes) & (RNA_nonzerocells > !!RNA_nonzerocells),
                    TRUE),
       ATAC = ifelse(has_atac((x)),
-                    ATAC_peaks > !!ATAC_peaks,
+                    (ATAC_peaks > !!ATAC_peaks) & (ATAC_nonzerocells > !!ATAC_nonzerocells),
                     TRUE),
       L = (as.double(to) - as.double(from)) > !!length
     ) %>%
