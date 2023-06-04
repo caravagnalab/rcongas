@@ -7,15 +7,20 @@
 fit_congas(
   x,
   K,
+  lambdas,
   model_parameters,
   learning_rate = 0.05,
-  latent_variables = "D",
+  latent_variables = "B",
   compile = FALSE,
   steps = 500,
   samples = 1,
   parallel = FALSE,
   model_selection = "ICL",
-  temperature = 10
+  temperature = 10,
+  equal_variance = TRUE,
+  threshold = 0.05,
+  patience = 5,
+  same_mixing = FALSE
 )
 }
 \arguments{

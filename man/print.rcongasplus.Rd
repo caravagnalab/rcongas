@@ -4,7 +4,7 @@
 \alias{print.rcongasplus}
 \title{Print for an object of class \code{'rcongasplus'}.}
 \usage{
-\method{print}{rcongasplus}(x, ...)
+print.rcongasplus(x, ...)
 }
 \arguments{
 \item{x}{An object of class \code{'rcongasplus'}.}
