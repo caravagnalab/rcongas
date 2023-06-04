@@ -83,7 +83,7 @@ stat_data = function(x)
     M = x$input$dataset %>% 
       filter(modality == !!modality) %>% 
       select(segment_id, cell, value) %>% 
-      pivot_wider(names_from = segment_id, values_from = value)
+      tidyr::pivot_wider(names_from = segment_id, values_from = value)
     
     # Cells stats - number of 0s
     cell_ids = which(is.na(M), arr.ind = TRUE)[, 1]

@@ -51,6 +51,7 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 ```{r, warning=FALSE, message=FALSE}
 library(Rcongas)
 library(dplyr)
+library(ggplot2)
 ```
 
 ```{r}

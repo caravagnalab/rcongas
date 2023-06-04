@@ -9,21 +9,18 @@ auto_config_run(
   K,
   NB_size_atac = 150,
   NB_size_rna = 150,
-  lambda = 0.3,
-  a_sd = 1,
+  a_sd = 0.1,
   b_sd = 100,
-  prior_cn = c(0.2, 0.6, 0.2, 0.05, 0.025, 0.025),
-  hidden_dim = length(prior_cn),
+  prior_cn = c(0.2, 0.6, 0.1, 0.05, 0.05),
+  hidden_dim = 5,
   init_importance = 0.6,
-  NB_size_priors = c(15, 1000)
+  NB_size_priors = c(15, 1000),
+  purity = NULL
 )
 }
 \arguments{
-\item{prior_cn}{}
-}
-\value{
-
+\item{purity}{}
 }
 \description{
-
+Determine data-based hyperparameters for the Bayesian priors.
 }

@@ -138,83 +138,43 @@ filter_counts_by_quantile = function(x, upper_quantile = .98)
 #' @param segmentation
 #' @param modality Either 'RNA' or 'ATAC'
 #' @param data Tibble with chr from to value
-#' @param normalisation_factors tibble that for each cell contained in \code{data} contains information about normalization facctors. COmputed with Rcongas function
+#' @param normalisation_factors tibble that for each cell contained in \code{data} contains information about normalization facctors. Computed with Rcongas function
 #' \code{auto_normalisation_factor}.
-clean_outlers_persegment <- function(segmentation, modality, data, normalisation_factors, qmax = 0.99) {
+clean_outliers_persegment <- function(modality, data, normalisation_factors, qmax = 0.99) {
+  cli::cli_alert("Cleaning outlier features from {.field {modality}} input matrix")
+  
   if (modality == 'ATAC') {
-    data = data %>% mutate(peakId = paste(chr, from, to, sep =':'))
+    
+    features_atac = data %>% 
+      select(chr, from, to)  %>% 
+      distinct() %>%
+      unite(peakId, c(chr, from, to), remove = F) 
+      
+    data = data %>% left_join(features_atac)
     featureVar = 'peakId'
-  } else if (modality == 'RNA') {
-    featureVar = 'gene'
   } else {
-    stop('Please provide a valid modality, must be either RNA or ATAC')
+    featureVar = 'gene'
   }
-  
-  segmentation = segmentation %>% Rcongas:::idify()
-  
-  evt_lbs = paste0(modality, '_nonzerovals')
-  loc_lbs = ifelse(
-    modality == 'RNA',
-    paste0(modality, '_genes'),
-    paste0(modality, '_peaks')
-  )
-  cells_lbs = paste0(modality, '_nonzerocells')
-  segmentation[[evt_lbs]] = 0
-  segmentation[[loc_lbs]] = 0
-  segmentation[[cells_lbs]] = 0
-  
-  data$segment_id = NA
-  
-  pb <- progress::progress_bar$new(total = nrow(segmentation))
-  
-  pb$tick(0)
-  
-  for(i in 1:nrow(segmentation))
-  {
-    pb$tick()
     
-    what_maps = which(
-      data$chr == segmentation$chr[i] &
-        data$from >= segmentation$from[i] &
-        data$to <= segmentation$to[i]
-    )
-    
-    if(length(what_maps) == 0) next;
-    
-    data$segment_id[what_maps] = segmentation$segment_id[i]
-    
-    segmentation[[evt_lbs]][i] = what_maps %>% length
-    segmentation[[loc_lbs]][i] = data[what_maps, ] %>%
-      distinct(chr, from, to) %>%
-      nrow()
-    
-    segmentation[[cells_lbs]][i] = data[what_maps, ] %>%
-      pull(cell) %>% unique %>% length
-  }
-  
-  n_na = is.na(data$segment_id) %>% sum()
-  nn_na = (data %>% nrow) - n_na
-  
-  cli::cli_alert("Entries mapped: {.field {nn_na}}, with {.field {n_na}} outside input segments that will be discarded.")
-  #if(n_na > 0) data = data %>% filter(!is.na(segment_id))
-  likelihood = 'NB'
-  cli::cli_alert("Using likelihood: {.field {likelihood}}.")
-  
-  
-  data_norm = Rcongas:::normalise_modality(data %>% mutate(modality = !!modality), normalisation_factors)
-  
-  plist = sapply(unique(data_norm$segment_id),  simplify = F, USE.NAMES = T, function(s) {
-    tmp = data_norm %>% filter(segment_id == !!s) %>% group_by(chr, from, to, !!sym(featureVar)) %>% summarise(mean_expr = mean(value))
+  data_norm = normalise_modality(data %>% mutate(modality = !!modality), normalisation_factors)
+
+  plist = sapply(unique(data_norm$segment_id), simplify = F, USE.NAMES = T, function(s) {
+    tmp = data_norm %>% filter(segment_id == !!s) %>% 
+        group_by(chr, from, to, !!sym(featureVar)) %>% 
+        summarise(mean_expr = mean(value))
     qmax = quantile(tmp$mean_expr, qmax)
-    tmp = tmp %>% mutate(isOutlier = mean_expr > !!qmax)
+    tmp = tmp %>% 
+        mutate(isOutlier = mean_expr > !!qmax)
     
     p = ggplot(tmp, 
                aes(x = from, y = mean_expr, color = isOutlier)) + 
-      geom_point(size = 0.5) +#+ ylim(2,150) +
+      geom_point(size = 0.5) +
       scale_color_manual(values = c('#1D1D1D', '#B50717')) 
     if (modality == 'RNA') {
       p = p + geom_text(aes(label=ifelse(mean_expr>!!qmax,as.character(!!sym(featureVar)),'')),
-                hjust=-0.1,vjust=0, size = 2)+ theme_bw() + guides(color = FALSE, size = FALSE, label = F)    
+                hjust=-0.1,vjust=0, size = 2)+ 
+                theme_bw() + 
+                guides(color = FALSE, size = FALSE, label = F)    
     }
     return(p)
   })
@@ -222,6 +182,7 @@ clean_outlers_persegment <- function(segmentation, modality, data, normalisation
   outliers = unlist(sapply(plist, function(p) {
     return(unique(p$data[[featureVar]][p$data$isOutlier]))
   }))
+
   nout = length(outliers)
   cli::cli_alert("Found: {.field {nout}} outliers.")
 

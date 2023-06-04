@@ -10,7 +10,7 @@ init(
   segmentation,
   rna_normalisation_factors = rna \%>\% auto_normalisation_factor(),
   atac_normalisation_factors = atac \%>\% auto_normalisation_factor(),
-  rna_likelihood = "G",
+  rna_likelihood = "NB",
   atac_likelihood = "NB",
   reference_genome = "GRCh38",
   description = "(R)CONGAS+ model",

@@ -73,6 +73,7 @@ NULL
 #' @importFrom stats4 mle
 #' @importFrom cowplot plot_grid
 #' @importFrom progress progress_bar
+#' @importFrom tidyr unite
 #' @importFrom graphics curve hist
 #' @importFrom stats complete.cases dgamma quantile rnorm sd
 #' @importFrom utils head object.size
@@ -113,7 +114,7 @@ init = function(
   segmentation,
   rna_normalisation_factors = rna %>% auto_normalisation_factor(),
   atac_normalisation_factors = atac %>% auto_normalisation_factor(),
-  rna_likelihood = "G",
+  rna_likelihood = "NB",
   atac_likelihood = "NB",
   reference_genome = 'GRCh38',
   description = "(R)CONGAS+ model",
@@ -221,6 +222,7 @@ init = function(
     segmentation$ATAC_nonzerocells =
     segmentation$RNA_nonzerocells = 0
   
+
   # Create RNA modality data
   rna_modality_data = create_modality(
     modality = "RNA",
@@ -345,7 +347,9 @@ create_modality = function(modality, data, segmentation, normalisation_factors, 
 
   n_na = is.na(data$segment_id) %>% sum()
   nn_na = (data %>% nrow) - n_na
-
+  
+  data = clean_outliers_persegment(modality, data, normalisation_factors)$data_cleaned
+  
   cli::cli_alert("Entries mapped: {.field {nn_na}}, with {.field {n_na}} outside input segments that will be discarded.")
   if(n_na > 0) data = data %>% filter(!is.na(segment_id))
 
@@ -359,10 +363,25 @@ create_modality = function(modality, data, segmentation, normalisation_factors, 
     # Normalise by factor - divide counts by per-cell normalization_factor
     data = normalise_modality(data %>% mutate(modality = !!modality), normalisation_factors)
 
-    if ('gene' %in% colnames(data))
-      data  = data %>% mutate(idFeature = paste0(gene,chr,from,to))
-    else
-      data = data %>% mutate(idFeature = paste0(chr,from,to))
+    if ('gene' %in% colnames(data)){
+      # data  = data %>% mutate(idFeature = paste0(gene,chr,from,to))
+      features = data %>% 
+        select(gene, chr, from, to)  %>% 
+        distinct() %>%
+        unite(idFeature, c(gene, chr, from, to), remove = F) 
+      
+      data = data %>% left_join(features)
+    }
+    else{
+     # data = data %>% mutate(idFeature = paste0(chr,from,to))
+      features = data %>% 
+        select(chr, from, to)  %>% 
+        distinct() %>%
+        unite(idFeature, c(chr, from, to), remove = F) 
+      
+      data = data %>% left_join(features)
+    }
+      
     # Compute z-score
     cli::cli_alert("Computing z-score.")
 
@@ -432,7 +451,6 @@ create_modality = function(modality, data, segmentation, normalisation_factors, 
     # # data = data %>% select(-value_mean, -value_sd, -idFeature)
     
   } else {
-
   # Mapped counts
   mapped = data %>%
     group_by(segment_id, cell) %>%
