@@ -85,12 +85,21 @@ plot_data = function(x,
 }
 
 plot_data_histogram = function(x,
-                               segments = get_input(x, what = 'segmentation') %>% pull(segment_id),
-                               whichfacet = ggplot2::facet_wrap, bins = 60
-                               )
+                                   to_plot = NULL, 
+                                   segments = get_input(x, what = 'segmentation') %>% pull(segment_id),
+                                   whichfacet = ggplot2::facet_wrap, bins = 60, position = 'stack',
+                                   highlights = FALSE,
+                                   single_segment_mode = FALSE, palette_name = NULL, colors = NULL)
 {
-  stats_data = stat(x, what = 'data')
-
+  if (is.null(to_plot)) {
+    to_plot = 'modality'
+  } else {
+    if (! to_plot %in% colnames(x$input$metadata) & to_plot != 'clusters') {
+      stop('Error, to_plot must be either the name of a metadata column or "clusters". Exiting')
+    }
+  }
+  stats_data = Rcongas:::stat(x, what = 'data')
+  
   # Data stats
   subtitle = paste0(
     "RNA (",
@@ -103,68 +112,185 @@ plot_data_histogram = function(x,
     stats_data$atac_peaks,
     " peaks)"
   )
-
+  
   # What to print, enhanced facets
   what_rna_lik = case_when(
     stats_data$rna_dtype == "NB" ~ "Negative Binomial",
     stats_data$rna_dtype == "P" ~ "Poisson",
     stats_data$rna_dtype == "G" ~ "Gaussian"
   )
-
+  
   what_atac_lik = case_when(
     stats_data$atac_dtype == "NB" ~ "Negative Binomial",
     stats_data$atac_dtype == "P" ~ "Poisson",
     stats_data$atac_dtype == "G" ~ "Gaussian"
   )
-
+  
   # Normalisation factors
   norm_factors = get_input(x, what = 'normalisation')
-
+  
   # RNA_data values
   what_RNA = get_input(x, what = 'data') %>%
     filter(modality == "RNA")
-
+  
   if (nrow(what_RNA) > 0  && stats_data$rna_dtype != "G")
-    what_RNA = normalise_modality(what_RNA, norm_factors %>% filter(modality == "RNA"))
-
+    what_RNA = Rcongas:::normalise_modality(what_RNA, norm_factors %>% filter(modality == "RNA"))
+  
   # ATAC_data values
   what_ATAC = get_input(x, what = 'data') %>%
     filter(modality == "ATAC")
-
+  
   if (nrow(what_ATAC) > 0 && stats_data$atac_dtype != "G")
-    what_ATAC = normalise_modality(what_ATAC, norm_factors %>% filter(modality == "ATAC"))
-
+    what_ATAC = Rcongas:::normalise_modality(what_ATAC, norm_factors %>% filter(modality == "ATAC"))
+  
   # Rescale against average normalization factors
   what_ATAC = what_ATAC %>%  mutate(value = value * mean(norm_factors %>% filter(modality == "ATAC") %>%  pull(normalisation_factor)))
-
+  
   what_RNA = what_RNA %>%  mutate(value = value * mean(norm_factors %>% filter(modality == "RNA") %>%  pull(normalisation_factor)))
-
+  
   what = bind_rows(what_RNA, what_ATAC) %>%
     filter(segment_id %in% segments) %>%
     mutate(modality = case_when(
       modality == "RNA" ~ paste(modality, '(', what_rna_lik, ')'),
       modality == "ATAC" ~ paste(modality, '(', what_atac_lik, ')')
     ))
+  
+  what$modality <- sapply(what$modality %>% strsplit(" "), 
+                          function(y) y[1])
+  
+  # Set some properties of the plot
+  if (position != 'stack') alpha = 0.8 else alpha = 1
+  
+  # Get segments to plot
+  if (highlights) {
+    CNAs = get_fit(x, "CNA")
+    nclusters = CNAs$cluster %>% unique %>% length()
+    CNAs = CNAs %>% group_by(segment_id, value) %>% mutate(grp_size = n()) %>% 
+      filter(grp_size != nclusters) %>% pull(segment_id) %>% 
+      unique
+    cli::cli_alert("Plotting segments where different CNAs are present: {.field {CNAs}}.")
+  } else {
+    CNAs = x$input$segmentation %>% pull(segment_id) %>% unique
+    cli::cli_alert("Showing all segments (this plot can be large).")
+  }
+  
+  # Possible behaviours of this function: 
+  # 1. to_plot == 'clusters'. In this case you need to get the cluser assignments from the object and then you return a list with one plot per element, colored according to cluster assignments.
+  if (to_plot == 'clusters') {
+    what = dplyr::left_join(what, get_fit(x, what = "cluster_assignments") %>% dplyr::select(-modality))
+    if (length(CNAs) == 0) {
+      return(ggplot() + geom_blank())
+    }
+    
+    CNA <- Rcongas:::get_CNA(x)
+    colnames(CNA)[3] <- "CNA"
+    what <- dplyr::left_join(what, CNA)
+    what$clusterCNA = paste0(what$cluster, " (CN = ", what$CNA, ")")
+    
+    if (!is.null(colors)) {
+      cols = colors
+    } else {
+      palette_name = if (!is.null(palette_name)) palette_name else 'Set1'
+      nclusters = CNA$cluster %>% unique %>% length()
+        if (nclusters > 9) {
+          getPalette = grDevices::colorRampPalette(RColorBrewer::brewer.pal(9, palette_name))
+          cols = getPalette(nclusters)
+        } else {
+          cols <- RColorBrewer::brewer.pal(nclusters, palette_name)
+        }
+    }
 
+    CNAs = gtools::mixedsort(CNAs)
+    ret <- sapply(CNAs,  simplify = F, USE.NAMES = T, function(s) {
+      ggplot() + 
+        geom_histogram(aes_string("value", fill = 'clusterCNA'), 
+                       bins = bins, 
+                       data = what %>% filter(segment_id == s), 
+                       position=position,
+                       alpha = alpha) + 
+        #scale_color_manual("Cluster", values = cols, drop = FALSE) +
+        facet_wrap(segment_id ~ modality, scales = "free") + 
+        guides() + 
+        theme_light(base_size = 9) + 
+        theme(strip.text = element_text(colour = 'black')) +
+        scale_fill_manual("Cluster ", values = cols) + 
+        labs(x = "Input", y = "Observations") + 
+        theme(strip.text.y.right = element_text(angle = 0), 
+              # axis.text.y = element_blank(), 
+              # axis.ticks.y = element_blank(), 
+              # axis.ticks = element_blank(), 
+              legend.position="top",
+              legend.direction='vertical') 
+    })
+    return(ret)
+  } 
+  
+  # 2. to_plot == any metadata column. IN this case you need to get the values to plot from the metadata column. 
+  # 3. to_plot == 'modality'. In this case, we don't need to extract anything from the metadata, the variable what 
+  # already contains the data we need for plotting.
+  
+  # Here we are putting inside the variable what the data we need for plotting (so we are finishing preparing 'what')
+  # In case to_plot is not null we take its value from the metadata dataframe
+  # In case to_plot is 'modality', then there is no need for the object to
+  # have a metadata field.
+  if (to_plot != 'modality') {
+    what = dplyr::left_join(what, x$input$metadata %>% dplyr::select(cell, to_plot))
+    what[[to_plot]] = factor(what[[to_plot]], levels = gtools::mixedsort(what[[to_plot]] %>% unique))
+  } 
+  
+  what = what %>%
+    mutate(segment_id = factor(segment_id, levels = gtools::mixedsort(segment_id %>% unique))) 
+  
+  # Two possible behaviours: if single_segment_mode == TRUE, return only one plot faceted. Otherwise return a list of plots.
+  
+  plot_list = list()
+  if (single_segment_mode) {
+    plot_list = sapply(CNAs, simplify = F, USE.NAMES = T, function(s) plot_data_histogram_aux(what, s, to_plot, alpha, position, palette_name, colors))
 
-  # Call
-  what %>%
-    # deidify() %>%
-    # mutate(segment_id = factor(chr, levels = gtools::mixedsort(chr) %>% unique)) %>%
-    mutate(segment_id = factor(segment_id, levels = gtools::mixedsort(segment_id) %>% unique)) %>%
-    ggplot(aes(value, fill = modality)) +
-    geom_histogram(bins = bins) +
-    whichfacet(segment_id ~ modality, scales = 'free') +
-    # facet_wrap(chr ~ modality, scales = 'free') +
-    labs(title = x$description,
-         subtitle = subtitle) +
-    guides(fill = FALSE) +
-    theme_linedraw(base_size = 9) +
-    scale_fill_manual(values = modality_colors(what$modality %>% unique)) +
+  } else {
+    plot_list[[1]] = plot_data_histogram_aux(what, s = NULL, to_plot = to_plot, alpha = alpha, position = position, palette_name, colors) + 
+      labs(title = x$description, subtitle = subtitle)
+  }
+  
+  if (length(plot_list) == 1) {
+    return(plot_list[[1]])
+  } else 
+    return(plot_list)
+}
+
+plot_data_histogram_aux = function(what, s, to_plot, alpha, position, palette_name, colors = NULL) {
+  
+  if (!is.null(s)) {
+    what = what %>% filter(segment_id == s)
+  }
+  
+  p = ggplot(what) + geom_histogram(aes_string("value", fill = to_plot), alpha=alpha, bins = 50, position=position) +
+    facet_wrap(segment_id ~ modality, scales = 'free') +
+    theme_light(base_size = 9) + 
     labs(x = "Input",
          y = 'Observations') +
-    theme(strip.text.y.right = element_text(angle = 0))
+    scale_x_continuous(breaks = scales::pretty_breaks(n = 4, min.n = 2)) +
+		scale_y_continuous(breaks = scales::pretty_breaks(n = 4, min.n = 2)) +
+    theme(strip.text.y.right = element_text(angle = 0), 
+          legend.position="top", legend.direction='horizontal',
+          legend.title = element_blank()) +
+    theme(strip.text = element_text(colour = 'black')) 
+
+  if (!is.null(palette_name)) {
+    cols <- RColorBrewer::brewer.pal(length(unique(what[,to_plot])), palette_name)
+    p = p + scale_fill_manual(values = cols) 
+  } else if(!is.null(colors)) {
+    p = p + scale_fill_manual(values = colors) 
+  }
+  
+  if (to_plot == 'modality') {
+    cols = Rcongas:::modality_colors(what$modality %>% unique)
+    p = p + scale_fill_manual(values = cols) 
+  } 
+  return(p)
 }
+
+
 
 plot_data_lineplot = function(x,
                               segments = get_input(x, what = 'segmentation') %>% pull(segment_id),
