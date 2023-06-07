@@ -19,7 +19,7 @@ log_sum_exp <- function(x) {
 
 calculate_entropy <- function(x) {
   tmp <- apply(x, 1, function(x) {
-    x = x + 1e9
+    x = x + 1e-9
     x = x/sum(x)
     
     x * log(x) 
