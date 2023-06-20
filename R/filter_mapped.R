@@ -72,7 +72,7 @@ filter_segments = function(x,
     filter(segment_id %in% retained_segments$segment_id)
 
   x$log = paste0(x$log, '\n- ', 
-                 Sys.time(), " Filtered segments: [", length, 
+                 Sys.time(), " Filtered s123egments: [", length, 
                  '|', RNA_genes, '|', ATAC_peaks, ']')
   
   return(x)

@@ -85,11 +85,13 @@ plot_data = function(x,
 }
 
 plot_data_histogram = function(x,
-                                   to_plot = NULL, 
-                                   segments = get_input(x, what = 'segmentation') %>% pull(segment_id),
-                                   whichfacet = ggplot2::facet_wrap, bins = 60, position = 'stack',
-                                   highlights = FALSE,
-                                   single_segment_mode = FALSE, palette_name = NULL, colors = NULL)
+                              to_plot = NULL, 
+                              segments = get_input(x, what = 'segmentation') %>% pull(segment_id),
+                              whichfacet = ggplot2::facet_wrap, bins = 60, position = 'stack',
+                              highlights = FALSE,
+                              single_segment_mode = FALSE, 
+                              palette_name = NULL, 
+                              colors = NULL)
 {
   if (is.null(to_plot)) {
     to_plot = 'modality'
@@ -241,7 +243,7 @@ plot_data_histogram = function(x,
   what = what %>%
     mutate(segment_id = factor(segment_id, levels = gtools::mixedsort(segment_id %>% unique))) 
   
-  # Two possible behaviours: if single_segment_mode == TRUE, return only one plot faceted. Otherwise return a list of plots.
+  # Two possible behaviours: if single_segment_mode == TRUE return a list of plots, otherwise return only one plot faceted.
   
   plot_list = list()
   if (single_segment_mode) {

@@ -289,49 +289,65 @@ fit_nbmix = function(x, K = 1:3, score="ICL", mod="ATAC")
   return(clonal_status)
 }
 
+#' Filter segments where the optimal number of clusters is 1.
+#' 
+#' @description This function can be used to exclude from the inference step those segments that are unimodal.
+#' 
+#' The function requires and returns an (R)CONGAS+ object.
+#'
+#' @param obj An \code{rcongasplus} object.
+#' @param K_max Max Number of clusters to test for the congas runs on single segments
+#' @param score Model selection score to be used to select the number of clusters
+#' @param lambda lambda to use for each congas run
+#' @param cores_ratio fraction of cores that we be used to run the single CONGAS+ inferences in parallel.
+#' 
+#' @return The object \code{obj} where segments have been identified and 
+#' removed.
+#' 
+#' @export
+#'
+segments_selector_congas <- function(obj, K_max = 3, score = "BIC", lambda = 0.5, cores_ratio = 0.5){
 
+  congas_single_segment <- function(seg_id){
+    # seg_id = segment_ids[i]
+    K_max = 3#params$K_max
+    lr = 0.01#params$lr
+    steps = 2000#params$steps
+    score = 'BIC'#params$score
+    lambda = 0.5#params$lambda
+    purity = NULL#params$purity
+    temperature = 20#params$temperature
 
-segments_selector_congas <- function(obj, K=1:3, score="ICL", mod="ATAC"){
+    obj = Rcongas:::select_segments(obj, segment_ids = c(seg_id))
 
+    model_params = Rcongas:::auto_config_run(obj,
+                                      K = 1:K_max,
+                                      prior_cn = c(0.2, 0.6, 0.05, 0.025, 0.025),
+                                      purity = purity)
 
-  congas_single_segment <- function(obj,
-                                    seg_id,
-                                    K = K,
-                                    score=score,
-                                    lambda=lambda){
-
-    filt_cyto <- obj %>% Rcongas:::get_input(what = "segmentation") %>%
-      filter(segment_id == seg_id)
-
-    filt_dataset <- obj %>% Rcongas:::get_input(what = "data") %>%
-      filter(segment_id == seg_id)
-
-    obj$input$dataset = filt_dataset
-
-    obj$input$segmentation = filt_cyto
-
-    params = Rcongas:::auto_config_run(obj, K = K)
-
-    params$lambda=lambda
+    model_params$lambda=lambda
+    model_params$binom_prior_limits = c(40,1000)
 
     fit_obj = Rcongas:::fit_congas(
       obj,
-      K = K,
-      model_parameters = params,
-      learning_rate = 0.05,
-      steps = 500,
-      model_selection = score
+      K = 1:K_max,
+      model_parameters = model_params,
+      lambdas = lambda,
+      learning_rate = lr,
+      steps = steps,
+      temperature = temperature,
+      model_selection = score,
+      threshold = 0.001
     )
 
 
-    p=Rcongas:::plot_fit(fit_obj,what = "density",highlight=F)
+    # p=Rcongas:::plot_fit_density(fit_obj, highlight=F)
+    bms_idx <- order(fit_obj$model_selection %>% pull(!!score))[1]
 
     model = tibble(
-      k = Rcongas:::stat(fit_obj, "fit")$fit_k,
-      segment_id = seg_id,
-      counts= filt_dataset %>% dplyr::select("value"),
-      assignments = Rcongas:::get_fit(fit_obj, what = "cluster_assignments") %>% dplyr::select("cluster"),
-      plot=p
+      k = fit_obj$model_selection$K[bms_idx],
+      segment_id = seg_id
+      # plot=p
     )
 
     return(model)
@@ -341,52 +357,37 @@ segments_selector_congas <- function(obj, K=1:3, score="ICL", mod="ATAC"){
 
   segment_ids = unique(Rcongas:::get_data(obj)$segment_id)
 
-  if(mod=="ATAC"){
+  params = list(K_max = 3,
+               lambda=lambda,
+               lr=0.01,
+               steps=2000, 
+               score="BIC", 
+               purity = NULL, 
+               temperature=20)
 
-    lambda=0
-
-  }else if(mod=="RNA"){
-
-    lambda=1
-
-  }else{
-
-       stop("Unknown modality")
-
-  }
-
-  report = lapply(segment_ids,
-                  function(seg_id)
-                  {
-                    runs = congas_single_segment(obj, seg_id, K=K, score=score,lambda=lambda)
-
-                    return(runs)
-
-                  }
+  report = easypar::run(
+    FUN = congas_single_segment,
+    PARAMS = lapply(segment_ids, list),
+    parallel = TRUE,
+    cores.ratio = cores_ratio,
+    filter_errors = FALSE
+    # export = c("segment_ids", "obj")
   )
 
   report = Reduce(bind_rows, report)
 
-  segments_plot <- report$plot %>% unique()
+  # segments_plot <- report$plot %>% unique()
 
   polyclonal_segments <-
     filter(report, k > 1) %>% dplyr::select(segment_id) %>% unique()
 
-  filt_cyto <- obj %>% Rcongas:::get_input(what = "segmentation") %>%
-    filter(segment_id %in% polyclonal_segments$segment_id)
+  if (!(length(rownames(polyclonal_segments)) == 0)) {
 
-  filt_dataset <- obj %>% Rcongas:::get_input(what = "data") %>%
-    filter(segment_id %in% polyclonal_segments$segment_id)
-
-  if (!(length(rownames(filt_cyto)) == 0)) {
-
-    obj$input$dataset = filt_dataset
-
-    obj$input$segmentation = filt_cyto
+    obj = Rcongas:::select_segments(obj, polyclonal_segments$segment_id)
 
   }
-
-  obj$segments_plot <- segments_plot
+  cat(nrow(polyclonal_segments), " segments are found polyclonal")
+  # obj$segments_plot <- segments_plot
 
   obj$polyclonal_segments <- polyclonal_segments
 
@@ -396,8 +397,12 @@ segments_selector_congas <- function(obj, K=1:3, score="ICL", mod="ATAC"){
 
 
 select_segments <- function(x, segment_ids) {
-  x_filt = x %>% get_input(what = "data") %>% filter(segment_id %in% segment_ids)
-  cyto = x %>% get_input(what = "segmentation") %>% filter(segment_id %in% segment_ids)
+  x_filt = x %>% get_input(what = "data") %>%
+      filter(segment_id %in% segment_ids)
+  cyto = x %>% 
+      get_input(what = "segmentation") %>%
+      filter(segment_id %in% segment_ids)
+
   x$input$dataset = x_filt
   x$input$segmentation = cyto
 
