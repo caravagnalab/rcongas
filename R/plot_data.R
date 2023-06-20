@@ -94,7 +94,7 @@ plot_data_histogram = function(x,
   if (is.null(to_plot)) {
     to_plot = 'modality'
   } else {
-    if (! to_plot %in% colnames(x$input$metadata) & to_plot != 'clusters') {
+    if (sum(! to_plot %in% colnames(x$input$metadata) & to_plot != 'clusters') > 0 ){
       stop('Error, to_plot must be either the name of a metadata column or "clusters". Exiting')
     }
   }
