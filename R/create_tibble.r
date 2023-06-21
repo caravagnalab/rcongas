@@ -25,8 +25,14 @@ create_congas_tibble = function(counts,
   
   colnames(counts) =  c('feature_index', 'cell_index', 'value')
   
-  if (!is.null(features)){
-    features = features %>% mutate(feature_index = seq(1, nrow(.)))
+  # if (!is.null(features) && modality == 'RNA'){
+  #   gene_names = rownames(counts)
+
+  #   features = tibble(gene = gene_names) %>% left_join(features) 
+  # } 
+  if (!is.null(features) ){
+    features = features %>% 
+                mutate(feature_index = seq(1, nrow(.)))
   } 
   
   if (modality == 'ATAC' & is.null(features)) {

@@ -39,25 +39,39 @@ if (!dir.exists(fig.dir)) {dir.create(fig.dir, recursive = T)}
 Load the ATAC counts to create the tibble needed as CONGAS+ input
 ```{r}
 
-atac_counts = readRDS('lymphoma/tutorial/atac_counts.rds')
-rna_counts = readRDS('lymphoma/tutorial/rna_counts.rds')
+data(atac_counts) 
+data(rna_counts)
 
 ```
 
 With the multiome assay, the feature files provided by CellRanger contains already
 a mapping between gene names and coordinates. Let's read this file
 As an alternative, when such file not not readily available, users can exploit
-BiomaRt. A tutorial section on how to perform such conversion will be available soon
+BiomaRt.
 
 ```{r}
-features = readr::read_delim('lymphoma/filtered_feature_bc_matrix/features.tsv.gz', 
-                                  delim  = '\t',
-                                  col_names = c('gene_id', 'gene_name', 'modality', 'chr', 'from', 'to')) %>%
-  filter(modality == 'Gene Expression') %>% dplyr::rename(gene = gene_name)
+data(features)
+```
+
+In case the gene coordinates are not readily available, you can exploit Biomart
+```{r}
+library(biomaRt)
+ensembl <- useEnsembl(biomart = "genes", dataset = "hsapiens_gene_ensembl")
+z <- getBM(c("hgnc_symbol", 'chromosome_name','start_position','end_position'), 
+             filters = "hgnc_symbol", 
+             rownames(rna_counts), 
+             ensembl) %>% 
+             dplyr::rename(gene = hgnc_symbol, 
+                          chr = chromosome_name, 
+                          from = start_position, 
+                          to = end_position)
+
+features = z[!duplicated(z$gene),]
+
 ```
 
 Create the RNA and ATAC tibble required by CONGAS+
-
+We first create for ATAC a dataframe with the paks coordinates
 ```{r}
 atac_featureDF = data.frame(id = rownames(atac_counts)) %>%
   tidyr::separate(id, c('chr', 'from', 'to'), '-')
@@ -93,7 +107,7 @@ rna = rna %>% mutate(value = as.integer(value))
 Apply some basic filters on known genes
 ```{R}
 rna = rna %>% filter_known_genes(what='r')
-# 
+
 all_genes = rna$gene %>% unique
 mito = all_genes %>% str_starts(pattern = 'MT-')
 all_genes = setdiff(all_genes, all_genes[mito])
@@ -102,11 +116,10 @@ rna = rna %>% dplyr::filter(gene %in% all_genes)
 
 Read chromosome arm coordinated that will be used as segment breakpoints
 ```{R}
-segments = readr::read_delim(paste0(data_folder, 'chromosome_arms_hg38.tsv'),
-                             col_types = "cii", delim = ' ')  %>% mutate(copies = as.integer(2))
+data(hg38_arms)
 
 # Remove these chromosomes
-segments = segments %>% dplyr::filter(chr != 'chrX', chr != 'chrY')
+segments = hg38_arms %>% dplyr::filter(chr != 'chrX', chr != 'chrY')
 
 ```
 
@@ -120,8 +133,8 @@ x = init(
   segmentation = segments, #%>% mutate(copies = as.integer(round(copies))),
   rna_normalisation_factors = norm_rna,
   atac_normalisation_factors = norm_atac,
-  rna_likelihood = lik_rna, 
-  atac_likelihood = lik_atac,
+  rna_likelihood = "NB", 
+  atac_likelihood = "NB",
   description = paste0('Bimodal ', sample))
 ```
 
@@ -134,13 +147,12 @@ ggplot(x$input$segmentation, aes(x=RNA_nonzerocells, y=RNA_genes)) + geom_point(
 ```
 
 ```{R}
-x = Rcongas::filter_segments(x, RNA_nonzerocells = 6000, ATAC_nonzerocells = 6000)
+x = Rcongas::filter_segments(x, RNA_nonzerocells = 300, ATAC_nonzerocells = 300)
 ```
 
 Generate plots to check out the data distribution
 ```{R}
-ggsave(
-  paste0(fig.dir, "Histogram_longest_20_segments.png"),
+
   plot_data(
     x,
     what = 'histogram',
@@ -149,22 +161,17 @@ ggsave(
       dplyr::arrange(dplyr::desc(L)) %>%
       top_n(20) %>%
       pull(segment_id)
-  ),
-  width = 18,
-  height = 18
-)
+  )
 ```
 
 
 Add metadata to annotate the counts distributions
 ```{R}
-metadata = readRDS('lymphoma/tutorial/celltypes.rds')
+data(metadata)
 
 x$input$metadata = metadata
 # Modificato plot_data in mdodo da plottare gli istogrammi colorati per celltype
-ggsave(paste0(fig.dir, "3.1.Histogram_type.png"),
-       plot_data_mod(x, to_plot = 'type', position = 'stack'),
-       width = 19, height = 19)
+plot_data(x, to_plot = 'type', position = 'stack')
 ```
 
 
