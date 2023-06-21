@@ -395,8 +395,8 @@ plot_fit_scores = function(x)
 {
 scores = reshape2::melt(
   x$model_selection %>%
-    select(-n_observations),
-  id = c('K', 'lambda')
+    dplyr::select(-n_observations),
+  id = c('K')#, 'lambda')
 )
 scores$K = as.factor(scores$K)
 IC_best = scores %>%
@@ -409,7 +409,7 @@ H_best = scores %>%
   filter(value == max(value)) %>%
   filter(variable == 'entropy')
 scores %>%
-  ggplot(aes(x = lambda, y = value, color = K)) +
+  ggplot(aes(x = K, y = value, group = variable)) +
   geom_line() +
   geom_point() +
   facet_wrap(~variable, scales = 'free') +
@@ -422,7 +422,7 @@ scores %>%
     color = 'red'
   ) +
   labs(title = x$description) +
-  theme_linedraw(base_size = 9) +
+  theme_bw() +
   scale_color_brewer(palette="Dark2") +
   scale_y_continuous(labels = function(x) format(x, scientific = TRUE, digits = 3))
 

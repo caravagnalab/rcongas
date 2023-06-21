@@ -53,7 +53,7 @@ BiomaRt.
 data(features)
 ```
 
-In case the gene coordinates are not readily available, you can exploit Biomart
+In case the gene coordinates are not readily available, you can exploit Biomart:
 ```{r}
 library(biomaRt)
 ensembl <- useEnsembl(biomart = "genes", dataset = "hsapiens_gene_ensembl")
@@ -64,9 +64,15 @@ z <- getBM(c("hgnc_symbol", 'chromosome_name','start_position','end_position'),
              dplyr::rename(gene = hgnc_symbol, 
                           chr = chromosome_name, 
                           from = start_position, 
-                          to = end_position)
+                          to = end_position) %>%
+              filter(chr %in% c(seq(1:22), 'X', 'Y')) %>%
+              mutate(chr = paste0('chr', chr)) 
 
-features = z[!duplicated(z$gene),]
+z = z[!duplicated(z$gene),]
+
+gene_names = rownames(rna_counts)
+
+features = tibble(gene = gene_names) %>% left_join(z) 
 
 ```
 
@@ -93,8 +99,6 @@ rna = Rcongas::create_congas_tibble(counts = rna_counts,
                                     features = features)
 
 rna = rna %>% mutate(cell = paste0(cell, '-RNA'))
-
-rna$gene[is.na(rna$gene)] = '' 
 
 # Compute normalization factors
 norm_rna = Rcongas:::auto_normalisation_factor(rna) %>%
@@ -201,7 +205,7 @@ model = "BIC"
 lr = 0.01
 temperature = 20#10
 
-steps = 10000
+steps = 5000
 lambda = 0.5
 
 # Estimate hyperparameters
@@ -231,10 +235,13 @@ The new object has more information.
 ```{r}
 fit_filt
 ```
+You can get the information regarding model selection metrics
+```{r}
+fit_filt$model_selection
+```
 
-```{r, fig.width=5, fig.height=3}
-fit_filt %>% 
-  plot()
+```{r, fig.width=5, fig.height=4}
+Rcongas::plot_fit(fit_filt, what='scores')
 ```
 
 ```{r, fig.width=5, fig.height=8}
@@ -244,3 +251,4 @@ plot_fit(fit_filt, 'posterior_CNA')
 ```{r, fig.width=5, fig.height=4}
 plot_fit(fit_filt, what = 'density', highlights = FALSE)
 ```
+
