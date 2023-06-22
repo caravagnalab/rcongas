@@ -308,7 +308,7 @@ fit_nbmix = function(x, K = 1:3, score="ICL", mod="ATAC")
 #'
 segments_selector_congas <- function(obj, K_max = 3, score = "BIC", lambda = 0.5, cores_ratio = 0.5){
 
-  congas_single_segment <- function(seg_id){
+  congas_single_segment <- function(obj){
     # seg_id = segment_ids[i]
     K_max = 3#params$K_max
     lr = 0.01#params$lr
@@ -318,7 +318,7 @@ segments_selector_congas <- function(obj, K_max = 3, score = "BIC", lambda = 0.5
     purity = NULL#params$purity
     temperature = 20#params$temperature
 
-    obj = Rcongas:::select_segments(obj, segment_ids = c(seg_id))
+    # obj = Rcongas:::select_segments(obj, segment_ids = c(seg_id))
 
     model_params = Rcongas:::auto_config_run(obj,
                                       K = 1:K_max,
@@ -344,9 +344,9 @@ segments_selector_congas <- function(obj, K_max = 3, score = "BIC", lambda = 0.5
     # p=Rcongas:::plot_fit_density(fit_obj, highlight=F)
     bms_idx <- order(fit_obj$model_selection %>% pull(!!score))[1]
 
-    model = tibble(
+    model = tibble::tibble(
       k = fit_obj$model_selection$K[bms_idx],
-      segment_id = seg_id
+      segment_id = unique(obj$input$segmentation$segment_id)
       # plot=p
     )
 
@@ -358,7 +358,7 @@ segments_selector_congas <- function(obj, K_max = 3, score = "BIC", lambda = 0.5
   segment_ids = unique(Rcongas:::get_data(obj)$segment_id)
 
   params = list(K_max = 3,
-               lambda=lambda,
+               lambda=0.5,
                lr=0.01,
                steps=2000, 
                score="BIC", 
@@ -367,7 +367,9 @@ segments_selector_congas <- function(obj, K_max = 3, score = "BIC", lambda = 0.5
 
   report = easypar::run(
     FUN = congas_single_segment,
-    PARAMS = lapply(segment_ids, list),
+    PARAMS = lapply(segment_ids, function (x) {
+      list(obj = Rcongas:::select_segments(obj, segment_ids = c(x)))
+      }),#lapply(segment_ids, list),
     parallel = TRUE,
     cores.ratio = cores_ratio,
     filter_errors = FALSE
