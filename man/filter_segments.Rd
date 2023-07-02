@@ -9,7 +9,9 @@ filter_segments(
   length = 0,
   RNA_genes = 50,
   ATAC_peaks = 50,
-  segments = list()
+  segments = list(),
+  RNA_nonzerocells = 0,
+  ATAC_nonzerocells = 0
 )
 }
 \arguments{

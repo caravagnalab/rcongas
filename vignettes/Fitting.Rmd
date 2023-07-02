@@ -8,43 +8,9 @@ vignette: >
 ---
 
 ```{r, include = FALSE}
-# options(crayon.enabled = FALSE)
 
-# knitr::opts_chunk$set(
-#   collapse = TRUE,
-#   comment = "%>"
-# )
-
-# old_hooks <- fansi::set_knit_hooks(knitr::knit_hooks, 
-#                                    which = c("output", "message", "error"))
 
 options(crayon.enabled = FALSE)
-# options(pillar.bold = TRUE, pillar.subtle_num = TRUE)
-# 
-# colourise_chunk <- function(type) {
-#   function(x, options) {
-#     lines <- x
-#     if (type != "output") {
-#       # lines <- crayon::red(lines)
-#     }
-#     paste0(
-#       '<div class="sourceCode"><pre class="sourceCode"><code class="sourceCode">',
-#       paste0(
-#         fansi::sgr_to_html(htmltools::htmlEscape(lines)),
-#         collapse = "\n"
-#       ),
-#       "</code></pre></div>"
-#     )
-#   }
-# }
-# 
-# knitr::knit_hooks$set(
-#   output = colourise_chunk("output"),
-#   message = colourise_chunk("message"),
-#   warning = colourise_chunk("warning"),
-#   error = colourise_chunk("error")
-# )
-
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 ```
 
@@ -52,91 +18,237 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 library(Rcongas)
 library(dplyr)
 library(ggplot2)
+library(stringr)
+library(tidyverse)
 ```
 
+Setup the directory where results are stored.
 ```{r}
-data("satpathy_bcc")
+
+sample = 'lymphoma'
+
+prefix = paste0(sample, "/tutorial/")
+
+out.dir = paste0(prefix, "/congas_data/")
+fig.dir = paste0(prefix, "/congas_figures/")
+
+if (!dir.exists(out.dir)) {dir.create(out.dir, recursive = T)}
+if (!dir.exists(fig.dir)) {dir.create(fig.dir, recursive = T)}
 ```
 
-Hyperparameters can be computed from data.
-
-
+Load the ATAC counts to create the tibble needed as CONGAS+ input
 ```{r}
-satpathy_bcc_hp = auto_config_run(
-  satpathy_bcc, 
-  K = 1:3
-)
+
+data(atac_counts) 
+data(rna_counts)
+
 ```
 
-Parameters are a list.
+With the multiome assay, the feature files provided by CellRanger contains already
+a mapping between gene names and coordinates. Let's read this file
+As an alternative, when such file not not readily available, users can exploit
+BiomaRt.
+
 ```{r}
-satpathy_bcc_hp
+data(features)
 ```
 
-Fitting uses `reticulate` to interface with the Python CONGAS package, which implements the models in Pyro.
+In case the gene coordinates are not readily available, you can exploit Biomart:
 ```{r}
-# Run Python
-satpathy_bcc = fit_congas(
-  satpathy_bcc,
-  K = 1:3, 
-  latent_variables = 'C',
-  model_parameters = satpathy_bcc_hp,
-  steps = 500
-)
+library(biomaRt)
+ensembl <- useEnsembl(biomart = "genes", dataset = "hsapiens_gene_ensembl")
+z <- getBM(c("hgnc_symbol", 'chromosome_name','start_position','end_position'), 
+             filters = "hgnc_symbol", 
+             rownames(rna_counts), 
+             ensembl) %>% 
+             dplyr::rename(gene = hgnc_symbol, 
+                          chr = chromosome_name, 
+                          from = start_position, 
+                          to = end_position) %>%
+              filter(chr %in% c(seq(1:22), 'X', 'Y')) %>%
+              mutate(chr = paste0('chr', chr)) 
+
+z = z[!duplicated(z$gene),]
+
+gene_names = rownames(rna_counts)
+
+features = tibble(gene = gene_names) %>% left_join(z) 
+
+```
+
+Create the RNA and ATAC tibble required by CONGAS+
+We first create for ATAC a dataframe with the paks coordinates
+```{r}
+atac_featureDF = data.frame(id = rownames(atac_counts)) %>%
+  tidyr::separate(id, c('chr', 'from', 'to'), '-')
+
+atac = Rcongas::create_congas_tibble(counts = atac_counts, 
+                                     modality = 'ATAC', 
+                                     save_dir = NULL,
+                                     features = atac_featureDF)
+# duplicate call names across ATAC and RNA cells is not allowed by CONGAS+
+# add suffix to atac cell barcodes prior to create the CONGAS+ object
+atac = atac %>% mutate(cell = paste0(cell, '-ATAC'))
+# Compute normalization factors
+norm_atac = Rcongas:::auto_normalisation_factor(atac) %>%
+  mutate(modality = 'ATAC')
+
+rna = Rcongas::create_congas_tibble(counts = rna_counts, 
+                                    modality = 'RNA', 
+                                    save_dir=NULL, 
+                                    features = features)
+
+rna = rna %>% mutate(cell = paste0(cell, '-RNA'))
+
+# Compute normalization factors
+norm_rna = Rcongas:::auto_normalisation_factor(rna) %>%
+  mutate(modality = 'RNA')
+
+atac = atac %>% mutate(value = as.integer(value))
+rna = rna %>% mutate(value = as.integer(value))
+```
+
+Apply some basic filters on known genes
+```{R}
+rna = rna %>% filter_known_genes(what='r')
+
+all_genes = rna$gene %>% unique
+mito = all_genes %>% str_starts(pattern = 'MT-')
+all_genes = setdiff(all_genes, all_genes[mito])
+rna = rna %>% dplyr::filter(gene %in% all_genes)
+```
+
+Read chromosome arm coordinated that will be used as segment breakpoints
+```{R}
+data(hg38_arms)
+
+# Remove these chromosomes
+segments = hg38_arms %>% dplyr::filter(chr != 'chrX', chr != 'chrY')
+
+```
+
+Now init the CONGAS+ object
+
+
+```{R}
+x = init(
+  rna = rna,
+  atac = atac,
+  segmentation = segments, #%>% mutate(copies = as.integer(round(copies))),
+  rna_normalisation_factors = norm_rna,
+  atac_normalisation_factors = norm_atac,
+  rna_likelihood = "NB", 
+  atac_likelihood = "NB",
+  description = paste0('Bimodal ', sample))
+```
+
+Now plot the number of nonzero cells vs the number of peaks per segment, to help 
+identify a threshold for filtering segments. 
+
+```{R}
+ggplot(x$input$segmentation, aes(x=ATAC_nonzerocells, y=ATAC_peaks)) + geom_point()
+ggplot(x$input$segmentation, aes(x=RNA_nonzerocells, y=RNA_genes)) + geom_point()
+```
+
+```{R}
+x = Rcongas::filter_segments(x, RNA_nonzerocells = 300, ATAC_nonzerocells = 300)
+```
+
+Generate plots to check out the data distribution
+```{R}
+
+  plot_data(
+    x,
+    what = 'histogram',
+    segments = get_input(x, what = 'segmentation') %>%
+      mutate(L = to - from) %>%
+      dplyr::arrange(dplyr::desc(L)) %>%
+      top_n(20) %>%
+      pull(segment_id)
+  )
+```
+
+
+Add metadata to annotate the counts distributions
+```{R}
+data(metadata)
+
+x$input$metadata = metadata
+# Modificato plot_data in mdodo da plottare gli istogrammi colorati per celltype
+plot_data(x, to_plot = 'type', position = 'stack')
+```
+
+
+To reduce the paramter search space dimensions and subsequently decreasing the computational complecity of CONGAS+ inference, users can optionally decide to perform 
+a preliminary step of segment filtering, which consists in running CONGAS+ inference independently on each segment, varying the number of clusters from 1 to 3 and
+finally keeping only those segments in which the otpimal number of clusters selected by BIC is higher than 1. 
+
+This step is implemented in the fuction `segments_selector_congas`, which return the filtered CONGAS+ object.
+
+Fitting uses `reticulate` to interface with the Python CONGAS package, which implements the models in Pyro. In case R does not find a anaconda environment with CONGAS+
+python version installed, it will automatically create a r-reticulate environment and install CONGAS+ within that environment.
+```{r}
+
+filt = segments_selector_congas(x)
+# You can save the filtering result to avoid re-running the whole pipeline in future steps
+# saveRDS(filt, paste0(out.dir, "rcongas_obj_filtered.rds"))
+```
+
+Now we can run CONGAS+ parameters inference on the final filtered object. We first fir hyperparameters values from the current data, and then we fit the model.
+```{r}
+# Set values fro the model hyperparameters
+k = c(1:4)
+
+binom_limits = c(40,1000)
+model = "BIC"
+
+lr = 0.01
+temperature = 20#10
+
+steps = 5000
+lambda = 0.5
+
+# Estimate hyperparameters
+hyperparams_filt <- auto_config_run(filt, k, 
+                                    prior_cn=c(0.2, 0.6, 0.1, 0.05, 0.05),
+                                    init_importance = 0.6)
+
+# Run
+
+hyperparams_filt$binom_prior_limits = binom_limits
+
+fit_filt <- Rcongas:::fit_congas(filt,
+                                 K = k, 
+                                 lambdas = lambda, 
+                                 learning_rate = lr, 
+                                 steps = steps,
+                                 model_parameters = hyperparams_filt, 
+                                 model_selection = model,
+                                 latent_variables = "G",
+                                 compile = F,
+                                 temperature = temperature, 
+                                 same_mixing = TRUE, 
+                                 threshold = 0.001)
 ```
 
 The new object has more information.
 ```{r}
-satpathy_bcc
+fit_filt
+```
+You can get the information regarding model selection metrics
+```{r}
+fit_filt$model_selection
 ```
 
-```{r, fig.width=5, fig.height=3}
-satpathy_bcc %>% 
-  plot()
+```{r, fig.width=5, fig.height=4}
+Rcongas::plot_fit(fit_filt, what='scores')
 ```
 
 ```{r, fig.width=5, fig.height=8}
-plot_fit(satpathy_bcc, 'posterior_CNA')
-```
-
-
-
-```{r}
-set.seed(1234)
-
-prefit = Rcongas:::segment_selector(satpathy_bcc, 
-                                    K = 1:3, 
-                                    samples = 2, 
-                                    epsilon = 1e-4, 
-                                    score="BIC", 
-                                    mod="ATAC")
-
-polyclonal = prefit %>% 
-  filter(rank == 1, status == 'Polyclonal') %>% 
-  pull(segment_id)
-
-satpathy_bcc_polyclonal = satpathy_bcc %>% 
-  filter_segments(length = Inf, segments = polyclonal)
-
-# Run Python 
-satpathy_bcc_polyclonal = fit_congas(
-  satpathy_bcc_polyclonal,
-  model_parameters = satpathy_bcc_polyclonal %>% auto_config_run(),
-  latent_variables = 'C',
-  K = 1:3,
-  steps = 500
-)
-```
-
-```{r, fig.width=5, fig.height=3}
-satpathy_bcc_polyclonal %>% 
-  plot()
+plot_fit(fit_filt, 'posterior_CNA')
 ```
 
 ```{r, fig.width=5, fig.height=4}
-plot_fit(satpathy_bcc_polyclonal, what = 'density', highlights = FALSE)
+plot_fit(fit_filt, what = 'density', highlights = FALSE)
 ```
 
-```{r, fig.width=5, fig.height=4}
-plot_fit(satpathy_bcc_polyclonal, 'posterior_CNA')
-```

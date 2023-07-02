@@ -147,60 +147,6 @@ plot_fit_CNA = function(x)
   return(segments_plot)
 }
 
-plot_fit_density = function(x, highlights = TRUE)
-{
-  # CNAs where these are different
-  CNAs = get_fit(x, 'CNA')
-
-  if (highlights)
-  {
-    nclusters = CNAs$cluster %>% unique %>% length()
-
-    CNAs = CNAs %>%
-      group_by(segment_id, value) %>%
-      mutate(grp_size = n()) %>%
-      filter(grp_size != nclusters) %>%
-      pull(segment_id) %>%
-      unique
-
-    cli::cli_alert("Plotting segments where different CNAs are present: {.field {CNAs}}.")
-  }
-  else
-  {
-    CNAs = CNAs %>%
-      pull(segment_id) %>%
-      unique
-
-    cli::cli_alert("Showing all segments (this plot can be large).")
-  }
-
-  #plots <- plot_data_histogram(x, CNAs)
-
-
-  plots <- plot_data_histogram(x, segment_id)
-
-  # Per cell clustering assignments
-  clustering_assignments = get_fit(x, what = 'cluster_assignments') %>%
-    select(-modality)
-
-  plots$data$modality <- clustering_assignments$
-
-  what = what %>% left_join(clustering_assignments, by = 'cell')
-
-  # Call
-  what %>%
-    ggplot(aes(value, fill = cluster)) +
-    geom_histogram(bins = 50) +
-    facet_grid(segment_id ~ modality, scales = 'free_x') +
-    labs(title = x$description
-         ) +
-    guides(fill = FALSE) +
-    theme_linedraw(base_size = 9) +
-    scale_fill_brewer(palette = 'Set1') +
-    labs(x = "Input",
-         y = 'Observations')
-}
-
 plot_mixing_proportions = function(x)
 {
   clustering_assignments =
@@ -294,7 +240,7 @@ plot_fit_density = function(x, highlights = TRUE)
     return(ggplot()+ geom_blank())
   }
 
-  plots <- plot_data_histogram(x, CNAs)
+  plots <- plot_data_histogram(x, single_segment_mode = F, segments = CNAs)
 
   data_hist <-  plots$data
 
@@ -322,7 +268,6 @@ plot_fit_density = function(x, highlights = TRUE)
   ret <- lapply(CNAs, function(s) plot_fit_density_aux(data_hist, densities,s, x))
 
   return(ret)
-
 
 }
 
@@ -450,8 +395,8 @@ plot_fit_scores = function(x)
 {
 scores = reshape2::melt(
   x$model_selection %>%
-    select(-n_observations),
-  id = c('K', 'lambda')
+    dplyr::select(-n_observations),
+  id = c('K')#, 'lambda')
 )
 scores$K = as.factor(scores$K)
 IC_best = scores %>%
@@ -464,7 +409,7 @@ H_best = scores %>%
   filter(value == max(value)) %>%
   filter(variable == 'entropy')
 scores %>%
-  ggplot(aes(x = lambda, y = value, color = K)) +
+  ggplot(aes(x = K, y = value, group = variable)) +
   geom_line() +
   geom_point() +
   facet_wrap(~variable, scales = 'free') +
@@ -477,7 +422,7 @@ scores %>%
     color = 'red'
   ) +
   labs(title = x$description) +
-  theme_linedraw(base_size = 9) +
+  theme_bw() +
   scale_color_brewer(palette="Dark2") +
   scale_y_continuous(labels = function(x) format(x, scientific = TRUE, digits = 3))
 
