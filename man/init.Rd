@@ -14,7 +14,8 @@ init(
   atac_likelihood = "NB",
   reference_genome = "GRCh38",
   description = "(R)CONGAS+ model",
-  smooth = FALSE
+  smooth = FALSE,
+  out.rm = T
 )
 }
 \arguments{

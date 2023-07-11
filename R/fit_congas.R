@@ -17,7 +17,7 @@
 #' are quite hard to troubleshoot is higly suggested to use \code{\link[Rcongas::auto_config_run]{Rcongas::auto_config_run()}} to generate
 #' a template and eventually modify it.
 #' @param latent_variables specify the nature of the latent variable modelling the copy number profile. Currently only "D" (discrete) is available
-#' @param compile use JIT compiler for the Pyro ba
+#' @param CUDA use GPU if avilable for training
 #' @param steps number of steps of optimization
 #' @param samples Number of times a model is fit for each value of \code{K}.
 #' @param model_selection information criteria to which perform the model selection (one of ICL, NLL, BIC, AIC)
@@ -41,7 +41,7 @@ fit_congas <-
            model_parameters,
            learning_rate = 0.05,
            latent_variables = "B",
-           compile = FALSE,
+           CUDA = FALSE,
            steps = 500,
            samples = 1,
            parallel = FALSE,
@@ -81,7 +81,7 @@ fit_congas <-
           k,
           learning_rate,
           latent_variables,
-          compile,
+          CUDA,
           steps,
           temperature,
           threshold,
@@ -138,19 +138,19 @@ fit_congas <-
     # TODO: sistemare il codice in modo che i cluster che scompaiono non vengano proprio ritornati.
     model_selection_df$hyperparameter_K = sapply(runs, function(w) w$hyperparameters$K)
     model_selection_df$K = sapply(runs, function(w) {
-      ass_atac = Rcongas:::detensorize(w$inferred_params$assignment_atac)
-      ass_rna = Rcongas:::detensorize(w$inferred_params$assignment_rna)
+      ass_atac = Rcongas:::detensorize(w$inferred_params$assignment_atac, CUDA)
+      ass_rna = Rcongas:::detensorize(w$inferred_params$assignment_rna, CUDA)
       return(length(unique(c(ass_atac, ass_rna))))
     })
     model_selection_df$K_rna = sapply(runs, function(w) {
-      ass_rna = Rcongas:::detensorize(w$inferred_params$assignment_rna)
+      ass_rna = Rcongas:::detensorize(w$inferred_params$assignment_rna, CUDA)
       return(length(unique(ass_rna)))
     })
     model_selection_df$K_atac = sapply(runs, function(w) {
-      ass_atac = Rcongas:::detensorize(w$inferred_params$assignment_atac)
+      ass_atac = Rcongas:::detensorize(w$inferred_params$assignment_atac, CUDA)
       return(length(unique(ass_atac)))
     })
-    model_selection_df$lambda = sapply(runs, function(w) Rcongas:::detensorize(w$hyperparameters$lambda))
+    model_selection_df$lambda = sapply(runs, function(w) Rcongas:::detensorize(w$hyperparameters$lambda), CUDA)
 
     if(model_selection_df %>% is.na %>% any)
     {
@@ -184,7 +184,7 @@ fit_congas_single_run <-
            K,
            learning_rate,
            latent_variables,
-           compile,
+           CUDA,
            steps,
            temperature,
            threshold,
@@ -197,12 +197,13 @@ fit_congas_single_run <-
     cg_mod <- reticulate::import("congas.models")
     pyro_optim <- reticulate::import("pyro.optim")
 
-    data <- input_data_from_rcongas(x)
+    data <- input_data_from_rcongas(x, CUDA = CUDA)
     param_optimizer <-  list()
     parameters$K <-  as.integer(K)
     parameters$lambda <- as.double(l)
     parameters$Temperature <-  temperature
     parameters$equal_mixture_weights = same_mixing
+    parameters$CUDA = CUDA
     param_optimizer$lr <- learning_rate
 
     ### LOAD MODEL AND GUIDE ###
@@ -229,14 +230,10 @@ fit_congas_single_run <-
     ### LOAD THE ELBO-LOSS ###
 
     elbo_p <- reticulate::import("pyro.infer")
-    if (!compile) {
-      elbo <- elbo_p$Trace_ELBO
-      elbo_string <- "TraceGraph_ELBO"
-    } else {
-      elbo <-  elbo_p$JitTrace_ELBO
-      elbo_string <- "JitTraceGraph_ELBO"
-    }
-    int <- cg$Interface()
+    elbo <- elbo_p$Trace_ELBO
+    elbo_string <- "Trace_ELBO"
+ 
+    int <- cg$Interface(CUDA = CUDA)
 
     int$set_model(model)
     int$set_optimizer(pyro_optim$ClippedAdam)
@@ -271,7 +268,7 @@ fit_congas_single_run <-
 
     ret <-  list(
       "inferred_params" = fit_params,
-      "hyperparameters" = lapply(hyperparams, detensorize),
+      "hyperparameters" = lapply(hyperparams, detensorize, CUDA = CUDA),
       "ICs" = ICs %>% as.data.frame(),
       "loss" = loss,
       "params_history" = params_history
