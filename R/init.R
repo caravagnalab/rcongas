@@ -139,7 +139,8 @@ init = function(
   cat("\n")
 
   # Sanitise by data type and required columns
-  rna = rna %>% filter(!is.na(chr))
+  if(!is.null(rna))
+    rna = rna %>% filter(!is.na(chr))
   sanitize_input(rna,
                  required_input_columns = c("chr", "from", "to", "value", "cell"),
                  types_required = c("character", "integer", "integer", "integer", "character")
