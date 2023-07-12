@@ -1,4 +1,4 @@
-tensorize <-  function(x){
+tensorize <-  function(x, CUDA = FALSE){
 
   torch <- reticulate::import("torch")
   np <-  reticulate::import("numpy")
@@ -11,21 +11,30 @@ tensorize <-  function(x){
 
   x <- np$array(reticulate::r_to_py(x))
   ret <-  torch$from_numpy(x)$reshape(shp)
+  
+   if(CUDA & torch$cuda$is_available()){
+     ret <- ret$cuda()
+   }
 
 
   return(ret)
 }
 
-detensorize <-  function(x){
+detensorize <-  function(x, CUDA = FALSE){
 
   if(typeof(x) == "environment"){
-    return(x$detach()$numpy())
+    if(CUDA){
+      return(x$cpu()$detach()$numpy())
+    } else {
+      return(x$detach()$numpy())
+    }
+    
   }
   return(x)
 }
 
 
-input_data_from_rcongas <- function(x){
+input_data_from_rcongas <- function(x, CUDA = FALSE){
   ret <-  list()
   if(has_atac(x)){
     ret$data_atac <- get_data(x) %>%  filter(modality == "ATAC") %>%  reshape2::acast(segment_id  ~ cell, value.var = "value")
@@ -54,7 +63,7 @@ input_data_from_rcongas <- function(x){
   ret$pld <- segs[order(names(segs))]
 
 
-  ret <-  lapply(ret, tensorize)
+  ret <-  lapply(ret, tensorize, CUDA = CUDA)
 
   ret$segments <- as.integer(length(ret$pld))
 

@@ -118,7 +118,8 @@ init = function(
   atac_likelihood = "NB",
   reference_genome = 'GRCh38',
   description = "(R)CONGAS+ model",
-  smooth = FALSE
+  smooth = FALSE,
+  out.rm = T
 )
 {
   if(is.null(rna) & is.null(atac))
@@ -230,7 +231,8 @@ init = function(
     data = rna,
     segmentation = segmentation,
     normalisation_factors = rna_normalisation_factors,
-    likelihood = rna_likelihood)
+    likelihood = rna_likelihood,
+    out.rm = out.rm)
 
   if(!is.null(rna))
   {
@@ -245,7 +247,8 @@ init = function(
     data = atac,
     segmentation = segmentation,
     normalisation_factors = atac_normalisation_factors,
-    likelihood = atac_likelihood)
+    likelihood = atac_likelihood,
+    out.rm = out.rm)
 
   if(!is.null(atac))
   {
@@ -283,7 +286,7 @@ init = function(
   )
 }
 
-create_modality = function(modality, data, segmentation, normalisation_factors, likelihood)
+create_modality = function(modality, data, segmentation, normalisation_factors, likelihood, out.rm=T)
 {
   # Special case, data are missing
   if(is.null(data)) {
@@ -349,7 +352,8 @@ create_modality = function(modality, data, segmentation, normalisation_factors, 
   n_na = is.na(data$segment_id) %>% sum()
   nn_na = (data %>% nrow) - n_na
   
-  data = clean_outliers_persegment(modality, data, normalisation_factors)$data_cleaned
+  if (out.rm)
+    data = clean_outliers_persegment(modality, data, normalisation_factors)$data_cleaned
   
   cli::cli_alert("Entries mapped: {.field {nn_na}}, with {.field {n_na}} outside input segments that will be discarded.")
   if(n_na > 0) data = data %>% filter(!is.na(segment_id))

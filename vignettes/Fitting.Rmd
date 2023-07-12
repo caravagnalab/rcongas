@@ -210,7 +210,7 @@ lambda = 0.5
 # Estimate hyperparameters
 hyperparams_filt <- auto_config_run(filt, k, 
                                     prior_cn=c(0.2, 0.6, 0.1, 0.05, 0.05),
-                                    init_importance = 0.6)
+                                    init_importance = 0.6, CUDA = FALSE)
 
 # Run
 
@@ -224,7 +224,7 @@ fit_filt <- Rcongas:::fit_congas(filt,
                                  model_parameters = hyperparams_filt, 
                                  model_selection = model,
                                  latent_variables = "G",
-                                 compile = F,
+                                 CUDA = FALSE,
                                  temperature = temperature, 
                                  same_mixing = TRUE, 
                                  threshold = 0.001)

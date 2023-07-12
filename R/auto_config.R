@@ -28,7 +28,8 @@ auto_config_run <-
            hidden_dim = 5,#length(prior_cn),
            init_importance = 0.6,
            NB_size_priors = c(15, 1000),
-           purity = NULL
+           purity = NULL, 
+           CUDA = FALSE
            )
 
     {
@@ -36,6 +37,12 @@ auto_config_run <-
     param_list <-  list()
 
     torch <-  reticulate::import("torch")
+    
+    if(CUDA){
+      torch$set_default_tensor_type('torch.cuda.FloatTensor')
+    } else{
+      torch$set_default_tensor_type('torch.FloatTensor')
+    }
 
     #param_list$probs <-  torch$tensor(prior_cn)
     if (is.character(prior_cn)) {

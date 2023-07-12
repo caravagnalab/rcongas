@@ -15,7 +15,8 @@ auto_config_run(
   hidden_dim = 5,
   init_importance = 0.6,
   NB_size_priors = c(15, 1000),
-  purity = NULL
+  purity = NULL,
+  CUDA = FALSE
 )
 }
 \arguments{

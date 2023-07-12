@@ -11,7 +11,7 @@ fit_congas(
   model_parameters,
   learning_rate = 0.05,
   latent_variables = "B",
-  compile = FALSE,
+  CUDA = FALSE,
   steps = 500,
   samples = 1,
   parallel = FALSE,
@@ -36,7 +36,7 @@ a template and eventually modify it.}
 
 \item{latent_variables}{specify the nature of the latent variable modelling the copy number profile. Currently only "D" (discrete) is available}
 
-\item{compile}{use JIT compiler for the Pyro ba}
+\item{CUDA}{use GPU if avilable for training}
 
 \item{steps}{number of steps of optimization}
 
