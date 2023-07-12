@@ -150,7 +150,7 @@ fit_congas <-
       ass_atac = Rcongas:::detensorize(w$inferred_params$assignment_atac, CUDA)
       return(length(unique(ass_atac)))
     })
-    model_selection_df$lambda = sapply(runs, function(w) Rcongas:::detensorize(w$hyperparameters$lambda), CUDA)
+    model_selection_df$lambda = sapply(runs, function(w) Rcongas:::detensorize(w$hyperparameters$lambda, CUDA))
 
     if(model_selection_df %>% is.na %>% any)
     {
