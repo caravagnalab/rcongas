@@ -28,7 +28,8 @@ auto_config_run <-
            hidden_dim = 5,#length(prior_cn),
            init_importance = 0.6,
            NB_size_priors = c(15, 1000),
-           purity = NULL, 
+           purity = NULL,
+	   multiome = FALSE, 
            CUDA = FALSE
            )
 
@@ -64,7 +65,7 @@ auto_config_run <-
     }
 
     param_list$purity <- purity
-
+    param_list$multiome <- multiome
     if (has_atac(x)) {
 
       cli::cli_h2("ATAC modality")
