@@ -1,12 +1,10 @@
-pandoc: 2.11.0.4
-pkgdown: 1.6.1
+pandoc: 3.1.5
+pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
-  Filtering: Filtering.html
   Fitting: Fitting.html
-  Plotting: Plotting.html
   Rcongas: Rcongas.html
-last_built: 2021-04-03T14:09Z
+last_built: 2023-07-21T07:55Z
 urls:
   reference: caravagnalab.github.io/Rcongas/reference
   article: caravagnalab.github.io/Rcongas/articles

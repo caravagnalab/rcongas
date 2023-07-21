@@ -29,6 +29,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -41,18 +43,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">Rcongas</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="articles/Rcongas.html">Get started</a>
 </li>
@@ -60,20 +56,14 @@
   <a href="reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="articles/Filtering.html">Filtering functions</a>
-    </li>
-    <li>
       <a href="articles/Fitting.html">Fitting a model</a>
-    </li>
-    <li>
-      <a href="articles/Plotting.html">Plotting functions</a>
     </li>
   </ul>
 </li>
@@ -83,7 +73,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/caravagnalab/Rcongas/">
+  <a href="https://github.com/caravagnalab/Rcongas/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -100,42 +90,42 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="rcongas-" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#rcongas-" class="anchor"></a>Rcongas <a href="caravagnalab.github.io/rcongas"><img src="reference/figures/logo.png" align="right" height="120"></a>
+<div class="section level1">
+<div class="page-header"><h1 id="rcongas-">Rcongas <a href="caravagnalab.github.io/rcongas"><img src="reference/figures/logo.png" align="right" height="120"></a>
+<a class="anchor" aria-label="anchor" href="#rcongas-"></a>
 </h1></div>
 <!-- badges: start -->
 
-<p>This is the <code>(R)CONGAS+</code> R package, an interface to run the probabilistic methods implemented in the Python <a href="https://github.com/Militeee/congas">Congas</a> package using Pyro. These methods implement several statistical models to genotype Copy Number Alterations from single-cell RNA and ATAC sequencing, integrating at the same time bulk DNA sequencing.</p>
+<p>This is the <code>(R)CONGAS+</code> R package, an interface to run the probabilistic methods implemented in the Python <a href="https://github.com/Militeee/congas" class="external-link">Congas</a> package using Pyro. These methods implement several statistical models to genotype Copy Number Alterations from single-cell RNA and ATAC sequencing, integrating at the same time bulk DNA sequencing.</p>
 <p>This package implements S3 objects to preprocess and visualize input single-cell data, create and visualize model fits. The current package is an extension of the original, single-molecule version; it retains the same name to avoid confusion.</p>
-<div id="citation" class="section level4">
-<h4 class="hasAnchor">
-<a href="#citation" class="anchor"></a>Citation</h4>
-<p><a href="https://doi.org/10.1101/2021.02.02.429335"><img src="https://img.shields.io/badge/doi-10.1101/2021.02.02.429335-red.svg"></a></p>
+<div class="section level4">
+<h4 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
+</h4>
+<p><a href="https://doi.org/10.1101/2021.02.02.429335" class="external-link"><img src="https://img.shields.io/badge/doi-10.1101/2021.02.02.429335-red.svg"></a></p>
 <p>If you use <code>Rcongas</code>, please cite these two papers:</p>
 <ul>
-<li><p><em>Genotyping Copy Number Alterations from single-cell RNA sequencing.</em> Salvatore Milite, Riccardo Bergamin, Giulio Caravagna. <a href="https://www.biorxiv.org/content/10.1101/2021.02.02.429335v1">biorXiv preprint</a>, 2021</p></li>
+<li><p><em>Genotyping Copy Number Alterations from single-cell RNA sequencing.</em> Salvatore Milite, Riccardo Bergamin, Giulio Caravagna. <a href="https://www.biorxiv.org/content/10.1101/2021.02.02.429335v1" class="external-link">biorXiv preprint</a>, 2021</p></li>
 <li><p><em>Multi-molecule genotyping Copy Number Alterations from single-cell sequencing.</em> Salvatore Milite, Riccardo Bergamin, Lucrezia Patruno, Alex Graudenzi, Giulio Caravagna.</p></li>
 </ul>
 </div>
-<div id="help-and-support" class="section level4">
-<h4 class="hasAnchor">
-<a href="#help-and-support" class="anchor"></a>Help and support</h4>
-<p><a href="https://caravagnalab.github.io/rcongas"><img src="https://img.shields.io/badge/GitHub%20Pages-https://caravagnalab.github.io/rcongas/-steelblue.svg"></a></p>
+<div class="section level4">
+<h4 id="help-and-support">Help and support<a class="anchor" aria-label="anchor" href="#help-and-support"></a>
+</h4>
+<p><a href="https://caravagnalab.github.io/rcongas" class="external-link"><img src="https://img.shields.io/badge/GitHub%20Pages-https://caravagnalab.github.io/rcongas/-steelblue.svg"></a></p>
 </div>
-<div id="installation" class="section level3">
-<h3 class="hasAnchor">
-<a href="#installation" class="anchor"></a>Installation</h3>
-<p>You can install the released version of <code>Rcongas</code> from <a href="https://github.com/">GitHub</a> with:</p>
+<div class="section level3">
+<h3 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h3>
+<p>You can install the released version of <code>Rcongas</code> from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># install.packages("devtools")</span>
-<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"caravagnalab/Rcongas"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"caravagnalab/Rcongas"</span><span class="op">)</span></span></code></pre></div>
 <hr>
-<div id="copyright-and-contacts" class="section level4">
-<h4 class="hasAnchor">
-<a href="#copyright-and-contacts" class="anchor"></a>Copyright and contacts</h4>
+<div class="section level4">
+<h4 id="copyright-and-contacts">Copyright and contacts<a class="anchor" aria-label="anchor" href="#copyright-and-contacts"></a>
+</h4>
 <p>Salvatore Milite, MSc, Riccardo Bergamin, PhD, and Giulio Caravagna, PhD. <em>University of Trieste, Trieste, Italy</em>.</p>
-<p><a href="mailto:gcaravagn@gmail.com"><img src="https://img.shields.io/badge/Email-gcaravagn@gmail.com-steelblue.svg"></a> <a href="https://github.com/caravagnalab"><img src="https://img.shields.io/badge/CDS%20Lab%20Github-caravagnalab-seagreen.svg"></a> <a href="https://www.caravagnalab.org/"><img src="https://img.shields.io/badge/CDS%20Lab%20webpage-https://www.caravagnalab.org/-red.svg"></a></p>
+<p><a href="mailto:gcaravagn@gmail.com"><img src="https://img.shields.io/badge/Email-gcaravagn@gmail.com-steelblue.svg"></a> <a href="https://github.com/caravagnalab" class="external-link"><img src="https://img.shields.io/badge/CDS%20Lab%20Github-caravagnalab-seagreen.svg"></a> <a href="https://www.caravagnalab.org/" class="external-link"><img src="https://img.shields.io/badge/CDS%20Lab%20webpage-https://www.caravagnalab.org/-red.svg"></a></p>
 </div>
 </div>
 </div>
@@ -143,47 +133,59 @@
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
-<h2>Links</h2>
+<h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li>Browse source code at <br><a href="https://github.com/caravagnalab/Rcongas/">https://​github.com/​caravagnalab/​Rcongas/​</a>
-</li>
+<li><a href="https://github.com/caravagnalab/Rcongas/" class="external-link">Browse source code</a></li>
 </ul>
 </div>
+
 <div class="license">
-<h2>License</h2>
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li><a href="LICENSE.html">Full license</a></li>
 <li><small>GPL (&gt;= 3)</small></li>
 </ul>
 </div>
-<div class="developers">
-<h2>Developers</h2>
+
+
+<div class="citation">
+<h2 data-toc-skip>Citation</h2>
 <ul class="list-unstyled">
-<li>
-<a href="https://www.caravagnalab.org">Salvatore Milite</a> <br><small class="roles"> Author, maintainer </small>  </li>
-<li>
-<a href="https://www.caravagnalab.org">Riccardo Bergamin</a> <br><small class="roles"> Author </small>  </li>
-<li>
-<a href="https://www.caravagnalab.org">Giulio Caravagna</a> <br><small class="roles"> Author </small>  </li>
+<li><a href="authors.html#citation">Citing Rcongas</a></li>
 </ul>
 </div>
 
-  <div class="dev-status">
-<h2>Dev status</h2>
+<div class="developers">
+<h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li><a href="https://www.tidyverse.org/lifecycle/#maturing"><img src="https://img.shields.io/badge/lifecycle-maturing-blue.svg" alt="Lifecycle: maturing"></a></li>
+<li>
+<a href="https://www.caravagnalab.org" class="external-link">Salvatore Milite</a> <br><small class="roles"> Author, maintainer </small>  </li>
+<li>
+<a href="https://www.caravagnalab.org" class="external-link">Riccardo Bergamin</a> <br><small class="roles"> Author </small>  </li>
+<li>
+<a href="https://www.caravagnalab.org" class="external-link">Giulio Caravagna</a> <br><small class="roles"> Author </small>  </li>
 </ul>
 </div>
+
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://www.tidyverse.org/lifecycle/#maturing" class="external-link"><img src="https://img.shields.io/badge/lifecycle-maturing-blue.svg" alt="Lifecycle: maturing"></a></li>
+</ul>
 </div>
+
+  </div>
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by <a href="https://www.caravagnalab.org">Salvatore Milite</a>, <a href="https://www.caravagnalab.org">Riccardo Bergamin</a>, <a href="https://www.caravagnalab.org">Giulio Caravagna</a>.</p>
+  <p></p>
+<p>Developed by <a href="https://www.caravagnalab.org" class="external-link">Salvatore Milite</a>, <a href="https://www.caravagnalab.org" class="external-link">Riccardo Bergamin</a>, <a href="https://www.caravagnalab.org" class="external-link">Giulio Caravagna</a>.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
@@ -191,6 +193,8 @@
 
   
 
+
+  
 
   </body>
 </html>

@@ -391,7 +391,7 @@ create_modality = function(modality, data, segmentation, normalisation_factors, 
     cli::cli_alert("Computing z-score.")
 
     gene_segments = data %>% group_by(idFeature, segment_id) %>% summarise(n_cells = n()) %>%
-    select(-n_cells) %>% column_to_rownames('idFeature')
+    select(-n_cells) %>% tibble::column_to_rownames('idFeature')
 
     inp = reshape2::acast(data,
                           cell ~ idFeature,

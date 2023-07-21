@@ -38,6 +38,7 @@ reference:
   - init
   - auto_config_run
   - auto_normalisation_factor
+  - segments_selector_congas
   - fit_congas
 
 - title: Getters
@@ -72,6 +73,21 @@ reference:
   contents:
   - print.rcongasplus
   - plot.rcongasplus
+
+- title: internal
+  desc: Simulation functions
+  contents:
+  - change_spot
+  - create_df_from_range
+  - divide_genome_in_segments
+  - filter_cells_by_quantile
+  - generate_ploidy
+  - generate_ploidy_parent
+  - generate_ploidy_parent_fine 
+  - generate_random_tree
+  - hg38_karyo
+  - randomize_breaks
+  - run_simulation
 
 
 

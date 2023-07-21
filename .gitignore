@@ -6,3 +6,4 @@
 ./temp/*
 .DS_Store
 inst/doc
+docs
