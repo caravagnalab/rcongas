@@ -9,7 +9,7 @@ maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www
 
 This is the `(R)CONGAS+` R package, an interface to run the
 probabilistic methods implemented in the Python
-[Congas](https://github.com/Militeee/congas) package using Pyro. These
+[CONGAS+](https://github.com/caravagnalab/CONGASp) package using Pyro. These
 methods implement several statistical models to genotype Copy Number
 Alterations from single-cell RNA and ATAC sequencing, integrating at the
 same time bulk DNA sequencing.
@@ -21,19 +21,17 @@ same name to avoid confusion.
 
 #### Citation
 
-[![](https://img.shields.io/badge/doi-10.1101/2021.02.02.429335-red.svg)](https://doi.org/10.1101/2021.02.02.429335)
+[![](https://img.shields.io/badge/doi-10.1101/2021.02.02.429335-red.svg)](https://doi.org/10.1101/2023.04.01.535197)
 
 If you use `Rcongas`, please cite these two papers:
+- *A Bayesian method to cluster single-cell RNA sequencing data using copy number alterations*. Salvatore Milite, Riccardo Bergamin, Lucrezia Patruno, Nicola Calonaci, Giulio Caravagna. [Bioinformatics](https://doi.org/10.1093/bioinformatics/btac143) 2022.
 
--   *Genotyping Copy Number Alterations from single-cell RNA
-    sequencing.* Salvatore Milite, Riccardo Bergamin, Giulio Caravagna.
+- *A Bayesian method to infer copy number clones from single-cell RNA and ATAC sequencing.* Lucrezia Patruno1, Salvatore Milite, Riccardo Bergamin Nicola Calonaci, Alberto D’Onofrio, Fabio Anselmi, Marco Antoniotti, Alex Graudenzi, Giulio Caravagna.
     [biorXiv
-    preprint](https://www.biorxiv.org/content/10.1101/2021.02.02.429335v1),
-    2021
+    preprint](https://www.biorxiv.org/content/10.1101/2023.04.01.535197v1),
+    2023
 
--   *Multi-molecule genotyping Copy Number Alterations from single-cell
-    sequencing.* Salvatore Milite, Riccardo Bergamin, Lucrezia Patruno,
-    Alex Graudenzi, Giulio Caravagna.
+
 
 #### Help and support
 
@@ -53,8 +51,10 @@ devtools::install_github("caravagnalab/Rcongas")
 
 #### Copyright and contacts
 
-Salvatore Milite, MSc, Riccardo Bergamin, PhD, and Giulio Caravagna,
+Salvatore Milite, MSc, Riccardo Bergamin, PhD, Nicola Calonaci, PhD and Giulio Caravagna,
 PhD. *University of Trieste, Trieste, Italy*.
+Lucrezia Patruno, PhD. *UCL Cancer Institute, London, UK*
+Alex Graudenzi, PhD, Prof. Marco Antoniotti *University of Milano-Bicocca, Milan, Italy*
 
 [![](https://img.shields.io/badge/Email-gcaravagn@gmail.com-steelblue.svg)](mailto:gcaravagn@gmail.com)
 [![](https://img.shields.io/badge/CDS%20Lab%20Github-caravagnalab-seagreen.svg)](https://github.com/caravagnalab)
