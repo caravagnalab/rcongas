@@ -306,7 +306,7 @@ fit_nbmix = function(x, K = 1:3, score="ICL", mod="ATAC")
 #' 
 #' @export
 #'
-segments_selector_congas <- function(obj, K_max = 3, score = "BIC", lambda = 0.5, cores_ratio = 0.5){
+segments_selector_congas <- function(obj, multiome = F, K_max = 3, score = "BIC", lambda = 0.5, cores_ratio = 0.5){
 
   congas_single_segment <- function(obj){
     # seg_id = segment_ids[i]
@@ -314,16 +314,16 @@ segments_selector_congas <- function(obj, K_max = 3, score = "BIC", lambda = 0.5
     lr = 0.01#params$lr
     steps = 2000#params$steps
     score = 'BIC'#params$score
-    lambda = 0.5#params$lambda
     purity = NULL#params$purity
     temperature = 20#params$temperature
 
     # obj = Rcongas:::select_segments(obj, segment_ids = c(seg_id))
 
     model_params = Rcongas:::auto_config_run(obj,
-                                      K = 1:K_max,
-                                      prior_cn = c(0.2, 0.6, 0.05, 0.025, 0.025),
-                                      purity = purity)
+                                            K = 1:K_max,
+                                            prior_cn = c(0.2, 0.6, 0.05, 0.025, 0.025),
+                                            multiome = F,
+                                            purity = purity)
 
     model_params$lambda=lambda
     model_params$binom_prior_limits = c(40,1000)
@@ -340,7 +340,6 @@ segments_selector_congas <- function(obj, K_max = 3, score = "BIC", lambda = 0.5
       threshold = 0.001
     )
 
-
     # p=Rcongas:::plot_fit_density(fit_obj, highlight=F)
     bms_idx <- order(fit_obj$model_selection %>% pull(!!score))[1]
 
@@ -353,7 +352,6 @@ segments_selector_congas <- function(obj, K_max = 3, score = "BIC", lambda = 0.5
     return(model)
 
   }
-
 
   segment_ids = unique(Rcongas:::get_data(obj)$segment_id)
 
@@ -369,16 +367,13 @@ segments_selector_congas <- function(obj, K_max = 3, score = "BIC", lambda = 0.5
     FUN = congas_single_segment,
     PARAMS = lapply(segment_ids, function (x) {
       list(obj = Rcongas:::select_segments(obj, segment_ids = c(x)))
-      }),#lapply(segment_ids, list),
+      }),
     parallel = TRUE,
     cores.ratio = cores_ratio,
     filter_errors = FALSE
-    # export = c("segment_ids", "obj")
   )
 
   report = Reduce(bind_rows, report)
-
-  # segments_plot <- report$plot %>% unique()
 
   polyclonal_segments <-
     filter(report, k > 1) %>% dplyr::select(segment_id) %>% unique()

@@ -29,7 +29,7 @@ auto_config_run <-
            init_importance = 0.6,
            NB_size_priors = c(15, 1000),
            purity = NULL,
-	   multiome = FALSE, 
+	         multiome = FALSE, 
            CUDA = FALSE
            )
 

@@ -26,6 +26,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -38,18 +40,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Rcongas</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="../articles/Rcongas.html">Get started</a>
 </li>
@@ -57,20 +53,14 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/Filtering.html">Filtering functions</a>
-    </li>
-    <li>
       <a href="../articles/Fitting.html">Fitting a model</a>
-    </li>
-    <li>
-      <a href="../articles/Plotting.html">Plotting functions</a>
     </li>
   </ul>
 </li>
@@ -80,7 +70,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/caravagnalab/Rcongas/">
+  <a href="https://github.com/caravagnalab/Rcongas/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -95,13 +85,13 @@
 
       
 
-      </header><script src="Rcongas_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Rcongas</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/caravagnalab/Rcongasvignettes/Rcongas.Rmd"><code>vignettes/Rcongas.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/caravagnalab/Rcongasvignettes/Rcongas.Rmd" class="external-link"><code>vignettes/Rcongas.Rmd</code></a></small>
       <div class="hidden name"><code>Rcongas.Rmd</code></div>
 
     </div>
@@ -109,174 +99,180 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">Rcongas</span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span></code></pre></div>
-<div id="analysis-workflow" class="section level1">
-<h1 class="hasAnchor">
-<a href="#analysis-workflow" class="anchor"></a>Analysis workflow</h1>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">Rcongas</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></code></pre></div>
+<div class="section level2">
+<h2 id="analysis-workflow">Analysis workflow<a class="anchor" aria-label="anchor" href="#analysis-workflow"></a>
+</h2>
 <p>These data are required:</p>
 <ul>
-<li>single-cell RNA or ATAC sequencing data from independent cells, in the form of counts per cell;</li>
+<li>single-cell RNA or ATAC sequencing data from independent cells, in
+the form of counts per cell;</li>
 <li>genome-wide segmentation with associated per-segment ploidy.</li>
 </ul>
 <p>The formats of the inputs is discussed here.</p>
 <p>The (R)CONGAS+ workflow consists in:</p>
 <ul>
-<li>(optional) applying <a href="Filtering.html">filters</a> on the input data;</li>
+<li>(optional) applying <a href="Filtering.html">filters</a> on the
+input data;</li>
 <li>creating an (R)CONGAS+ object;</li>
-<li>(optional) applying <a href="Filtering.html">filters</a> on the mapped data;</li>
+<li>(optional) applying <a href="Filtering.html">filters</a> on the
+mapped data;</li>
 <li>fitting a model</li>
 </ul>
-<p>The package comes with input data to show what the required input formats are, and ready to use objects for case studies that we have discussed in the main papers; see <a href="../docs/reference/index.html">References</a> for details.</p>
+<p>The package comes with input data to show what the required input
+formats are, and ready to use objects for case studies that we have
+discussed in the main papers; see <a href="../docs/reference/index.html">References</a> for details.</p>
 </div>
-<div id="input-formats" class="section level1">
-<h1 class="hasAnchor">
-<a href="#input-formats" class="anchor"></a>Input formats</h1>
+<div class="section level2">
+<h2 id="input-formats">Input formats<a class="anchor" aria-label="anchor" href="#input-formats"></a>
+</h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Example data available in the package</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">'example_input'</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Example data available in the package</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">'example_input'</span><span class="op">)</span></span></code></pre></div>
 <p>RNA and ATAC have the same input format reporting:</p>
 <ul>
 <li>
-<code>chr</code>, <code>from</code> and <code>to</code>: genomic locations of a gene (RNA) or a peak (ATAC)</li>
+<code>chr</code>, <code>from</code> and <code>to</code>: genomic
+locations of a gene (RNA) or a peak (ATAC)</li>
 <li>
 <code>cell</code>: a cell identifier</li>
 <li>
 <code>value</code>: the observed counts (discrete)</li>
 </ul>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># RNA</span>
-<span class="va">example_input</span><span class="op">$</span><span class="va">rna</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 201,459 x 6</span>
-<span class="co">#&gt;    gene     chr      from      to cell                                 value</span>
-<span class="co">#&gt;    &lt;chr&gt;    &lt;chr&gt;   &lt;int&gt;   &lt;int&gt; &lt;chr&gt;                                &lt;int&gt;</span>
-<span class="co">#&gt;  1 NOC2L    chr1   944203  959309 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     2</span>
-<span class="co">#&gt;  2 AGRN     chr1  1020120 1056118 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     1</span>
-<span class="co">#&gt;  3 SDF4     chr1  1216909 1232067 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     1</span>
-<span class="co">#&gt;  4 ACAP3    chr1  1292390 1309609 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     2</span>
-<span class="co">#&gt;  5 CPTP     chr1  1324756 1328896 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     1</span>
-<span class="co">#&gt;  6 AURKAIP1 chr1  1373730 1375495 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     1</span>
-<span class="co">#&gt;  7 CCNL2    chr1  1385711 1399335 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     2</span>
-<span class="co">#&gt;  8 MRPL20   chr1  1401909 1407293 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     1</span>
-<span class="co">#&gt;  9 CDK11B   chr1  1635225 1659012 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     1</span>
-<span class="co">#&gt; 10 CDK11A   chr1  1702379 1724357 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     1</span>
-<span class="co">#&gt; # … with 201,449 more rows</span></code></pre></div>
-<p>The <code>gene</code> column in the RNA dataset is required only to use some gene-based pre-processing filters discussed in the <a href="Filtering.html">filtering vignette</a>.</p>
+<code class="sourceCode R"><span><span class="co"># RNA</span></span>
+<span><span class="va">example_input</span><span class="op">$</span><span class="va">rna</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 201,459 × 6</span></span></span>
+<span><span class="co">#&gt;    gene     chr      from      to cell                                 value</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> NOC2L    chr1   <span style="text-decoration: underline;">944</span>203  <span style="text-decoration: underline;">959</span>309 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     2</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> AGRN     chr1  1<span style="text-decoration: underline;">020</span>120 1<span style="text-decoration: underline;">056</span>118 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> SDF4     chr1  1<span style="text-decoration: underline;">216</span>909 1<span style="text-decoration: underline;">232</span>067 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> ACAP3    chr1  1<span style="text-decoration: underline;">292</span>390 1<span style="text-decoration: underline;">309</span>609 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     2</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> CPTP     chr1  1<span style="text-decoration: underline;">324</span>756 1<span style="text-decoration: underline;">328</span>896 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> AURKAIP1 chr1  1<span style="text-decoration: underline;">373</span>730 1<span style="text-decoration: underline;">375</span>495 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> CCNL2    chr1  1<span style="text-decoration: underline;">385</span>711 1<span style="text-decoration: underline;">399</span>335 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     2</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> MRPL20   chr1  1<span style="text-decoration: underline;">401</span>909 1<span style="text-decoration: underline;">407</span>293 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> CDK11B   chr1  1<span style="text-decoration: underline;">635</span>225 1<span style="text-decoration: underline;">659</span>012 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> CDK11A   chr1  1<span style="text-decoration: underline;">702</span>379 1<span style="text-decoration: underline;">724</span>357 bcc.su008.pre.tumor_AAGGCAGTCACCGTAA     1</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 201,449 more rows</span></span></span></code></pre></div>
+<p>The <code>gene</code> column in the RNA dataset is required only to
+use some gene-based pre-processing filters discussed in the <a href="Filtering.html">filtering vignette</a>.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># ATAC</span>
-<span class="va">example_input</span><span class="op">$</span><span class="va">atac</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 581,807 x 5</span>
-<span class="co">#&gt;    cell               value chr     from     to</span>
-<span class="co">#&gt;    &lt;chr&gt;              &lt;int&gt; &lt;chr&gt;  &lt;int&gt;  &lt;int&gt;</span>
-<span class="co">#&gt;  1 SU008_Tumor_Pre_45     1 chr1  127538 128038</span>
-<span class="co">#&gt;  2 SU008_Tumor_Pre_45     2 chr1  540701 541201</span>
-<span class="co">#&gt;  3 SU008_Tumor_Pre_45     4 chr1  762643 763143</span>
-<span class="co">#&gt;  4 SU008_Tumor_Pre_45     3 chr1  859974 860474</span>
-<span class="co">#&gt;  5 SU008_Tumor_Pre_45     1 chr1  866643 867143</span>
-<span class="co">#&gt;  6 SU008_Tumor_Pre_45     2 chr1  871996 872496</span>
-<span class="co">#&gt;  7 SU008_Tumor_Pre_45     2 chr1  876975 877475</span>
-<span class="co">#&gt;  8 SU008_Tumor_Pre_45     3 chr1  894505 895005</span>
-<span class="co">#&gt;  9 SU008_Tumor_Pre_45     2 chr1  895705 896205</span>
-<span class="co">#&gt; 10 SU008_Tumor_Pre_45     1 chr1  898583 899083</span>
-<span class="co">#&gt; # … with 581,797 more rows</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># ATAC</span></span>
+<span><span class="va">example_input</span><span class="op">$</span><span class="va">atac</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 581,807 × 5</span></span></span>
+<span><span class="co">#&gt;    cell               value chr     from     to</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> SU008_Tumor_Pre_45     1 chr1  <span style="text-decoration: underline;">127</span>538 <span style="text-decoration: underline;">128</span>038</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> SU008_Tumor_Pre_45     2 chr1  <span style="text-decoration: underline;">540</span>701 <span style="text-decoration: underline;">541</span>201</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> SU008_Tumor_Pre_45     4 chr1  <span style="text-decoration: underline;">762</span>643 <span style="text-decoration: underline;">763</span>143</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> SU008_Tumor_Pre_45     3 chr1  <span style="text-decoration: underline;">859</span>974 <span style="text-decoration: underline;">860</span>474</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> SU008_Tumor_Pre_45     1 chr1  <span style="text-decoration: underline;">866</span>643 <span style="text-decoration: underline;">867</span>143</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> SU008_Tumor_Pre_45     2 chr1  <span style="text-decoration: underline;">871</span>996 <span style="text-decoration: underline;">872</span>496</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> SU008_Tumor_Pre_45     2 chr1  <span style="text-decoration: underline;">876</span>975 <span style="text-decoration: underline;">877</span>475</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> SU008_Tumor_Pre_45     3 chr1  <span style="text-decoration: underline;">894</span>505 <span style="text-decoration: underline;">895</span>005</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> SU008_Tumor_Pre_45     2 chr1  <span style="text-decoration: underline;">895</span>705 <span style="text-decoration: underline;">896</span>205</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> SU008_Tumor_Pre_45     1 chr1  <span style="text-decoration: underline;">898</span>583 <span style="text-decoration: underline;">899</span>083</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 581,797 more rows</span></span></span></code></pre></div>
 <p>Segments have this format:</p>
 <ul>
 <li>
-<code>chr</code>, <code>from</code> and <code>to</code>: genomic range of the segment</li>
+<code>chr</code>, <code>from</code> and <code>to</code>: genomic
+range of the segment</li>
 <li>
 <code>copies</code>: ploidy of each segment</li>
 </ul>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">example_input</span><span class="op">$</span><span class="va">segments</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 30 x 4</span>
-<span class="co">#&gt;    chr        from        to copies</span>
-<span class="co">#&gt;    &lt;chr&gt;     &lt;int&gt;     &lt;int&gt;  &lt;int&gt;</span>
-<span class="co">#&gt;  1 chr10    285200 135490954      2</span>
-<span class="co">#&gt;  2 chr4      40332 190986668      2</span>
-<span class="co">#&gt;  3 chr11  17515668 134898011      3</span>
-<span class="co">#&gt;  4 chr2  133074851 241531737      3</span>
-<span class="co">#&gt;  5 chr2      39340  89319834      3</span>
-<span class="co">#&gt;  6 chr14  20323479 105411153      3</span>
-<span class="co">#&gt;  7 chr15  28947721 102517302      2</span>
-<span class="co">#&gt;  8 chr6   67340783 171046023      2</span>
-<span class="co">#&gt;  9 chr12  53343461 133801333      3</span>
-<span class="co">#&gt; 10 chr5  110286431 180712485      3</span>
-<span class="co">#&gt; # … with 20 more rows</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">example_input</span><span class="op">$</span><span class="va">segments</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 30 × 4</span></span></span>
+<span><span class="co">#&gt;    chr        from        to copies</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> chr10    <span style="text-decoration: underline;">285</span>200 135<span style="text-decoration: underline;">490</span>954      2</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> chr4      <span style="text-decoration: underline;">40</span>332 190<span style="text-decoration: underline;">986</span>668      2</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> chr11  17<span style="text-decoration: underline;">515</span>668 134<span style="text-decoration: underline;">898</span>011      3</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> chr2  133<span style="text-decoration: underline;">074</span>851 241<span style="text-decoration: underline;">531</span>737      3</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> chr2      <span style="text-decoration: underline;">39</span>340  89<span style="text-decoration: underline;">319</span>834      3</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> chr14  20<span style="text-decoration: underline;">323</span>479 105<span style="text-decoration: underline;">411</span>153      3</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> chr15  28<span style="text-decoration: underline;">947</span>721 102<span style="text-decoration: underline;">517</span>302      2</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> chr6   67<span style="text-decoration: underline;">340</span>783 171<span style="text-decoration: underline;">046</span>023      2</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> chr12  53<span style="text-decoration: underline;">343</span>461 133<span style="text-decoration: underline;">801</span>333      3</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> chr5  110<span style="text-decoration: underline;">286</span>431 180<span style="text-decoration: underline;">712</span>485      3</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 20 more rows</span></span></span></code></pre></div>
 </div>
-<div id="creation-of-a-new-dataset" class="section level1">
-<h1 class="hasAnchor">
-<a href="#creation-of-a-new-dataset" class="anchor"></a>Creation of a new dataset</h1>
-<div id="single-molecule-assay-rna" class="section level2">
-<h2 class="hasAnchor">
-<a href="#single-molecule-assay-rna" class="anchor"></a>Single-molecule assay (RNA)</h2>
-<p>Single-cell RNA, with z-score representation (Gaussian likelihood, <code>"G"</code>) for the RNA counts.</p>
+<div class="section level2">
+<h2 id="creation-of-a-new-dataset">Creation of a new dataset<a class="anchor" aria-label="anchor" href="#creation-of-a-new-dataset"></a>
+</h2>
+<div class="section level3">
+<h3 id="single-molecule-assay-rna">Single-molecule assay (RNA)<a class="anchor" aria-label="anchor" href="#single-molecule-assay-rna"></a>
+</h3>
+<p>Single-cell RNA, with z-score representation (Gaussian likelihood,
+<code>"G"</code>) for the RNA counts.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="../reference/init.html">init</a></span><span class="op">(</span>
-  rna <span class="op">=</span> <span class="va">example_input</span><span class="op">$</span><span class="va">rna</span>,
-  atac <span class="op">=</span> <span class="cn">NULL</span>,
-  segmentation <span class="op">=</span> <span class="va">example_input</span><span class="op">$</span><span class="va">segments</span>,
-  rna_likelihood <span class="op">=</span> <span class="st">"G"</span>,
-  description <span class="op">=</span> <span class="st">'SU008 sampled cells (example)'</span><span class="op">)</span>
-<span class="co">#&gt;                 ┌───────────────────────────────────────────────┐</span>
-<span class="co">#&gt;                 │                                               │</span>
-<span class="co">#&gt;                 │   (R)CONGAS+: SU008 sampled cells (example)   │</span>
-<span class="co">#&gt;                 │                                               │</span>
-<span class="co">#&gt;                 └───────────────────────────────────────────────┘</span>
-<span class="co">#&gt; → Computing library size factors as total counts.</span>
-<span class="co">#&gt; → Median digits per factor 5, scaling by 1e+05.</span>
-<span class="co">#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </span>
-<span class="co">#&gt; 0.03423 0.09627 0.13736 0.15213 0.20357 0.34622</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ── RNA modality (7.916976 Mb)</span>
-<span class="co">#&gt; → Input events: 201459</span>
-<span class="co">#&gt; → Input cells: 66</span>
-<span class="co">#&gt; → Input locations: 11473</span>
-<span class="co">#&gt; → Entries mapped: 125458, with 76001 outside input segments that will be discarded.</span>
-<span class="co">#&gt; → Using likelihood: G.</span>
-<span class="co">#&gt; ! Gaussian likelihood requires z-score representation of input values.</span>
-<span class="co">#&gt; → Normalising RNA counts using input normalisation factors.</span>
-<span class="co">#&gt; → Computing z-score.</span>
-<span class="co">#&gt; ! With Gaussian likelihood normalisation factors are changed to 1.</span>
-<span class="co">#&gt; ! There are 794 z-scores that are NA, will be removed.</span>
-<span class="co">#&gt; # A tibble: 794 x 10</span>
-<span class="co">#&gt;    gene  chr     from     to cell  value segment_id modality value_mean value_sd</span>
-<span class="co">#&gt;    &lt;chr&gt; &lt;chr&gt;  &lt;int&gt;  &lt;int&gt; &lt;chr&gt; &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;         &lt;dbl&gt;    &lt;dbl&gt;</span>
-<span class="co">#&gt;  1 LRRI… chr12 8.50e7 8.53e7 bcc.…    NA chr12:533… RNA            7.26       NA</span>
-<span class="co">#&gt;  2 CATS… chr15 4.36e7 4.37e7 bcc.…    NA chr15:289… RNA            7.26       NA</span>
-<span class="co">#&gt;  3 MSGN1 chr2  1.78e7 1.78e7 bcc.…    NA chr2:3934… RNA            7.26       NA</span>
-<span class="co">#&gt;  4 SLC4… chr2  7.42e7 7.43e7 bcc.…    NA chr2:3934… RNA            7.26       NA</span>
-<span class="co">#&gt;  5 SHAN… chr22 5.07e7 5.07e7 bcc.…    NA chr22:246… RNA            7.26       NA</span>
-<span class="co">#&gt;  6 B3GA… chr3  1.61e8 1.61e8 bcc.…    NA chr3:1298… RNA            7.26       NA</span>
-<span class="co">#&gt;  7 ARHG… chr4  8.55e7 8.60e7 bcc.…    NA chr4:4033… RNA            7.26       NA</span>
-<span class="co">#&gt;  8 RSPH… chr6  1.17e8 1.17e8 bcc.…    NA chr6:6734… RNA            7.26       NA</span>
-<span class="co">#&gt;  9 MAN1… chr6  1.19e8 1.19e8 bcc.…    NA chr6:6734… RNA            7.26       NA</span>
-<span class="co">#&gt; 10 MAFA  chr8  1.43e8 1.43e8 bcc.…    NA chr8:1020… RNA            7.26       NA</span>
-<span class="co">#&gt; # … with 784 more rows</span>
-<span class="co">#&gt; → Centering the new scores around input ploidy values.</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ── Checking segmentation</span>
-<span class="co">#&gt; ✓ Nothing to process.</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="../reference/init.html">init</a></span><span class="op">(</span></span>
+<span>  rna <span class="op">=</span> <span class="va">example_input</span><span class="op">$</span><span class="va">rna</span>,</span>
+<span>  atac <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  segmentation <span class="op">=</span> <span class="va">example_input</span><span class="op">$</span><span class="va">segments</span>,</span>
+<span>  rna_likelihood <span class="op">=</span> <span class="st">"G"</span>,</span>
+<span>  description <span class="op">=</span> <span class="st">'SU008 sampled cells (example)'</span><span class="op">)</span></span>
+<span><span class="co">#&gt;                 ┌───────────────────────────────────────────────┐</span></span>
+<span><span class="co">#&gt;                 │<span style="background-color: #FFAF00;">                                               </span>│</span></span>
+<span><span class="co">#&gt;                 │<span style="background-color: #FFAF00;">   (R)CONGAS+: SU008 sampled cells (example)   </span>│</span></span>
+<span><span class="co">#&gt;                 │<span style="background-color: #FFAF00;">                                               </span>│</span></span>
+<span><span class="co">#&gt;                 └───────────────────────────────────────────────┘</span></span>
+<span><span class="co">#&gt; → Computing library size factors as total counts.</span></span>
+<span><span class="co">#&gt; → Median digits per factor <span style="color: #00BB00;">5</span>, scaling by <span style="color: #00BB00;">1e+05</span>.</span></span>
+<span><span class="co">#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </span></span>
+<span><span class="co">#&gt; 0.03423 0.09627 0.13736 0.15213 0.20357 0.34622</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── <span style="color: #00BB00;">RNA</span> modality (7.916976 Mb)</span></span>
+<span><span class="co">#&gt; → Input events: <span style="color: #00BB00;">201459</span></span></span>
+<span><span class="co">#&gt; → Input cells: <span style="color: #00BB00;">66</span></span></span>
+<span><span class="co">#&gt; → Input locations: <span style="color: #00BB00;">11473</span></span></span>
+<span><span class="co">#&gt; → Cleaning outlier features from <span style="color: #00BB00;">RNA</span> input matrix</span></span>
+<span><span class="co">#&gt; → Normalising <span style="color: #00BB00;">RNA</span> counts using input normalisation factors.</span></span>
+<span><span class="co">#&gt; Warning: The `&lt;scale&gt;` argument of `guides()` cannot be `FALSE`. Use "none" instead as</span></span>
+<span><span class="co">#&gt; of ggplot2 3.3.4.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> The deprecated feature was likely used in the <span style="color: #0000BB;">Rcongas</span> package.</span></span>
+<span><span class="co">#&gt;   Please report the issue to the authors.</span></span>
+<span><span class="co">#&gt; <span style="color: #555555;">This warning is displayed once every 8 hours.</span></span></span>
+<span><span class="co">#&gt; <span style="color: #555555;">Call `lifecycle::last_lifecycle_warnings()` to see where this warning was</span></span></span>
+<span><span class="co">#&gt; <span style="color: #555555;">generated.</span></span></span>
+<span><span class="co">#&gt; → Found: <span style="color: #00BB00;">92</span> outliers.</span></span>
+<span><span class="co">#&gt; → Entries mapped: <span style="color: #00BB00;">125458</span>, with <span style="color: #00BB00;">76001</span> outside input segments that will be discarded.</span></span>
+<span><span class="co">#&gt; → Using likelihood: <span style="color: #00BB00;">G</span>.</span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> Gaussian likelihood requires z-score representation of input values.</span></span>
+<span><span class="co">#&gt; → Normalising <span style="color: #00BB00;">RNA</span> counts using input normalisation factors.</span></span>
+<span><span class="co">#&gt; Joining with `by = join_by(gene, chr, from, to)`</span></span>
+<span><span class="co">#&gt; → Computing z-score.</span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> With Gaussian likelihood normalisation factors are changed to 1.</span></span>
+<span><span class="co">#&gt; → Centering the new scores around input ploidy values.</span></span>
+<span><span class="co">#&gt; [1] "cell"       "segment_id" "value"      "modality"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── Checking segmentation</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Nothing to process.</span></span></code></pre></div>
 <p>S3 print method to visualise some information about the object</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">x</span> <span class="op">%&gt;%</span> <span class="va">print</span>
-<span class="co">#&gt; ── [ (R)CONGAS+ ] SU008 sampled cells (example) ────────────────────────────────</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ── CNA segments (reference: GRCh38)</span>
-<span class="co">#&gt; → Input 30 CNA segments, mean ploidy 3.2.</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;   | | |  | | | |  | | | |  | | |  | |  |   |  |  | </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;   Ploidy:    0     1     2     3     4     5     *</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ── Modalities</span>
-<span class="co">#&gt; → RNA: 66 cells with 7401 mapped genes, 125458 non-zero values. Likelihood: Gaussian.</span>
-<span class="co">#&gt; → ATAC: not available</span>
-<span class="co">#&gt; ! Clusters: not available.</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ──  LOG  ──</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; - 2021-04-03 16:16:06 Created input object.</span>
-<span class="co">#&gt; [1] 0</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">x</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="va">print</span></span>
+<span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BBBB00;">[ (R)CONGAS+ ]</span><span style="color: #0000BB;"> SU008 sampled cells (example)</span> ────────────────────────────────</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── CNA segments (reference: <span style="color: #00BB00;">GRCh38</span>)</span></span>
+<span><span class="co">#&gt; → Input <span style="color: #00BB00;">30</span> CNA segments, mean ploidy <span style="color: #00BB00;">3.2</span>.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;  <span style="background-color: #BB0000;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #BBBB00;"> </span>|<span style="background-color: #BBBB00;">  </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #BBBB00;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;">  </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #BB0000;"> </span>|<span style="background-color: #BBBB00;"> </span>|<span style="background-color: #BBBB00;">  </span>|<span style="background-color: #BB0000;"> </span>|<span style="background-color: #BBBB00;"> </span>|<span style="background-color: #BBBB00;"> </span><span style="background-color: #BB0000;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #BBBB00;">  </span>|<span style="background-color: #00BB00;"> </span><span style="background-color: #BBBBBB;">  </span>|<span style="background-color: #BB0000;">  </span>|<span style="background-color: #BB0000;"> </span><span style="background-color: #BBBBBB;"> </span>|<span style="background-color: #BB0000;"> </span></span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   <span style="text-decoration: underline;">Ploidy:</span>  <span style="background-color: #00BBBB;"> </span> 0   <span style="background-color: #0000BB;"> </span> 1   <span style="background-color: #00BB00;"> </span> 2   <span style="background-color: #BBBB00;"> </span> 3   <span style="background-color: #BB0000;"> </span> 4   <span style="background-color: #BB00BB;"> </span> 5   <span style="background-color: #BBBBBB;"> </span> *</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── Modalities</span></span>
+<span><span class="co">#&gt; → RNA: <span style="color: #00BB00;">66</span> cells with <span style="color: #00BB00;">7401</span> mapped genes, <span style="color: #00BB00;">125458</span> non-zero values. Likelihood: <span style="color: #00BB00;">Gaussian</span>.</span></span>
+<span><span class="co">#&gt; → ATAC: <span style="color: #BB0000;">not available</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> Clusters: <span style="color: #BB0000;">not available</span>.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── <span style="color: #BBBBBB; background-color: #BB00BB; font-weight: bold;"> LOG </span> ──</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; - 2023-07-22 10:44:32.330004 Created input object.</span></span>
+<span><span class="co">#&gt; [1] 0</span></span></code></pre></div>
 <!-- ```{r, fig.width=6, fig.height=6} -->
 <!-- # Select the first 5 segments to plot -->
 <!-- some_segments = get_input(x, what = "segmentation") %>%  -->
@@ -291,89 +287,84 @@
 <!-- plot_data(x, what = 'heatmap') -->
 <!-- ``` -->
 </div>
-<div id="two-molecules-assays-rna-and-atac" class="section level2">
-<h2 class="hasAnchor">
-<a href="#two-molecules-assays-rna-and-atac" class="anchor"></a>Two-molecules assays (RNA and ATAC)</h2>
-<p>Joint single-cell RNA as above, but also single-cellATAC medeled with discrete likelihood for counts (Negative Binomial, <code>"NB"</code>)</p>
+<div class="section level3">
+<h3 id="two-molecules-assays-rna-and-atac">Two-molecules assays (RNA and ATAC)<a class="anchor" aria-label="anchor" href="#two-molecules-assays-rna-and-atac"></a>
+</h3>
+<p>Joint single-cell RNA as above, but also single-cellATAC medeled with
+discrete likelihood for counts (Negative Binomial,
+<code>"NB"</code>)</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="../reference/init.html">init</a></span><span class="op">(</span>
-  rna <span class="op">=</span> <span class="va">example_input</span><span class="op">$</span><span class="va">rna</span>,
-  atac <span class="op">=</span> <span class="va">example_input</span><span class="op">$</span><span class="va">atac</span>,
-  segmentation <span class="op">=</span> <span class="va">example_input</span><span class="op">$</span><span class="va">segments</span>,
-  rna_likelihood <span class="op">=</span> <span class="st">"G"</span>, 
-  atac_likelihood <span class="op">=</span> <span class="st">'NB'</span>, <span class="co"># This is a count-based modality</span>
-  description <span class="op">=</span> <span class="st">'SU008 sampled cells (example)'</span><span class="op">)</span>
-<span class="co">#&gt;                 ┌───────────────────────────────────────────────┐</span>
-<span class="co">#&gt;                 │                                               │</span>
-<span class="co">#&gt;                 │   (R)CONGAS+: SU008 sampled cells (example)   │</span>
-<span class="co">#&gt;                 │                                               │</span>
-<span class="co">#&gt;                 └───────────────────────────────────────────────┘</span>
-<span class="co">#&gt; → Computing library size factors as total counts.</span>
-<span class="co">#&gt; → Median digits per factor 5, scaling by 1e+05.</span>
-<span class="co">#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </span>
-<span class="co">#&gt; 0.03423 0.09627 0.13736 0.15213 0.20357 0.34622</span>
-<span class="co">#&gt; → Computing library size factors as total counts.</span>
-<span class="co">#&gt; → Median digits per factor 5, scaling by 1e+05.</span>
-<span class="co">#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </span>
-<span class="co">#&gt; 0.04185 0.23245 0.30641 0.39151 0.56263 1.11517</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ── RNA modality (7.916976 Mb)</span>
-<span class="co">#&gt; → Input events: 201459</span>
-<span class="co">#&gt; → Input cells: 66</span>
-<span class="co">#&gt; → Input locations: 11473</span>
-<span class="co">#&gt; → Entries mapped: 125458, with 76001 outside input segments that will be discarded.</span>
-<span class="co">#&gt; → Using likelihood: G.</span>
-<span class="co">#&gt; ! Gaussian likelihood requires z-score representation of input values.</span>
-<span class="co">#&gt; → Normalising RNA counts using input normalisation factors.</span>
-<span class="co">#&gt; → Computing z-score.</span>
-<span class="co">#&gt; ! With Gaussian likelihood normalisation factors are changed to 1.</span>
-<span class="co">#&gt; ! There are 794 z-scores that are NA, will be removed.</span>
-<span class="co">#&gt; # A tibble: 794 x 10</span>
-<span class="co">#&gt;    gene  chr     from     to cell  value segment_id modality value_mean value_sd</span>
-<span class="co">#&gt;    &lt;chr&gt; &lt;chr&gt;  &lt;int&gt;  &lt;int&gt; &lt;chr&gt; &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;         &lt;dbl&gt;    &lt;dbl&gt;</span>
-<span class="co">#&gt;  1 LRRI… chr12 8.50e7 8.53e7 bcc.…    NA chr12:533… RNA            7.26       NA</span>
-<span class="co">#&gt;  2 CATS… chr15 4.36e7 4.37e7 bcc.…    NA chr15:289… RNA            7.26       NA</span>
-<span class="co">#&gt;  3 MSGN1 chr2  1.78e7 1.78e7 bcc.…    NA chr2:3934… RNA            7.26       NA</span>
-<span class="co">#&gt;  4 SLC4… chr2  7.42e7 7.43e7 bcc.…    NA chr2:3934… RNA            7.26       NA</span>
-<span class="co">#&gt;  5 SHAN… chr22 5.07e7 5.07e7 bcc.…    NA chr22:246… RNA            7.26       NA</span>
-<span class="co">#&gt;  6 B3GA… chr3  1.61e8 1.61e8 bcc.…    NA chr3:1298… RNA            7.26       NA</span>
-<span class="co">#&gt;  7 ARHG… chr4  8.55e7 8.60e7 bcc.…    NA chr4:4033… RNA            7.26       NA</span>
-<span class="co">#&gt;  8 RSPH… chr6  1.17e8 1.17e8 bcc.…    NA chr6:6734… RNA            7.26       NA</span>
-<span class="co">#&gt;  9 MAN1… chr6  1.19e8 1.19e8 bcc.…    NA chr6:6734… RNA            7.26       NA</span>
-<span class="co">#&gt; 10 MAFA  chr8  1.43e8 1.43e8 bcc.…    NA chr8:1020… RNA            7.26       NA</span>
-<span class="co">#&gt; # … with 784 more rows</span>
-<span class="co">#&gt; → Centering the new scores around input ploidy values.</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ── ATAC modality (16.30176 Mb)</span>
-<span class="co">#&gt; → Input events: 581807</span>
-<span class="co">#&gt; → Input cells: 34</span>
-<span class="co">#&gt; → Input locations: 187509</span>
-<span class="co">#&gt; → Entries mapped: 369456, with 212351 outside input segments that will be discarded.</span>
-<span class="co">#&gt; → Using likelihood: NB.</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ── Checking segmentation</span>
-<span class="co">#&gt; ✓ Nothing to process.</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="../reference/init.html">init</a></span><span class="op">(</span></span>
+<span>  rna <span class="op">=</span> <span class="va">example_input</span><span class="op">$</span><span class="va">rna</span>,</span>
+<span>  atac <span class="op">=</span> <span class="va">example_input</span><span class="op">$</span><span class="va">atac</span>,</span>
+<span>  segmentation <span class="op">=</span> <span class="va">example_input</span><span class="op">$</span><span class="va">segments</span>,</span>
+<span>  rna_likelihood <span class="op">=</span> <span class="st">"G"</span>, </span>
+<span>  atac_likelihood <span class="op">=</span> <span class="st">'NB'</span>, <span class="co"># This is a count-based modality</span></span>
+<span>  description <span class="op">=</span> <span class="st">'SU008 sampled cells (example)'</span><span class="op">)</span></span>
+<span><span class="co">#&gt;                 ┌───────────────────────────────────────────────┐</span></span>
+<span><span class="co">#&gt;                 │<span style="background-color: #FFAF00;">                                               </span>│</span></span>
+<span><span class="co">#&gt;                 │<span style="background-color: #FFAF00;">   (R)CONGAS+: SU008 sampled cells (example)   </span>│</span></span>
+<span><span class="co">#&gt;                 │<span style="background-color: #FFAF00;">                                               </span>│</span></span>
+<span><span class="co">#&gt;                 └───────────────────────────────────────────────┘</span></span>
+<span><span class="co">#&gt; → Computing library size factors as total counts.</span></span>
+<span><span class="co">#&gt; → Median digits per factor <span style="color: #00BB00;">5</span>, scaling by <span style="color: #00BB00;">1e+05</span>.</span></span>
+<span><span class="co">#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </span></span>
+<span><span class="co">#&gt; 0.03423 0.09627 0.13736 0.15213 0.20357 0.34622</span></span>
+<span><span class="co">#&gt; → Computing library size factors as total counts.</span></span>
+<span><span class="co">#&gt; → Median digits per factor <span style="color: #00BB00;">5</span>, scaling by <span style="color: #00BB00;">1e+05</span>.</span></span>
+<span><span class="co">#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </span></span>
+<span><span class="co">#&gt; 0.04185 0.23245 0.30641 0.39151 0.56263 1.11517</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── <span style="color: #00BB00;">RNA</span> modality (7.916976 Mb)</span></span>
+<span><span class="co">#&gt; → Input events: <span style="color: #00BB00;">201459</span></span></span>
+<span><span class="co">#&gt; → Input cells: <span style="color: #00BB00;">66</span></span></span>
+<span><span class="co">#&gt; → Input locations: <span style="color: #00BB00;">11473</span></span></span>
+<span><span class="co">#&gt; → Cleaning outlier features from <span style="color: #00BB00;">RNA</span> input matrix</span></span>
+<span><span class="co">#&gt; → Normalising <span style="color: #00BB00;">RNA</span> counts using input normalisation factors.</span></span>
+<span><span class="co">#&gt; → Found: <span style="color: #00BB00;">92</span> outliers.</span></span>
+<span><span class="co">#&gt; → Entries mapped: <span style="color: #00BB00;">125458</span>, with <span style="color: #00BB00;">76001</span> outside input segments that will be discarded.</span></span>
+<span><span class="co">#&gt; → Using likelihood: <span style="color: #00BB00;">G</span>.</span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> Gaussian likelihood requires z-score representation of input values.</span></span>
+<span><span class="co">#&gt; → Normalising <span style="color: #00BB00;">RNA</span> counts using input normalisation factors.</span></span>
+<span><span class="co">#&gt; Joining with `by = join_by(gene, chr, from, to)`</span></span>
+<span><span class="co">#&gt; → Computing z-score.</span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> With Gaussian likelihood normalisation factors are changed to 1.</span></span>
+<span><span class="co">#&gt; → Centering the new scores around input ploidy values.</span></span>
+<span><span class="co">#&gt; [1] "cell"       "segment_id" "value"      "modality"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── <span style="color: #00BB00;">ATAC</span> modality (16.30176 Mb)</span></span>
+<span><span class="co">#&gt; → Input events: <span style="color: #00BB00;">581807</span></span></span>
+<span><span class="co">#&gt; → Input cells: <span style="color: #00BB00;">34</span></span></span>
+<span><span class="co">#&gt; → Input locations: <span style="color: #00BB00;">187509</span></span></span>
+<span><span class="co">#&gt; → Cleaning outlier features from <span style="color: #00BB00;">ATAC</span> input matrix</span></span>
+<span><span class="co">#&gt; Joining with `by = join_by(chr, from, to)`→ Normalising <span style="color: #00BB00;">ATAC</span> counts using input normalisation factors.</span></span>
+<span><span class="co">#&gt; → Found: <span style="color: #00BB00;">1214</span> outliers.</span></span>
+<span><span class="co">#&gt; → Entries mapped: <span style="color: #00BB00;">369456</span>, with <span style="color: #00BB00;">212351</span> outside input segments that will be discarded.</span></span>
+<span><span class="co">#&gt; → Using likelihood: <span style="color: #00BB00;">NB</span>.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── Checking segmentation</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Nothing to process.</span></span></code></pre></div>
 <p>The S3 print method reports the information about this object.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">x</span> <span class="op">%&gt;%</span> <span class="va">print</span>
-<span class="co">#&gt; ── [ (R)CONGAS+ ] SU008 sampled cells (example) ────────────────────────────────</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ── CNA segments (reference: GRCh38)</span>
-<span class="co">#&gt; → Input 30 CNA segments, mean ploidy 3.2.</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;   | | |  | | | |  | | | |  | | |  | |  |   |  |  | </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;   Ploidy:    0     1     2     3     4     5     *</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ── Modalities</span>
-<span class="co">#&gt; → RNA: 66 cells with 7401 mapped genes, 125458 non-zero values. Likelihood: Gaussian.</span>
-<span class="co">#&gt; → ATAC: 34 cells with 123552 mapped peaks, 369456 non-zero values. Likelihood: Negative Binomial.</span>
-<span class="co">#&gt; ! Clusters: not available.</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ──  LOG  ──</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; - 2021-04-03 16:16:08 Created input object.</span>
-<span class="co">#&gt; [1] 0</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">x</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="va">print</span></span>
+<span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BBBB00;">[ (R)CONGAS+ ]</span><span style="color: #0000BB;"> SU008 sampled cells (example)</span> ────────────────────────────────</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── CNA segments (reference: <span style="color: #00BB00;">GRCh38</span>)</span></span>
+<span><span class="co">#&gt; → Input <span style="color: #00BB00;">30</span> CNA segments, mean ploidy <span style="color: #00BB00;">3.2</span>.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;  <span style="background-color: #BB0000;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #BBBB00;"> </span>|<span style="background-color: #BBBB00;">  </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #BBBB00;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;">  </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #BB0000;"> </span>|<span style="background-color: #BBBB00;"> </span>|<span style="background-color: #BBBB00;">  </span>|<span style="background-color: #BB0000;"> </span>|<span style="background-color: #BBBB00;"> </span>|<span style="background-color: #BBBB00;"> </span><span style="background-color: #BB0000;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #BBBB00;">  </span>|<span style="background-color: #00BB00;"> </span><span style="background-color: #BBBBBB;">  </span>|<span style="background-color: #BB0000;">  </span>|<span style="background-color: #BB0000;"> </span><span style="background-color: #BBBBBB;"> </span>|<span style="background-color: #BB0000;"> </span></span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   <span style="text-decoration: underline;">Ploidy:</span>  <span style="background-color: #00BBBB;"> </span> 0   <span style="background-color: #0000BB;"> </span> 1   <span style="background-color: #00BB00;"> </span> 2   <span style="background-color: #BBBB00;"> </span> 3   <span style="background-color: #BB0000;"> </span> 4   <span style="background-color: #BB00BB;"> </span> 5   <span style="background-color: #BBBBBB;"> </span> *</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── Modalities</span></span>
+<span><span class="co">#&gt; → RNA: <span style="color: #00BB00;">66</span> cells with <span style="color: #00BB00;">7401</span> mapped genes, <span style="color: #00BB00;">125458</span> non-zero values. Likelihood: <span style="color: #00BB00;">Gaussian</span>.</span></span>
+<span><span class="co">#&gt; → ATAC: <span style="color: #00BB00;">34</span> cells with <span style="color: #00BB00;">123552</span> mapped peaks, <span style="color: #00BB00;">369456</span> non-zero values. Likelihood: <span style="color: #00BB00;">Negative Binomial</span>.</span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> Clusters: <span style="color: #BB0000;">not available</span>.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── <span style="color: #BBBBBB; background-color: #BB00BB; font-weight: bold;"> LOG </span> ──</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; - 2023-07-22 10:44:35.84486 Created input object.</span></span>
+<span><span class="co">#&gt; [1] 0</span></span></code></pre></div>
 <!-- ```{r, fig.width=6, fig.height=6} -->
 <!-- plot_data(x, what = 'histogram', segments = some_segments) -->
 <!-- ``` -->
@@ -385,107 +376,107 @@
 <!-- ``` -->
 </div>
 </div>
-<div id="datasets" class="section level1">
-<h1 class="hasAnchor">
-<a href="#datasets" class="anchor"></a>Datasets</h1>
-<div id="rna" class="section level2">
-<h2 class="hasAnchor">
-<a href="#rna" class="anchor"></a>RNA</h2>
+<div class="section level2">
+<h2 id="datasets">Datasets<a class="anchor" aria-label="anchor" href="#datasets"></a>
+</h2>
+<div class="section level3">
+<h3 id="rna">RNA<a class="anchor" aria-label="anchor" href="#rna"></a>
+</h3>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Breast-cancer PDX</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">'campbell_bcpdx'</span><span class="op">)</span>
-<span class="va">campbell_bcpdx</span> <span class="op">%&gt;%</span> <span class="va">print</span>
-<span class="co">#&gt; ── [ (R)CONGAS+ ] Campbell et al. Breast cancer PDX used in CONGAS ─────────────</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ── CNA segments (reference: hg19)</span>
-<span class="co">#&gt; → Input 70 CNA segments, mean ploidy 2.09.</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;       |   |   |    |  |  |  |   |    |   | |       |   | | |       |    |    |     |  |  |  </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;   Ploidy:    0     1     2     3     4     5     *</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ── Modalities</span>
-<span class="co">#&gt; → RNA: 497 cells with 8246 mapped genes, 1321676 non-zero values. Likelihood: Negative Binomial.</span>
-<span class="co">#&gt; → ATAC: not available</span>
-<span class="co">#&gt; ! Clusters: not available.</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ──  LOG  ──</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; - 2021-04-01 15:09:50 Created input object.</span>
-<span class="co">#&gt; - 2021-04-01 15:10:23 Filtered outliers: [14|0.03|0.97]</span>
-<span class="co">#&gt; [1] 0</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Breast-cancer PDX</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">'campbell_bcpdx'</span><span class="op">)</span></span>
+<span><span class="va">campbell_bcpdx</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="va">print</span></span>
+<span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BBBB00;">[ (R)CONGAS+ ]</span><span style="color: #0000BB;"> Campbell et al. Breast cancer PDX used in CONGAS</span> ─────────────</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── CNA segments (reference: <span style="color: #00BB00;">hg19</span>)</span></span>
+<span><span class="co">#&gt; → Input <span style="color: #00BB00;">70</span> CNA segments, mean ploidy <span style="color: #00BB00;">2.09</span>.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;  <span style="background-color: #0000BB;"> </span><span style="background-color: #00BB00;">   </span><span style="background-color: #BBBB00;"> </span>|<span style="background-color: #00BB00;">  </span><span style="background-color: #0000BB;"> </span>|<span style="background-color: #00BB00;">  </span><span style="background-color: #0000BB;"> </span>|<span style="background-color: #00BB00;">  </span><span style="background-color: #0000BB;"> </span><span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;"> </span><span style="background-color: #0000BB;"> </span>|<span style="background-color: #0000BB;"> </span><span style="background-color: #BBBB00;"> </span>|<span style="background-color: #00BB00;">  </span>|<span style="background-color: #00BB00;"> </span><span style="background-color: #BBBBBB;"> </span><span style="background-color: #00BB00;"> </span>|<span style="background-color: #0000BB;"> </span><span style="background-color: #00BB00;"> </span><span style="background-color: #BBBB00;"> </span><span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;">  </span><span style="background-color: #BBBBBB;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #0000BB;"> </span><span style="background-color: #00BB00;">   </span><span style="background-color: #0000BB;"> </span><span style="background-color: #00BB00;">  </span>|<span style="background-color: #0000BB;"> </span><span style="background-color: #00BB00;">  </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;"> </span><span style="background-color: #0000BB;"> </span><span style="background-color: #00BB00;"> </span><span style="background-color: #BBBB00;">  </span><span style="background-color: #BB0000;"> </span><span style="background-color: #0000BB;"> </span>|<span style="background-color: #0000BB;"> </span><span style="background-color: #00BB00;"> </span><span style="background-color: #BBBB00;"> </span><span style="background-color: #0000BB;"> </span>|<span style="background-color: #00BB00;"> </span><span style="background-color: #0000BB;"> </span><span style="background-color: #00BB00;"> </span><span style="background-color: #0000BB;"> </span>|<span style="background-color: #BB0000;"> </span><span style="background-color: #BBBB00;"> </span><span style="background-color: #00BB00;"> </span><span style="background-color: #BBBBBB;"> </span><span style="background-color: #BB0000;"> </span>|<span style="background-color: #00BB00;"> </span><span style="background-color: #0000BB;"> </span>|<span style="background-color: #0000BB;"> </span><span style="background-color: #BBBB00;"> </span>|<span style="background-color: #00BB00;">  </span></span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   <span style="text-decoration: underline;">Ploidy:</span>  <span style="background-color: #00BBBB;"> </span> 0   <span style="background-color: #0000BB;"> </span> 1   <span style="background-color: #00BB00;"> </span> 2   <span style="background-color: #BBBB00;"> </span> 3   <span style="background-color: #BB0000;"> </span> 4   <span style="background-color: #BB00BB;"> </span> 5   <span style="background-color: #BBBBBB;"> </span> *</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── Modalities</span></span>
+<span><span class="co">#&gt; → RNA: <span style="color: #00BB00;">497</span> cells with <span style="color: #00BB00;">8246</span> mapped genes, <span style="color: #00BB00;">1321676</span> non-zero values. Likelihood: <span style="color: #00BB00;">Negative Binomial</span>.</span></span>
+<span><span class="co">#&gt; → ATAC: <span style="color: #BB0000;">not available</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> Clusters: <span style="color: #BB0000;">not available</span>.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── <span style="color: #BBBBBB; background-color: #BB00BB; font-weight: bold;"> LOG </span> ──</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; - 2021-04-01 15:09:50 Created input object.</span></span>
+<span><span class="co">#&gt; - 2021-04-01 15:10:23 Filtered outliers: [14|0.03|0.97]</span></span>
+<span><span class="co">#&gt; [1] 0</span></span></code></pre></div>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Glioblastoma tumour normal</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">'patel_gbmtn'</span><span class="op">)</span>
-<span class="va">patel_gbmtn</span> <span class="op">%&gt;%</span> <span class="va">print</span>
-<span class="co">#&gt; ── [ (R)CONGAS+ ] Patel et al. GBM tumour/normal used in CONGAS (SmartSeq) ─────</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ── CNA segments (reference: GRCh38)</span>
-<span class="co">#&gt; → Input 14 CNA segments, mean ploidy 2.</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;   | | |  | | | | | |  |  </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;   Ploidy:    0     1     2     3     4     5     *</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ── Modalities</span>
-<span class="co">#&gt; → RNA: 75 cells with 1506 mapped genes, 62416 non-zero values. Likelihood: Gaussian.</span>
-<span class="co">#&gt; → ATAC: not available</span>
-<span class="co">#&gt; ! Clusters: not available.</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ──  LOG  ──</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; - 2021-04-02 10:32:31 Created input object.</span>
-<span class="co">#&gt; [1] 0</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Glioblastoma tumour normal</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">'patel_gbmtn'</span><span class="op">)</span></span>
+<span><span class="va">patel_gbmtn</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="va">print</span></span>
+<span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BBBB00;">[ (R)CONGAS+ ]</span><span style="color: #0000BB;"> Patel et al. GBM tumour/normal used in CONGAS (SmartSeq)</span> ─────</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── CNA segments (reference: <span style="color: #00BB00;">GRCh38</span>)</span></span>
+<span><span class="co">#&gt; → Input <span style="color: #00BB00;">14</span> CNA segments, mean ploidy <span style="color: #00BB00;">2</span>.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;  <span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;">  </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;">  </span>|<span style="background-color: #00BB00;">  </span></span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   <span style="text-decoration: underline;">Ploidy:</span>  <span style="background-color: #00BBBB;"> </span> 0   <span style="background-color: #0000BB;"> </span> 1   <span style="background-color: #00BB00;"> </span> 2   <span style="background-color: #BBBB00;"> </span> 3   <span style="background-color: #BB0000;"> </span> 4   <span style="background-color: #BB00BB;"> </span> 5   <span style="background-color: #BBBBBB;"> </span> *</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── Modalities</span></span>
+<span><span class="co">#&gt; → RNA: <span style="color: #00BB00;">75</span> cells with <span style="color: #00BB00;">1506</span> mapped genes, <span style="color: #00BB00;">62416</span> non-zero values. Likelihood: <span style="color: #00BB00;">Gaussian</span>.</span></span>
+<span><span class="co">#&gt; → ATAC: <span style="color: #BB0000;">not available</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> Clusters: <span style="color: #BB0000;">not available</span>.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── <span style="color: #BBBBBB; background-color: #BB00BB; font-weight: bold;"> LOG </span> ──</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; - 2021-04-02 10:32:31 Created input object.</span></span>
+<span><span class="co">#&gt; [1] 0</span></span></code></pre></div>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Hematological bone marrow failure</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">'zaho_hemato'</span><span class="op">)</span>
-<span class="va">zaho_hemato</span> <span class="op">%&gt;%</span> <span class="va">print</span>
-<span class="co">#&gt; ── [ (R)CONGAS+ ] Zaho et al. MDS hematopoietical used in CONGAS (HCA) ─────────</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ── CNA segments (reference: GRCh38)</span>
-<span class="co">#&gt; → Input 21 CNA segments, mean ploidy 2.</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;   | | | | | | | | | | | | | | | | | | | | </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;   Ploidy:    0     1     2     3     4     5     *</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ── Modalities</span>
-<span class="co">#&gt; → RNA: 94 cells with 18841 mapped genes, 890478 non-zero values. Likelihood: Negative Binomial.</span>
-<span class="co">#&gt; → ATAC: not available</span>
-<span class="co">#&gt; ! Clusters: not available.</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ──  LOG  ──</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; - 2021-04-03 12:24:46 Created input object.</span>
-<span class="co">#&gt; - 2021-04-03 12:24:48 Filtered outliers: [4.2|0.03|0.97]</span>
-<span class="co">#&gt; [1] 0</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Hematological bone marrow failure</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">'zaho_hemato'</span><span class="op">)</span></span>
+<span><span class="va">zaho_hemato</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="va">print</span></span>
+<span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BBBB00;">[ (R)CONGAS+ ]</span><span style="color: #0000BB;"> Zaho et al. MDS hematopoietical used in CONGAS (HCA)</span> ─────────</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── CNA segments (reference: <span style="color: #00BB00;">GRCh38</span>)</span></span>
+<span><span class="co">#&gt; → Input <span style="color: #00BB00;">21</span> CNA segments, mean ploidy <span style="color: #00BB00;">2</span>.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;  <span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;"> </span></span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   <span style="text-decoration: underline;">Ploidy:</span>  <span style="background-color: #00BBBB;"> </span> 0   <span style="background-color: #0000BB;"> </span> 1   <span style="background-color: #00BB00;"> </span> 2   <span style="background-color: #BBBB00;"> </span> 3   <span style="background-color: #BB0000;"> </span> 4   <span style="background-color: #BB00BB;"> </span> 5   <span style="background-color: #BBBBBB;"> </span> *</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── Modalities</span></span>
+<span><span class="co">#&gt; → RNA: <span style="color: #00BB00;">94</span> cells with <span style="color: #00BB00;">18841</span> mapped genes, <span style="color: #00BB00;">890478</span> non-zero values. Likelihood: <span style="color: #00BB00;">Negative Binomial</span>.</span></span>
+<span><span class="co">#&gt; → ATAC: <span style="color: #BB0000;">not available</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> Clusters: <span style="color: #BB0000;">not available</span>.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── <span style="color: #BBBBBB; background-color: #BB00BB; font-weight: bold;"> LOG </span> ──</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; - 2021-04-03 12:24:46 Created input object.</span></span>
+<span><span class="co">#&gt; - 2021-04-03 12:24:48 Filtered outliers: [4.2|0.03|0.97]</span></span>
+<span><span class="co">#&gt; [1] 0</span></span></code></pre></div>
 </div>
-<div id="rna-and-atac" class="section level2">
-<h2 class="hasAnchor">
-<a href="#rna-and-atac" class="anchor"></a>RNA and ATAC</h2>
+<div class="section level3">
+<h3 id="rna-and-atac">RNA and ATAC<a class="anchor" aria-label="anchor" href="#rna-and-atac"></a>
+</h3>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Basal cell carcinoma</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">'satpathy_bcc'</span><span class="op">)</span>
-<span class="va">satpathy_bcc</span> <span class="op">%&gt;%</span> <span class="va">print</span>
-<span class="co">#&gt; ── [ (R)CONGAS+ ] SU008 TUMOR 30 segments (73.66% genome) ──────────────────────</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ── CNA segments (reference: GRCh38)</span>
-<span class="co">#&gt; → Input 30 CNA segments, mean ploidy 3.2.</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;   | | |  | | | |  | | | |  | | |  | |  |   |  |  | </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;   Ploidy:    0     1     2     3     4     5     *</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ── Modalities</span>
-<span class="co">#&gt; → RNA: 714 cells with 8613 mapped genes, 1401728 non-zero values. Likelihood: Negative Binomial.</span>
-<span class="co">#&gt; → ATAC: 259 cells with 284316 mapped peaks, 3083691 non-zero values. Likelihood: Negative Binomial.</span>
-<span class="co">#&gt; ! Clusters: not available.</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ──  LOG  ──</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; - 2021-03-30 17:58:41 Created input object.</span>
-<span class="co">#&gt; - 2021-03-30 17:58:43 Filtered outliers: [6|0.05|0.95]</span>
-<span class="co">#&gt; [1] 0</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Basal cell carcinoma</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">'satpathy_bcc'</span><span class="op">)</span></span>
+<span><span class="va">satpathy_bcc</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="va">print</span></span>
+<span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BBBB00;">[ (R)CONGAS+ ]</span><span style="color: #0000BB;"> SU008 TUMOR 30 segments (73.66% genome)</span> ──────────────────────</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── CNA segments (reference: <span style="color: #00BB00;">GRCh38</span>)</span></span>
+<span><span class="co">#&gt; → Input <span style="color: #00BB00;">30</span> CNA segments, mean ploidy <span style="color: #00BB00;">3.2</span>.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;  <span style="background-color: #BB0000;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #BBBB00;"> </span>|<span style="background-color: #BBBB00;">  </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #BBBB00;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;">  </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #BB0000;"> </span>|<span style="background-color: #BBBB00;"> </span>|<span style="background-color: #BBBB00;">  </span>|<span style="background-color: #BB0000;"> </span>|<span style="background-color: #BBBB00;"> </span>|<span style="background-color: #BBBB00;"> </span><span style="background-color: #BB0000;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #BBBB00;">  </span>|<span style="background-color: #00BB00;"> </span><span style="background-color: #BBBBBB;">  </span>|<span style="background-color: #BB0000;">  </span>|<span style="background-color: #BB0000;"> </span><span style="background-color: #BBBBBB;"> </span>|<span style="background-color: #BB0000;"> </span></span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   <span style="text-decoration: underline;">Ploidy:</span>  <span style="background-color: #00BBBB;"> </span> 0   <span style="background-color: #0000BB;"> </span> 1   <span style="background-color: #00BB00;"> </span> 2   <span style="background-color: #BBBB00;"> </span> 3   <span style="background-color: #BB0000;"> </span> 4   <span style="background-color: #BB00BB;"> </span> 5   <span style="background-color: #BBBBBB;"> </span> *</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── Modalities</span></span>
+<span><span class="co">#&gt; → RNA: <span style="color: #00BB00;">714</span> cells with <span style="color: #00BB00;">8613</span> mapped genes, <span style="color: #00BB00;">1401728</span> non-zero values. Likelihood: <span style="color: #00BB00;">Negative Binomial</span>.</span></span>
+<span><span class="co">#&gt; → ATAC: <span style="color: #00BB00;">259</span> cells with <span style="color: #00BB00;">284316</span> mapped peaks, <span style="color: #00BB00;">3083691</span> non-zero values. Likelihood: <span style="color: #00BB00;">Negative Binomial</span>.</span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> Clusters: <span style="color: #BB0000;">not available</span>.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── <span style="color: #BBBBBB; background-color: #BB00BB; font-weight: bold;"> LOG </span> ──</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; - 2021-03-30 17:58:41 Created input object.</span></span>
+<span><span class="co">#&gt; - 2021-03-30 17:58:43 Filtered outliers: [6|0.05|0.95]</span></span>
+<span><span class="co">#&gt; [1] 0</span></span></code></pre></div>
 </div>
 </div>
   </div>
@@ -501,11 +492,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by <a href="https://www.caravagnalab.org">Salvatore Milite</a>, <a href="https://www.caravagnalab.org">Riccardo Bergamin</a>, <a href="https://www.caravagnalab.org">Giulio Caravagna</a>.</p>
+  <p></p>
+<p>Developed by <a href="https://www.caravagnalab.org" class="external-link">Salvatore Milite</a>, <a href="https://www.caravagnalab.org" class="external-link">Riccardo Bergamin</a>, <a href="https://www.caravagnalab.org" class="external-link">Giulio Caravagna</a>.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
@@ -513,6 +506,8 @@
 
   
 
+
+  
 
   </body>
 </html>
