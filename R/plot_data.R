@@ -419,7 +419,7 @@ plot_data_lineplot = function(x,
            size = FALSE)
 }
 
-plot_data_heatmap = function(x, segments = get_input(x, what = 'segmentation') %>% pull(segment_id))
+plot_data_heatmap = function(x, segments = get_input(x, what = 'segmentation') %>% pull(segment_id), scale = FALSE, scale_min_lim = -Inf, scale_max_lim = Inf)
 {
   stats_data = stat(x, what = 'data')
 
@@ -483,6 +483,9 @@ plot_data_heatmap = function(x, segments = get_input(x, what = 'segmentation') %
   if (nrow(what_RNA) > 0)
     # RNA
   {
+    if(scale) what_RNA <- what_RNA %>% group_by(segment_id) %>% mutate(value = (value - mean(value)) / sd(value)) %>% ungroup() %>%
+        mutate(value = ifelse(value > scale_min_lim, value, scale_min_lim)) %>% mutate(value = ifelse(value > scale_max_lim, scale_max_lim, value)) 
+    
     RNA_plot = ggplot(what_RNA %>% filter(segment_id %in% segments)) +
       geom_tile(aes(x = segment_id, y = cell, fill = value)) +
       theme_linedraw(base_size = 9) +
@@ -493,7 +496,7 @@ plot_data_heatmap = function(x, segments = get_input(x, what = 'segmentation') %
       guides(fill = guide_colorbar(paste('RNA (', what_rna_lik, ')'),
                                    barheight = unit(3, 'cm')))
 
-    if (stats_data$rna_dtype == "G")
+    if (stats_data$rna_dtype == "G" | scale)
       RNA_plot = RNA_plot +
         scale_fill_gradient2(low = "steelblue", high = 'indianred3')
     else
@@ -504,6 +507,9 @@ plot_data_heatmap = function(x, segments = get_input(x, what = 'segmentation') %
   if (nrow(what_ATAC) > 0)
     # RNA
   {
+    if(scale) what_ATAC <- what_ATAC %>% group_by(segment_id) %>% mutate(value = (value - mean(value)) / sd(value)) %>% ungroup() %>%
+        mutate(value = ifelse(value > scale_min_lim, value, scale_min_lim)) %>% mutate(value = ifelse(value > scale_max_lim, scale_max_lim, value)) 
+    
     ATAC_plot = ggplot(what_ATAC %>% filter(segment_id %in% segments)) +
       geom_tile(aes(x = segment_id, y = cell, fill = value)) +
       theme_linedraw(base_size = 9) +
@@ -514,7 +520,7 @@ plot_data_heatmap = function(x, segments = get_input(x, what = 'segmentation') %
       guides(fill = guide_colorbar(paste('ATAC (', what_atac_lik, ')'),
                                    barheight = unit(3, 'cm')))
 
-    if (stats_data$atac_dtype == "G")
+    if (stats_data$atac_dtype == "G" | scale)
       ATAC_plot = ATAC_plot +
         scale_fill_gradient2(low = "steelblue", high = 'indianred3')
     else

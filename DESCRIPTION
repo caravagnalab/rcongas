@@ -38,7 +38,8 @@ Imports:
     fitdistrplus,
     Matrix,
     readr,
-    tidyr
+    tidyr,
+    glue
 Suggests:
     biomaRt,
     knitr,
