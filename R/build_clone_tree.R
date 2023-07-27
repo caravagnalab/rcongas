@@ -43,7 +43,7 @@ build_clone_tree <- function(x, medicc_path = NULL, result_dir = "./medicc_resul
   nw_plot <- NULL
   if(plot){
     
-    nw_plot <- plot_tree_congas(nw_tree, x)
+    nw_plot <- plot_tree_congas(nw_tree)
   }
   
   return(tree = nw_tree, plot = nw_plot)
@@ -73,7 +73,7 @@ create_input_for_medicc <- function(x, input_dir = "./medicc_input") {
 }
 
 
-plot_tree_congas <- function(nw_tree, x) {
+plot_tree_congas <- function(nw_tree) {
   
   ggtree::ggtree(nw_tree) + ggtree::geom_tiplab() + ggtree::geom_nodepoint(color = "steelblue") + 
     ggtree::geom_tippoint() + ggtree::theme_tree2() + ggtree::geom_rootedge()
