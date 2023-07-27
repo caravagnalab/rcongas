@@ -75,7 +75,6 @@ create_input_for_medicc <- function(x, input_dir = "./medicc_input") {
 
 plot_tree_congas <- function(nw_tree, x) {
   
-  RColorBrewer::brewer.pal(9, "Set1")
   ggtree::ggtree(nw_tree) + ggtree::geom_tiplab() + ggtree::geom_nodepoint(color = "steelblue") + 
     ggtree::geom_tippoint() + ggtree::theme_tree2() + ggtree::geom_rootedge()
   
