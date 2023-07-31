@@ -306,9 +306,9 @@ fit_nbmix = function(x, K = 1:3, score="ICL", mod="ATAC")
 #' 
 #' @export
 #'
-segments_selector_congas <- function(obj, multiome = F, K_max = 3, score = "BIC", lambda = 0.5, cores_ratio = 0.5, CUDA = CUDA){
+segments_selector_congas <- function(obj, multiome = F, K_max = 3, score = "BIC", lambda = 0.5, cores_ratio = 0.5, CUDA = CUDA, binom_limits = c(40,1000)){
 
-  congas_single_segment <- function(obj){
+  congas_single_segment <- function(obj, binom_limits){
     # seg_id = segment_ids[i]
     K_max = 3#params$K_max
     lr = 0.01#params$lr
@@ -326,8 +326,8 @@ segments_selector_congas <- function(obj, multiome = F, K_max = 3, score = "BIC"
                                             purity = purity, CUDA = CUDA)
 
     model_params$lambda=lambda
-    model_params$binom_prior_limits = c(40,1000)
-    
+
+    model_params$binom_prior_limits = binom_limits
 
     fit_obj = Rcongas:::fit_congas(
       obj,
@@ -368,7 +368,8 @@ segments_selector_congas <- function(obj, multiome = F, K_max = 3, score = "BIC"
   report = easypar::run(
     FUN = congas_single_segment,
     PARAMS = lapply(segment_ids, function (x) {
-      list(obj = Rcongas:::select_segments(obj, segment_ids = c(x)))
+      list(obj = Rcongas:::select_segments(obj, segment_ids = c(x)),
+          binom_limits = binom_limits)
       }),
     parallel = !CUDA,
     cores.ratio = cores_ratio,

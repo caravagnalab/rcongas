@@ -221,10 +221,10 @@ for ATAC a dataframe with the paks coordinates</p>
 <p>Read chromosome arm coordinated that will be used as segment
 breakpoints</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">hg38_arms</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">example_segments</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Remove these chromosomes</span></span>
-<span><span class="va">segments</span> <span class="op">=</span> <span class="va">hg38_arms</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">chr</span> <span class="op">!=</span> <span class="st">'chrX'</span>, <span class="va">chr</span> <span class="op">!=</span> <span class="st">'chrY'</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">segments</span> <span class="op">=</span> <span class="va">example_segments</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">chr</span> <span class="op">!=</span> <span class="st">'chrX'</span>, <span class="va">chr</span> <span class="op">!=</span> <span class="st">'chrY'</span><span class="op">)</span></span></code></pre></div>
 <p>Now init the CONGAS+ object The init function has a paramter , which
 is a flag that either enables or disables the multiome mode. This mode
 makes the inference for the RNA and ATAC correspodning cells</p>
@@ -257,8 +257,8 @@ makes the inference for the RNA and ATAC correspodning cells</p>
 <span><span class="co">#&gt; <span style="color: #555555;">This warning is displayed once every 8 hours.</span></span></span>
 <span><span class="co">#&gt; <span style="color: #555555;">Call `lifecycle::last_lifecycle_warnings()` to see where this warning was</span></span></span>
 <span><span class="co">#&gt; <span style="color: #555555;">generated.</span></span></span>
-<span><span class="co">#&gt; → Found: <span style="color: #00BB00;">178</span> outliers.</span></span>
-<span><span class="co">#&gt; → Entries mapped: <span style="color: #00BB00;">944559</span>, with <span style="color: #00BB00;">30549</span> outside input segments that will be discarded.</span></span>
+<span><span class="co">#&gt; → Found: <span style="color: #00BB00;">84</span> outliers.</span></span>
+<span><span class="co">#&gt; → Entries mapped: <span style="color: #00BB00;">465077</span>, with <span style="color: #00BB00;">510031</span> outside input segments that will be discarded.</span></span>
 <span><span class="co">#&gt; → Using likelihood: <span style="color: #00BB00;">NB</span>.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="color: #00BB00;">ATAC</span> modality (86.844704 Mb)</span></span>
@@ -268,8 +268,8 @@ makes the inference for the RNA and ATAC correspodning cells</p>
 <span><span class="co">#&gt; → Cleaning outlier features from <span style="color: #00BB00;">ATAC</span> input matrix</span></span>
 <span><span class="co">#&gt; Joining with `by = join_by(chr, from, to)`</span></span>
 <span><span class="co">#&gt; → Normalising <span style="color: #00BB00;">ATAC</span> counts using input normalisation factors.</span></span>
-<span><span class="co">#&gt; → Found: <span style="color: #00BB00;">1088</span> outliers.</span></span>
-<span><span class="co">#&gt; → Entries mapped: <span style="color: #00BB00;">3023706</span>, with <span style="color: #00BB00;">76349</span> outside input segments that will be</span></span>
+<span><span class="co">#&gt; → Found: <span style="color: #00BB00;">581</span> outliers.</span></span>
+<span><span class="co">#&gt; → Entries mapped: <span style="color: #00BB00;">1530455</span>, with <span style="color: #00BB00;">1569600</span> outside input segments that will be</span></span>
 <span><span class="co">#&gt; discarded.</span></span>
 <span><span class="co">#&gt; → Using likelihood: <span style="color: #00BB00;">NB</span>.</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -284,18 +284,18 @@ makes the inference for the RNA and ATAC correspodning cells</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> chr15     0 19<span style="text-decoration: underline;">000</span>000      2 chr15:0:190000…                0                 0</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 4 more variables: ATAC_nonzerovals &lt;dbl&gt;, ATAC_peaks &lt;dbl&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   RNA_nonzerovals &lt;dbl&gt;, RNA_genes &lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> <span style="color: #BB0000; font-weight: bold;">Warning</span> <span style="color: #BB0000;">RNA 0-counts cells.</span> <span style="color: #00BB00;">491</span> cells have missing data in any of <span style="color: #00BB00;">41</span> segments, top <span style="color: #00BB00;">5</span> with missing data are:</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Cell <span style="color: #00BB00;">AAACCGAAGTGGACAA-1-RNA</span> with <span style="color: #BB0000;">1</span> 0-segments (<span style="color: #BB0000;">2%</span>)</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Cell <span style="color: #00BB00;">AAACGCGCAGGTTCAC-1-RNA</span> with <span style="color: #BB0000;">1</span> 0-segments (<span style="color: #BB0000;">2%</span>)</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Cell <span style="color: #00BB00;">AAACGTACATAATGAG-1-RNA</span> with <span style="color: #BB0000;">1</span> 0-segments (<span style="color: #BB0000;">2%</span>)</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Cell <span style="color: #00BB00;">AAAGCCGCATAGTCAT-1-RNA</span> with <span style="color: #BB0000;">1</span> 0-segments (<span style="color: #BB0000;">2%</span>)</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Cell <span style="color: #00BB00;">AAAGGTTAGGCCAATT-1-RNA</span> with <span style="color: #BB0000;">1</span> 0-segments (<span style="color: #BB0000;">2%</span>)</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> <span style="color: #BB0000; font-weight: bold;">Warning</span> <span style="color: #BB0000;">ATAC 0-counts cells.</span> <span style="color: #00BB00;">435</span> cells have no data in any of <span style="color: #00BB00;">41</span> segments, top <span style="color: #00BB00;">5</span> with missing data are:</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Cell <span style="color: #00BB00;">GTCCTAGAGCCAAATC-1-ATAC</span> with <span style="color: #BB0000;">3</span> 0-segments (<span style="color: #BB0000;">7%</span>)</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Cell <span style="color: #00BB00;">TCTCGCCCAAACATAG-1-ATAC</span> with <span style="color: #BB0000;">3</span> 0-segments (<span style="color: #BB0000;">7%</span>)</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Cell <span style="color: #00BB00;">AAACGCGCAGGTTCAC-1-ATAC</span> with <span style="color: #BB0000;">2</span> 0-segments (<span style="color: #BB0000;">5%</span>)</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Cell <span style="color: #00BB00;">AAACGTACATAATGAG-1-ATAC</span> with <span style="color: #BB0000;">2</span> 0-segments (<span style="color: #BB0000;">5%</span>)</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Cell <span style="color: #00BB00;">AAAGCCGCATAGTCAT-1-ATAC</span> with <span style="color: #BB0000;">2</span> 0-segments (<span style="color: #BB0000;">5%</span>)</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> <span style="color: #BB0000; font-weight: bold;">Warning</span> <span style="color: #BB0000;">RNA 0-counts cells.</span> <span style="color: #00BB00;">491</span> cells have missing data in any of <span style="color: #00BB00;">23</span> segments, top <span style="color: #00BB00;">5</span> with missing data are:</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Cell <span style="color: #00BB00;">AAACCGAAGTGGACAA-1-RNA</span> with <span style="color: #BB0000;">1</span> 0-segments (<span style="color: #BB0000;">4%</span>)</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Cell <span style="color: #00BB00;">AAACGCGCAGGTTCAC-1-RNA</span> with <span style="color: #BB0000;">1</span> 0-segments (<span style="color: #BB0000;">4%</span>)</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Cell <span style="color: #00BB00;">AAACGTACATAATGAG-1-RNA</span> with <span style="color: #BB0000;">1</span> 0-segments (<span style="color: #BB0000;">4%</span>)</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Cell <span style="color: #00BB00;">AAAGCCGCATAGTCAT-1-RNA</span> with <span style="color: #BB0000;">1</span> 0-segments (<span style="color: #BB0000;">4%</span>)</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Cell <span style="color: #00BB00;">AAAGGTTAGGCCAATT-1-RNA</span> with <span style="color: #BB0000;">1</span> 0-segments (<span style="color: #BB0000;">4%</span>)</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> <span style="color: #BB0000; font-weight: bold;">Warning</span> <span style="color: #BB0000;">ATAC 0-counts cells.</span> <span style="color: #00BB00;">209</span> cells have no data in any of <span style="color: #00BB00;">23</span> segments, top <span style="color: #00BB00;">5</span> with missing data are:</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Cell <span style="color: #00BB00;">GTCCTAGAGCCAAATC-1-ATAC</span> with <span style="color: #BB0000;">2</span> 0-segments (<span style="color: #BB0000;">9%</span>)</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Cell <span style="color: #00BB00;">TCTCGCCCAAACATAG-1-ATAC</span> with <span style="color: #BB0000;">2</span> 0-segments (<span style="color: #BB0000;">9%</span>)</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Cell <span style="color: #00BB00;">AAACGCGCAGGTTCAC-1-ATAC</span> with <span style="color: #BB0000;">1</span> 0-segments (<span style="color: #BB0000;">4%</span>)</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Cell <span style="color: #00BB00;">AAACGTACATAATGAG-1-ATAC</span> with <span style="color: #BB0000;">1</span> 0-segments (<span style="color: #BB0000;">4%</span>)</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Cell <span style="color: #00BB00;">AAAGCCGCATAGTCAT-1-ATAC</span> with <span style="color: #BB0000;">1</span> 0-segments (<span style="color: #BB0000;">4%</span>)</span></span></code></pre></div>
 <p>Now plot the number of nonzero cells vs the number of peaks per
 segment, to help identify a threshold for filtering segments.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
@@ -308,7 +308,7 @@ segment, to help identify a threshold for filtering segments.</p>
 <code class="sourceCode R"><span><span class="va">x</span> <span class="op">=</span> <span class="fu">Rcongas</span><span class="fu">::</span><span class="fu"><a href="../reference/filter_segments.html">filter_segments</a></span><span class="op">(</span><span class="va">x</span>, RNA_nonzerocells <span class="op">=</span> <span class="fl">300</span>, ATAC_nonzerocells <span class="op">=</span> <span class="fl">300</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Segments filter</span></span>
-<span><span class="co">#&gt; → <span style="color: #00BB00;">39</span> retained segments out of <span style="color: #00BB00;">41</span>.</span></span></code></pre></div>
+<span><span class="co">#&gt; → <span style="color: #00BB00;">22</span> retained segments out of <span style="color: #00BB00;">23</span>.</span></span></code></pre></div>
 <p>Generate plots to check out the data distribution</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_data.html">plot_data</a></span><span class="op">(</span></span>
@@ -367,7 +367,7 @@ within that environment.</p>
 <span><span class="va">filt</span> <span class="op">=</span> <span class="fu"><a href="../reference/segments_selector_congas.html">segments_selector_congas</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: replacing previous import 'cli::num_ansi_colors' by</span></span>
 <span><span class="co">#&gt; 'crayon::num_ansi_colors' when loading 'easypar'</span></span>
-<span><span class="co">#&gt; 14  segments are found polyclonal</span></span>
+<span><span class="co">#&gt; 7  segments are found polyclonal</span></span>
 <span><span class="co"># You can save the filtering result to avoid re-running the whole pipeline in future steps</span></span>
 <span><span class="co"># saveRDS(filt, paste0(out.dir, "rcongas_obj_filtered.rds"))</span></span></code></pre></div>
 <p>Now we can run CONGAS+ parameters inference on the final filtered
@@ -399,19 +399,12 @@ then we fit the model.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Estimating segment factors</span></span>
 <span><span class="co">#&gt; → 1: <span style="color: #00BB00;">chr16:0:36800000</span> theta_shape = 17.0430912743007, theta_rate = 0.0502431531953326</span></span>
-<span><span class="co">#&gt; → 2: <span style="color: #00BB00;">chr17:0:25100000</span> theta_shape = 9.26120305218384, theta_rate = 0.0438886347593964</span></span>
-<span><span class="co">#&gt; → 3: <span style="color: #00BB00;">chr18:0:18500000</span> theta_shape = 9.19898572042464, theta_rate = 0.134656196154735</span></span>
-<span><span class="co">#&gt; → 4: <span style="color: #00BB00;">chr18:18500000:80373285</span> theta_shape = 9.79787953384756, theta_rate = 0.0438621501984607</span></span>
-<span><span class="co">#&gt; → 5: <span style="color: #00BB00;">chr19:0:26200000</span> theta_shape = 15.3170519306507, theta_rate = 0.0332145110623102</span></span>
-<span><span class="co">#&gt; → 6: <span style="color: #00BB00;">chr19:26200000:58617616</span> theta_shape = 16.1287522404541, theta_rate = 0.0338271664216599</span></span>
-<span><span class="co">#&gt; → 7: <span style="color: #00BB00;">chr2:93900000:242193529</span> theta_shape = 20.3785305056565, theta_rate = 0.0325352623473586</span></span>
-<span><span class="co">#&gt; → 8: <span style="color: #00BB00;">chr22:15000000:50818468</span> theta_shape = 13.3645394427106, theta_rate = 0.0400705400521178</span></span>
-<span><span class="co">#&gt; → 9: <span style="color: #00BB00;">chr3:90900000:198295559</span> theta_shape = 9.17167289102107, theta_rate = 0.0155177176789159</span></span>
-<span><span class="co">#&gt; → 10: <span style="color: #00BB00;">chr4:0:50000000</span> theta_shape = 12.3689008246619, theta_rate = 0.0646716839964274</span></span>
-<span><span class="co">#&gt; → 11: <span style="color: #00BB00;">chr4:50000000:190214555</span> theta_shape = 15.0158100496811, theta_rate = 0.0466308429370513</span></span>
-<span><span class="co">#&gt; → 12: <span style="color: #00BB00;">chr7:0:60100000</span> theta_shape = 11.9716723078498, theta_rate = 0.0335830102341236</span></span>
-<span><span class="co">#&gt; → 13: <span style="color: #00BB00;">chr8:0:45200000</span> theta_shape = 14.1072176973478, theta_rate = 0.078127925166848</span></span>
-<span><span class="co">#&gt; → 14: <span style="color: #00BB00;">chr9:43000000:138394717</span> theta_shape = 12.6405354431144, theta_rate = 0.022602435565188</span></span>
+<span><span class="co">#&gt; → 2: <span style="color: #00BB00;">chr18:0:18500000</span> theta_shape = 9.19898572042464, theta_rate = 0.134656196154735</span></span>
+<span><span class="co">#&gt; → 3: <span style="color: #00BB00;">chr18:18500000:80373285</span> theta_shape = 9.79787953384756, theta_rate = 0.0438621501984607</span></span>
+<span><span class="co">#&gt; → 4: <span style="color: #00BB00;">chr3:90900000:198295559</span> theta_shape = 9.17167289102107, theta_rate = 0.0155177176789159</span></span>
+<span><span class="co">#&gt; → 5: <span style="color: #00BB00;">chr7:0:60100000</span> theta_shape = 11.9716723078498, theta_rate = 0.0335830102341236</span></span>
+<span><span class="co">#&gt; → 6: <span style="color: #00BB00;">chr8:0:45200000</span> theta_shape = 14.1072176973478, theta_rate = 0.078127925166848</span></span>
+<span><span class="co">#&gt; → 7: <span style="color: #00BB00;">chr9:43000000:138394717</span> theta_shape = 12.6405354431144, theta_rate = 0.022602435565188</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">RNA modality</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -419,19 +412,12 @@ then we fit the model.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Estimating segment factors</span></span>
 <span><span class="co">#&gt; → 1: <span style="color: #00BB00;">chr16:0:36800000</span> theta_shape = 22.560040932594, theta_rate = 0.297223253028911</span></span>
-<span><span class="co">#&gt; → 2: <span style="color: #00BB00;">chr17:0:25100000</span> theta_shape = 11.9084248499846, theta_rate = 0.255530559230219</span></span>
-<span><span class="co">#&gt; → 3: <span style="color: #00BB00;">chr18:0:18500000</span> theta_shape = 5.78790692035523, theta_rate = 0.301295445681658</span></span>
-<span><span class="co">#&gt; → 4: <span style="color: #00BB00;">chr18:18500000:80373285</span> theta_shape = 14.0899384850334, theta_rate = 0.26419130305435</span></span>
-<span><span class="co">#&gt; → 5: <span style="color: #00BB00;">chr19:0:26200000</span> theta_shape = 19.4651586626848, theta_rate = 0.2219107798984</span></span>
-<span><span class="co">#&gt; → 6: <span style="color: #00BB00;">chr19:26200000:58617616</span> theta_shape = 21.6401878375148, theta_rate = 0.296678524974407</span></span>
-<span><span class="co">#&gt; → 7: <span style="color: #00BB00;">chr2:93900000:242193529</span> theta_shape = 25.5841439702914, theta_rate = 0.134297436353751</span></span>
-<span><span class="co">#&gt; → 8: <span style="color: #00BB00;">chr22:15000000:50818468</span> theta_shape = 12.5554384545586, theta_rate = 0.175018868063568</span></span>
-<span><span class="co">#&gt; → 9: <span style="color: #00BB00;">chr3:90900000:198295559</span> theta_shape = 14.509076998119, theta_rate = 0.0947395570794461</span></span>
-<span><span class="co">#&gt; → 10: <span style="color: #00BB00;">chr4:0:50000000</span> theta_shape = 10.7975584053681, theta_rate = 0.213441130849856</span></span>
-<span><span class="co">#&gt; → 11: <span style="color: #00BB00;">chr4:50000000:190214555</span> theta_shape = 16.206539122106, theta_rate = 0.158724067101377</span></span>
-<span><span class="co">#&gt; → 12: <span style="color: #00BB00;">chr7:0:60100000</span> theta_shape = 14.2824045220825, theta_rate = 0.162264815375223</span></span>
-<span><span class="co">#&gt; → 13: <span style="color: #00BB00;">chr8:0:45200000</span> theta_shape = 15.3653116780921, theta_rate = 0.355677680155202</span></span>
-<span><span class="co">#&gt; → 14: <span style="color: #00BB00;">chr9:43000000:138394717</span> theta_shape = 15.5402824473085, theta_rate = 0.13276551189991</span></span>
+<span><span class="co">#&gt; → 2: <span style="color: #00BB00;">chr18:0:18500000</span> theta_shape = 5.78790692035523, theta_rate = 0.301295445681658</span></span>
+<span><span class="co">#&gt; → 3: <span style="color: #00BB00;">chr18:18500000:80373285</span> theta_shape = 14.0899384850334, theta_rate = 0.26419130305435</span></span>
+<span><span class="co">#&gt; → 4: <span style="color: #00BB00;">chr3:90900000:198295559</span> theta_shape = 14.509076998119, theta_rate = 0.0947395570794461</span></span>
+<span><span class="co">#&gt; → 5: <span style="color: #00BB00;">chr7:0:60100000</span> theta_shape = 14.2824045220825, theta_rate = 0.162264815375223</span></span>
+<span><span class="co">#&gt; → 6: <span style="color: #00BB00;">chr8:0:45200000</span> theta_shape = 15.3653116780921, theta_rate = 0.355677680155202</span></span>
+<span><span class="co">#&gt; → 7: <span style="color: #00BB00;">chr9:43000000:138394717</span> theta_shape = 15.5402824473085, theta_rate = 0.13276551189991</span></span>
 <span></span>
 <span><span class="co"># Run</span></span>
 <span><span class="va">hyperparams_filt</span><span class="op">$</span><span class="va">binom_prior_limits</span> <span class="op">=</span> <span class="va">binom_limits</span></span>
@@ -448,9 +434,9 @@ then we fit the model.</p>
 <span>                                 temperature <span class="op">=</span> <span class="va">temperature</span>, </span>
 <span>                                 same_mixing <span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>                                 threshold <span class="op">=</span> <span class="fl">0.001</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> <span style="color: #BB0000; font-weight: bold;">Warning</span> <span style="color: #BB0000;">ATAC 0-counts cells.</span> <span style="color: #00BB00;">2</span> cells have no data in any of <span style="color: #00BB00;">14</span> segments, top <span style="color: #00BB00;">2</span> with missing data are:</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Cell <span style="color: #00BB00;">GTCCTAGAGCCAAATC-1-ATAC</span> with <span style="color: #BB0000;">1</span> 0-segments (<span style="color: #BB0000;">7%</span>)</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Cell <span style="color: #00BB00;">TCTCGCCCAAACATAG-1-ATAC</span> with <span style="color: #BB0000;">1</span> 0-segments (<span style="color: #BB0000;">7%</span>)</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> <span style="color: #BB0000; font-weight: bold;">Warning</span> <span style="color: #BB0000;">ATAC 0-counts cells.</span> <span style="color: #00BB00;">2</span> cells have no data in any of <span style="color: #00BB00;">7</span> segments, top <span style="color: #00BB00;">2</span> with missing data are:</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Cell <span style="color: #00BB00;">GTCCTAGAGCCAAATC-1-ATAC</span> with <span style="color: #BB0000;">1</span> 0-segments (<span style="color: #BB0000;">14%</span>)</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Cell <span style="color: #00BB00;">TCTCGCCCAAACATAG-1-ATAC</span> with <span style="color: #BB0000;">1</span> 0-segments (<span style="color: #BB0000;">14%</span>)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="background-color: #BBBB00; font-weight: bold;"> (R)CONGAS+ </span><span style="font-weight: bold;"> Variational Inference</span> <span style="color: #00BBBB;">──────────────────────────────────────────</span></span></span>
 <span><span class="co">#&gt; </span></span>
@@ -462,85 +448,85 @@ then we fit the model.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Fit with k = <span style="color: #00BB00;">4</span> and lambda = <span style="color: #00BB00;">0.5</span>.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── <span style="font-weight: bold;">(R)CONGAS+ fits completed in </span><span style="color: #00BB00; font-weight: bold;">3m 7.5s</span><span style="font-weight: bold;">.</span> ──</span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">(R)CONGAS+ fits completed in </span><span style="color: #00BB00; font-weight: bold;">2m 58.4s</span><span style="font-weight: bold;">.</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> <span style="color: #BB0000; font-weight: bold;">Warning</span> <span style="color: #BB0000;">ATAC 0-counts cells.</span> <span style="color: #00BB00;">2</span> cells have no data in any of <span style="color: #00BB00;">14</span> segments, top <span style="color: #00BB00;">2</span> with missing data are:</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Cell <span style="color: #00BB00;">GTCCTAGAGCCAAATC-1-ATAC</span> with <span style="color: #BB0000;">1</span> 0-segments (<span style="color: #BB0000;">7%</span>)</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Cell <span style="color: #00BB00;">TCTCGCCCAAACATAG-1-ATAC</span> with <span style="color: #BB0000;">1</span> 0-segments (<span style="color: #BB0000;">7%</span>)</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> <span style="color: #BB0000; font-weight: bold;">Warning</span> <span style="color: #BB0000;">ATAC 0-counts cells.</span> <span style="color: #00BB00;">2</span> cells have no data in any of <span style="color: #00BB00;">7</span> segments, top <span style="color: #00BB00;">2</span> with missing data are:</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Cell <span style="color: #00BB00;">GTCCTAGAGCCAAATC-1-ATAC</span> with <span style="color: #BB0000;">1</span> 0-segments (<span style="color: #BB0000;">14%</span>)</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Cell <span style="color: #00BB00;">TCTCGCCCAAACATAG-1-ATAC</span> with <span style="color: #BB0000;">1</span> 0-segments (<span style="color: #BB0000;">14%</span>)</span></span>
 <span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BBBB00;">[ (R)CONGAS+ ]</span><span style="color: #0000BB;"> Bimodal lymphoma</span> ─────────────────────────────────────────────</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── CNA segments (reference: <span style="color: #00BB00;">GRCh38</span>)</span></span>
-<span><span class="co">#&gt; → Input <span style="color: #00BB00;">14</span> CNA segments, mean ploidy <span style="color: #00BB00;">2</span>.</span></span>
+<span><span class="co">#&gt; → Input <span style="color: #00BB00;">7</span> CNA segments, mean ploidy <span style="color: #00BB00;">2</span>.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  <span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;">  </span>|<span style="background-color: #00BB00;">  </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;">  </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;"> </span></span></span>
+<span><span class="co">#&gt;  <span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;">  </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;"> </span></span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   <span style="text-decoration: underline;">Ploidy:</span>  <span style="background-color: #00BBBB;"> </span> 0   <span style="background-color: #0000BB;"> </span> 1   <span style="background-color: #00BB00;"> </span> 2   <span style="background-color: #BBBB00;"> </span> 3   <span style="background-color: #BB0000;"> </span> 4   <span style="background-color: #BB00BB;"> </span> 5   <span style="background-color: #BBBBBB;"> </span> *</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Modalities</span></span>
-<span><span class="co">#&gt; → RNA: <span style="color: #00BB00;">500</span> cells with <span style="color: #00BB00;">5236</span> mapped genes, <span style="color: #00BB00;">288795</span> non-zero values. Likelihood: <span style="color: #00BB00;">Negative Binomial</span>.</span></span>
-<span><span class="co">#&gt; → ATAC: <span style="color: #00BB00;">500</span> cells with <span style="color: #00BB00;">34104</span> mapped peaks, <span style="color: #00BB00;">983962</span> non-zero values. Likelihood: <span style="color: #00BB00;">Negative Binomial</span>.</span></span>
+<span><span class="co">#&gt; → RNA: <span style="color: #00BB00;">500</span> cells with <span style="color: #00BB00;">2085</span> mapped genes, <span style="color: #00BB00;">132025</span> non-zero values. Likelihood: <span style="color: #00BB00;">Negative Binomial</span>.</span></span>
+<span><span class="co">#&gt; → ATAC: <span style="color: #00BB00;">500</span> cells with <span style="color: #00BB00;">17994</span> mapped peaks, <span style="color: #00BB00;">485079</span> non-zero values. Likelihood: <span style="color: #00BB00;">Negative Binomial</span>.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── Clusters: <span style="color: #00BB00;">k = 2</span>, lambda: <span style="color: #00BB00;">l = 0.5</span>, model with <span style="color: #00BB00;">BIC</span> = 63495.92.</span></span>
+<span><span class="co">#&gt; ── Clusters: <span style="color: #00BB00;">k = 2</span>, lambda: <span style="color: #00BB00;">l = 0.5</span>, model with <span style="color: #00BB00;">BIC</span> = 31268.11.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;    C1   <span style="background-color: #BBBB00;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #BBBB00;">  </span>|<span style="background-color: #00BB00;"> </span><span style="background-color: #BBBB00;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #BBBB00;"> </span>|<span style="background-color: #00BB00;">  </span>|<span style="background-color: #BBBB00;"> </span>|<span style="background-color: #BBBB00;"> </span>|<span style="background-color: #BBBB00;"> </span></span></span>
-<span><span class="co">#&gt;    C2   <span style="background-color: #BBBB00;"> </span>|<span style="background-color: #BBBB00;"> </span>|<span style="background-color: #BBBB00;"> </span><span style="background-color: #00BB00;"> </span>|<span style="background-color: #BBBB00;">  </span>|<span style="background-color: #BBBB00;"> </span>|<span style="background-color: #BBBB00;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #BBBB00;">  </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #BBBB00;"> </span>|<span style="background-color: #00BB00;"> </span></span></span>
+<span><span class="co">#&gt;    C1   <span style="background-color: #BBBB00;"> </span>|<span style="background-color: #BBBB00;">  </span>|<span style="background-color: #BBBB00;"> </span>|<span style="background-color: #BBBB00;"> </span>|<span style="background-color: #BBBB00;"> </span>|<span style="background-color: #BBBB00;"> </span></span></span>
+<span><span class="co">#&gt;    C2   <span style="background-color: #BBBB00;"> </span>|<span style="background-color: #BBBB00;"> </span><span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #BBBB00;"> </span>|<span style="background-color: #00BB00;"> </span></span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;     <span style="text-decoration: underline;">RNA</span> </span></span>
-<span><span class="co">#&gt;   C1 :  ■■■■■■ n = 111 </span></span>
-<span><span class="co">#&gt;   C2 :  ■■■■■■■■■■■■■■■■■■■ n = 389 </span></span>
+<span><span class="co">#&gt;   C1 :  ■■■■■■ n = 117 </span></span>
+<span><span class="co">#&gt;   C2 :  ■■■■■■■■■■■■■■■■■■■ n = 383 </span></span>
 <span><span class="co">#&gt;     <span style="text-decoration: underline;">ATAC</span> </span></span>
-<span><span class="co">#&gt;   C1 :  ■■■■■■ n = 124 </span></span>
-<span><span class="co">#&gt;   C2 :  ■■■■■■■■■■■■■■■■■■■ n = 376</span></span>
+<span><span class="co">#&gt;   C1 :  ■■■■■■ n = 130 </span></span>
+<span><span class="co">#&gt;   C2 :  ■■■■■■■■■■■■■■■■■■ n = 370</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="color: #BBBBBB; background-color: #BB00BB; font-weight: bold;"> LOG </span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; - 2023-07-22 10:11:53.687421 Created input object.</span></span>
-<span><span class="co">#&gt; - 2023-07-22 10:11:54.2232 Filtered s123egments: [0|50|50]</span></span></code></pre></div>
+<span><span class="co">#&gt; - 2023-07-22 19:26:10.20683 Created input object.</span></span>
+<span><span class="co">#&gt; - 2023-07-22 19:26:11.01248 Filtered s123egments: [0|50|50]</span></span></code></pre></div>
 <p>The new object has more information.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fit_filt</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> <span style="color: #BB0000; font-weight: bold;">Warning</span> <span style="color: #BB0000;">ATAC 0-counts cells.</span> <span style="color: #00BB00;">2</span> cells have no data in any of <span style="color: #00BB00;">14</span> segments, top <span style="color: #00BB00;">2</span> with missing data are:</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Cell <span style="color: #00BB00;">GTCCTAGAGCCAAATC-1-ATAC</span> with <span style="color: #BB0000;">1</span> 0-segments (<span style="color: #BB0000;">7%</span>)</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Cell <span style="color: #00BB00;">TCTCGCCCAAACATAG-1-ATAC</span> with <span style="color: #BB0000;">1</span> 0-segments (<span style="color: #BB0000;">7%</span>)</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> <span style="color: #BB0000; font-weight: bold;">Warning</span> <span style="color: #BB0000;">ATAC 0-counts cells.</span> <span style="color: #00BB00;">2</span> cells have no data in any of <span style="color: #00BB00;">7</span> segments, top <span style="color: #00BB00;">2</span> with missing data are:</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Cell <span style="color: #00BB00;">GTCCTAGAGCCAAATC-1-ATAC</span> with <span style="color: #BB0000;">1</span> 0-segments (<span style="color: #BB0000;">14%</span>)</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Cell <span style="color: #00BB00;">TCTCGCCCAAACATAG-1-ATAC</span> with <span style="color: #BB0000;">1</span> 0-segments (<span style="color: #BB0000;">14%</span>)</span></span>
 <span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BBBB00;">[ (R)CONGAS+ ]</span><span style="color: #0000BB;"> Bimodal lymphoma</span> ─────────────────────────────────────────────</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── CNA segments (reference: <span style="color: #00BB00;">GRCh38</span>)</span></span>
-<span><span class="co">#&gt; → Input <span style="color: #00BB00;">14</span> CNA segments, mean ploidy <span style="color: #00BB00;">2</span>.</span></span>
+<span><span class="co">#&gt; → Input <span style="color: #00BB00;">7</span> CNA segments, mean ploidy <span style="color: #00BB00;">2</span>.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  <span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;">  </span>|<span style="background-color: #00BB00;">  </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;">  </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;"> </span></span></span>
+<span><span class="co">#&gt;  <span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;">  </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;"> </span></span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   <span style="text-decoration: underline;">Ploidy:</span>  <span style="background-color: #00BBBB;"> </span> 0   <span style="background-color: #0000BB;"> </span> 1   <span style="background-color: #00BB00;"> </span> 2   <span style="background-color: #BBBB00;"> </span> 3   <span style="background-color: #BB0000;"> </span> 4   <span style="background-color: #BB00BB;"> </span> 5   <span style="background-color: #BBBBBB;"> </span> *</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Modalities</span></span>
-<span><span class="co">#&gt; → RNA: <span style="color: #00BB00;">500</span> cells with <span style="color: #00BB00;">5236</span> mapped genes, <span style="color: #00BB00;">288795</span> non-zero values. Likelihood: <span style="color: #00BB00;">Negative Binomial</span>.</span></span>
-<span><span class="co">#&gt; → ATAC: <span style="color: #00BB00;">500</span> cells with <span style="color: #00BB00;">34104</span> mapped peaks, <span style="color: #00BB00;">983962</span> non-zero values. Likelihood: <span style="color: #00BB00;">Negative Binomial</span>.</span></span>
+<span><span class="co">#&gt; → RNA: <span style="color: #00BB00;">500</span> cells with <span style="color: #00BB00;">2085</span> mapped genes, <span style="color: #00BB00;">132025</span> non-zero values. Likelihood: <span style="color: #00BB00;">Negative Binomial</span>.</span></span>
+<span><span class="co">#&gt; → ATAC: <span style="color: #00BB00;">500</span> cells with <span style="color: #00BB00;">17994</span> mapped peaks, <span style="color: #00BB00;">485079</span> non-zero values. Likelihood: <span style="color: #00BB00;">Negative Binomial</span>.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── Clusters: <span style="color: #00BB00;">k = 2</span>, lambda: <span style="color: #00BB00;">l = 0.5</span>, model with <span style="color: #00BB00;">BIC</span> = 63495.92.</span></span>
+<span><span class="co">#&gt; ── Clusters: <span style="color: #00BB00;">k = 2</span>, lambda: <span style="color: #00BB00;">l = 0.5</span>, model with <span style="color: #00BB00;">BIC</span> = 31268.11.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;    C1   <span style="background-color: #BBBB00;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #BBBB00;">  </span>|<span style="background-color: #00BB00;"> </span><span style="background-color: #BBBB00;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #BBBB00;"> </span>|<span style="background-color: #00BB00;">  </span>|<span style="background-color: #BBBB00;"> </span>|<span style="background-color: #BBBB00;"> </span>|<span style="background-color: #BBBB00;"> </span></span></span>
-<span><span class="co">#&gt;    C2   <span style="background-color: #BBBB00;"> </span>|<span style="background-color: #BBBB00;"> </span>|<span style="background-color: #BBBB00;"> </span><span style="background-color: #00BB00;"> </span>|<span style="background-color: #BBBB00;">  </span>|<span style="background-color: #BBBB00;"> </span>|<span style="background-color: #BBBB00;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #BBBB00;">  </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #BBBB00;"> </span>|<span style="background-color: #00BB00;"> </span></span></span>
+<span><span class="co">#&gt;    C1   <span style="background-color: #BBBB00;"> </span>|<span style="background-color: #BBBB00;">  </span>|<span style="background-color: #BBBB00;"> </span>|<span style="background-color: #BBBB00;"> </span>|<span style="background-color: #BBBB00;"> </span>|<span style="background-color: #BBBB00;"> </span></span></span>
+<span><span class="co">#&gt;    C2   <span style="background-color: #BBBB00;"> </span>|<span style="background-color: #BBBB00;"> </span><span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #BBBB00;"> </span>|<span style="background-color: #00BB00;"> </span></span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;     <span style="text-decoration: underline;">RNA</span> </span></span>
-<span><span class="co">#&gt;   C1 :  ■■■■■■ n = 111 </span></span>
-<span><span class="co">#&gt;   C2 :  ■■■■■■■■■■■■■■■■■■■ n = 389 </span></span>
+<span><span class="co">#&gt;   C1 :  ■■■■■■ n = 117 </span></span>
+<span><span class="co">#&gt;   C2 :  ■■■■■■■■■■■■■■■■■■■ n = 383 </span></span>
 <span><span class="co">#&gt;     <span style="text-decoration: underline;">ATAC</span> </span></span>
-<span><span class="co">#&gt;   C1 :  ■■■■■■ n = 124 </span></span>
-<span><span class="co">#&gt;   C2 :  ■■■■■■■■■■■■■■■■■■■ n = 376</span></span>
+<span><span class="co">#&gt;   C1 :  ■■■■■■ n = 130 </span></span>
+<span><span class="co">#&gt;   C2 :  ■■■■■■■■■■■■■■■■■■ n = 370</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="color: #BBBBBB; background-color: #BB00BB; font-weight: bold;"> LOG </span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; - 2023-07-22 10:11:53.687421 Created input object.</span></span>
-<span><span class="co">#&gt; - 2023-07-22 10:11:54.2232 Filtered s123egments: [0|50|50]</span></span></code></pre></div>
+<span><span class="co">#&gt; - 2023-07-22 19:26:10.20683 Created input object.</span></span>
+<span><span class="co">#&gt; - 2023-07-22 19:26:11.01248 Filtered s123egments: [0|50|50]</span></span></code></pre></div>
 <p>You can get the information regarding model selection metrics</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fit_filt</span><span class="op">$</span><span class="va">model_selection</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 14</span></span></span>
 <span><span class="co">#&gt;      NLL    AIC    BIC    ICL  entropy NLL_rna NLL_atac n_params n_observations</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> <span style="text-decoration: underline;">33</span>107. <span style="text-decoration: underline;">66</span>467. <span style="text-decoration: underline;">67</span>090. <span style="text-decoration: underline;">67</span>090.  5.00<span style="color: #949494;">e</span><span style="color: #BB0000;">-8</span>  <span style="text-decoration: underline;">26</span>872.   <span style="text-decoration: underline;">39</span>342.      127           <span style="text-decoration: underline;">1</span>000</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> <span style="text-decoration: underline;">31</span>064. <span style="text-decoration: underline;">62</span>524. <span style="text-decoration: underline;">63</span>496. <span style="text-decoration: underline;">63</span>500. -<span style="color: #BB0000;">3.68</span><span style="color: #949494;">e</span>+0  <span style="text-decoration: underline;">25</span>616.   <span style="text-decoration: underline;">36</span>512.      198           <span style="text-decoration: underline;">1</span>000</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> <span style="text-decoration: underline;">30</span>961. <span style="text-decoration: underline;">62</span>460. <span style="text-decoration: underline;">63</span>780. <span style="text-decoration: underline;">63</span>868. -<span style="color: #BB0000;">8.81</span><span style="color: #949494;">e</span>+1  <span style="text-decoration: underline;">25</span>587.   <span style="text-decoration: underline;">36</span>335.      269           <span style="text-decoration: underline;">1</span>000</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> <span style="text-decoration: underline;">30</span>921. <span style="text-decoration: underline;">62</span>521. <span style="text-decoration: underline;">64</span>190. <span style="text-decoration: underline;">64</span>243. -<span style="color: #BB0000;">5.35</span><span style="color: #949494;">e</span>+1  <span style="text-decoration: underline;">25</span>602.   <span style="text-decoration: underline;">36</span>239.      340           <span style="text-decoration: underline;">1</span>000</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> <span style="text-decoration: underline;">16</span>410. <span style="text-decoration: underline;">32</span>948. <span style="text-decoration: underline;">33</span>262. <span style="text-decoration: underline;">33</span>262.  5.00<span style="color: #949494;">e</span><span style="color: #BB0000;">-8</span>  <span style="text-decoration: underline;">13</span>242.   <span style="text-decoration: underline;">19</span>578.       64           <span style="text-decoration: underline;">1</span>000</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> <span style="text-decoration: underline;">15</span>289. <span style="text-decoration: underline;">30</span>777. <span style="text-decoration: underline;">31</span>268. <span style="text-decoration: underline;">31</span>284. -<span style="color: #BB0000;">1.62</span><span style="color: #949494;">e</span>+1  <span style="text-decoration: underline;">12</span>676.   <span style="text-decoration: underline;">17</span>901.      100           <span style="text-decoration: underline;">1</span>000</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> <span style="text-decoration: underline;">15</span>289. <span style="text-decoration: underline;">30</span>849. <span style="text-decoration: underline;">31</span>517. <span style="text-decoration: underline;">31</span>581. -<span style="color: #BB0000;">6.44</span><span style="color: #949494;">e</span>+1  <span style="text-decoration: underline;">12</span>677.   <span style="text-decoration: underline;">17</span>900.      136           <span style="text-decoration: underline;">1</span>000</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> <span style="text-decoration: underline;">15</span>315. <span style="text-decoration: underline;">30</span>975. <span style="text-decoration: underline;">31</span>819. <span style="text-decoration: underline;">31</span>908. -<span style="color: #BB0000;">8.89</span><span style="color: #949494;">e</span>+1  <span style="text-decoration: underline;">12</span>769.   <span style="text-decoration: underline;">17</span>862.      172           <span style="text-decoration: underline;">1</span>000</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 5 more variables: hyperparameter_K &lt;int&gt;, K &lt;int&gt;, K_rna &lt;int&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   K_atac &lt;int&gt;, lambda &lt;dbl&gt;</span></span></span></code></pre></div>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
@@ -552,8 +538,8 @@ then we fit the model.</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html" class="external-link">plot_grid</a></span><span class="op">(</span> </span>
 <span>  plotlist <span class="op">=</span> <span class="fu"><a href="../reference/plot_fit.html">plot_fit</a></span><span class="op">(</span><span class="va">fit_filt</span>, what <span class="op">=</span> <span class="st">'density'</span>, highlights <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>  ncol <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span>
-<span><span class="co">#&gt; → Plotting segments where different CNAs are present: <span style="color: #00BB00;">chr17:0:25100000</span>, <span style="color: #00BB00;">chr18:18500000:80373285</span>, <span style="color: #00BB00;">chr19:0:26200000</span>, <span style="color: #00BB00;">chr2:93900000:242193529</span>, <span style="color: #00BB00;">chr22:15000000:50818468</span>, <span style="color: #00BB00;">chr3:90900000:198295559</span>, <span style="color: #00BB00;">chr4:0:50000000</span>, <span style="color: #00BB00;">chr4:50000000:190214555</span>, <span style="color: #00BB00;">chr7:0:60100000</span>, and <span style="color: #00BB00;">chr9:43000000:138394717</span>.</span></span>
+<span>  ncol <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
+<span><span class="co">#&gt; → Plotting segments where different CNAs are present: <span style="color: #00BB00;">chr18:18500000:80373285</span>, <span style="color: #00BB00;">chr3:90900000:198295559</span>, <span style="color: #00BB00;">chr7:0:60100000</span>, and <span style="color: #00BB00;">chr9:43000000:138394717</span>.</span></span>
 <span><span class="co">#&gt; → Normalising <span style="color: #00BB00;">RNA</span> counts using input normalisation factors.</span></span>
 <span><span class="co">#&gt; → Normalising <span style="color: #00BB00;">ATAC</span> counts using input normalisation factors.</span></span>
 <span><span class="co">#&gt; → Showing all segments (this plot can be large).</span></span>
@@ -562,7 +548,7 @@ then we fit the model.</p>
 <span><span class="co">#&gt; → Normalising <span style="color: #00BB00;">RNA</span> counts using input normalisation factors.</span></span>
 <span><span class="co">#&gt; Joining with `by = join_by(cluster, modality)`</span></span>
 <span><span class="co">#&gt; Joining with `by = join_by(segment_id, cluster)`</span></span></code></pre></div>
-<p><img src="Fitting_files/figure-html/unnamed-chunk-21-1.png" width="768"></p>
+<p><img src="Fitting_files/figure-html/unnamed-chunk-21-1.png" width="1920"></p>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

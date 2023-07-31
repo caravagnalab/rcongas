@@ -119,10 +119,10 @@ rna = rna %>% dplyr::filter(gene %in% all_genes)
 
 Read chromosome arm coordinated that will be used as segment breakpoints
 ```{R}
-data(hg38_arms)
+data(example_segments)
 
 # Remove these chromosomes
-segments = hg38_arms %>% dplyr::filter(chr != 'chrX', chr != 'chrY')
+segments = example_segments %>% dplyr::filter(chr != 'chrX', chr != 'chrY')
 ```
 
 Now init the CONGAS+ object
@@ -254,9 +254,9 @@ Rcongas::plot_fit(fit_filt, what='scores')
 plot_fit(fit_filt, 'posterior_CNA')
 ```
 
-```{r, fig.width=8, fig.height=8}
+```{r, fig.width=20, fig.height=10}
 cowplot::plot_grid( 
   plotlist = plot_fit(fit_filt, what = 'density', highlights = TRUE),
-  ncol = 6)
+  ncol = 4)
 ```
 
