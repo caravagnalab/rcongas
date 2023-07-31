@@ -313,12 +313,12 @@ plot_fit_density_aux <-  function(df, densities, segment, x){
 }
 
 
-plot_fit_heatmap = function(x, segments = get_input(x, what = 'segmentation') %>% pull(segment_id))
+plot_fit_heatmap = function(x, segments = get_input(x, what = 'segmentation') %>% pull(segment_id), scale = FALSE, scale_min_lim = -Inf, scale_max_lim = Inf)
 {
   # devtools::load_all()
 
   # Create plots with internal function
-  data_plot = plot_data_heatmap(x, segments = segments)
+  data_plot = plot_data_heatmap(x, segments = segments, scale = scale, scale_min_lim = scale_min_lim, scale_max_lim = scale_max_lim)
 
   # Get assignments and upgrade plot row ordering
   rna_clustering_assignments = atac_clustering_assignments = NULL

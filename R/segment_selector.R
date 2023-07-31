@@ -1,12 +1,12 @@
 
 
 
-segment_selector <- function(x, what="congas", K=1:3, score="ICL", mod="ATAC"){
+segment_selector <- function(x, what="congas", K=1:3, score="ICL", mod="ATAC", CUDA = FALSE){
 
 
   if(what=="congas"){
 
-       obj=segments_selector_congas(x,K=K,score=score,mod=mod)
+       obj=segments_selector_congas(x,K=K,score=score,mod=mod, CUDA = CUDA)
 
   }else if(what=="nbmix"){
 
@@ -306,7 +306,7 @@ fit_nbmix = function(x, K = 1:3, score="ICL", mod="ATAC")
 #' 
 #' @export
 #'
-segments_selector_congas <- function(obj, multiome = F, K_max = 3, score = "BIC", lambda = 0.5, cores_ratio = 0.5, binom_limits = c(40,1000)){
+segments_selector_congas <- function(obj, multiome = F, K_max = 3, score = "BIC", lambda = 0.5, cores_ratio = 0.5, CUDA = CUDA, binom_limits = c(40,1000)){
 
   congas_single_segment <- function(obj, binom_limits){
     # seg_id = segment_ids[i]
@@ -323,9 +323,10 @@ segments_selector_congas <- function(obj, multiome = F, K_max = 3, score = "BIC"
                                             K = 1:K_max,
                                             prior_cn = c(0.2, 0.6, 0.05, 0.025, 0.025),
                                             multiome = F,
-                                            purity = purity)
+                                            purity = purity, CUDA = CUDA)
 
     model_params$lambda=lambda
+
     model_params$binom_prior_limits = binom_limits
 
     fit_obj = Rcongas:::fit_congas(
@@ -337,7 +338,8 @@ segments_selector_congas <- function(obj, multiome = F, K_max = 3, score = "BIC"
       steps = steps,
       temperature = temperature,
       model_selection = score,
-      threshold = 0.001
+      threshold = 0.001,
+      CUDA = CUDA
     )
 
     # p=Rcongas:::plot_fit_density(fit_obj, highlight=F)
@@ -369,7 +371,7 @@ segments_selector_congas <- function(obj, multiome = F, K_max = 3, score = "BIC"
       list(obj = Rcongas:::select_segments(obj, segment_ids = c(x)),
           binom_limits = binom_limits)
       }),
-    parallel = TRUE,
+    parallel = !CUDA,
     cores.ratio = cores_ratio,
     filter_errors = FALSE
   )
