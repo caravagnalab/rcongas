@@ -40,7 +40,7 @@ input_data_from_rcongas <- function(x, CUDA = FALSE){
     ret$data_atac <- get_data(x) %>%  filter(modality == "ATAC") %>%  reshape2::acast(segment_id  ~ cell, value.var = "value")
     ret$data_atac[is.na(ret$data_atac)] <-  0
     ret$data_atac <- ret$data_atac[order(rownames(ret$data_atac)),order(colnames(ret$data_atac)), drop = F]
-    norm_tmp <- get_normalisation(x) %>%  filter(modality == "ATAC")
+    norm_tmp <- get_normalisation(x) %>% filter(modality == "ATAC")
     norm_factor_atac <- norm_tmp$normalisation_factor
     names(norm_factor_atac) <- norm_tmp$cell
     ret$norm_factor_atac <- norm_factor_atac[colnames(ret$data_atac)]

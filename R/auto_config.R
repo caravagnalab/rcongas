@@ -30,7 +30,8 @@ auto_config_run <-
            NB_size_priors = c(15, 1000),
            purity = NULL,
 	         multiome = FALSE, 
-           CUDA = FALSE
+           CUDA = FALSE,
+           normal_cells = FALSE
            )
 
     {
@@ -45,27 +46,18 @@ auto_config_run <-
       torch$set_default_tensor_type('torch.FloatTensor')
     }
 
-    #param_list$probs <-  torch$tensor(prior_cn)
-    if (is.character(prior_cn)) {
-      param_list$init_probs <- init_importance
-      segs = get_input(x, what = 'segmentation')  %>% arrange(segment_id)
-      dirichlet_prior = lapply(segs$copies, function(x) {
-        dir_conc = rep((1-init_importance) / (hidden_dim-1), hidden_dim)
-        dir_conc[x] = init_importance
-        return(dir_conc)})
+    param_list$init_probs <- init_importance
+    hidden_dim = if (! is.character(prior_cn)) length(prior_cn) else hidden_dim
 
-      names(dirichlet_prior) = segs$segment_id
-      dirichlet_prior = torch$tensor(matrix(unlist(dirichlet_prior), nrow = length(dirichlet_prior), byrow = T))
-      param_list$probs = dirichlet_prior
-    } else {
-      hidden_dim = length(prior_cn)
-      # Use one vector for all segments.
-      param_list$probs <-  torch$tensor(prior_cn)
-      param_list$init_probs <- init_importance
-    }
+    mode = if (is.character(prior_cn)) 'segment_specific' else 'same'
+    param_list$probs = torch$tensor(prior_cn)
+    #init_dirichlet_cna(x, hidden_dim = hidden_dim, mode = mode)
+    
 
     param_list$purity <- purity
     param_list$multiome <- multiome
+    param_list$normal_cells = normal_cells
+
     if (has_atac(x)) {
 
       cli::cli_h2("ATAC modality")
@@ -263,3 +255,24 @@ auto_normalisation_factor = function(x)
 
   norm_x %>% return
 }
+
+
+init_dirichlet_cna = function(x, hidden_dim, mode = 'same') {
+  if (mode == 'same') {
+    segs = get_input(x, what = 'segmentation')  %>% arrange(segment_id)
+    dirichlet_prior = lapply(segs$copies, function(x) {
+      dir_conc = rep((1-init_importance) / (hidden_dim-1), hidden_dim)
+      dir_conc[x] = init_importance
+      return(dir_conc)})
+
+    names(dirichlet_prior) = segs$segment_id
+    dirichlet_prior = torch$tensor(matrix(unlist(dirichlet_prior), nrow = length(dirichlet_prior), byrow = T))
+    param_list$probs = dirichlet_prior
+  } else {
+    # Use one vector for all segments.
+    param_list$probs <-  torch$tensor(prior_cn)
+
+  }
+}
+
+
