@@ -37,7 +37,7 @@ build_clone_tree <- function(x, medicc_path = NULL, result_dir = "./medicc_resul
   
   system(glue::glue("{medicc_path} {input_path} {result_dir} --total-copy-numbers --input-allele-columns value"))
   
-  if(clean_inputs) system(glues::glue("rm -rf {input_dir}"))
+  if(clean_inputs) system(glue::glue("rm -rf {input_dir}"))
   
   nw_tree <- ggtree::read.tree(file.path(result_dir, "medicc_input_congas_final_tree.new"))
   nw_plot <- NULL
@@ -46,7 +46,7 @@ build_clone_tree <- function(x, medicc_path = NULL, result_dir = "./medicc_resul
     nw_plot <- plot_tree_congas(nw_tree)
   }
   
-  return(tree = nw_tree, plot = nw_plot)
+  return(list(tree = nw_tree, plot = nw_plot))
     
   
 }
