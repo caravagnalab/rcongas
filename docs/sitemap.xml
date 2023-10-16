@@ -31,6 +31,9 @@
     <loc>caravagnalab.github.io/Rcongas/news/index.html</loc>
   </url>
   <url>
+    <loc>caravagnalab.github.io/Rcongas/reference/approx_theta_prior_params.html</loc>
+  </url>
+  <url>
     <loc>caravagnalab.github.io/Rcongas/reference/auto_config_run.html</loc>
   </url>
   <url>
@@ -44,6 +47,9 @@
   </url>
   <url>
     <loc>caravagnalab.github.io/Rcongas/reference/change_spot.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/Rcongas/reference/congas_example.html</loc>
   </url>
   <url>
     <loc>caravagnalab.github.io/Rcongas/reference/create_df_from_range.html</loc>
@@ -61,6 +67,9 @@
     <loc>caravagnalab.github.io/Rcongas/reference/filter_cells_by_quantile.html</loc>
   </url>
   <url>
+    <loc>caravagnalab.github.io/Rcongas/reference/filter_clusters.html</loc>
+  </url>
+  <url>
     <loc>caravagnalab.github.io/Rcongas/reference/filter_counts_by_quantile.html</loc>
   </url>
   <url>
@@ -73,7 +82,13 @@
     <loc>caravagnalab.github.io/Rcongas/reference/filter_outliers.html</loc>
   </url>
   <url>
+    <loc>caravagnalab.github.io/Rcongas/reference/filter_quantiles_per_segments.html</loc>
+  </url>
+  <url>
     <loc>caravagnalab.github.io/Rcongas/reference/filter_segments.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/Rcongas/reference/filter_segments_and_return_cnv_table.html</loc>
   </url>
   <url>
     <loc>caravagnalab.github.io/Rcongas/reference/filter_values_by_quantile.html</loc>
@@ -94,13 +109,34 @@
     <loc>caravagnalab.github.io/Rcongas/reference/generate_random_tree.html</loc>
   </url>
   <url>
+    <loc>caravagnalab.github.io/Rcongas/reference/get_DE_table.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/Rcongas/reference/get_dataset_stats.html</loc>
+  </url>
+  <url>
     <loc>caravagnalab.github.io/Rcongas/reference/get_fit.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/Rcongas/reference/get_gene_annotations.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/Rcongas/reference/get_genes_mapped_to_segments.html</loc>
   </url>
   <url>
     <loc>caravagnalab.github.io/Rcongas/reference/get_input.html</loc>
   </url>
   <url>
+    <loc>caravagnalab.github.io/Rcongas/reference/get_input_segmentation.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/Rcongas/reference/get_segment_test_counts.html</loc>
+  </url>
+  <url>
     <loc>caravagnalab.github.io/Rcongas/reference/hg38_karyo.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/Rcongas/reference/highlights.html</loc>
   </url>
   <url>
     <loc>caravagnalab.github.io/Rcongas/reference/index.html</loc>
@@ -118,16 +154,58 @@
     <loc>caravagnalab.github.io/Rcongas/reference/plot.rcongasplus.html</loc>
   </url>
   <url>
+    <loc>caravagnalab.github.io/Rcongas/reference/plot_DE_volcano.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/Rcongas/reference/plot_chromosome.html</loc>
+  </url>
+  <url>
     <loc>caravagnalab.github.io/Rcongas/reference/plot_data.html</loc>
   </url>
   <url>
     <loc>caravagnalab.github.io/Rcongas/reference/plot_fit.html</loc>
   </url>
   <url>
+    <loc>caravagnalab.github.io/Rcongas/reference/plot_gene_counts_on_genome.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/Rcongas/reference/plot_highlights.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/Rcongas/reference/plot_inference_report.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/Rcongas/reference/plot_mixing_proportions.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/Rcongas/reference/plot_normalization_factors.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/Rcongas/reference/plot_raw_data.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/Rcongas/reference/plot_segment_density.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/Rcongas/reference/print.rcongas.html</loc>
+  </url>
+  <url>
     <loc>caravagnalab.github.io/Rcongas/reference/print.rcongasplus.html</loc>
   </url>
   <url>
     <loc>caravagnalab.github.io/Rcongas/reference/randomize_breaks.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/Rcongas/reference/recalculate_information_criteria.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/Rcongas/reference/report_analysis_chromosome.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/Rcongas/reference/report_analysis_de.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/Rcongas/reference/report_data.html</loc>
   </url>
   <url>
     <loc>caravagnalab.github.io/Rcongas/reference/run_simulation.html</loc>
@@ -140,6 +218,9 @@
   </url>
   <url>
     <loc>caravagnalab.github.io/Rcongas/reference/stat.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/Rcongas/reference/summary.rcongas.html</loc>
   </url>
   <url>
     <loc>caravagnalab.github.io/Rcongas/reference/zaho_hemato.html</loc>

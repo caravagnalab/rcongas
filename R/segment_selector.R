@@ -1,12 +1,12 @@
 
 
 
-segment_selector <- function(x, what="congas", K=1:3, score="ICL", mod="ATAC", CUDA = FALSE){
+segment_selector <- function(x, what="congas", K=1:3, score="ICL", mod="ATAC", CUDA = FALSE, ...){
 
 
   if(what=="congas"){
 
-       obj=segments_selector_congas(x,K=K,score=score,mod=mod, CUDA = CUDA)
+       obj=segments_selector_congas(x, K = K, score = score, CUDA = CUDA, ...)
 
   }else if(what=="nbmix"){
 
@@ -306,7 +306,7 @@ fit_nbmix = function(x, K = 1:3, score="ICL", mod="ATAC")
 #' 
 #' @export
 #'
-segments_selector_congas <- function(obj, multiome = F, K_max = 3, score = "BIC", lambda = 0.5, cores_ratio = 0.5, CUDA = CUDA, binom_limits = c(40,1000)){
+segments_selector_congas <- function(obj, multiome = F, K_max = 3, score = "BIC", lambda = 0.5, cores_ratio = 0.5, CUDA = F, binom_limits = c(40,1000)){
 
   congas_single_segment <- function(obj, binom_limits, CUDA, lambda){
     # seg_id = segment_ids[i]
@@ -357,13 +357,13 @@ segments_selector_congas <- function(obj, multiome = F, K_max = 3, score = "BIC"
 
   segment_ids = unique(Rcongas:::get_data(obj)$segment_id)
 
-  params = list(K_max = 3,
-               lambda=0.5,
-               lr=0.01,
-               steps=2000, 
-               score="BIC", 
-               purity = NULL, 
-               temperature=20)
+  # params = list(K_max = 3,
+  #              lambda=0.5,
+  #              lr=0.01,
+  #              steps=2000, 
+  #              score="BIC", 
+  #              purity = NULL, 
+  #              temperature=20)
 
   report = easypar::run(
     FUN = congas_single_segment,
