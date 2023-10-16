@@ -308,7 +308,7 @@ fit_nbmix = function(x, K = 1:3, score="ICL", mod="ATAC")
 #'
 segments_selector_congas <- function(obj, multiome = F, K_max = 3, score = "BIC", lambda = 0.5, cores_ratio = 0.5, CUDA = CUDA, binom_limits = c(40,1000)){
 
-  congas_single_segment <- function(obj, binom_limits){
+  congas_single_segment <- function(obj, binom_limits, CUDA, lambda){
     # seg_id = segment_ids[i]
     K_max = 3#params$K_max
     lr = 0.01#params$lr
@@ -369,7 +369,9 @@ segments_selector_congas <- function(obj, multiome = F, K_max = 3, score = "BIC"
     FUN = congas_single_segment,
     PARAMS = lapply(segment_ids, function (x) {
       list(obj = Rcongas:::select_segments(obj, segment_ids = c(x)),
-          binom_limits = binom_limits)
+          binom_limits = binom_limits,
+          CUDA = CUDA,
+          lambda = lambda)
       }),
     parallel = !CUDA,
     cores.ratio = cores_ratio,

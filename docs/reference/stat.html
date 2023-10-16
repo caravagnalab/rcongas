@@ -125,15 +125,71 @@ to summarise the model. The names should be self explicatory.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Compare the information here </span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">example_object</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in sanitize_zeroes(.):</span> could not find function "sanitize_zeroes"</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="color: #000000; background-color: #BBBB00;">[ (R)CONGAS+ ]</span><span style="color: #0000BB;"> SU008 TUMOR 30 segments (73.66% genome)</span> ──────────────────────</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ── CNA segments (reference: <span style="color: #00BB00;">GRCh38</span>) </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> → Input <span style="color: #00BB00;">30</span> CNA segments, mean ploidy <span style="color: #00BB00;">3.2</span>.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 	<span style="background-color: #BB0000;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #BBBB00;"> </span>|<span style="background-color: #BBBB00;">  </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #BBBB00;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #00BB00;">  </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #BB0000;"> </span>|<span style="background-color: #BBBB00;"> </span>|<span style="background-color: #BBBB00;">  </span>|<span style="background-color: #BB0000;"> </span>|<span style="background-color: #BBBB00;"> </span>|<span style="background-color: #BBBB00;"> </span><span style="background-color: #BB0000;"> </span>|<span style="background-color: #00BB00;"> </span>|<span style="background-color: #BBBB00;">  </span>|<span style="background-color: #00BB00;"> </span><span style="background-color: #BBBBBB;">  </span>|<span style="background-color: #BB0000;">  </span>|<span style="background-color: #BB0000;"> </span><span style="background-color: #BBBBBB;"> </span>|<span style="background-color: #BB0000;"> </span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 	 <span style="text-decoration: underline;">Ploidy:</span>  <span style="background-color: #00BBBB;"> </span> 0   <span style="background-color: #0000BB;"> </span> 1   <span style="background-color: #00BB00;"> </span> 2   <span style="background-color: #BBBB00;"> </span> 3   <span style="background-color: #BB0000;"> </span> 4   <span style="background-color: #BB00BB;"> </span> 5   <span style="background-color: #BBBBBB;"> </span> *   </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ── Modalities </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> → RNA: <span style="color: #00BB00;">714</span> cells with <span style="color: #00BB00;">8613</span> mapped genes, <span style="color: #00BB00;">1401728</span> non-zero values. Likelihood: <span style="color: #00BB00;">Negative Binomial</span>.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> → ATAC: <span style="color: #00BB00;">259</span> cells with <span style="color: #00BB00;">284316</span> mapped peaks, <span style="color: #00BB00;">3083691</span> non-zero values. Likelihood: <span style="color: #00BB00;">Negative Binomial</span>.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> Clusters: <span style="color: #BB0000;">not available</span>.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="color: #BBBBBB; background-color: #BB00BB; font-weight: bold;"> LOG </span> ──</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> - 2021-03-30 17:58:41 Created input object.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> - 2021-03-30 17:58:43 Filtered outliers: [6|0.05|0.95]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># ... to the one reported here for data</span></span></span>
 <span class="r-in"><span><span class="fu">stat</span><span class="op">(</span><span class="va">example_object</span>, what <span class="op">=</span> <span class="st">'data'</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in sanitize_obj(.):</span> could not find function "sanitize_obj"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ncells_RNA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 714</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ncells_ATAC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 259</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $rna_events</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1401728</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $rna_genes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 8613</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $atac_events</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 3083691</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $atac_peaks</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 284316</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $nsegments</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 30</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $nmodalities</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $modalities</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "RNA"  "ATAC"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $rna_dtype</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "NB"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $atac_dtype</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "NB"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $zero_counts_cells_RNA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $zero_counts_cells_ATAC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># ... and here for fits</span></span></span>
 <span class="r-in"><span><span class="fu">stat</span><span class="op">(</span><span class="va">example_object</span>, what <span class="op">=</span> <span class="st">'fit'</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in sanitize_obj(.):</span> could not find function "sanitize_obj"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
 </code></pre></div>
     </div>
   </div>
