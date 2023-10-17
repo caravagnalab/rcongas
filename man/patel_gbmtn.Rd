@@ -20,4 +20,4 @@ heterogeneity in primary glioblastoma." Science 344.6190 (2014): 1396-1401.
 data(patel_gbmtn)
 print(patel_gbmtn)
 }
-\keyword{datasets}
+\keyword{internal}

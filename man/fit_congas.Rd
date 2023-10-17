@@ -9,8 +9,8 @@ fit_congas(
   K,
   lambdas,
   model_parameters,
-  learning_rate = 0.05,
-  latent_variables = "B",
+  learning_rate = 0.01,
+  latent_variables = "G",
   CUDA = FALSE,
   steps = 500,
   samples = 1,
@@ -18,7 +18,7 @@ fit_congas(
   model_selection = "ICL",
   temperature = 10,
   equal_variance = TRUE,
-  threshold = 0.05,
+  threshold = learning_rate * 0.1,
   patience = 5,
   same_mixing = FALSE
 )
@@ -28,13 +28,16 @@ fit_congas(
 
 \item{K}{a vector of integers with the number of clusters we want to test}
 
+\item{lambdas}{Float (Optional). Default 0.5. Value of the hyperparameter that controls the weight given to RNA and ATAC modalities during the inference. Values closer to 0 give more weight to
+the ATAC likelihood, while values closer to 1 result in higher weight given to the RNA likelihood.}
+
 \item{model_parameters}{a list with model hyperparameters. As errors coming from wrong hyperparameters initialization
 are quite hard to troubleshoot is higly suggested to use \code{\link[Rcongas::auto_config_run]{Rcongas::auto_config_run()}} to generate
 a template and eventually modify it.}
 
 \item{learning_rate}{a learning rate for the Adam optimizer}
 
-\item{latent_variables}{specify the nature of the latent variable modelling the copy number profile. Currently only "D" (discrete) is available}
+\item{latent_variables}{specify the nature of the latent variable modelling the copy number profile. Currently only "G" is available,}
 
 \item{CUDA}{use GPU if avilable for training}
 
@@ -43,6 +46,14 @@ a template and eventually modify it.}
 \item{samples}{Number of times a model is fit for each value of \code{K}.}
 
 \item{model_selection}{information criteria to which perform the model selection (one of ICL, NLL, BIC, AIC)}
+
+\item{patience}{Integer. Number of steps to wait before stopping the inference. See \code{threshold} for more details.}
+
+\item{same_mixing}{boolean that indicates whether to use the same mixing proportions for both RNA and ATAC or use different vectors for the two
+modalities. Default is FALSE.}
+
+\item{threshold.}{Float, default is \code{learning_rate * 0.1}. It corresponds to the threshold that determines the early stopping of the training procedure. When the difference between parameters in step t and step t+1 is
+lower than this threshold for a number of steps equal to the parameter \code{patience} the inference is stopped.}
 }
 \value{
 An object ot class \code{rcongasplus} with a slot \code{bset_fit} with the learned parameters for the selected model in tiblle format. A slot \code{runs}

@@ -180,7 +180,8 @@ generate_baf <-  function(cnv_df, ploidy_to_baf = list("0" = 0, "1" = 0, "2" = 0
 
 }
 
-#'
+#' generate a dataframe with segments coordinates and corresponding ploidy values for the specified number of clusters.
+#' 
 #' @param K integer, number of clusters to simulate
 #' @param tree a data frame with two columns, the first with the index of each cluster and the second with its parent
 #' @param spots number of segment to change when using random mode
@@ -197,7 +198,7 @@ generate_baf <-  function(cnv_df, ploidy_to_baf = list("0" = 0, "1" = 0, "2" = 0
 #'@param spots_O segments where we wanto to insert a double chromosome deletion
 #'@param approx_length approximate segment length
 #'
-#'@return df with segmentss and ploidy information
+#'@return df with segments and ploidy information
 generate_cluster_ploidy_df <- function(K= 2, spots = 5,  probs = c(0.0,1,0.0,0.0), div_factor_dist = 1e6,
                                        random = TRUE, 
 									   changes = list('0' = c(1,2), '1' = c(1), '2' = c(-1,1), '3' = c(-1,1), '4' = c(-1,1), '5' = c(-1), '6' = c(-1)), 
@@ -263,8 +264,6 @@ trivial_hap <-  function(cnv_df){
 #' @param theta_rate rate parameter for the Gamma modelling the library factor
 #' @return a CNVSimulation object
 #' @export
-#'
-#' @examples
 #'
 run_simulation <- function(cnv_df, ncells = 1000,props = c(0.8,0.2), K = 2,theta_loc = 23000, theta_shape = 0.3,  model_matrix = NULL, coeff = c(0),class_rand = c(2,2), k_rand = 2,random_cov = FALSE, het_snps_for_gene = 1,
                            prob_random = c(0.99,0.1), random_class_dim = c(0.2,0.1),perc_dropout = 0, baf_var = 20, gamma_shape = 0.45, gamma_rate = 0.05, monoallelic_rate = 0.8,

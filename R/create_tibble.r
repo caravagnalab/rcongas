@@ -1,4 +1,7 @@
-#' @description  
+#' Format the input counts before creating the CONGAS+ object
+#' 
+#' @description
+#'   
 #' This function takes in input a SummarizedExperiment object with rowranges and  and creates a tibble with counts needed to create the Rcongas object.
 #' @param counts (Required). Count matrix with cells in columns and genes/bins in rows. 
 #' @param features (Required) Dataframe containing columns chr, from, to and (only if RNA) gene. 

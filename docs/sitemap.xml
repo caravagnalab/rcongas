@@ -7,6 +7,12 @@
     <loc>caravagnalab.github.io/Rcongas/LICENSE.html</loc>
   </url>
   <url>
+    <loc>caravagnalab.github.io/Rcongas/articles/1_create_congas_object.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/Rcongas/articles/2_Fitting.html</loc>
+  </url>
+  <url>
     <loc>caravagnalab.github.io/Rcongas/articles/Filtering.html</loc>
   </url>
   <url>
@@ -22,6 +28,9 @@
     <loc>caravagnalab.github.io/Rcongas/articles/index.html</loc>
   </url>
   <url>
+    <loc>caravagnalab.github.io/Rcongas/articles/map_genes_featues.html</loc>
+  </url>
+  <url>
     <loc>caravagnalab.github.io/Rcongas/authors.html</loc>
   </url>
   <url>
@@ -34,10 +43,16 @@
     <loc>caravagnalab.github.io/Rcongas/reference/approx_theta_prior_params.html</loc>
   </url>
   <url>
+    <loc>caravagnalab.github.io/Rcongas/reference/atac_counts.html</loc>
+  </url>
+  <url>
     <loc>caravagnalab.github.io/Rcongas/reference/auto_config_run.html</loc>
   </url>
   <url>
     <loc>caravagnalab.github.io/Rcongas/reference/auto_normalisation_factor.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/Rcongas/reference/build_clone_tree.html</loc>
   </url>
   <url>
     <loc>caravagnalab.github.io/Rcongas/reference/campbell_bcpdx.html</loc>
@@ -50,6 +65,9 @@
   </url>
   <url>
     <loc>caravagnalab.github.io/Rcongas/reference/congas_example.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/Rcongas/reference/create_congas_tibble.html</loc>
   </url>
   <url>
     <loc>caravagnalab.github.io/Rcongas/reference/create_df_from_range.html</loc>
@@ -95,6 +113,9 @@
   </url>
   <url>
     <loc>caravagnalab.github.io/Rcongas/reference/fit_congas.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/Rcongas/reference/generate_cluster_ploidy_df.html</loc>
   </url>
   <url>
     <loc>caravagnalab.github.io/Rcongas/reference/generate_ploidy.html</loc>
@@ -143,6 +164,12 @@
   </url>
   <url>
     <loc>caravagnalab.github.io/Rcongas/reference/init.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/Rcongas/reference/metadata.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/Rcongas/reference/multiome_congas_object.html</loc>
   </url>
   <url>
     <loc>caravagnalab.github.io/Rcongas/reference/patel_gbmtn.html</loc>
@@ -206,6 +233,9 @@
   </url>
   <url>
     <loc>caravagnalab.github.io/Rcongas/reference/report_data.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/Rcongas/reference/rna_counts.html</loc>
   </url>
   <url>
     <loc>caravagnalab.github.io/Rcongas/reference/run_simulation.html</loc>

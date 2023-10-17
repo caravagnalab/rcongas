@@ -30,9 +30,9 @@ The formats of the inputs is discussed here.
 
 The (R)CONGAS+ workflow consists in:
 
-- (optional) applying [filters](Filtering.html) on the input data;
+- (optional) applying [filters](1_create_congas_object.html) on the input data;
 - creating an (R)CONGAS+ object;
-- (optional) applying [filters](Filtering.html) on the mapped data;
+- (optional) applying [filters](1_create_congas_object.html) on the mapped data;
 - fitting a model
 
 The package comes with input data to show what the required input formats are, and ready to use
@@ -42,7 +42,7 @@ objects for case studies that we have discussed in the main papers; see [Referen
 
 ```{r}
 # Example data available in the package
-data('example_input')
+data('multiome_congas_object')
 ```
 
 RNA and ATAC have the same input format reporting:
@@ -50,48 +50,24 @@ RNA and ATAC have the same input format reporting:
 - `chr`, `from` and `to`: genomic locations of a gene (RNA) or a peak (ATAC)
 - `cell`: a cell identifier
 - `value`: the observed counts (discrete)
-
-```{r}
-# RNA
-example_input$rna %>% print()
-```
-
-The `gene` column in the RNA dataset is required only to use some gene-based pre-processing filters
-discussed in the [filtering vignette](Filtering.html).
-
-```{r}
-# ATAC
-example_input$atac %>% print()
-```
+This tibble is created woth the function \code{create_congas_tibble}
 
 Segments have this format:
 
 - `chr`, `from` and `to`: genomic range of the segment
 - `copies`: ploidy of each segment
 
-```{r}
-example_input$segments %>% print()
-```
+
 
 # Creation of a new dataset
 
-## Single-molecule assay (RNA)
+## multiomodal assay
 
-Single-cell RNA, with z-score representation (Gaussian likelihood, `"G"`) for the RNA counts.
-
-```{r}
-x = init(
-  rna = example_input$rna,
-  atac = NULL,
-  segmentation = example_input$segments,
-  rna_likelihood = "G",
-  description = 'SU008 sampled cells (example)')
-```
-
-S3 print method to visualise some information about the object
+Please see the [RCONGAS object creation vignette](1_create_congas_object.html) to understand how to create a RCONGAS+ object. 
+Once it is successfully generated, we can visualize some information about the object
 
 ```{r}
-x %>% print
+multiome_congas_object %>% print
 ```
 
 
@@ -113,37 +89,7 @@ x %>% print
 <!-- ``` -->
 
 
-## Two-molecules assays (RNA and ATAC)
-
-Joint single-cell RNA as above, but also single-cellATAC medeled with discrete likelihood for counts (Negative Binomial,  `"NB"`)
-
-```{r}
-x = init(
-  rna = example_input$rna,
-  atac = example_input$atac,
-  segmentation = example_input$segments,
-  rna_likelihood = "G", 
-  atac_likelihood = 'NB', # This is a count-based modality
-  description = 'SU008 sampled cells (example)')
-```
-
-The S3 print method reports the information about this object.
-
-```{r}
-x %>% print
-```
-<!-- ```{r, fig.width=6, fig.height=6} -->
-<!-- plot_data(x, what = 'histogram', segments = some_segments) -->
-<!-- ``` -->
-
-<!-- ```{r, fig.width=8, fig.height=4} -->
-<!-- plot_data(x, what = 'lineplot') -->
-<!-- ``` -->
-
-<!-- ```{r, fig.width=6, fig.height=8} -->
-<!-- plot_data(x, what = 'heatmap') -->
-<!-- ``` -->
-
+<!-- 
 # Datasets
 
 ## RNA
@@ -164,12 +110,7 @@ patel_gbmtn %>% print
 # Hematological bone marrow failure
 data('zaho_hemato')
 zaho_hemato %>% print
-```
+``` 
+-->
 
-## RNA and ATAC
 
-```{r}
-# Basal cell carcinoma
-data('satpathy_bcc')
-satpathy_bcc %>% print
-```

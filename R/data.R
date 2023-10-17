@@ -1,36 +1,53 @@
-#' Example tibbles with input data in the format for (R)CONGAS+
+#' Example tibbles with input ATAC data in the format for (R)CONGAS+
 #'
 #' @description Example tibbles with input data in the format for (R)CONGAS+
 #'
 #' @docType data
 #'
-#' @usage data(example_input)
+#' @usage data(atac_counts)
 #'
-#' @format Example tibbles with input data.
+#' @format Example tibbles with input ATAC data.
 #'
 #' @keywords datasets
 #'
 #' @examples
-#' data(example_input)
-#' print(example_input)
-"example_input"
+#' data(atac_counts)
+#' print(atac_counts)
+"atac_counts"
 
-#' Example object from (R)CONGAS+
+#' Example tibbles with input RNA data in the format for (R)CONGAS+
 #'
-#' @description Example object from (R)CONGAS+
+#' @description Example tibbles with input data in the format for (R)CONGAS+
 #'
 #' @docType data
 #'
-#' @usage data(example_object)
+#' @usage data(rna_counts)
 #'
-#' @format Example object.
+#' @format Example tibble with input RNA data.
 #'
 #' @keywords datasets
 #'
 #' @examples
-#' data(example_object)
-#' print(example_object)
-"example_object"
+#' data(rna_counts)
+#' print(rna_counts)
+"rna_counts"
+
+#' Dataframe containing cell type annotations for the 10x multiome lymphoma dataset.
+#'
+#' @description Dataframe with cell type annotations for the 10x multiome lymphoma dataset.
+#'
+#' @docType data
+#'
+#' @usage data(metadata)
+#'
+#' @format Dataframe.
+#'
+#' @keywords datasets
+#'
+#' @examples
+#' data(metadata)
+#' head(metadata)
+"metadata"
 
 
 #' Breast cancer patient-derived xenograft (10x RNA, counts-based).
@@ -48,7 +65,7 @@
 #'
 #' @format (R)CONGAS+ object.
 #'
-#' @keywords datasets
+#' @keywords internal
 #'
 #' @examples
 #' data(campbell_bcpdx)
@@ -69,7 +86,7 @@
 #'
 #' @format (R)CONGAS+ object.
 #'
-#' @keywords datasets
+#' @keywords internal
 #'
 #' @examples
 #' data(patel_gbmtn)
@@ -89,33 +106,12 @@
 #'
 #' @format (R)CONGAS+ object.
 #'
-#' @keywords datasets
+#' @keywords internal
 #'
 #' @examples
 #' data(zaho_hemato)
 #' print(zaho_hemato)
 "zaho_hemato"
-
-#' Basal cell carcinoma (10x RNA and ATAC, counts-based)
-#'
-#' @description (R)CONGAS+ object for the basal cell carcinoma dataset,
-#' used in the CONGAS+ paper. The paper providing these data
-#' is Satpathy, Ansuman T., et al. "Massively parallel single-cell chromatin 
-#' landscapes of human immune cell development and intratumoral T cell 
-#' exhaustion." Nature Biotechnology 37.8 (2019): 925-936.
-#'
-#' @docType data
-#'
-#' @usage data(satpathy_bcc)
-#'
-#' @format (R)CONGAS+ object.
-#'
-#' @keywords datasets
-#'
-#' @examples
-#' data(satpathy_bcc)
-#' print(satpathy_bcc)
-"satpathy_bcc"
 
 #' Karyotype hg38
 #'
@@ -133,3 +129,20 @@
 #' data(hg38_karyo)
 #' print(hg38_karyo)
 "hg38_karyo"
+
+#' Multiome congas object
+#'
+#' @description Example of a CONGAS+ object containg a subset of the multiome Lymphoma data.
+#'
+#' @docType data
+#'
+#' @usage data(multiome_congas_object)
+#'
+#' @format CONGAS+ object
+#'
+#' @keywords datasets
+#'
+#' @examples
+#' data(multiome_congas_object)
+#' print(multiome_congas_object)
+"multiome_congas_object"

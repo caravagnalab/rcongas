@@ -35,7 +35,13 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/Fitting.html">Fitting a model</a>
+      <a href="../articles/1_create_congas_object.html">Object Initialization and preprocessing</a>
+    </li>
+    <li>
+      <a href="../articles/2_Fitting.html">Fitting a model</a>
+    </li>
+    <li>
+      <a href="../articles/map_genes_featues.html">Gene mapping</a>
     </li>
   </ul></li>
 <li>
@@ -64,34 +70,30 @@
           <p class="section-desc"></p><p>Data released with the package.</p>
         </th>
       </tr></tbody><tbody><tr><td>
-          <p><code><a href="example_input.html">example_input</a></code> </p>
+          <p><code><a href="multiome_congas_object.html">multiome_congas_object</a></code> </p>
         </td>
-        <td><p>Example tibbles with input data in the format for (R)CONGAS+</p></td>
+        <td><p>Multiome congas object</p></td>
       </tr><tr><td>
-          <p><code><a href="example_object.html">example_object</a></code> </p>
+          <p><code><a href="metadata.html">metadata</a></code> </p>
         </td>
-        <td><p>Example object from (R)CONGAS+</p></td>
+        <td><p>Dataframe containing cell type annotations for the 10x multiome lymphoma dataset.</p></td>
       </tr><tr><td>
-          <p><code><a href="campbell_bcpdx.html">campbell_bcpdx</a></code> </p>
+          <p><code><a href="atac_counts.html">atac_counts</a></code> </p>
         </td>
-        <td><p>Breast cancer patient-derived xenograft (10x RNA, counts-based).</p></td>
+        <td><p>Example tibbles with input ATAC data in the format for (R)CONGAS+</p></td>
       </tr><tr><td>
-          <p><code><a href="patel_gbmtn.html">patel_gbmtn</a></code> </p>
+          <p><code><a href="rna_counts.html">rna_counts</a></code> </p>
         </td>
-        <td><p>Glioblastoma tumour and normal (SmartSeq RNA, z-score)</p></td>
-      </tr><tr><td>
-          <p><code><a href="zaho_hemato.html">zaho_hemato</a></code> </p>
-        </td>
-        <td><p>Hematopoietic bone marrow failure (10x RNA, counts-based)</p></td>
-      </tr><tr><td>
-          <p><code><a href="satpathy_bcc.html">satpathy_bcc</a></code> </p>
-        </td>
-        <td><p>Basal cell carcinoma (10x RNA and ATAC, counts-based)</p></td>
+        <td><p>Example tibbles with input RNA data in the format for (R)CONGAS+</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="main-functions">Main functions <a href="#main-functions" class="anchor" aria-hidden="true"></a></h2>
           <p class="section-desc"></p><p>Functions to create and fit a dataset.</p>
         </th>
       </tr></tbody><tbody><tr><td>
+          <p><code><a href="create_congas_tibble.html">create_congas_tibble()</a></code> </p>
+        </td>
+        <td><p>Format the input counts before creating the CONGAS+ object</p></td>
+      </tr><tr><td>
           <p><code><a href="init.html">init()</a></code> </p>
         </td>
         <td><p>Create a dataset.</p></td>
@@ -175,6 +177,14 @@
           <p><code><a href="plot.rcongasplus.html">plot(<i>&lt;rcongasplus&gt;</i>)</a></code> </p>
         </td>
         <td><p>Plot for an object of class <code>'rcongasplus'</code>.</p></td>
+      </tr></tbody><tbody><tr><th colspan="2">
+          <h2 id="downstream-analyses">Downstream analyses <a href="#downstream-analyses" class="anchor" aria-hidden="true"></a></h2>
+          <p class="section-desc"></p><p>Functions to perform additional analyses downstream of the CONGAS+ inference.</p>
+        </th>
+      </tr></tbody><tbody><tr><td>
+          <p><code><a href="build_clone_tree.html">build_clone_tree()</a></code> </p>
+        </td>
+        <td><p>Build Clone Tree form a CONGAS+ object Using medicc2</p></td>
       </tr></tbody></table></div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

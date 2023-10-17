@@ -25,16 +25,15 @@ reference:
 - title: Available data
   desc:  Data released with the package.
   contents:
-  - example_input
-  - example_object
-  - campbell_bcpdx
-  - patel_gbmtn
-  - zaho_hemato
-  - satpathy_bcc
+  - multiome_congas_object
+  - metadata
+  - atac_counts
+  - rna_counts
 
 - title: Main functions
   desc:  Functions to create and fit a dataset.
   contents:
+  - create_congas_tibble
   - init
   - auto_config_run
   - auto_normalisation_factor
@@ -74,6 +73,11 @@ reference:
   - print.rcongasplus
   - plot.rcongasplus
 
+- title: Downstream analyses
+  desc: Functions to perform additional analyses downstream of the CONGAS+ inference.
+  contents:
+  - build_clone_tree
+
 - title: internal
   desc: Simulation functions
   contents:
@@ -84,6 +88,7 @@ reference:
   - generate_ploidy
   - generate_ploidy_parent
   - generate_ploidy_parent_fine 
+  - generate_cluster_ploidy_df
   - generate_random_tree
   - hg38_karyo
   - randomize_breaks

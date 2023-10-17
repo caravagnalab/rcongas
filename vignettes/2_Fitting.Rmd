@@ -1,0 +1,120 @@
+---
+title: "Fitting a model"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Fitting a model}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+```{r, include = FALSE}
+
+
+options(crayon.enabled = FALSE)
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+```{r, warning=FALSE, message=FALSE}
+library(Rcongas)
+library(dplyr)
+library(ggplot2)
+library(stringr)
+library(tidyverse)
+```
+
+Setup the directory where results are stored.
+```{r}
+
+sample = 'lymphoma'
+
+prefix = paste0(sample, "/tutorial/")
+
+out.dir = paste0(prefix, "/congas_data/")
+fig.dir = paste0(prefix, "/congas_figures/")
+
+if (!dir.exists(out.dir)) {dir.create(out.dir, recursive = T)}
+if (!dir.exists(fig.dir)) {dir.create(fig.dir, recursive = T)}
+```
+
+We load the object created in the previous Vignette \code{create_congas_object}.
+```{r}
+
+data(multiome_congas_object) 
+
+```
+
+
+
+To reduce the paramter search space dimensions and subsequently decreasing the computational complecity of CONGAS+ inference, users can optionally decide to perform 
+a preliminary step of segment filtering, which consists in running CONGAS+ inference independently on each segment, varying the number of clusters from 1 to 3 and
+finally keeping only those segments in which the otpimal number of clusters selected by BIC is higher than 1. 
+
+This step is implemented in the fuction `segments_selector_congas`, which return the filtered CONGAS+ object.
+
+Fitting uses `reticulate` to interface with the Python CONGAS package, which implements the models in Pyro. In case R does not find a anaconda environment with CONGAS+
+python version installed, it will automatically create a r-reticulate environment and install CONGAS+ within that environment.
+```{r}
+
+filt = segments_selector_congas(multiome_congas_object)
+# You can save the filtering result to avoid re-running the whole pipeline in future steps
+# saveRDS(filt, paste0(out.dir, "rcongas_obj_filtered.rds"))
+```
+
+Now we can run CONGAS+ parameters inference on the final filtered object. We first fir hyperparameters values from the current data, and then we fit the model.
+```{r}
+# Set values fro the model hyperparameters
+k = c(1:4)
+
+binom_limits = c(40,1000)
+model = "BIC"
+
+lr = 0.01
+temperature = 20#10
+
+steps = 5000
+lambda = 0.5
+
+# Estimate hyperparameters
+hyperparams_filt <- auto_config_run(filt, k, 
+                                    prior_cn=c(0.2, 0.6, 0.1, 0.05, 0.05),
+                                    init_importance = 0.6, CUDA = FALSE)
+
+# Run
+hyperparams_filt$binom_prior_limits = binom_limits
+
+fit_filt <- Rcongas:::fit_congas(filt,
+                                 K = k, 
+                                 lambdas = lambda, 
+                                 learning_rate = lr, 
+                                 steps = steps,
+                                 model_parameters = hyperparams_filt, 
+                                 model_selection = model,
+                                 latent_variables = "G",
+                                 CUDA = FALSE,
+                                 temperature = temperature, 
+                                 same_mixing = TRUE, 
+                                 threshold = 0.001)
+```
+
+The new object has more information.
+```{r}
+fit_filt
+```
+You can get the information regarding model selection metrics
+```{r}
+fit_filt$model_selection
+```
+
+```{r, fig.width=5, fig.height=4}
+Rcongas::plot_fit(fit_filt, what='scores')
+```
+
+```{r, fig.width=5, fig.height=8}
+plot_fit(fit_filt, 'posterior_CNA')
+```
+
+```{r, fig.width=20, fig.height=10}
+cowplot::plot_grid( 
+  plotlist = plot_fit(fit_filt, what = 'density', highlights = TRUE),
+  ncol = 4)
+```
+

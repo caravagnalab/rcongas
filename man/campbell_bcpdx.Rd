@@ -22,4 +22,4 @@ https://doi.org/10.1186/s13059-019-1645-z
 data(campbell_bcpdx)
 print(campbell_bcpdx)
 }
-\keyword{datasets}
+\keyword{internal}

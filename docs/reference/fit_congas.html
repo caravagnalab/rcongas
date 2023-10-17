@@ -40,7 +40,13 @@ set by hand we suggest the usage of the function Rcongas::auto_config_run()"><me
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/Fitting.html">Fitting a model</a>
+      <a href="../articles/1_create_congas_object.html">Object Initialization and preprocessing</a>
+    </li>
+    <li>
+      <a href="../articles/2_Fitting.html">Fitting a model</a>
+    </li>
+    <li>
+      <a href="../articles/map_genes_featues.html">Gene mapping</a>
     </li>
   </ul></li>
 <li>
@@ -81,8 +87,8 @@ set by hand we suggest the usage of the function <code><a href="auto_config_run.
 <span>  <span class="va">K</span>,</span>
 <span>  <span class="va">lambdas</span>,</span>
 <span>  <span class="va">model_parameters</span>,</span>
-<span>  learning_rate <span class="op">=</span> <span class="fl">0.05</span>,</span>
-<span>  latent_variables <span class="op">=</span> <span class="st">"B"</span>,</span>
+<span>  learning_rate <span class="op">=</span> <span class="fl">0.01</span>,</span>
+<span>  latent_variables <span class="op">=</span> <span class="st">"G"</span>,</span>
 <span>  CUDA <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  steps <span class="op">=</span> <span class="fl">500</span>,</span>
 <span>  samples <span class="op">=</span> <span class="fl">1</span>,</span>
@@ -90,7 +96,7 @@ set by hand we suggest the usage of the function <code><a href="auto_config_run.
 <span>  model_selection <span class="op">=</span> <span class="st">"ICL"</span>,</span>
 <span>  temperature <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>  equal_variance <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  threshold <span class="op">=</span> <span class="fl">0.05</span>,</span>
+<span>  threshold <span class="op">=</span> <span class="va">learning_rate</span> <span class="op">*</span> <span class="fl">0.1</span>,</span>
 <span>  patience <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>  same_mixing <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -106,6 +112,11 @@ set by hand we suggest the usage of the function <code><a href="auto_config_run.
 <dd><p>a vector of integers with the number of clusters we want to test</p></dd>
 
 
+<dt>lambdas</dt>
+<dd><p>Float (Optional). Default 0.5. Value of the hyperparameter that controls the weight given to RNA and ATAC modalities during the inference. Values closer to 0 give more weight to
+the ATAC likelihood, while values closer to 1 result in higher weight given to the RNA likelihood.</p></dd>
+
+
 <dt>model_parameters</dt>
 <dd><p>a list with model hyperparameters. As errors coming from wrong hyperparameters initialization
 are quite hard to troubleshoot is higly suggested to use <code><a href="auto_config_run.html">Rcongas::auto_config_run()</a></code> to generate
@@ -117,7 +128,7 @@ a template and eventually modify it.</p></dd>
 
 
 <dt>latent_variables</dt>
-<dd><p>specify the nature of the latent variable modelling the copy number profile. Currently only "D" (discrete) is available</p></dd>
+<dd><p>specify the nature of the latent variable modelling the copy number profile. Currently only "G" is available,</p></dd>
 
 
 <dt>CUDA</dt>
@@ -134,6 +145,20 @@ a template and eventually modify it.</p></dd>
 
 <dt>model_selection</dt>
 <dd><p>information criteria to which perform the model selection (one of ICL, NLL, BIC, AIC)</p></dd>
+
+
+<dt>patience</dt>
+<dd><p>Integer. Number of steps to wait before stopping the inference. See <code>threshold</code> for more details.</p></dd>
+
+
+<dt>same_mixing</dt>
+<dd><p>boolean that indicates whether to use the same mixing proportions for both RNA and ATAC or use different vectors for the two
+modalities. Default is FALSE.</p></dd>
+
+
+<dt>threshold.</dt>
+<dd><p>Float, default is <code>learning_rate * 0.1</code>. It corresponds to the threshold that determines the early stopping of the training procedure. When the difference between parameters in step t and step t+1 is
+lower than this threshold for a number of steps equal to the parameter <code>patience</code> the inference is stopped.</p></dd>
 
 </dl></div>
     <div id="value">

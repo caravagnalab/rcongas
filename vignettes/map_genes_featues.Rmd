@@ -1,0 +1,53 @@
+---
+title: "Gene mapping"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Gene mapping}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+```{r, include = FALSE}
+
+
+options(crayon.enabled = FALSE)
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+```{r, warning=FALSE, message=FALSE}
+library(Rcongas)
+library(dplyr)
+library(ggplot2)
+library(stringr)
+library(tidyverse)
+```
+
+Load RNA counts object, that is a genes by cells matrix with gene names on rows and cell barcodes on columns.
+```{r}
+data(rna_counts)
+```
+
+In roder to create the CONGAS+ object, we need to pool together counts across each genomic segment. Thus, we need to have a dataframe that maps each gene to the corresponding coordinates.
+In some specific settings, such as 10x multiome sequencing data, this information is already available. 
+However, when needed users can exploit Biomart to map each gene to the corresponding genomic position, as we show below. This will produce the \code{features} variable that 
+is needed by the function \code{create_congas_tibble} to generate the input data in the format required by CONGAS+.
+```{r}
+library(biomaRt)
+ensembl <- useEnsembl(biomart = "genes", dataset = "hsapiens_gene_ensembl")
+z <- getBM(c("hgnc_symbol", 'chromosome_name','start_position','end_position'), 
+             filters = "hgnc_symbol", 
+             rownames(rna_counts), 
+             ensembl) %>% 
+             dplyr::rename(gene = hgnc_symbol, 
+                          chr = chromosome_name, 
+                          from = start_position, 
+                          to = end_position) %>%
+              filter(chr %in% c(seq(1:22), 'X', 'Y')) %>%
+              mutate(chr = paste0('chr', chr)) 
+
+z = z[!duplicated(z$gene),]
+
+gene_names = rownames(rna_counts)
+
+features = tibble(gene = gene_names) %>% left_join(z) 
+
+```

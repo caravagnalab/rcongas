@@ -135,11 +135,11 @@ filter_counts_by_quantile = function(x, upper_quantile = .98)
 }
 
 # Return list of outlier genes/peaks in each segment.
-#' @param segmentation
-#' @param modality Either 'RNA' or 'ATAC'
-#' @param data Tibble with chr from to value
-#' @param normalisation_factors tibble that for each cell contained in \code{data} contains information about normalization facctors. Computed with Rcongas function
-#' \code{auto_normalisation_factor}.
+# @param segmentation
+# @param modality Either 'RNA' or 'ATAC'
+# @param data Tibble with chr from to value
+# @param normalisation_factors tibble that for each cell contained in \code{data} contains information about normalization facctors. Computed with Rcongas function
+# \code{auto_normalisation_factor}.
 clean_outliers_persegment <- function(modality, data, normalisation_factors, qmax = 0.99) {
   cli::cli_alert("Cleaning outlier features from {.field {modality}} input matrix")
   

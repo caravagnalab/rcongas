@@ -2,9 +2,11 @@ pandoc: 3.1.8
 pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
-  Fitting: Fitting.html
+  1_create_congas_object: 1_create_congas_object.html
+  2_Fitting: 2_Fitting.html
   Rcongas: Rcongas.html
-last_built: 2023-10-16T16:29Z
+  map_genes_featues: map_genes_featues.html
+last_built: 2023-10-17T14:44Z
 urls:
   reference: caravagnalab.github.io/Rcongas/reference
   article: caravagnalab.github.io/Rcongas/articles

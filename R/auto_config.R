@@ -1,30 +1,38 @@
 #' Determine data-based hyperparameters for the Bayesian priors.
 #'
-#' @description
+#' @description This function determines the hyperparameters for the Bayesian priors based on the input data.
 #'
-#' @param x
-#' @param K
-#' @param NB_size_atac
-#' @param NB_size_rna
-#' @param lambda
-#' @param a_sd
-#' @param b_sd
-#' @param prior_cn
-#' @param purity
+#' @param x (required) CONGAS+ object.
+#' @param K (required) Number of clusters that will be tested during the inference.
+#' @param NB_size_atac Float (optional). Default 150. Value used to inizialize the size hyperparametr of the Negative Binomial for ATAC in case the likelihood for ATAC is set to NB
+#' @param NB_size_rna Float (optional). Default 150. Value used to inizialize the size hyperparametr of the Negative Binomial for RNA in case the likelihood for RNA is set to NB
+#' @param a_sd Float (optional). Default 0.1. Lower bound of the Uniform prior for the Gussian standard deviation. Used when one of RNA or ATAC likelihoods are gaussian.  
+#' @param b_sd Float (optional). Default 1. Upper bound of the Uniform prior for the Gussian standard deviation. Used when one of RNA or ATAC likelihoods are gaussian.  
+#' @param NB_size_priors (optional) Default c(15, 1000). Lower and upper bound of the Uniform prior on the Negative binomial size hyperparameter.
+#' @param hidden_dim (Optional) defualt 5. Number of discrete copy number states to model. By default this is from 1 to 5.
+#' @param prior_cn (Optional) Default c(0.1, 0.6, 0.1, 0.1, 0.1). Prior for the copy number state of every segment.
+#' @param init_importance (Optional) Default 0.6. Value used to initialize the distribution over possible copy number states for every cluster and every segment. \code{init_importance}
+#' is used to initialize the value corresponding to the copy number state inferred from bulk and \code{1-init_importance / (hidden_dim - 1)} is used to initialize the other ploidy states.
+#' This distribution is initialized based on the value of init importance, and then its prior is defined in \code{prior_cn}.
+#' @param purity Optional (default NULL). This hyperparameter can be used to inject prior knowledge about the purity of the sample. It can be set as the purity inferred from bulk Whole Genome Sequencing. Leave this to NULL
+#' in case the purity of the sample is expected to be 100%.
+#' @param multiome Default to FALSE. Flag indicating whether the RNA and ATAC observations are the result of a matched RNA-ATAC sequencing assay such as 10x multiome assay.
+#' @param CUDA Defualt FALSE. Flag indicating whether to use GPU computation.
+#' @param normal_cells Default to FALSE. Flag that can be used to inject prior knowledge about the presence of normal cells in the sample. In case this is set to TRUE, the copy number
+#' distribution for one of the clusters will be initialized with values skewed the diploid state in every segment.
 #'
-#' @return
+#' @return CONAGS+ object
 #' @export
 #'
-#' @examples
 auto_config_run <-
   function(x,
-           K,
+           K = c(1:3),
            NB_size_atac = 150,
            NB_size_rna = 150,
            # lambda = 0.3,
            a_sd = 0.1,
-           b_sd = 100,
-           prior_cn = c(0.2, 0.6, 0.1, 0.05, 0.05), #, 0.025),
+           b_sd = 1,
+           prior_cn = c(0.1, 0.6, 0.1, 0.1, 0.1), #, 0.025),
            hidden_dim = 5,#length(prior_cn),
            init_importance = 0.6,
            NB_size_priors = c(15, 1000),

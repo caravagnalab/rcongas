@@ -1,8 +1,8 @@
 ---
-title: "Fitting a model"
+title: "Object Initialization and preprocessing"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Fitting a model}
+  %\VignetteIndexEntry{Object Initialization and preprocessing}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -46,37 +46,14 @@ data(rna_counts)
 With the multiome assay, the feature files provided by CellRanger contains already
 a mapping between gene names and coordinates. Let's read this file
 As an alternative, when such file not not readily available, users can exploit
-BiomaRt.
+BiomaRt Please see the correspodning vignette \code{Gene mapping}
 
 ```{r}
 data(features)
 ```
 
-In case the gene coordinates are not readily available, you can exploit Biomart:
-```{r}
-library(biomaRt)
-ensembl <- useEnsembl(biomart = "genes", dataset = "hsapiens_gene_ensembl")
-z <- getBM(c("hgnc_symbol", 'chromosome_name','start_position','end_position'), 
-             filters = "hgnc_symbol", 
-             rownames(rna_counts), 
-             ensembl) %>% 
-             dplyr::rename(gene = hgnc_symbol, 
-                          chr = chromosome_name, 
-                          from = start_position, 
-                          to = end_position) %>%
-              filter(chr %in% c(seq(1:22), 'X', 'Y')) %>%
-              mutate(chr = paste0('chr', chr)) 
-
-z = z[!duplicated(z$gene),]
-
-gene_names = rownames(rna_counts)
-
-features = tibble(gene = gene_names) %>% left_join(z) 
-
-```
 
 Create the RNA and ATAC tibble required by CONGAS+
-We first create for ATAC a dataframe with the paks coordinates
 ```{r}
 atac_featureDF = data.frame(id = rownames(atac_counts)) %>%
   tidyr::separate(id, c('chr', 'from', 'to'), '-')
@@ -88,6 +65,7 @@ atac = Rcongas::create_congas_tibble(counts = atac_counts,
 # duplicate call names across ATAC and RNA cells is not allowed by CONGAS+
 # add suffix to atac cell barcodes prior to create the CONGAS+ object
 atac = atac %>% mutate(cell = paste0(cell, '-ATAC'))
+
 # Compute normalization factors
 norm_atac = Rcongas:::auto_normalisation_factor(atac) %>%
   mutate(modality = 'ATAC')
@@ -126,8 +104,6 @@ segments = example_segments %>% dplyr::filter(chr != 'chrX', chr != 'chrY')
 ```
 
 Now init the CONGAS+ object
-The init function has a paramter \code{multiome}, which is a flag that either enables or disables the multiome mode. This mode makes the inference
-for the RNA and ATAC correspodning cells 
 
 ```{R}
 x = init(
@@ -185,78 +161,4 @@ plot_data(x,
     pull(segment_id))
 ```
 
-
-To reduce the paramter search space dimensions and subsequently decreasing the computational complecity of CONGAS+ inference, users can optionally decide to perform 
-a preliminary step of segment filtering, which consists in running CONGAS+ inference independently on each segment, varying the number of clusters from 1 to 3 and
-finally keeping only those segments in which the otpimal number of clusters selected by BIC is higher than 1. 
-
-This step is implemented in the fuction `segments_selector_congas`, which return the filtered CONGAS+ object.
-
-Fitting uses `reticulate` to interface with the Python CONGAS package, which implements the models in Pyro. In case R does not find a anaconda environment with CONGAS+
-python version installed, it will automatically create a r-reticulate environment and install CONGAS+ within that environment.
-```{r}
-
-filt = segments_selector_congas(x)
-# You can save the filtering result to avoid re-running the whole pipeline in future steps
-# saveRDS(filt, paste0(out.dir, "rcongas_obj_filtered.rds"))
-```
-
-Now we can run CONGAS+ parameters inference on the final filtered object. We first fir hyperparameters values from the current data, and then we fit the model.
-```{r}
-# Set values fro the model hyperparameters
-k = c(1:4)
-
-binom_limits = c(40,1000)
-model = "BIC"
-
-lr = 0.01
-temperature = 20#10
-
-steps = 5000
-lambda = 0.5
-
-# Estimate hyperparameters
-hyperparams_filt <- auto_config_run(filt, k, 
-                                    prior_cn=c(0.2, 0.6, 0.1, 0.05, 0.05),
-                                    init_importance = 0.6, CUDA = FALSE)
-
-# Run
-hyperparams_filt$binom_prior_limits = binom_limits
-
-fit_filt <- Rcongas:::fit_congas(filt,
-                                 K = k, 
-                                 lambdas = lambda, 
-                                 learning_rate = lr, 
-                                 steps = steps,
-                                 model_parameters = hyperparams_filt, 
-                                 model_selection = model,
-                                 latent_variables = "G",
-                                 CUDA = FALSE,
-                                 temperature = temperature, 
-                                 same_mixing = TRUE, 
-                                 threshold = 0.001)
-```
-
-The new object has more information.
-```{r}
-fit_filt
-```
-You can get the information regarding model selection metrics
-```{r}
-fit_filt$model_selection
-```
-
-```{r, fig.width=5, fig.height=4}
-Rcongas::plot_fit(fit_filt, what='scores')
-```
-
-```{r, fig.width=5, fig.height=8}
-plot_fit(fit_filt, 'posterior_CNA')
-```
-
-```{r, fig.width=20, fig.height=10}
-cowplot::plot_grid( 
-  plotlist = plot_fit(fit_filt, what = 'density', highlights = TRUE),
-  ncol = 4)
-```
-
+Please see the next vignette \code{Fitting} that shows how to perform CONGAS+ inference.

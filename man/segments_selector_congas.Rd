@@ -6,10 +6,13 @@
 \usage{
 segments_selector_congas(
   obj,
+  multiome = F,
   K_max = 3,
   score = "BIC",
   lambda = 0.5,
-  cores_ratio = 0.5
+  cores_ratio = 0.5,
+  CUDA = F,
+  binom_limits = c(40, 1000)
 )
 }
 \arguments{

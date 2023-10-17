@@ -12,6 +12,9 @@
 #'
 #' @param x An \code{rcongasplus} object with the input dataset, constructed with \code{\link[Rcongas::init]{Rcongas::init}}.
 #' @param K a vector of integers with the number of clusters we want to test
+#' @param lambdas Float (Optional). Default 0.5. Value of the hyperparameter that controls the weight given to RNA and ATAC modalities during the inference. Values closer to 0 give more weight to
+#' the ATAC likelihood, while values closer to 1 result in higher weight given to the RNA likelihood.
+
 #' @param learning_rate a learning rate for the Adam optimizer
 #' @param model_parameters a list with model hyperparameters. As errors coming from wrong hyperparameters initialization
 #' are quite hard to troubleshoot is higly suggested to use \code{\link[Rcongas::auto_config_run]{Rcongas::auto_config_run()}} to generate
