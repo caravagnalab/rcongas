@@ -27,9 +27,8 @@ If you use `Rcongas`, please cite these two papers:
 
 - *A Bayesian method to cluster single-cell RNA sequencing data using copy number alterations*. Salvatore Milite, Riccardo Bergamin, Lucrezia Patruno, Nicola Calonaci, Giulio Caravagna. [Bioinformatics](https://doi.org/10.1093/bioinformatics/btac143) 2022.
 
-- *A Bayesian method to infer copy number clones from single-cell RNA and ATAC sequencing.* Lucrezia Patruno1, Salvatore Milite, Riccardo Bergamin Nicola Calonaci, Alberto D’Onofrio, Fabio Anselmi, Marco Antoniotti, Alex Graudenzi, Giulio Caravagna.
-    [biorXiv
-    preprint](https://www.biorxiv.org/content/10.1101/2023.04.01.535197v1),
+- *A Bayesian method to infer copy number clones from single-cell RNA and ATAC sequencing.* Lucrezia Patruno, Salvatore Milite, Riccardo Bergamin Nicola Calonaci, Alberto D’Onofrio, Fabio Anselmi, Marco Antoniotti, Alex Graudenzi, Giulio Caravagna.
+    [PLOScompbio](https://doi.org/10.1371/journal.pcbi.1011557),
     2023
 
 
