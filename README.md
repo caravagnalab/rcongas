@@ -20,7 +20,10 @@ is an extension of the original, single-molecule version; it retains the
 same name to avoid confusion.
 
 #### Citation
+
+[![](https://img.shields.io/badge/doi-10.1101/2021.02.02.429335-red.svg)](https://doi.org/10.1101/2023.04.01.535197)
 [![](https://img.shields.io/badge/doi-10.1371/journal.pcbi.1011557-red.svg)](https://doi.org/10.1371/journal.pcbi.1011557)
+
 
 If you use `Rcongas`, please cite these two papers:
 
