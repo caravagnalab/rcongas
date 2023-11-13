@@ -1,5 +1,5 @@
 
-# Rcongas <a href='caravagnalab.github.io/rcongas'><img src='man/figures/logo.png' style="float:right;align:right;height:120px;" /></a>
+# Rcongas <a href='caravagnalab.github.io/rcongas'><img src='man/figures/logo.png' align='right' style="float:right;align:right;height:120px;" /></a>
 
 <!-- badges: start -->
 
