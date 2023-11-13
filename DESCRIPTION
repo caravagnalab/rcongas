@@ -3,6 +3,7 @@ Type: Package
 Title: Copy Number Alterations genotyping from single-cell multiomics 
 Version: 0.2.0
 Authors@R: c(person("Salvatore", "Milite", role=c("aut", "cre"), email="militesalvatore@gmail.com"),
+    person("Lucrezia", "Patruno", role=c("aut", "cre"), email="l.patruno@ucl.ac.uk"),
     person("Riccardo", "Bergamin", role=c("aut"), email="riccardo.bergamin@units.it"),
     person("Giulio", "Caravagna", role=c("aut"), email="gcaravagn@gmail.com"))
 Maintainer: Cancer Data Science Laboratory <gcaravagn@gmail.com>
