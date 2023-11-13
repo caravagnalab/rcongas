@@ -21,6 +21,8 @@ library(stringr)
 library(tidyverse)
 ```
 
+In this Vignette we show how to create a CONGAS+ object starting from RNA and ATAC count matrices. We will use the 
+B-cell lymphoma cells sequences via 10x genomics multiomic assay. The raw data can be foun [here](https://www.10xgenomics.com/resources/datasets/fresh-frozen-lymph-node-with-b-cell-lymphoma-14-k-sorted-nuclei-1-standard-2-0-0).
 Setup the directory where results are stored.
 ```{r}
 
