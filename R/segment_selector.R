@@ -373,7 +373,7 @@ segments_selector_congas <- function(obj, multiome = F, K_max = 3, score = "BIC"
           CUDA = CUDA,
           lambda = lambda)
       }),
-    parallel = !CUDA,
+    parallel = FALSE,
     cores.ratio = cores_ratio,
     filter_errors = FALSE
   )
