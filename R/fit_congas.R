@@ -68,7 +68,7 @@ fit_congas <-
     # Sanitizers obj and zeroes
     x %>% sanitize_obj()
     x %>% sanitize_zeroes()
-
+    x = sort_multiome(x)
     model_parameters$equal_sizes_sd <- equal_variance
 
 

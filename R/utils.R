@@ -110,3 +110,9 @@ csidx <-  function(cumsm, idx) {
   return((cumsm[idx] + 1):cumsm[idx + 1])
 }
 
+sort_multiome <- function(x) {
+  x$input$dataset = x$input$dataset %>% arrange(segment_id, cell, modality)
+  x$input$normalisation = x$input$normalisation %>% arrange(cell, modality)
+  return(x)
+}
+
