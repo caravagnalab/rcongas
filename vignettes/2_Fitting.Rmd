@@ -49,7 +49,7 @@ This step is implemented in the fuction `segments_selector_congas`, which return
 
 Fitting uses `reticulate` to interface with the Python CONGAS package, which implements the models in Pyro. In case R does not find a anaconda environment with CONGAS+
 python version installed, it will automatically create a r-reticulate environment and install CONGAS+ within that environment.
-```{r}
+```{r, results = 'hide', message=FALSE}
 
 filt = segments_selector_congas(multiome_congas_object)
 # You can save the filtering result to avoid re-running the whole pipeline in future steps
