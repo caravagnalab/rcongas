@@ -84,12 +84,14 @@ filter_segments = function(x,
 #' can be used to determine quantiles of mapped data, and identify
 #' outliers in each segment and modality. 
 #' 
-#' An outliers is an entry for a cell/segment pair; with this function
+#' An outlier is an entry for a cell/segment pair; with this function
 #' we compute how often a certain cell is marked as an outlier. Then
 #' the function removes cells that are flagged as containing outliers
 #' more then a certain input cutoff. This helps picking up which cells
 #' are often showing counts that seem deviating from the main signal
 #' in the data.
+#' In case of multiome data, cells flagged as outliers in one modality
+#' are also removed from the other modality.
 #' 
 #' The function requires and returns an (R)CONGAS+ object.
 #'
@@ -121,7 +123,7 @@ filter_segments = function(x,
 filter_outliers = function(x, 
                            frequency_cutoff = 0.2 * stat(x)$nsegments,
                            lower_quantile = 0.03, 
-                           upper_quantile = .97)
+                           upper_quantile = 0.97)
 {
   retained_rna = retained_atac = norm_factors_rna = norm_factors_atac = NULL
   
@@ -151,13 +153,33 @@ filter_outliers = function(x,
     cli::cli_alert("{.field {ncell}} out of {.field {nrow(retained_atac)}} will be removed ({.field {nprop}%})")
   }
   
-  retained = bind_rows(retained_rna, retained_atac) %>% 
-    filter(!remove) %>% 
-    pull(cell)
+  # retained = bind_rows(retained_rna, retained_atac) %>% 
+  #   filter(!remove) %>% 
+  #   pull(cell)
   
-  # Rebuild loses some info, not super important
-  x$input$dataset = x$input$dataset %>% filter(cell %in% retained)
-  x$input$normalisation = x$input$normalisation %>% filter(cell %in% retained)
+  to_remove = bind_rows(retained_rna, retained_atac) %>% 
+      filter(remove) %>% 
+      pull(cell)
+
+  if (x$input$multiome) {
+    # In case of multiomic data, we need to remove cells that were detected as outliers in one of the two modalities.
+    cli::cli_h3("Multiome data: removing outliers from both modalities.")
+    multiome_remove = x$input$dataset %>% 
+        filter(cell %in% to_remove) %>% 
+        pull(multiome_barcode) %>% unique
+    
+    nrem = length(multiome_remove)
+    tot = length(unique(x$input$dataset$multiome_barcode))
+    nprop = ((nrem/tot) * 100) %>% round
+    cli::cli_alert("MULTIOME: after pairing RNA and ATAC outliers, {.field {nrem}} out of {.field {tot}} will be removed ({.field {nprop}%})")
+
+    x$input$dataset = x$input$dataset %>% filter(!(multiome_barcode %in% !!multiome_remove))
+    x$input$normalisation = x$input$normalisation %>% filter(!(multiome_barcode %in% !!multiome_remove))
+  } else {
+    # Rebuild loses some info, not super important
+    x$input$dataset = x$input$dataset %>% filter(cell %in% retained)
+    x$input$normalisation = x$input$normalisation %>% filter(cell %in% retained)
+  }
   
   x$log = paste0(x$log, '\n- ', 
                  Sys.time(), " Filtered outliers: [", frequency_cutoff, 
@@ -420,47 +442,57 @@ filter_missing_data = function(x, proportion_RNA = 0.05, proportion_ATAC = 0.05)
   # RNA to remove
   if(!is.null(stat_x$zero_counts_cells_RNA))
   {
-    to_remove = stat_x$zero_counts_cells_RNA %>% 
+    to_remove_rna = stat_x$zero_counts_cells_RNA %>% 
       filter(`%` > 100 * proportion_RNA) %>% 
       pull(cell)
     
     n = stat_x$zero_counts_cells_RNA %>% nrow
     
     cli::cli_h3("{.field {'RNA'}} modality, proportions cut {.field {proportion_RNA}}")
-    cli::cli_alert("Cells with missing data {.field {n}}, removing {.field {to_remove %>% length}}")
+    cli::cli_alert("Cells with missing data {.field {n}}, removing {.field {to_remove_rna %>% length}}")
     
-    if(length(to_remove) > 0) all_cells = setdiff(all_cells, to_remove)
+    if(length(to_remove_rna) > 0) all_cells = setdiff(all_cells, to_remove_rna)
   }
   
   # ATAC to remove
   if(!is.null(stat_x$zero_counts_cells_ATAC))
   {
-    to_remove = stat_x$zero_counts_cells_ATAC %>% 
+    to_remove_atac = stat_x$zero_counts_cells_ATAC %>% 
       filter(`%` > 100 * proportion_ATAC) %>% 
       pull(cell)
     
     n = stat_x$zero_counts_cells_ATAC %>% nrow
     
     cli::cli_h3("{.field {'ATAC'}} modality, proportions cut {.field {proportion_ATAC}}")
-    cli::cli_alert("Cells with missing data {.field {n}}, removing {.field {to_remove %>% length}}")
+    cli::cli_alert("Cells with missing data {.field {n}}, removing {.field {to_remove_atac %>% length}}")
     
-    if(length(to_remove) > 0) all_cells = setdiff(all_cells, to_remove)
+    if(length(to_remove_atac) > 0) all_cells = setdiff(all_cells, to_remove_atac)
   }
   
   # Filter
   if(n_orig > (all_cells %>% length))
   {
-    x$input$dataset = x$input$dataset %>% filter(cell %in% all_cells)
-    x$input$normalisation = x$input$normalisation %>% filter(cell %in% all_cells)
-    
+    if (x$input$multiome) {
+      cli::cli_h3("Multiome data: removing missing data from both modalities.")
+      multiome_remove = x$input$dataset %>% 
+          filter(cell %in% c(to_remove_atac, to_remove_rna)) %>% 
+          pull(multiome_barcode) %>% unique
+      
+      nrem = length(multiome_remove)
+      tot = length(unique(x$input$dataset$multiome_barcode))
+      nprop = ((nrem/tot) * 100) %>% round
+      cli::cli_alert("MULTIOME: after pairing RNA and ATAC missing data, {.field {nrem}} out of {.field {tot}} will be removed ({.field {nprop}%})")
+      
+      x$input$dataset = x$input$dataset %>% filter(!(multiome_barcode %in% !!multiome_remove))
+      x$input$normalisation = x$input$normalisation %>% filter(!(multiome_barcode %in% !!multiome_remove))
+    } else {
+      x$input$dataset = x$input$dataset %>% filter(cell %in% all_cells)
+      x$input$normalisation = x$input$normalisation %>% filter(cell %in% all_cells)
+    }
     x$log = paste0(x$log, '\n- ', 
                    Sys.time(), " Filtered missing data: [", proportion_RNA, 
                    '|', proportion_ATAC, ']')
     
   }
-  
-  
-  
-  
   return(x)
 }

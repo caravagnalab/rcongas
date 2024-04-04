@@ -6,7 +6,6 @@
 \usage{
 segments_selector_congas(
   obj,
-  multiome = F,
   K_max = 3,
   score = "BIC",
   lambda = 0.5,

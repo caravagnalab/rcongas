@@ -15,8 +15,6 @@ auto_config_run(
   hidden_dim = 5,
   init_importance = 0.6,
   NB_size_priors = c(15, 1000),
-  purity = NULL,
-  multiome = FALSE,
   CUDA = FALSE,
   normal_cells = FALSE
 )
@@ -44,15 +42,10 @@ This distribution is initialized based on the value of init importance, and then
 
 \item{NB_size_priors}{(optional) Default c(15, 1000). Lower and upper bound of the Uniform prior on the Negative binomial size hyperparameter.}
 
-\item{purity}{Optional (default NULL). This hyperparameter can be used to inject prior knowledge about the purity of the sample. It can be set as the purity inferred from bulk Whole Genome Sequencing. Leave this to NULL
-in case the purity of the sample is expected to be 100\%.}
-
-\item{multiome}{Default to FALSE. Flag indicating whether the RNA and ATAC observations are the result of a matched RNA-ATAC sequencing assay such as 10x multiome assay.}
-
 \item{CUDA}{Defualt FALSE. Flag indicating whether to use GPU computation.}
 
 \item{normal_cells}{Default to FALSE. Flag that can be used to inject prior knowledge about the presence of normal cells in the sample. In case this is set to TRUE, the copy number
-distribution for one of the clusters will be initialized with values skewed the diploid state in every segment.}
+distribution for one of the clusters will be initialized with values skewed towards the diploid state in every segment.}
 }
 \value{
 CONAGS+ object

@@ -128,7 +128,7 @@ in :</p><ul><li><p>scaling raw counts by the input normalization factors;</p></l
 <span>  reference_genome <span class="op">=</span> <span class="st">"GRCh38"</span>,</span>
 <span>  description <span class="op">=</span> <span class="st">"(R)CONGAS+ model"</span>,</span>
 <span>  smooth <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  out.rm <span class="op">=</span> <span class="cn">T</span></span>
+<span>  multiome <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -176,6 +176,11 @@ By default these are computed by function <code>auto_normalisation_factor</code>
 <dt>smooth</dt>
 <dd><p>If yes, input segments are smootheed by joining per chromosome segments that
 have the same ploidy.</p></dd>
+
+
+<dt>mutiome</dt>
+<dd><p>Default to FALSE. Flag indicating whether the RNA and ATAC observations are the result of a matched RNA-ATAC sequencing assay such as 10x multiome assay.
+(i.e., there is a 1:1 correspondence between barcodes of the two modalities.)</p></dd>
 
 </dl></div>
     <div id="value">
@@ -228,7 +233,7 @@ have the same ploidy.</p></dd>
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by <a href="https://www.caravagnalab.org" class="external-link">Salvatore Milite</a>, <a href="https://www.caravagnalab.org" class="external-link">Riccardo Bergamin</a>, <a href="https://www.caravagnalab.org" class="external-link">Giulio Caravagna</a>.</p>
+  <p></p><p>Developed by <a href="https://www.caravagnalab.org" class="external-link">Salvatore Milite</a>, <a href="https://www.caravagnalab.org" class="external-link">Lucrezia Patruno</a>, <a href="https://www.caravagnalab.org" class="external-link">Riccardo Bergamin</a>, <a href="https://www.caravagnalab.org" class="external-link">Giulio Caravagna</a>.</p>
 </div>
 
 <div class="pkgdown">

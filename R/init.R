@@ -62,6 +62,8 @@ NULL
 #' @param description A model in-words description.
 #' @param smooth If yes, input segments are smootheed by joining per chromosome segments that
 #' have the same ploidy.
+#' @param mutiome Default to FALSE. Flag indicating whether the RNA and ATAC observations are the result of a matched RNA-ATAC sequencing assay such as 10x multiome assay. 
+#' (i.e., there is a 1:1 correspondence between barcodes of the two modalities.) 
 #'
 #' @return An object of class \code{rcongasplus}
 #'
@@ -119,7 +121,8 @@ init = function(
   reference_genome = 'GRCh38',
   description = "(R)CONGAS+ model",
   smooth = FALSE,
-  out.rm = T
+  # out.rm = TRUE,
+  multiome = FALSE
 )
 {
   if(is.null(rna) & is.null(atac))
@@ -170,12 +173,26 @@ init = function(
   if(!(reference_genome %in% c("hg19", 'GRCh37', 'hg38', "GRCh38")))
     stop("Unsupported reference, use any of 'hg19'/'GRCh37' or 'hg38'/'GRCh38'")
 
-  # Non unique cell ids
-  nu_ids = intersect(rna$cell, atac$cell)
+  if (multiome){
+    print("Running in multiome mode.")
+    res = validate_multiome(rna, atac)
+    atac = res$atac
+    rna = res$rna
+    
+    rna_normalisation_factors = rna_normalisation_factors %>%
+      mutate(multiome_barcode = cell, cell = paste0(cell, '-RNA'))
 
-  if(!is.null(nu_ids) & (length(nu_ids) > 0))
-  {
-    stop("ATAC and RNA cells have shared ids, this is not possibile.")
+    atac_normalisation_factors = atac_normalisation_factors %>%
+      mutate(multiome_barcode = cell, cell = paste0(cell, '-ATAC'))
+
+  } else {
+    # Non unique cell ids
+    nu_ids = intersect(rna$cell, atac$cell)
+
+    if(!is.null(nu_ids) & (length(nu_ids) > 0))
+    {
+      stop("ATAC and RNA cells have shared ids, this is not possibile.")
+    }
   }
 
   # Check that normalization factors are available for all cells
@@ -233,11 +250,12 @@ init = function(
     segmentation = segmentation,
     normalisation_factors = rna_normalisation_factors,
     likelihood = rna_likelihood,
-    out.rm = out.rm)
+    multiome = multiome,
+    out.rm = TRUE)
 
   if(!is.null(rna))
   {
-    rna = rna_modality_data$data %>% select(segment_id, cell, value, modality, value_type)
+    rna = rna_modality_data$data 
     segmentation = rna_modality_data$segmentation
     rna_normalisation_factors = rna_modality_data$normalisation
   }
@@ -249,13 +267,13 @@ init = function(
     segmentation = segmentation,
     normalisation_factors = atac_normalisation_factors,
     likelihood = atac_likelihood,
-    out.rm = out.rm)
+    multiome = multiome,
+    out.rm = TRUE)
 
   if(!is.null(atac))
   {
-    atac = atac_modality_data$data %>% select(segment_id, cell, value, modality, value_type)
+    atac = atac_modality_data$data 
     segmentation = atac_modality_data$segmentation
-    
     atac_normalisation_factors = atac_modality_data$normalisation
   }
   
@@ -280,18 +298,22 @@ init = function(
   ret_obj$input$normalisation = bind_rows(rna_normalisation_factors,
                                           atac_normalisation_factors)
   ret_obj$input$segmentation = segmentation
-
+  ret_obj$input$multiome = multiome
   ret_obj$log = paste('-', Sys.time(), "Created input object.")
   
   return(ret_obj %>% sanitize_obj %>% sanitize_zeroes
   )
 }
 
-create_modality = function(modality, data, segmentation, normalisation_factors, likelihood, out.rm=T)
+create_modality = function(modality, data, segmentation, normalisation_factors, likelihood, multiome, out.rm=T)
 {
   # Special case, data are missing
   if(is.null(data)) {
     return(list(data = NULL, segmentation = segmentation))
+  }
+
+  if (multiome) {
+    barcode_mapping = data %>% select(cell, multiome_barcode) %>% distinct()
   }
   
   normalisation_factors = normalisation_factors %>% mutate(modality = !!modality)
@@ -307,7 +329,7 @@ create_modality = function(modality, data, segmentation, normalisation_factors, 
   cli::cli_alert("Input locations: {.field {data %>% distinct(chr, from, to) %>% nrow}}")
 
   # Computing mapping for RNA
-  segmentation = segmentation %>% idify()
+  segmentation = segmentation %>% Rcongas:::idify()
 
   evt_lbs = paste0(modality, '_nonzerovals')
   loc_lbs = ifelse(
@@ -354,7 +376,7 @@ create_modality = function(modality, data, segmentation, normalisation_factors, 
   nn_na = (data %>% nrow) - n_na
   
   if (out.rm)
-    data = clean_outliers_persegment(modality, data, normalisation_factors)$data_cleaned
+    data = Rcongas:::clean_outliers_persegment(modality, data, normalisation_factors)$data_cleaned
   
   cli::cli_alert("Entries mapped: {.field {nn_na}}, with {.field {n_na}} outside input segments that will be discarded.")
   if(n_na > 0) data = data %>% filter(!is.na(segment_id))
@@ -378,8 +400,7 @@ create_modality = function(modality, data, segmentation, normalisation_factors, 
       
       data = data %>% left_join(features)
     }
-    else{
-     # data = data %>% mutate(idFeature = paste0(chr,from,to))
+    else {
       features = data %>% 
         select(chr, from, to)  %>% 
         distinct() %>%
@@ -413,69 +434,26 @@ create_modality = function(modality, data, segmentation, normalisation_factors, 
 
     mapped$modality = modality
 
-    # # zscore_params = data %>%
-    # #   group_by(chr, from, to) %>%
-    # #   summarise(value_mean = mean(value), value_sd = sd(value), .groups = 'keep')
-    # # NEW CODE FOR Z-SCORES
-
-    # data_ = data %>% select(cell,value, idFeature) %>% 
-    #   pivot_wider(values_from = value, names_from = idFeature)  %>%
-    #   column_to_rownames('cell') %>% 
-    #   replace(is.na(.), 0)
-
-    # means = colMeans(data_)
-    # sds  = apply(data_, 2, sd)
-
-    # zscore_params = tibble(value_mean = means, value_sd = sds, idFeature = names(means))
-
     # # Set to 1 normalisation factors
     cli::cli_alert_warning("With Gaussian likelihood normalisation factors are changed to 1.")
     normalisation_factors$normalisation_factor = 1
     
-    # # data = data %>%
-    # #   left_join(zscore_params, by = c('chr', 'from', 'to')) %>%
-    # #   mutate(
-    # #     value = (value - value_mean)/value_sd # z-score
-    # #   )
-    # data = data %>%
-    #   left_join(zscore_params) %>%
-    #   mutate(
-    #     value = (value - value_mean)/value_sd # z-score
-    #   )
-
-    # n_na = data$value %>% is.na %>% sum
-
-    # if(n_na > 0)
-    # {
-    #   cli::cli_alert_warning("There are {.field {n_na}} z-scores that are NA, will be removed.")
-    #   data %>% filter(is.na(value)) %>% print
-
-    #   data = data %>% filter(!is.na(value))
-    # }
-    # min_value = min(data$value)
-    # data = data %>% mutate(value = value + (min_value * -1))
-    # # data = data %>% select(-value_mean, -value_sd, -idFeature)
-    
   } else {
-  # Mapped counts
-  mapped = data %>%
-    group_by(segment_id, cell) %>%
-    summarise(value = sum(value), .groups = 'keep') %>%
-    ungroup() %>%
-    mutate(modality = !!modality)
+    # Mapped counts
+    mapped = data %>%
+      group_by(segment_id, cell) %>%
+      summarise(value = sum(value), .groups = 'keep') %>%
+      ungroup() %>%
+      mutate(modality = !!modality)
+  }
+
+  if (multiome) {
+    mapped = mapped %>% left_join(barcode_mapping)
   }
 
   # Center the new scores to the ploidy value
   if(likelihood %in% c("G")){
     cli::cli_alert("Centering the new scores around input ploidy values.")
-
-    # data_ = mapped %>% select(cell,value, segment_id) %>% 
-    #   pivot_wider(values_from = value, names_from = segment_id)  %>%
-    #   column_to_rownames('cell') %>% 
-    #   replace(is.na(.), 0)
-
-    # means = colMeans(data_)
-    # sds  = apply(data_, 2, sd)
 
     inp = reshape2::acast(mapped,
                           cell ~ segment_id,
@@ -485,17 +463,6 @@ create_modality = function(modality, data, segmentation, normalisation_factors, 
     data_scaled = scale(inp)
     data_scaled[is.na(data_scaled)] <- 0
 
-    #zscore_params = tibble(value_mean = means, value_sd = sds, segment_id = names(means))
-
-    # zscore_params = mapped %>%
-    #   group_by(segment_id) %>%
-    #   summarise(value_mean = mean(value), value_sd = sd(value), .groups = 'keep')
-
-    # mapped = mapped %>%
-    #   left_join(zscore_params, by = c("segment_id")) %>%
-    #   mutate(
-    #     value = (value - value_mean)/value_sd # z-score
-    #   )
     mapped = as.data.frame(data_scaled) %>% rownames_to_column(var = 'cell') %>%
       pivot_longer(cols = setdiff(colnames(data_scaled), 'cell'), names_to = 'segment_id') %>%
       mutate(modality = !!modality)
@@ -517,6 +484,14 @@ create_modality = function(modality, data, segmentation, normalisation_factors, 
     likelihood == "P" ~ "Poisson",
     likelihood == "G" ~ "Gaussian"
   )
+  
+  if (multiome) {
+    mapped = mapped %>% 
+      select(segment_id, cell, value, modality, value_type, multiome_barcode)
+  } else {
+    mapped = mapped %>% 
+      select(segment_id, cell, value, modality, value_type)
+  }
 
   return(
     list(
@@ -525,6 +500,25 @@ create_modality = function(modality, data, segmentation, normalisation_factors, 
       segmentation = segmentation
     )
   )
+}
+
+validate_multiome = function(rna, atac) {
+  
+  if (length(unique(rna$cell)) != length(unique(atac$cell)))
+    stop("ATAC ana RNA have different number of cells. Error for multiome mode, returning.")
+
+  same_ids = intersect(rna$cell, atac$cell)
+  if (length(same_ids) != length(unique(rna$cell)))
+    stop("Running in multiome mode requires ATAC and RNA to have the same cell ids.")
+  
+  atac = atac %>% mutate(multiome_barcode = cell,
+      cell = paste0(cell, '-ATAC'))
+
+  rna = rna %>% mutate(multiome_barcode = cell,
+        cell = paste0(cell, '-RNA'))
+
+  return(list(rna = rna, atac = atac))
+
 }
 
 # Segments smoothing function

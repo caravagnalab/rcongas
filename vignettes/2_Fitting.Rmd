@@ -18,7 +18,6 @@ library(Rcongas)
 library(dplyr)
 library(ggplot2)
 library(stringr)
-library(tidyverse)
 ```
 
 Setup the directory where results are stored.
@@ -42,8 +41,6 @@ data(multiome_congas_object)
 
 ```
 
-
-
 To reduce the paramter search space dimensions and subsequently decreasing the computational complecity of CONGAS+ inference, users can optionally decide to perform 
 a preliminary step of segment filtering, which consists in running CONGAS+ inference independently on each segment, varying the number of clusters from 1 to 3 and
 finally keeping only those segments in which the otpimal number of clusters selected by BIC is higher than 1. 
@@ -59,7 +56,10 @@ filt = segments_selector_congas(multiome_congas_object)
 # saveRDS(filt, paste0(out.dir, "rcongas_obj_filtered.rds"))
 ```
 
-Now we can run CONGAS+ parameters inference on the final filtered object. We first fir hyperparameters values from the current data, and then we fit the model.
+Now we can run CONGAS+ parameters inference on the final filtered object. We first  using \code{auto_config_run}, and then we fit the model.
+The function \code{auto_config_run} computes the hyperparameters values using the current data. 
+Its parameter \code{normal_cells} is used to specify if the data contains a subset of normal cells. 
+In case this is set to \code{TRUE}, the copy number distribution for one of the clusters will be initialized with values skewed towards the diploid state in every segment.
 ```{r}
 # Set values fro the model hyperparameters
 k = c(1:4)
@@ -68,7 +68,7 @@ binom_limits = c(40,1000)
 model = "BIC"
 
 lr = 0.01
-temperature = 20#10
+temperature = 20
 
 steps = 5000
 lambda = 0.5
@@ -76,7 +76,9 @@ lambda = 0.5
 # Estimate hyperparameters
 hyperparams_filt <- auto_config_run(filt, k, 
                                     prior_cn=c(0.2, 0.6, 0.1, 0.05, 0.05),
-                                    init_importance = 0.6, CUDA = FALSE)
+                                    init_importance = 0.6, 
+                                    CUDA = FALSE, 
+                                    normal_cells=TRUE)
 
 # Run
 hyperparams_filt$binom_prior_limits = binom_limits
@@ -113,8 +115,10 @@ plot_fit(fit_filt, 'posterior_CNA')
 ```
 
 ```{r, fig.width=20, fig.height=10}
-cowplot::plot_grid( 
+p = cowplot::plot_grid( 
   plotlist = plot_fit(fit_filt, what = 'density', highlights = TRUE),
   ncol = 4)
+p
+ggsave(filename= paste0(fig.dir, 'clusters_distribution.png'), plot= p, height = 15, width = 15)
 ```
 

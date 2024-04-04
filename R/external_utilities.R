@@ -13,7 +13,7 @@
 #' @param upper_quantile The maximum quantile to determine cuts. 
 #'
 #' @return The input data with normalisation factors in between the quantiles range.
-#' @export
+#'  @export
 #'
 #' @examples
 #' data('example_input')

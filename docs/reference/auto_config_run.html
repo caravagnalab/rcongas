@@ -83,8 +83,6 @@
 <span>  hidden_dim <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>  init_importance <span class="op">=</span> <span class="fl">0.6</span>,</span>
 <span>  NB_size_priors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">15</span>, <span class="fl">1000</span><span class="op">)</span>,</span>
-<span>  purity <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  multiome <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  CUDA <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  normal_cells <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -134,22 +132,13 @@ This distribution is initialized based on the value of init importance, and then
 <dd><p>(optional) Default c(15, 1000). Lower and upper bound of the Uniform prior on the Negative binomial size hyperparameter.</p></dd>
 
 
-<dt>purity</dt>
-<dd><p>Optional (default NULL). This hyperparameter can be used to inject prior knowledge about the purity of the sample. It can be set as the purity inferred from bulk Whole Genome Sequencing. Leave this to NULL
-in case the purity of the sample is expected to be 100%.</p></dd>
-
-
-<dt>multiome</dt>
-<dd><p>Default to FALSE. Flag indicating whether the RNA and ATAC observations are the result of a matched RNA-ATAC sequencing assay such as 10x multiome assay.</p></dd>
-
-
 <dt>CUDA</dt>
 <dd><p>Defualt FALSE. Flag indicating whether to use GPU computation.</p></dd>
 
 
 <dt>normal_cells</dt>
 <dd><p>Default to FALSE. Flag that can be used to inject prior knowledge about the presence of normal cells in the sample. In case this is set to TRUE, the copy number
-distribution for one of the clusters will be initialized with values skewed the diploid state in every segment.</p></dd>
+distribution for one of the clusters will be initialized with values skewed towards the diploid state in every segment.</p></dd>
 
 </dl></div>
     <div id="value">
@@ -167,7 +156,7 @@ distribution for one of the clusters will be initialized with values skewed the 
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by <a href="https://www.caravagnalab.org" class="external-link">Salvatore Milite</a>, <a href="https://www.caravagnalab.org" class="external-link">Riccardo Bergamin</a>, <a href="https://www.caravagnalab.org" class="external-link">Giulio Caravagna</a>.</p>
+  <p></p><p>Developed by <a href="https://www.caravagnalab.org" class="external-link">Salvatore Milite</a>, <a href="https://www.caravagnalab.org" class="external-link">Lucrezia Patruno</a>, <a href="https://www.caravagnalab.org" class="external-link">Riccardo Bergamin</a>, <a href="https://www.caravagnalab.org" class="external-link">Giulio Caravagna</a>.</p>
 </div>
 
 <div class="pkgdown">

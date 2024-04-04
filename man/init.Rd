@@ -15,7 +15,7 @@ init(
   reference_genome = "GRCh38",
   description = "(R)CONGAS+ model",
   smooth = FALSE,
-  out.rm = T
+  multiome = FALSE
 )
 }
 \arguments{
@@ -42,6 +42,9 @@ By default these are computed by function \code{auto_normalisation_factor}.}
 
 \item{smooth}{If yes, input segments are smootheed by joining per chromosome segments that
 have the same ploidy.}
+
+\item{mutiome}{Default to FALSE. Flag indicating whether the RNA and ATAC observations are the result of a matched RNA-ATAC sequencing assay such as 10x multiome assay.
+(i.e., there is a 1:1 correspondence between barcodes of the two modalities.)}
 }
 \value{
 An object of class \code{rcongasplus}

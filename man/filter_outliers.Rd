@@ -31,12 +31,14 @@ After mapping counts data to segments, this function
 can be used to determine quantiles of mapped data, and identify
 outliers in each segment and modality.
 
-An outliers is an entry for a cell/segment pair; with this function
+An outlier is an entry for a cell/segment pair; with this function
 we compute how often a certain cell is marked as an outlier. Then
 the function removes cells that are flagged as containing outliers
 more then a certain input cutoff. This helps picking up which cells
 are often showing counts that seem deviating from the main signal
 in the data.
+In case of multiome data, cells flagged as outliers in one modality
+are also removed from the other modality.
 
 The function requires and returns an (R)CONGAS+ object.
 }

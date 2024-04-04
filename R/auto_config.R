@@ -14,12 +14,9 @@
 #' @param init_importance (Optional) Default 0.6. Value used to initialize the distribution over possible copy number states for every cluster and every segment. \code{init_importance}
 #' is used to initialize the value corresponding to the copy number state inferred from bulk and \code{1-init_importance / (hidden_dim - 1)} is used to initialize the other ploidy states.
 #' This distribution is initialized based on the value of init importance, and then its prior is defined in \code{prior_cn}.
-#' @param purity Optional (default NULL). This hyperparameter can be used to inject prior knowledge about the purity of the sample. It can be set as the purity inferred from bulk Whole Genome Sequencing. Leave this to NULL
-#' in case the purity of the sample is expected to be 100%.
-#' @param multiome Default to FALSE. Flag indicating whether the RNA and ATAC observations are the result of a matched RNA-ATAC sequencing assay such as 10x multiome assay.
 #' @param CUDA Defualt FALSE. Flag indicating whether to use GPU computation.
 #' @param normal_cells Default to FALSE. Flag that can be used to inject prior knowledge about the presence of normal cells in the sample. In case this is set to TRUE, the copy number
-#' distribution for one of the clusters will be initialized with values skewed the diploid state in every segment.
+#' distribution for one of the clusters will be initialized with values skewed towards the diploid state in every segment.
 #'
 #' @return CONAGS+ object
 #' @export
@@ -36,8 +33,7 @@ auto_config_run <-
            hidden_dim = 5,#length(prior_cn),
            init_importance = 0.6,
            NB_size_priors = c(15, 1000),
-           purity = NULL,
-	         multiome = FALSE, 
+          #  purity = NULL,
            CUDA = FALSE,
            normal_cells = FALSE
            )
@@ -62,8 +58,8 @@ auto_config_run <-
     #init_dirichlet_cna(x, hidden_dim = hidden_dim, mode = mode)
     
 
-    param_list$purity <- purity
-    param_list$multiome <- multiome
+    param_list$purity <- NULL
+    param_list$multiome <- x$input$multiome
     param_list$normal_cells = normal_cells
 
     if (has_atac(x)) {

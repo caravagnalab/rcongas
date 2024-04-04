@@ -291,6 +291,12 @@ format_best_model <-  function(x, inf, same_mixing){
   ret$segment_parameters <- rbind(segment_parameters_atac, segment_parameters_rna)
   ret$CNA_real <- ret$posterior_CNA %>% group_by(segment_id, cluster) %>% summarise(value = sum(probability * as.integer(value))) %>%  ungroup()
 
+  if (x$input$multiome) {
+    barcodes_mapping = x$input$dataset %>% select(cell, multiome_barcode) %>% distinct
+    ret$cluster_assignments = ret$cluster_assignments %>% left_join(barcodes_mapping)
+    ret$z_nk = ret$z_nk %>% left_join(barcodes_mapping)
+  }
+
   return(ret)
 
 

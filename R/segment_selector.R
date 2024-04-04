@@ -306,15 +306,14 @@ fit_nbmix = function(x, K = 1:3, score="ICL", mod="ATAC")
 #' 
 #' @export
 #'
-segments_selector_congas <- function(obj, multiome = F, K_max = 3, score = "BIC", lambda = 0.5, cores_ratio = 0.5, CUDA = F, binom_limits = c(40,1000)){
-
-  congas_single_segment <- function(obj, binom_limits, CUDA, lambda, multiome){
+segments_selector_congas <- function(obj, K_max = 3, score = "BIC", lambda = 0.5, cores_ratio = 0.5, CUDA = F, binom_limits = c(40,1000)){
+  print('segment_selector')
+  congas_single_segment <- function(obj, binom_limits, CUDA, lambda){
     # seg_id = segment_ids[i]
     K_max = 3#params$K_max
     lr = 0.01#params$lr
     steps = 2000#params$steps
     score = 'BIC'#params$score
-    purity = NULL#params$purity
     temperature = 20#params$temperature
 
     # obj = Rcongas:::select_segments(obj, segment_ids = c(seg_id))
@@ -322,8 +321,7 @@ segments_selector_congas <- function(obj, multiome = F, K_max = 3, score = "BIC"
     model_params = Rcongas:::auto_config_run(obj,
                                             K = 1:K_max,
                                             prior_cn = c(0.2, 0.6, 0.05, 0.025, 0.025),
-                                            multiome = multiome,
-                                            purity = purity, CUDA = CUDA)
+                                            CUDA = CUDA)
 
     model_params$lambda=lambda
 
@@ -339,7 +337,8 @@ segments_selector_congas <- function(obj, multiome = F, K_max = 3, score = "BIC"
       temperature = temperature,
       model_selection = score,
       threshold = 0.001,
-      CUDA = CUDA
+      CUDA = CUDA,
+      same_mixing = FALSE
     )
 
     # p=Rcongas:::plot_fit_density(fit_obj, highlight=F)
@@ -368,17 +367,17 @@ segments_selector_congas <- function(obj, multiome = F, K_max = 3, score = "BIC"
   report = easypar::run(
     FUN = congas_single_segment,
     PARAMS = lapply(segment_ids, function (x) {
-      list(obj = Rcongas:::select_segments(obj, segment_ids = c(x)),
+      list(obj = Rcongas:::select_segments(obj, segment_ids = c(x)) %>%
+        adjust_multiome_cells(),
           binom_limits = binom_limits,
           CUDA = CUDA,
-          lambda = lambda,
-          multiome = multiome)
+          lambda = lambda)
       }),
     parallel = FALSE,
     cores.ratio = cores_ratio,
     filter_errors = FALSE
   )
-
+  print(report)
   report = Reduce(bind_rows, report)
 
   polyclonal_segments <-
@@ -413,6 +412,16 @@ select_segments <- function(x, segment_ids) {
 
 }
 
+
+adjust_multiome_cells = function(x) {
+  cells_keep = x$input$dataset %>% select(modality, multiome_barcode) %>% distinct() %>%
+	group_by(multiome_barcode) %>% summarise(nmodalities = n()) %>% 	
+	filter(nmodalities == 2) %>% pull(multiome_barcode)
+
+  x$input$dataset = x$input$dataset %>% filter(multiome_barcode %in% cells_keep)
+  x$input$normalisation = x$input$normalisation %>% filter(multiome_barcode %in% cells_keep)
+  return(x)
+}
 
 
 

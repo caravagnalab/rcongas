@@ -108,8 +108,7 @@
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">Rcongas</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://stringr.tidyverse.org" class="external-link">stringr</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span></span></code></pre></div>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://stringr.tidyverse.org" class="external-link">stringr</a></span><span class="op">)</span></span></code></pre></div>
 <p>In this Vignette we show how to create a CONGAS+ object starting from
 RNA and ATAC count matrices. We will use the B-cell lymphoma cells
 sequences via 10x genomics multiomic assay. The raw data can be foun <a href="https://www.10xgenomics.com/resources/datasets/fresh-frozen-lymph-node-with-b-cell-lymphoma-14-k-sorted-nuclei-1-standard-2-0-0" class="external-link">here</a>.
@@ -133,7 +132,7 @@ Setup the directory where results are stored.</p>
 <p>With the multiome assay, the feature files provided by CellRanger
 contains already a mapping between gene names and coordinates. Let’s
 read this file As an alternative, when such file not not readily
-available, users can exploit BiomaRt Please see the correspodning
+available, users can exploit BiomaRt. Please see the correspodning
 vignette </p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">features</span><span class="op">)</span></span></code></pre></div>
@@ -156,9 +155,6 @@ vignette </p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Specify the column types or set `show_col_types = FALSE` to quiet this message.</span></span>
 <span><span class="co">#&gt; Joining with `by = join_by(feature_index)`</span></span>
 <span><span class="co">#&gt; Joining with `by = join_by(cell_index)`</span></span>
-<span><span class="co"># duplicate call names across ATAC and RNA cells is not allowed by CONGAS+</span></span>
-<span><span class="co"># add suffix to atac cell barcodes prior to create the CONGAS+ object</span></span>
-<span><span class="va">atac</span> <span class="op">=</span> <span class="va">atac</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>cell <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">cell</span>, <span class="st">'-ATAC'</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Compute normalization factors</span></span>
 <span><span class="va">norm_atac</span> <span class="op">=</span> <span class="fu">Rcongas</span><span class="fu">:::</span><span class="fu"><a href="../reference/auto_normalisation_factor.html">auto_normalisation_factor</a></span><span class="op">(</span><span class="va">atac</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
@@ -179,7 +175,6 @@ vignette </p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Use `spec()` to retrieve the full column specification for this data.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Specify the column types or set `show_col_types = FALSE` to quiet this message.Joining with `by = join_by(feature_index)`Joining with `by = join_by(cell_index)`</span></span>
 <span></span>
-<span><span class="va">rna</span> <span class="op">=</span> <span class="va">rna</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>cell <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">cell</span>, <span class="st">'-RNA'</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Compute normalization factors</span></span>
 <span><span class="va">norm_rna</span> <span class="op">=</span> <span class="fu">Rcongas</span><span class="fu">:::</span><span class="fu"><a href="../reference/auto_normalisation_factor.html">auto_normalisation_factor</a></span><span class="op">(</span><span class="va">rna</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
@@ -213,7 +208,14 @@ breakpoints</p>
 <span></span>
 <span><span class="co"># Remove these chromosomes</span></span>
 <span><span class="va">segments</span> <span class="op">=</span> <span class="va">example_segments</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">chr</span> <span class="op">!=</span> <span class="st">'chrX'</span>, <span class="va">chr</span> <span class="op">!=</span> <span class="st">'chrY'</span><span class="op">)</span></span></code></pre></div>
-<p>Now init the CONGAS+ object</p>
+<p>Now init the (R)CONGAS+ object. Users can choose between two object
+types: the multiomic or standard CONGAS+, setting the parameter to TRUE
+or FALSE, respectively. When the observations between RNA and ATAC are
+paired, the multiomic object should be used, in order to assign the RNA
+and ATAC observations from the same cells to the same clusters. Please
+note that in this case the cells are expected to have the same barcode
+in the two modalities. The object provided as an example in this
+vignette illustrates this.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="../reference/init.html">init</a></span><span class="op">(</span></span>
 <span>  rna <span class="op">=</span> <span class="va">rna</span>,</span>
@@ -223,14 +225,16 @@ breakpoints</p>
 <span>  atac_normalisation_factors <span class="op">=</span> <span class="va">norm_atac</span>,</span>
 <span>  rna_likelihood <span class="op">=</span> <span class="st">"NB"</span>, </span>
 <span>  atac_likelihood <span class="op">=</span> <span class="st">"NB"</span>,</span>
-<span>  description <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">'Bimodal '</span>, <span class="va">sample</span><span class="op">)</span><span class="op">)</span></span>
+<span>  description <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">'Bimodal '</span>, <span class="va">sample</span><span class="op">)</span>,</span>
+<span>  multiome <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                        ┌──────────────────────────────────┐</span></span>
 <span><span class="co">#&gt;                        │<span style="background-color: #FFAF00;">                                  </span>│</span></span>
 <span><span class="co">#&gt;                        │<span style="background-color: #FFAF00;">   (R)CONGAS+: Bimodal lymphoma   </span>│</span></span>
 <span><span class="co">#&gt;                        │<span style="background-color: #FFAF00;">                                  </span>│</span></span>
 <span><span class="co">#&gt;                        └──────────────────────────────────┘</span></span>
+<span><span class="co">#&gt; [1] "Running in multiome mode."</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── <span style="color: #00BB00;">RNA</span> modality (38.360456 Mb)</span></span>
+<span><span class="co">#&gt; ── <span style="color: #00BB00;">RNA</span> modality (46.631816 Mb)</span></span>
 <span><span class="co">#&gt; → Input events: <span style="color: #00BB00;">1028900</span></span></span>
 <span><span class="co">#&gt; → Input cells: <span style="color: #00BB00;">500</span></span></span>
 <span><span class="co">#&gt; → Input locations: <span style="color: #00BB00;">21771</span></span></span>
@@ -246,19 +250,18 @@ breakpoints</p>
 <span><span class="co">#&gt; → Found: <span style="color: #00BB00;">109</span> outliers.</span></span>
 <span><span class="co">#&gt; → Entries mapped: <span style="color: #00BB00;">491441</span>, with <span style="color: #00BB00;">537459</span> outside input segments that will be discarded.</span></span>
 <span><span class="co">#&gt; → Using likelihood: <span style="color: #00BB00;">NB</span>.</span></span>
+<span><span class="co">#&gt; Joining with `by = join_by(cell)`</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── <span style="color: #00BB00;">ATAC</span> modality (86.844704 Mb)</span></span>
+<span><span class="co">#&gt; ── <span style="color: #00BB00;">ATAC</span> modality (111.685272 Mb)</span></span>
 <span><span class="co">#&gt; → Input events: <span style="color: #00BB00;">3100055</span></span></span>
 <span><span class="co">#&gt; → Input cells: <span style="color: #00BB00;">500</span></span></span>
 <span><span class="co">#&gt; → Input locations: <span style="color: #00BB00;">109645</span></span></span>
 <span><span class="co">#&gt; → Cleaning outlier features from <span style="color: #00BB00;">ATAC</span> input matrix</span></span>
-<span><span class="co">#&gt; Joining with `by = join_by(chr, from, to)`</span></span>
-<span><span class="co">#&gt; → Normalising <span style="color: #00BB00;">ATAC</span> counts using input normalisation factors.</span></span>
+<span><span class="co">#&gt; Joining with `by = join_by(chr, from, to)`→ Normalising <span style="color: #00BB00;">ATAC</span> counts using input normalisation factors.</span></span>
 <span><span class="co">#&gt; → Found: <span style="color: #00BB00;">581</span> outliers.</span></span>
-<span><span class="co">#&gt; → Entries mapped: <span style="color: #00BB00;">1530455</span>, with <span style="color: #00BB00;">1569600</span> outside input segments that will be</span></span>
-<span><span class="co">#&gt; discarded.</span></span>
+<span><span class="co">#&gt; → Entries mapped: <span style="color: #00BB00;">1530455</span>, with <span style="color: #00BB00;">1569600</span> outside input segments that will be discarded.</span></span>
 <span><span class="co">#&gt; → Using likelihood: <span style="color: #00BB00;">NB</span>.</span></span>
-<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Joining with `by = join_by(cell)`</span></span>
 <span><span class="co">#&gt; ── Checking segmentation</span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> These segments have no events associated and will be removed - we suggest you to check if these can be further smoothed.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> <span style="color: #BBBBBB; background-color: #00BBBB;"> Hint </span> <span style="font-style: italic;">Check if the reduced segments can be further smoothed!</span></span></span>
@@ -317,7 +320,7 @@ segment, to help identify a threshold for filtering segments.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">metadata</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">x</span><span class="op">$</span><span class="va">input</span><span class="op">$</span><span class="va">metadata</span> <span class="op">=</span> <span class="va">metadata</span></span>
-<span><span class="co"># Modificato plot_data in mdodo da plottare gli istogrammi colorati per celltype</span></span>
+<span></span>
 <span><span class="fu"><a href="../reference/plot_data.html">plot_data</a></span><span class="op">(</span><span class="va">x</span>, </span>
 <span>  to_plot <span class="op">=</span> <span class="st">'type'</span>, </span>
 <span>  position <span class="op">=</span> <span class="st">'stack'</span>,</span>
@@ -347,7 +350,7 @@ inference.</p>
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by <a href="https://www.caravagnalab.org" class="external-link">Salvatore Milite</a>, <a href="https://www.caravagnalab.org" class="external-link">Riccardo Bergamin</a>, <a href="https://www.caravagnalab.org" class="external-link">Giulio Caravagna</a>.</p>
+<p>Developed by <a href="https://www.caravagnalab.org" class="external-link">Salvatore Milite</a>, <a href="https://www.caravagnalab.org" class="external-link">Lucrezia Patruno</a>, <a href="https://www.caravagnalab.org" class="external-link">Riccardo Bergamin</a>, <a href="https://www.caravagnalab.org" class="external-link">Giulio Caravagna</a>.</p>
 </div>
 
 <div class="pkgdown">

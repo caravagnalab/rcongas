@@ -15,6 +15,7 @@ filter_cells_by_quantile(x, lower_quantile = 0.05, upper_quantile = 0.95)
 }
 \value{
 The input data with normalisation factors in between the quantiles range.
+@export
 }
 \description{
 Filter cells by upper and lower quantile of their normalisation factors.

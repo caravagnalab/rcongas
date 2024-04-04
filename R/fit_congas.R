@@ -25,7 +25,7 @@
 #' @param samples Number of times a model is fit for each value of \code{K}.
 #' @param model_selection information criteria to which perform the model selection (one of ICL, NLL, BIC, AIC)
 #' @param same_mixing boolean that indicates whether to use the same mixing proportions for both RNA and ATAC or use different vectors for the two
-#' modalities. Default is FALSE. 
+#' modalities. Default is FALSE. When the data is multi-omic, the mixing proportions are forced to be the same. 
 #' @param threshold. Float, default is \code{learning_rate * 0.1}. It corresponds to the threshold that determines the early stopping of the training procedure. When the difference between parameters in step t and step t+1 is
 #' lower than this threshold for a number of steps equal to the parameter \code{patience} the inference is stopped.
 #' @param patience Integer. Number of steps to wait before stopping the inference. See \code{threshold} for more details.
@@ -71,7 +71,9 @@ fit_congas <-
     x = sort_multiome(x)
     model_parameters$equal_sizes_sd <- equal_variance
 
-
+    if (x$input$multiome) {
+      same_mixing = TRUE
+    }
     cli::cli_h1("{crayon::bgYellow(' (R)CONGAS+ ')} Variational Inference")
 
     # Multi-run fit

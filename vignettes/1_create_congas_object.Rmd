@@ -18,7 +18,6 @@ library(Rcongas)
 library(dplyr)
 library(ggplot2)
 library(stringr)
-library(tidyverse)
 ```
 
 In this Vignette we show how to create a CONGAS+ object starting from RNA and ATAC count matrices. We will use the 
@@ -48,7 +47,7 @@ data(rna_counts)
 With the multiome assay, the feature files provided by CellRanger contains already
 a mapping between gene names and coordinates. Let's read this file
 As an alternative, when such file not not readily available, users can exploit
-BiomaRt Please see the correspodning vignette \code{Gene mapping}
+BiomaRt. Please see the correspodning vignette \code{Gene mapping}
 
 ```{r}
 data(features)
@@ -64,9 +63,6 @@ atac = Rcongas::create_congas_tibble(counts = atac_counts,
                                      modality = 'ATAC', 
                                      save_dir = NULL,
                                      features = atac_featureDF)
-# duplicate call names across ATAC and RNA cells is not allowed by CONGAS+
-# add suffix to atac cell barcodes prior to create the CONGAS+ object
-atac = atac %>% mutate(cell = paste0(cell, '-ATAC'))
 
 # Compute normalization factors
 norm_atac = Rcongas:::auto_normalisation_factor(atac) %>%
@@ -77,7 +73,6 @@ rna = Rcongas::create_congas_tibble(counts = rna_counts,
                                     save_dir=NULL, 
                                     features = features)
 
-rna = rna %>% mutate(cell = paste0(cell, '-RNA'))
 
 # Compute normalization factors
 norm_rna = Rcongas:::auto_normalisation_factor(rna) %>%
@@ -105,8 +100,10 @@ data(example_segments)
 segments = example_segments %>% dplyr::filter(chr != 'chrX', chr != 'chrY')
 ```
 
-Now init the CONGAS+ object
-
+Now init the (R)CONGAS+ object. 
+Users can choose between two object types: the multiomic or standard CONGAS+, setting the parameter \code{multiome} to TRUE or FALSE, respectively.
+When the observations between RNA and ATAC are paired, the multiomic object should be used, in order to assign the RNA and ATAC observations from the same cells to the same clusters.
+Please note that in this case the cells are expected to have the same barcode in the two modalities. The object provided as an example in this vignette illustrates this.
 ```{R}
 x = init(
   rna = rna,
@@ -116,7 +113,8 @@ x = init(
   atac_normalisation_factors = norm_atac,
   rna_likelihood = "NB", 
   atac_likelihood = "NB",
-  description = paste0('Bimodal ', sample))
+  description = paste0('Bimodal ', sample),
+  multiome = TRUE)
 ```
 
 Now plot the number of nonzero cells vs the number of peaks per segment, to help 
@@ -151,7 +149,7 @@ Add metadata to annotate the counts distributions
 data(metadata)
 
 x$input$metadata = metadata
-# Modificato plot_data in mdodo da plottare gli istogrammi colorati per celltype
+
 plot_data(x, 
   to_plot = 'type', 
   position = 'stack',
