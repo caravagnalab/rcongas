@@ -414,6 +414,7 @@ select_segments <- function(x, segment_ids) {
 
 
 adjust_multiome_cells = function(x) {
+  if(!all(x$input$multiome)) return(x)
   cells_keep = x$input$dataset %>% select(modality, multiome_barcode) %>% distinct() %>%
 	group_by(multiome_barcode) %>% summarise(nmodalities = n()) %>% 	
 	filter(nmodalities == 2) %>% pull(multiome_barcode)
